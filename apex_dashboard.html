@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apex Client Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 16px; background:#0b1f17; color:#e6f7ef; }
+    h1 { margin: 0 0 12px; font-size: 20px; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    button { background:#123026; color:#e6f7ef; border:1px solid #1f5c45; border-radius:6px; padding:8px 10px; cursor:pointer; }
+    button.active { background:#16a34a; border-color:#16a34a; color:#03150e; font-weight:700; }
+    table { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+    th, td { border-bottom:1px solid #1f5c45; padding:6px 8px; text-align:left; white-space:nowrap; }
+    th { color:#86efac; cursor:pointer; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; }
+    .panel { display:none; }
+    .panel.active { display:block; }
+    .muted { color:#9ad4b7; font-size:12px; }
+  </style>
+</head>
+<body>
+  <h1>Apex Baseball Client Dashboard</h1>
+  <div class="muted" id="meta"></div>
+  <div class="muted" id="lastNightLabel" style="margin:6px 0 10px 0;"></div>
+  <div class="row" id="mainTabs">
+    <button data-tab="lastNight" class="active">Last Night</button>
+    <button data-tab="pro">Pro Clients</button>
+    <button data-tab="amateur">Amateur Clients</button>
+  </div>
+  <div class="row" id="subTabs">
+    <button data-subtab="last_night" class="active">Last Night Stats</button>
+    <button data-subtab="month_to_date">Month-To-Date Stats</button>
+    <button data-subtab="season">Season Stats</button>
+    <button data-subtab="schedule">Upcoming Series Locations</button>
+  </div>
+  <div class="row" id="roleTabs">
+    <button data-role="all" class="active">All</button>
+    <button data-role="pitchers">Pitchers</button>
+    <button data-role="hitters">Hitters</button>
+  </div>
+
+  <div id="panel-lastNight" class="panel active"></div>
+  <div id="panel-pro" class="panel"></div>
+  <div id="panel-amateur" class="panel"></div>
+
+  <script>
+    let DATA = null;
+    let activeTab = "lastNight";
+    let activeSubtab = "last_night";
+    let activeRole = "all";
+    const sortState = {};
+
+    function el(tag, text="") { const e=document.createElement(tag); if(text) e.textContent=text; return e; }
+    function tdWithValue(v) {
+      const td = el("td");
+      const s = String(v || "");
+      if (s.startsWith("http://") || s.startsWith("https://")) {
+        const a = el("a", "link");
+        a.href = s;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.style.color = "#93c5fd";
+        td.appendChild(a);
+      } else {
+        td.textContent = s;
+      }
+      return td;
+    }
+
+    function baseCols(row) {
+      return [
+        row.name || "",
+        row.agent_last || "",
+        row.position || "",
+        row.team_level || "",
+        row.current_team || row.school_or_team || "",
+        row.current_team_location || "",
+      ];
+    }
+
+    function statKeys(rows, key) {
+      const s = new Set();
+      rows.forEach(r => Object.keys(r[key] || {}).forEach(k => s.add(k)));
+      const all = Array.from(s);
+      const pitchingFirst = ["ip", "era", "w", "l", "sv", "so", "bb", "h", "hr", "whip", "k9", "bb9", "fip", "xfip"];
+      const hittingFirst = ["avg", "h", "hr", "2b", "3b", "rbi", "r", "ab", "pa", "bb", "so", "sb", "obp", "slg", "ops"];
+      const rolePitch = activeRole === "pitchers" || rows.every(r => r.is_pitcher);
+      const pref = rolePitch ? pitchingFirst : hittingFirst;
+      const pick = [];
+      for (const p of pref) {
+        const match = all.find(k => k.toLowerCase().replace(/[^a-z0-9]/g, "") === p);
+        if (match) pick.push(match);
+      }
+      for (const k of all) {
+        if (!pick.includes(k)) pick.push(k);
+      }
+      return pick.slice(0, 18);
+    }
+
+    function renderStatsTable(rows, statKey, target, panelKey) {
+      const keys = statKeys(rows, statKey);
+      const table = el("table");
+      const thead = el("thead");
+      const hr = el("tr");
+      const headers = ["Name","Agent Last","Pos","Level","Current Team","Team Location","Schedule", ...keys];
+      headers.forEach((h, i) => {
+        const th = el("th", h);
+        th.onclick = () => sortTable(panelKey, i);
+        hr.appendChild(th);
+      });
+      thead.appendChild(hr);
+      table.appendChild(thead);
+      const tbody = el("tbody");
+      tbody.id = `tbody-${panelKey}`;
+      rows.forEach(r => {
+        const tr = el("tr");
+        [...baseCols(r), r.team_schedule_url || "", ...keys.map(k => (r[statKey] || {})[k] ?? "")].forEach(v => tr.appendChild(tdWithValue(v)));
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      target.innerHTML = "";
+      target.appendChild(table);
+    }
+
+    function renderScheduleTable(rows, target, panelKey) {
+      const table = el("table");
+      const thead = el("thead");
+      const hr = el("tr");
+      const headers = ["Name","Agent Last","Pos","Level","Current Team","Team Location","Team Schedule","Opponent","Home/Away","Venue","Series Start","Series End","Location","Nearest Airport Code"];
+      headers.forEach((h, i) => {
+        const th = el("th", h);
+        th.onclick = () => sortTable(panelKey, i);
+        hr.appendChild(th);
+      });
+      thead.appendChild(hr);
+      table.appendChild(thead);
+      const tbody = el("tbody");
+      tbody.id = `tbody-${panelKey}`;
+      rows.forEach(r => {
+        (r.upcoming_series || []).forEach(s => {
+          const tr = el("tr");
+          const vals = [r.name, r.agent_last, r.position || "", r.team_level || "", r.current_team, r.current_team_location || "", r.team_schedule_url || "", s.opponent, s.home_away, s.venue, s.start_date, s.end_date, s.location, s.nearest_airport_code];
+          vals.forEach(v => tr.appendChild(tdWithValue(v)));
+          tbody.appendChild(tr);
+        });
+      });
+    function sortTable(panelKey, colIdx) {
+      const tbody = document.getElementById(`tbody-${panelKey}`);
+      if (!tbody) return;
+      const key = `${panelKey}:${colIdx}`;
+      sortState[key] = !sortState[key];
+      const asc = sortState[key];
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      rows.sort((a, b) => {
+        const av = (a.children[colIdx]?.textContent || "").trim();
+        const bv = (b.children[colIdx]?.textContent || "").trim();
+        const an = parseFloat(av.replace(/[%,$]/g, ""));
+        const bn = parseFloat(bv.replace(/[%,$]/g, ""));
+        if (!Number.isNaN(an) && !Number.isNaN(bn)) return asc ? an - bn : bn - an;
+        return asc ? av.localeCompare(bv) : bv.localeCompare(av);
+      });
+      rows.forEach(r => tbody.appendChild(r));
+    }
+
+      table.appendChild(tbody);
+      target.innerHTML = "";
+      target.appendChild(table);
+    }
+
+    function rowsForTab(tab) {
+      if (!DATA) return [];
+      if (tab === "amateur") return DATA.amateur_clients || [];
+      return DATA.pro_clients || [];
+    }
+
+    function roleFilter(rows) {
+      if (activeRole === "pitchers") return rows.filter(r => r.is_pitcher);
+      if (activeRole === "hitters") return rows.filter(r => !r.is_pitcher);
+      return rows;
+    }
+
+    function render() {
+      if (!DATA) return;
+      document.getElementById("meta").textContent = `Generated: ${DATA.generated_at}`;
+      const d = (DATA.last_night_date || "").split("-");
+      const md = d.length === 3 ? `${Number(d[1])}/${Number(d[2])}` : DATA.last_night_date;
+      document.getElementById("lastNightLabel").textContent = `LAST NIGHT DATE: ${md}`;
+      ["lastNight","pro","amateur"].forEach(t => {
+        const panel = document.getElementById(`panel-${t}`);
+        const baseRows = t === "lastNight" ? (DATA.pro_clients || []) : rowsForTab(t);
+        const rows = roleFilter(baseRows);
+        const panelKey = `${t}-${activeSubtab}-${activeRole}`;
+        if (activeSubtab === "schedule") renderScheduleTable(rows, panel, panelKey);
+        else renderStatsTable(rows, activeSubtab, panel, panelKey);
+      });
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      document.getElementById(`panel-${activeTab}`).classList.add("active");
+    }
+
+    function wireTabs() {
+      document.querySelectorAll("#mainTabs button").forEach(b => {
+        b.onclick = () => {
+          activeTab = b.dataset.tab;
+          document.querySelectorAll("#mainTabs button").forEach(x => x.classList.remove("active"));
+          b.classList.add("active");
+          render();
+        };
+      });
+      document.querySelectorAll("#subTabs button").forEach(b => {
+        b.onclick = () => {
+          activeSubtab = b.dataset.subtab;
+          document.querySelectorAll("#subTabs button").forEach(x => x.classList.remove("active"));
+          b.classList.add("active");
+          render();
+        };
+      });
+      document.querySelectorAll("#roleTabs button").forEach(b => {
+        b.onclick = () => {
+          activeRole = b.dataset.role;
+          document.querySelectorAll("#roleTabs button").forEach(x => x.classList.remove("active"));
+          b.classList.add("active");
+          render();
+        };
+      });
+    }
+
+    async function load() {
+      try {
+        const r = await fetch("/api/data");
+        if (!r.ok) throw new Error(`api ${r.status}`);
+        DATA = await r.json();
+      } catch (_) {
+        const r2 = await fetch("./apex_dashboard_data.json");
+        if (!r2.ok) throw new Error(`json ${r2.status}`);
+        DATA = await r2.json();
+      }
+      wireTabs();
+      render();
+    }
+
+    load().catch(err => {
+      document.body.appendChild(el("pre", String(err)));
+    });
+  </script>
+</body>
+</html>
