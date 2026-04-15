@@ -12,6 +12,7 @@ import pandas as pd
 import requests
 
 SOURCE_XLSX = Path("/Users/colbymorris/Downloads/Apex Client List July 2024.xlsx")
+AMATEUR_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/AmateurList.xlsx")
 OUT_JSON = Path("/Users/colbymorris/apexstats/apex_dashboard_data.json")
 SEASON = date.today().year
 API = "https://statsapi.mlb.com/api/v1"
@@ -34,6 +35,7 @@ class Client:
     agent: str
     agent_last: str
     is_amateur: bool
+    school_or_team: str = ""
 
 
 def _req_json(url: str) -> dict[str, Any]:
@@ -70,6 +72,12 @@ def _agent_last(agent: str) -> str:
         return s.split(",", 1)[0].strip()
     parts = s.split()
     return parts[-1] if parts else ""
+
+
+def _cell_str(v: Any) -> str:
+    if pd.isna(v):
+        return ""
+    return str(v).strip()
 
 
 def get_team_catalog() -> list[dict[str, Any]]:
@@ -147,12 +155,12 @@ def load_clients(path: Path) -> list[Client]:
     df = pd.read_excel(path, sheet_name="Sorted By League")
     out: list[Client] = []
     for _, r in df.iterrows():
-        raw_name = str(r.get("Name", "")).strip()
+        raw_name = _cell_str(r.get("Name", ""))
         if not raw_name or raw_name.lower() == "nan":
             continue
-        level = str(r.get("Level", "")).strip()
-        league = str(r.get("League", "")).strip()
-        position = str(r.get("Position", "")).strip().upper()
+        level = _cell_str(r.get("Level", ""))
+        league = _cell_str(r.get("League", ""))
+        position = _cell_str(r.get("Position", "")).upper()
         raw_agent = r.get("Agent", "")
         agent = "" if pd.isna(raw_agent) else str(raw_agent).strip()
         level_upper = level.upper()
@@ -171,6 +179,63 @@ def load_clients(path: Path) -> list[Client]:
                 agent=agent,
                 agent_last=_agent_last(agent),
                 is_amateur=is_amateur,
+            )
+        )
+    return out
+
+
+def load_amateur_clients(path: Path) -> list[Client]:
+    """
+    Load amateur-only client list.
+    Expected columns include Name, Position, School and optionally agent initials.
+    """
+    if not path.is_file():
+        return []
+    df = pd.read_excel(path)
+
+    def pick_col(cands: list[str]) -> str | None:
+        lower = {str(c).strip().lower(): c for c in df.columns}
+        for c in cands:
+            if c.lower() in lower:
+                return str(lower[c.lower()])
+        return None
+
+    name_col = pick_col(["Name", "Player", "Player Name"])
+    pos_col = pick_col(["Position", "Pos"])
+    school_col = pick_col(["School", "College", "Team"])
+    agent_col = pick_col(
+        [
+            "Agent Initials",
+            "Agent",
+            "Agent Init",
+            "Agt",
+            "Agent Name",
+        ]
+    )
+
+    if not name_col:
+        return []
+
+    out: list[Client] = []
+    for _, r in df.iterrows():
+        raw_name = _cell_str(r.get(name_col, ""))
+        if not raw_name:
+            continue
+        position = _cell_str(r.get(pos_col, "")).upper() if pos_col else ""
+        school = _cell_str(r.get(school_col, "")) if school_col else ""
+        agent_val = _cell_str(r.get(agent_col, "")) if agent_col else ""
+        out.append(
+            Client(
+                name=_parse_name(raw_name),
+                position=position,
+                level="NCAA",
+                league="Amateur",
+                minor_affiliate=school,
+                major_affiliate="",
+                agent=agent_val,
+                agent_last=_agent_last(agent_val) if agent_val else "",
+                is_amateur=True,
+                school_or_team=school,
             )
         )
     return out
@@ -294,11 +359,16 @@ def fetch_current_team_from_person(player_id: int) -> dict[str, Any]:
 
 
 def stat_group(position: str) -> str:
-    return "pitching" if position.upper() in PITCHER_POS else "hitting"
+    pos = (position or "").upper()
+    tokens = [t for t in pos.replace("/", " ").replace(",", " ").split() if t]
+    is_p = any(t in PITCHER_POS for t in tokens) or pos in PITCHER_POS
+    return "pitching" if is_p else "hitting"
 
 
 def is_pitcher(position: str) -> bool:
-    return position.upper() in PITCHER_POS
+    pos = (position or "").upper()
+    tokens = [t for t in pos.replace("/", " ").replace(",", " ").split() if t]
+    return any(t in PITCHER_POS for t in tokens) or pos in PITCHER_POS
 
 
 def sport_id_for_level(level: str) -> int:
@@ -522,6 +592,14 @@ def _slug(s: str) -> str:
     )
 
 
+def school_schedule_url(school_or_team: str) -> str:
+    q = (school_or_team or "").strip()
+    if not q:
+        return ""
+    params = urllib.parse.urlencode({"q": f"{q} baseball schedule"})
+    return f"https://www.google.com/search?{params}"
+
+
 def get_team_context(team_id: int | None) -> dict[str, Any]:
     empty: dict[str, Any] = {
         "team_name": "",
@@ -672,35 +750,89 @@ def build_client_payload(c: Client) -> dict[str, Any]:
     return base
 
 
+def build_amateur_payload(c: Client) -> dict[str, Any]:
+    """
+    Build amateur client payload.
+    Tries StatsAPI resolution first; otherwise keeps school/team metadata and schedule link.
+    """
+    base = {
+        "name": c.name,
+        "position": c.position,
+        "level": c.level or "NCAA",
+        "league": c.league or "Amateur",
+        "minor_affiliate": c.minor_affiliate,
+        "major_affiliate": c.major_affiliate,
+        "agent": c.agent,
+        "agent_last": c.agent_last,
+        "is_pitcher": is_pitcher(c.position),
+        "organization": c.school_or_team,
+        "school_or_team": c.school_or_team,
+        "current_team": c.school_or_team,
+        "current_team_location": "",
+        "team_level": c.level or "NCAA",
+        "team_schedule_url": school_schedule_url(c.school_or_team),
+        "last_night_date": (date.today() - timedelta(days=1)).isoformat(),
+        "last_night": {},
+        "month_to_date": {},
+        "season": {},
+        "upcoming_series": [],
+    }
+    pid = resolve_player_id(c) if c.name else None
+    group = stat_group(c.position)
+    yday = date.today() - timedelta(days=1)
+    mstart = date.today().replace(day=1)
+
+    if pid:
+        roster_team = fetch_current_team_from_person(pid)
+        latest_team = fetch_latest_team_from_gamelog_all_sports(pid, group)
+        tid = _safe_int(roster_team.get("team_id")) or _safe_int(latest_team.get("team_id"))
+        if tid:
+            team_ctx = get_team_context(tid)
+            stat_sport_id = team_ctx.get("sport_id") or 11
+            base["organization"] = team_ctx.get("organization") or base["organization"]
+            base["current_team"] = team_ctx.get("team_name") or base["current_team"]
+            base["current_team_location"] = team_ctx.get("team_location", "")
+            base["team_level"] = team_ctx.get("team_level") or base["team_level"]
+            base["team_schedule_url"] = team_ctx.get("schedule_url") or base["team_schedule_url"]
+            try:
+                base["last_night"] = {
+                    k: to_number(v) for k, v in fetch_last_night_from_gamelog_all_sports(pid, group, yday).items()
+                }
+            except Exception:
+                base["last_night"] = {}
+            try:
+                base["month_to_date"] = {
+                    k: to_number(v)
+                    for k, v in fetch_player_stats(pid, group, "byDateRange", stat_sport_id, mstart, date.today()).items()
+                }
+            except Exception:
+                base["month_to_date"] = {}
+            try:
+                base["season"] = {
+                    k: to_number(v) for k, v in fetch_player_stats(pid, group, "season", stat_sport_id).items()
+                }
+            except Exception:
+                base["season"] = {}
+            try:
+                base["upcoming_series"] = fetch_team_schedule(tid, weeks=4)
+            except Exception:
+                base["upcoming_series"] = []
+    return base
+
+
 def build_dashboard_data() -> dict[str, Any]:
     clients = load_clients(SOURCE_XLSX)
     pro = [c for c in clients if not c.is_amateur]
     amateur = [c for c in clients if c.is_amateur]
+    # Primary amateur source now comes from the dedicated Desktop list.
+    # Fallback to legacy amateur rows from the main client workbook if needed.
+    dedicated_amateur = load_amateur_clients(AMATEUR_SOURCE_XLSX)
+    if dedicated_amateur:
+        amateur = dedicated_amateur
 
     # Same roster + stats resolution for every pro row (no per-player exceptions).
     pro_rows = [build_client_payload(c) for c in pro]
-    # Amateur section keeps base roster metadata for now; NCAA scraping can be added
-    # with a provider adapter without changing frontend contract.
-    amateur_rows = [
-        {
-            "name": c.name,
-            "position": c.position,
-            "level": c.level,
-            "league": c.league,
-            "agent": c.agent,
-            "agent_last": c.agent_last,
-            "is_pitcher": is_pitcher(c.position),
-            "organization": "",
-            "school_or_team": c.minor_affiliate or c.major_affiliate,
-            "team_schedule_url": "",
-            "last_night_date": (date.today() - timedelta(days=1)).isoformat(),
-            "last_night": {},
-            "month_to_date": {},
-            "season": {},
-            "upcoming_series": [],
-        }
-        for c in amateur
-    ]
+    amateur_rows = [build_amateur_payload(c) for c in amateur]
 
     data = {
         "generated_at": datetime.now(UTC).isoformat(),
