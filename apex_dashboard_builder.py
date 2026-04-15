@@ -171,11 +171,121 @@ def load_clients(path: Path) -> list[Client]:
     return out
 
 
-def lookup_player(name: str) -> dict[str, Any] | None:
+def _normalize_org_token(s: str) -> str:
+    """Loose match for 'Major League Affiliate' vs API parentOrgName / team name."""
+    x = (s or "").lower()
+    for w in ("mlb", "milb", "baseball", "club", "the "):
+        x = x.replace(w, " ")
+    parts = [p for p in "".join(ch if ch.isalnum() or ch.isspace() else " " for ch in x).split() if len(p) > 2]
+    return " ".join(parts)
+
+
+def _org_match_score(major_affiliate: str, team: dict[str, Any]) -> int:
+    maj = _normalize_org_token(major_affiliate)
+    if not maj:
+        return 0
+    parent = _normalize_org_token(str(team.get("parentOrgName", "")))
+    name = _normalize_org_token(str(team.get("name", "")))
+    score = 0
+    for token in maj.split():
+        if len(token) < 3:
+            continue
+        if token in parent:
+            score += 4
+        if token in name:
+            score += 2
+    return score
+
+
+def search_people(name: str) -> list[dict[str, Any]]:
     url = f"{API}/people/search?" + urllib.parse.urlencode({"names": name})
     js = _req_json(url)
-    people = js.get("people") or []
-    return people[0] if people else None
+    return js.get("people") or []
+
+
+def _name_search_variants(name: str) -> list[str]:
+    """Try alternate strings so roster lookup works for every row (e.g. Jr. on MLB.com but not in sheet)."""
+    n = (name or "").strip()
+    if not n:
+        return []
+    variants = [n]
+    for suffix in (" Jr.", " Jr", " Sr.", " Sr", " III", " II", " IV"):
+        if n.endswith(suffix):
+            variants.append(n[: -len(suffix)].strip())
+    # If no suffix, also try common generational suffix (API often uses Jr.)
+    if " jr" not in n.lower() and " sr" not in n.lower() and " iii" not in n.lower():
+        variants.append(f"{n} Jr.")
+    seen: set[str] = set()
+    out: list[str] = []
+    for v in variants:
+        key = v.lower()
+        if v and key not in seen:
+            seen.add(key)
+            out.append(v)
+    return out
+
+
+def resolve_player_id(c: Client) -> int | None:
+    """Resolve Stats API person id; disambiguate when search returns multiple players."""
+    people: list[dict[str, Any]] = []
+    for variant in _name_search_variants(c.name):
+        people = search_people(variant)
+        if people:
+            break
+    if not people:
+        return None
+    if len(people) == 1:
+        return _safe_int(people[0].get("id"))
+
+    best_id: int | None = None
+    best_score = -1
+    client_pos = (c.position or "").upper().strip()
+    for p in people:
+        pid = _safe_int(p.get("id"))
+        if not pid:
+            continue
+        try:
+            js = _req_json(f"{API}/people/{pid}?hydrate=currentTeam")
+        except Exception:
+            continue
+        p2 = (js.get("people") or [{}])[0]
+        ct = p2.get("currentTeam") or {}
+        tid = _safe_int(ct.get("id"))
+        score = _org_match_score(c.major_affiliate, {"name": ct.get("name", ""), "parentOrgName": ""})
+        if tid:
+            try:
+                tjs = _req_json(f"{API}/teams/{tid}")
+                team = (tjs.get("teams") or [{}])[0]
+                score = max(score, _org_match_score(c.major_affiliate, team))
+            except Exception:
+                pass
+        api_pos = str((p.get("primaryPosition") or {}).get("abbreviation", "")).upper()
+        if client_pos and api_pos:
+            if client_pos in PITCHER_POS and api_pos == "P":
+                score += 3
+            elif client_pos == api_pos:
+                score += 2
+            elif client_pos in ("OF", "IF", "DH") and api_pos in ("OF", "IF", "DH"):
+                score += 1
+        if score > best_score:
+            best_score = score
+            best_id = pid
+    return best_id if best_id is not None else _safe_int(people[0].get("id"))
+
+
+def fetch_current_team_from_person(player_id: int) -> dict[str, Any]:
+    """Official roster assignment (preferred over last game played for level/stats context)."""
+    try:
+        js = _req_json(f"{API}/people/{player_id}?hydrate=currentTeam")
+    except Exception:
+        return {}
+    p = (js.get("people") or [{}])[0]
+    ct = p.get("currentTeam") or {}
+    tid = _safe_int(ct.get("id"))
+    return {
+        "team_id": tid,
+        "team_name": str(ct.get("name", "") or ""),
+    }
 
 
 def stat_group(position: str) -> str:
@@ -414,6 +524,7 @@ def get_team_context(team_id: int | None) -> dict[str, Any]:
         "schedule_url": "",
         "team_level": "",
         "sport_id": None,
+        "organization": "",
     }
     if not team_id:
         return empty
@@ -449,20 +560,24 @@ def get_team_context(team_id: int | None) -> dict[str, Any]:
         # MLB schedule page.
         team_slug = _slug(team_name.replace(location, "").strip() or team_name)
         schedule_url = f"https://www.mlb.com/{team_slug}/schedule"
+        organization = team_name
     else:
         # MiLB schedule page.
         nickname = t.get("teamName") or team_name
         schedule_url = f"https://www.milb.com/{_slug(nickname)}/schedule"
+        organization = str(t.get("parentOrgName", "") or "").strip() or team_name
     return {
         "team_name": team_name,
         "team_location": location or "",
         "schedule_url": schedule_url,
         "team_level": team_level,
         "sport_id": sport_id,
+        "organization": organization,
     }
 
 
 def build_client_payload(c: Client) -> dict[str, Any]:
+    """One code path for every pro client: Stats API roster (currentTeam) drives team, level, org, and stat sportId."""
     base = {
         "name": c.name,
         "position": c.position,
@@ -473,6 +588,7 @@ def build_client_payload(c: Client) -> dict[str, Any]:
         "agent": c.agent,
         "agent_last": c.agent_last,
         "is_pitcher": is_pitcher(c.position),
+        "organization": "",
         "current_team": "",
         "current_team_location": "",
         "team_level": "",
@@ -483,16 +599,16 @@ def build_client_payload(c: Client) -> dict[str, Any]:
         "season": {},
         "upcoming_series": [],
     }
-    person = lookup_player(c.name)
-    pid = _safe_int((person or {}).get("id"))
-    if not pid:
-        pid = None
+    pid = resolve_player_id(c) if c.name else None
 
     group = stat_group(c.position)
     fallback_sport_id = sport_id_for_level(c.level)
+    roster_team = fetch_current_team_from_person(pid) if pid else {}
     latest_team = fetch_latest_team_from_gamelog_all_sports(pid, group) if pid else {}
-    tid = _safe_int(latest_team.get("team_id"))
-    team_name_guess = latest_team.get("team_name") or pick_current_team_name(c)
+    tid = _safe_int(roster_team.get("team_id"))
+    team_name_guess = roster_team.get("team_name") or latest_team.get("team_name") or pick_current_team_name(c)
+    if not tid:
+        tid = _safe_int(latest_team.get("team_id"))
     if not tid:
         team_obj = lookup_team_by_name(team_name_guess, c.level)
         tid = _safe_int((team_obj or {}).get("id"))
@@ -500,6 +616,7 @@ def build_client_payload(c: Client) -> dict[str, Any]:
     stat_sport_id = team_ctx.get("sport_id")
     if stat_sport_id is None:
         stat_sport_id = fallback_sport_id
+    base["organization"] = team_ctx.get("organization") or (c.major_affiliate if (c.major_affiliate or "").lower() != "nan" else "")
     base["current_team"] = team_ctx["team_name"] or team_name_guess
     base["current_team_location"] = team_ctx["team_location"]
     base["team_level"] = team_ctx["team_level"] or c.level
@@ -555,6 +672,7 @@ def build_dashboard_data() -> dict[str, Any]:
     pro = [c for c in clients if not c.is_amateur]
     amateur = [c for c in clients if c.is_amateur]
 
+    # Same roster + stats resolution for every pro row (no per-player exceptions).
     pro_rows = [build_client_payload(c) for c in pro]
     # Amateur section keeps base roster metadata for now; NCAA scraping can be added
     # with a provider adapter without changing frontend contract.
@@ -567,6 +685,7 @@ def build_dashboard_data() -> dict[str, Any]:
             "agent": c.agent,
             "agent_last": c.agent_last,
             "is_pitcher": is_pitcher(c.position),
+            "organization": "",
             "school_or_team": c.minor_affiliate or c.major_affiliate,
             "team_schedule_url": "",
             "last_night_date": (date.today() - timedelta(days=1)).isoformat(),
