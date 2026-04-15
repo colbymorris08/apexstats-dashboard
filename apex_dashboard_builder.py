@@ -7,6 +7,7 @@ from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 import urllib.parse
+import re
 
 import pandas as pd
 import requests
@@ -16,6 +17,12 @@ AMATEUR_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/AmateurList.xlsx")
 OUT_JSON = Path("/Users/colbymorris/apexstats/apex_dashboard_data.json")
 SEASON = date.today().year
 API = "https://statsapi.mlb.com/api/v1"
+NCAA_GQL_BASE = "https://sdataprod.ncaa.com"
+NCAA_SPORT_CODE = "MBA"  # NCAA baseball sport code used by ncaa.com
+NCAA_DIVISION = 1
+NCAA_SEASON_YEAR = 2025
+NCAA_CONTESTS_HASH = "6b26e5cda954c1302873c52835bfd223e169e2068b12511e92b3ef29fac779c2"
+NCAA_CONTESTS_BY_DATE: dict[str, list[dict[str, Any]]] = {}
 
 PITCHER_POS = {"RHP", "LHP", "SP", "RP", "P"}
 AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
@@ -40,6 +47,13 @@ class Client:
 
 def _req_json(url: str) -> dict[str, Any]:
     r = requests.get(url, timeout=25)
+    r.raise_for_status()
+    return r.json()
+
+
+def _req_json_with_headers(url: str) -> dict[str, Any]:
+    headers = {"User-Agent": "Mozilla/5.0"}
+    r = requests.get(url, timeout=25, headers=headers)
     r.raise_for_status()
     return r.json()
 
@@ -78,6 +92,189 @@ def _cell_str(v: Any) -> str:
     if pd.isna(v):
         return ""
     return str(v).strip()
+
+
+def _norm_school(s: str) -> str:
+    x = (s or "").lower()
+    x = re.sub(r"[^a-z0-9 ]+", " ", x)
+    stop = {"university", "college", "of", "the", "at", "state"}
+    parts = [p for p in x.split() if p and p not in stop]
+    return " ".join(parts)
+
+
+def _ncaa_graphql_url(meta: str, sha: str, variables: dict[str, Any]) -> str:
+    ext = json.dumps({"persistedQuery": {"version": 1, "sha256Hash": sha}}, separators=(",", ":"))
+    var = json.dumps(variables, separators=(",", ":"))
+    return (
+        f"{NCAA_GQL_BASE}?meta={meta}"
+        f"&extensions={urllib.parse.quote(ext, safe='')}"
+        f"&variables={urllib.parse.quote(var, safe='')}"
+    )
+
+
+def fetch_ncaa_contests_for_date(contest_date: date) -> list[dict[str, Any]]:
+    key = contest_date.isoformat()
+    if key in NCAA_CONTESTS_BY_DATE:
+        return NCAA_CONTESTS_BY_DATE[key]
+    vars_ = {
+        "sportCode": NCAA_SPORT_CODE,
+        "division": NCAA_DIVISION,
+        "seasonYear": NCAA_SEASON_YEAR,
+        "contestDate": contest_date.strftime("%m/%d/%Y"),
+        "conferenceFilter": None,
+        "showAllContests": True,
+        "week": None,
+    }
+    try:
+        url = _ncaa_graphql_url("GetContests_web", NCAA_CONTESTS_HASH, vars_)
+        js = _req_json_with_headers(url)
+        contests = ((js.get("data") or {}).get("contests") or [])
+    except Exception:
+        contests = []
+    NCAA_CONTESTS_BY_DATE[key] = contests
+    return contests
+
+
+def _contest_team_entries(contest: dict[str, Any]) -> list[dict[str, Any]]:
+    teams = contest.get("teams") or []
+    out: list[dict[str, Any]] = []
+    for t in teams:
+        out.append(
+            {
+                "name": str(t.get("nameShort") or ""),
+                "slug": str(t.get("seoname") or ""),
+                "is_home": bool(t.get("isHome")),
+                "score": _safe_int(t.get("score")),
+            }
+        )
+    return out
+
+
+def _contest_for_school(contest: dict[str, Any], school: str) -> tuple[dict[str, Any], dict[str, Any]] | None:
+    school_n = _norm_school(school)
+    teams = _contest_team_entries(contest)
+    if len(teams) != 2:
+        return None
+    for i, t in enumerate(teams):
+        tn = _norm_school(t["name"])
+        slug_n = _norm_school(t["slug"].replace("-", " "))
+        if (
+            school_n == tn
+            or school_n in tn
+            or tn in school_n
+            or school_n == slug_n
+            or school_n in slug_n
+            or slug_n in school_n
+        ):
+            opp = teams[1 - i]
+            return t, opp
+    return None
+
+
+def fetch_ncaa_school_payload(school: str, weeks: int = 4) -> dict[str, Any]:
+    today = date.today()
+    yday = today - timedelta(days=1)
+    # Keep NCAA pulls fast: enough history for recent form + month/season summaries.
+    # Full-season backfills are expensive and can stall dashboard refresh.
+    start = max(date(today.year, 2, 1), today - timedelta(days=45))
+    end = today + timedelta(days=7 * weeks)
+    contests_all: list[dict[str, Any]] = []
+    d = start
+    while d <= end:
+        contests_all.extend(fetch_ncaa_contests_for_date(d))
+        d += timedelta(days=1)
+
+    school_games: list[dict[str, Any]] = []
+    for c in contests_all:
+        match = _contest_for_school(c, school)
+        if not match:
+            continue
+        team, opp = match
+        sd = c.get("startDate") or ""
+        # NCAA startDate is MM/DD/YYYY
+        try:
+            gd = datetime.strptime(sd, "%m/%d/%Y").date()
+        except Exception:
+            continue
+        school_games.append(
+            {
+                "date": gd,
+                "team": team,
+                "opp": opp,
+                "state": str(c.get("gameState") or ""),
+                "status": str(c.get("statusCodeDisplay") or ""),
+            }
+        )
+    school_games.sort(key=lambda g: g["date"])
+
+    def mk_series(g: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "opponent": g["opp"]["name"],
+            "home_away": "Home" if g["team"]["is_home"] else "Away",
+            "venue": "",
+            "location": "",
+            "start_date": g["date"].isoformat(),
+            "end_date": g["date"].isoformat(),
+            "nearest_airport_code": "",
+        }
+
+    upcoming = [mk_series(g) for g in school_games if g["date"] >= today][:4]
+
+    def is_final(g: dict[str, Any]) -> bool:
+        return g.get("status") == "final" or g.get("state") in {"C", "F", "3"}
+
+    def score_pair(g: dict[str, Any]) -> tuple[int, int] | None:
+        a = g["team"]["score"]
+        b = g["opp"]["score"]
+        if a is None or b is None:
+            return None
+        return int(a), int(b)
+
+    last_night = {}
+    for g in school_games:
+        if g["date"] == yday and is_final(g):
+            sc = score_pair(g)
+            if sc:
+                rs, ra = sc
+                last_night = {
+                    "result": "W" if rs > ra else "L" if rs < ra else "T",
+                    "runs_for": rs,
+                    "runs_against": ra,
+                    "opponent": g["opp"]["name"],
+                }
+            break
+
+    month_games = [g for g in school_games if g["date"].year == today.year and g["date"].month == today.month and g["date"] <= today]
+    season_games = [g for g in school_games if g["date"] <= today]
+
+    def agg(games: list[dict[str, Any]]) -> dict[str, Any]:
+        w = l = t = rf = ra = 0
+        for g in games:
+            if not is_final(g):
+                continue
+            sc = score_pair(g)
+            if not sc:
+                continue
+            a, b = sc
+            rf += a
+            ra += b
+            if a > b:
+                w += 1
+            elif a < b:
+                l += 1
+            else:
+                t += 1
+        out: dict[str, Any] = {"wins": w, "losses": l, "runs_for": rf, "runs_against": ra}
+        if t:
+            out["ties"] = t
+        return out
+
+    return {
+        "upcoming_series": upcoming,
+        "last_night": last_night,
+        "month_to_date": agg(month_games),
+        "season": agg(season_games),
+    }
 
 
 def get_team_catalog() -> list[dict[str, Any]]:
@@ -596,8 +793,8 @@ def school_schedule_url(school_or_team: str) -> str:
     q = (school_or_team or "").strip()
     if not q:
         return ""
-    params = urllib.parse.urlencode({"q": f"{q} baseball schedule"})
-    return f"https://www.google.com/search?{params}"
+    params = urllib.parse.urlencode({"s": f"{q} baseball"})
+    return f"https://d1baseball.com/?{params}"
 
 
 def get_team_context(team_id: int | None) -> dict[str, Any]:
@@ -817,6 +1014,19 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
                 base["upcoming_series"] = fetch_team_schedule(tid, weeks=4)
             except Exception:
                 base["upcoming_series"] = []
+    # If pro/miLB APIs did not resolve amateur stats/schedules, use NCAA feed.
+    if not base["upcoming_series"]:
+        try:
+            ncaa_payload = fetch_ncaa_school_payload(c.school_or_team or c.minor_affiliate, weeks=4)
+            if not base["last_night"]:
+                base["last_night"] = ncaa_payload.get("last_night") or {}
+            if not base["month_to_date"]:
+                base["month_to_date"] = ncaa_payload.get("month_to_date") or {}
+            if not base["season"]:
+                base["season"] = ncaa_payload.get("season") or {}
+            base["upcoming_series"] = ncaa_payload.get("upcoming_series") or []
+        except Exception:
+            pass
     return base
 
 
