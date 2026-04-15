@@ -50,11 +50,16 @@ def _safe_int(x: Any) -> int | None:
 
 
 def _parse_name(name: str) -> str:
+    # Fix known spreadsheet abbreviations / aliases.
+    # Keep this very small and explicit so we don't accidentally rename real players.
+    n0 = (name or "").strip()
+    if n0.lower() == "rj green":
+        n0 = "Rodney Green"
     # Spreadsheet mostly uses "Last, First"
-    if "," in name:
-        last, first = [p.strip() for p in name.split(",", 1)]
+    if "," in n0:
+        last, first = [p.strip() for p in n0.split(",", 1)]
         return f"{first} {last}".strip()
-    return name.strip()
+    return n0.strip()
 
 
 def _agent_last(agent: str) -> str:
