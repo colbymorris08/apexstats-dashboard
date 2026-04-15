@@ -19,6 +19,8 @@ API = "https://statsapi.mlb.com/api/v1"
 PITCHER_POS = {"RHP", "LHP", "SP", "RP", "P"}
 AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
 TEAM_CATALOG: list[dict[str, Any]] | None = None
+# MLB + affiliated minors; used so call-ups and reassignments resolve from real game logs.
+SPORT_IDS_PRO: tuple[int, ...] = (1, 11, 12, 13, 14, 15, 16, 17)
 
 
 @dataclass
@@ -70,7 +72,7 @@ def get_team_catalog() -> list[dict[str, Any]]:
     if TEAM_CATALOG is not None:
         return TEAM_CATALOG
     teams: list[dict[str, Any]] = []
-    for sport_id in [1, 11, 12, 13, 14, 15, 16, 17]:
+    for sport_id in SPORT_IDS_PRO:
         url = f"{API}/teams?" + urllib.parse.urlencode({"sportId": sport_id, "season": SEASON})
         try:
             js = _req_json(url)
@@ -96,11 +98,13 @@ def fallback_schedule_url(team_name: str, level: str) -> str:
     return f"https://www.milb.com/{_slug(team_name)}/schedule"
 
 
-def lookup_team_by_name(team_name: str) -> dict[str, Any] | None:
+def lookup_team_by_name(team_name: str, level_hint: str = "") -> dict[str, Any] | None:
     q = (team_name or "").strip().lower()
     if not q:
         return None
     teams = get_team_catalog()
+    hint = (level_hint or "").upper().strip()
+    want_mlb = hint == "MLB"
     exact = []
     contains = []
     for t in teams:
@@ -108,14 +112,29 @@ def lookup_team_by_name(team_name: str) -> dict[str, Any] | None:
         tname = str(t.get("teamName", "")).lower()
         lname = str(t.get("locationName", "")).lower()
         full = f"{lname} {tname}".strip()
+        sport_id = _safe_int((t.get("sport") or {}).get("id")) or 0
         if q == name or q == full:
-            exact.append(t)
+            exact.append((t, sport_id))
         elif q in name or q in full:
-            contains.append(t)
-    if exact:
-        return exact[0]
-    if contains:
-        return contains[0]
+            contains.append((t, sport_id))
+
+    def pick(cands: list[tuple[dict[str, Any], int]]) -> dict[str, Any] | None:
+        if not cands:
+            return None
+        # Respect hint first: MLB -> sport 1, otherwise prefer non-MLB clubs.
+        if want_mlb:
+            mlb = [t for t, sid in cands if sid == 1]
+            if mlb:
+                return mlb[0]
+        else:
+            milb = [t for t, sid in cands if sid != 1]
+            if milb:
+                return milb[0]
+        return cands[0][0]
+
+    picked = pick(exact) or pick(contains)
+    if picked:
+        return picked
     return None
 
 
@@ -191,47 +210,59 @@ def fetch_player_stats(
     return splits[0].get("stat", {}) if splits else {}
 
 
-def fetch_latest_team_from_gamelog(player_id: int, group: str, sport_id: int) -> dict[str, Any]:
+def _gamelog_splits_for_sport(player_id: int, group: str, sport_id: int) -> list[dict[str, Any]]:
     params: dict[str, Any] = {"stats": "gameLog", "group": group, "season": SEASON, "sportId": sport_id}
     if sport_id == 1:
         params["gameType"] = "R"
     url = f"{API}/people/{player_id}/stats?" + urllib.parse.urlencode(params)
     js = _req_json(url)
-    splits = (js.get("stats") or [{}])[0].get("splits") or []
-    if not splits:
-        return {}
-    latest = sorted(splits, key=lambda s: s.get("date", ""), reverse=True)[0]
-    team = latest.get("team") or {}
-    return {
-        "team_id": _safe_int(team.get("id")),
-        "team_name": team.get("name", ""),
-        "last_game_date": latest.get("date", ""),
-    }
+    return (js.get("stats") or [{}])[0].get("splits") or []
 
 
-def fetch_last_night_from_gamelog(player_id: int, group: str, sport_id: int, target_day: date) -> dict[str, Any]:
-    params: dict[str, Any] = {"stats": "gameLog", "group": group, "season": SEASON, "sportId": sport_id}
-    if sport_id == 1:
-        params["gameType"] = "R"
-    url = f"{API}/people/{player_id}/stats?" + urllib.parse.urlencode(params)
-    js = _req_json(url)
-    splits = (js.get("stats") or [{}])[0].get("splits") or []
-    day = target_day.isoformat()
-    # If multiple games in one day, sum numeric fields.
-    same_day = [s for s in splits if s.get("date") == day]
-    if not same_day:
-        return {}
-    merged: dict[str, Any] = {}
-    for s in same_day:
-        st = s.get("stat") or {}
-        for k, v in st.items():
-            try:
-                fv = float(v)
-            except Exception:
-                if k not in merged:
-                    merged[k] = v
+def fetch_latest_team_from_gamelog_all_sports(player_id: int, group: str) -> dict[str, Any]:
+    """Most recent regular-season appearance across MLB and MiLB sport IDs."""
+    best_date = ""
+    best: dict[str, Any] = {}
+    for sport_id in SPORT_IDS_PRO:
+        try:
+            splits = _gamelog_splits_for_sport(player_id, group, sport_id)
+        except Exception:
+            continue
+        for sp in splits:
+            d = sp.get("date") or ""
+            if not d:
                 continue
-            merged[k] = float(merged.get(k, 0)) + fv
+            if d > best_date:
+                best_date = d
+                team = sp.get("team") or {}
+                best = {
+                    "team_id": _safe_int(team.get("id")),
+                    "team_name": team.get("name", ""),
+                    "last_game_date": d,
+                }
+    return best
+
+
+def fetch_last_night_from_gamelog_all_sports(player_id: int, group: str, target_day: date) -> dict[str, Any]:
+    """Yesterday's line if they played at any level (handles late-season MLB call-ups)."""
+    day = target_day.isoformat()
+    merged: dict[str, Any] = {}
+    for sport_id in SPORT_IDS_PRO:
+        try:
+            splits = _gamelog_splits_for_sport(player_id, group, sport_id)
+        except Exception:
+            continue
+        same_day = [s for s in splits if s.get("date") == day]
+        for s in same_day:
+            st = s.get("stat") or {}
+            for k, v in st.items():
+                try:
+                    fv = float(v)
+                except Exception:
+                    if k not in merged:
+                        merged[k] = v
+                    continue
+                merged[k] = float(merged.get(k, 0)) + fv
     return merged
 
 
@@ -240,7 +271,7 @@ def fetch_team_schedule(team_id: int, weeks: int = 4) -> list[dict[str, Any]]:
     end = start + timedelta(days=7 * weeks)
     games: list[dict[str, Any]] = []
     # Try MLB + MiLB sport IDs so each client pulls from their team context.
-    for sport_id in [1, 11, 12, 13, 14, 15, 16, 17]:
+    for sport_id in SPORT_IDS_PRO:
         params = {
             "sportId": sport_id,
             "teamId": team_id,
@@ -376,16 +407,23 @@ def _slug(s: str) -> str:
     )
 
 
-def get_team_context(team_id: int | None) -> dict[str, str]:
+def get_team_context(team_id: int | None) -> dict[str, Any]:
+    empty: dict[str, Any] = {
+        "team_name": "",
+        "team_location": "",
+        "schedule_url": "",
+        "team_level": "",
+        "sport_id": None,
+    }
     if not team_id:
-        return {"team_name": "", "team_location": "", "schedule_url": "", "team_level": ""}
+        return empty
     try:
         js = _req_json(f"{API}/teams/{team_id}")
     except Exception:
-        return {"team_name": "", "team_location": "", "schedule_url": "", "team_level": ""}
+        return empty
     teams = js.get("teams") or []
     if not teams:
-        return {"team_name": "", "team_location": "", "schedule_url": "", "team_level": ""}
+        return empty
     t = teams[0]
     sport_id = _safe_int((t.get("sport") or {}).get("id")) or 1
     league_name = str((t.get("league") or {}).get("name", "")).lower()
@@ -402,7 +440,9 @@ def get_team_context(team_id: int | None) -> dict[str, str]:
     elif "rookie" in league_name or "complex" in league_name or "dominican summer" in league_name:
         team_level = "Rk"
     else:
-        team_level = ""
+        # Stats API sport ids are stable per classification when league name strings vary.
+        sport_level = {11: "AAA", 12: "AA", 13: "A+", 14: "A", 15: "Rk", 16: "Rk", 17: "Rk"}
+        team_level = sport_level.get(sport_id, "")
     location = t.get("locationName") or ((t.get("venue") or {}).get("location") or {}).get("city", "")
     team_name = t.get("name", "")
     if sport_id == 1:
@@ -413,7 +453,13 @@ def get_team_context(team_id: int | None) -> dict[str, str]:
         # MiLB schedule page.
         nickname = t.get("teamName") or team_name
         schedule_url = f"https://www.milb.com/{_slug(nickname)}/schedule"
-    return {"team_name": team_name, "team_location": location or "", "schedule_url": schedule_url, "team_level": team_level}
+    return {
+        "team_name": team_name,
+        "team_location": location or "",
+        "schedule_url": schedule_url,
+        "team_level": team_level,
+        "sport_id": sport_id,
+    }
 
 
 def build_client_payload(c: Client) -> dict[str, Any]:
@@ -443,38 +489,55 @@ def build_client_payload(c: Client) -> dict[str, Any]:
         pid = None
 
     group = stat_group(c.position)
-    sport_id = sport_id_for_level(c.level)
-    latest_team = fetch_latest_team_from_gamelog(pid, group, sport_id) if pid else {}
+    fallback_sport_id = sport_id_for_level(c.level)
+    latest_team = fetch_latest_team_from_gamelog_all_sports(pid, group) if pid else {}
     tid = _safe_int(latest_team.get("team_id"))
     team_name_guess = latest_team.get("team_name") or pick_current_team_name(c)
     if not tid:
-        team_obj = lookup_team_by_name(team_name_guess)
+        team_obj = lookup_team_by_name(team_name_guess, c.level)
         tid = _safe_int((team_obj or {}).get("id"))
     team_ctx = get_team_context(tid)
+    stat_sport_id = team_ctx.get("sport_id")
+    if stat_sport_id is None:
+        stat_sport_id = fallback_sport_id
     base["current_team"] = team_ctx["team_name"] or team_name_guess
     base["current_team_location"] = team_ctx["team_location"]
     base["team_level"] = team_ctx["team_level"] or c.level
-    base["team_schedule_url"] = team_ctx["schedule_url"] or fallback_schedule_url(base["current_team"], c.level)
+    base["team_schedule_url"] = team_ctx["schedule_url"] or fallback_schedule_url(
+        base["current_team"], base["team_level"]
+    )
     yday = date.today() - timedelta(days=1)
     mstart = date.today().replace(day=1)
     if pid:
         try:
-            base["last_night"] = {
+            ln = {
                 k: to_number(v)
-                for k, v in fetch_last_night_from_gamelog(pid, group, sport_id, yday).items()
+                for k, v in fetch_last_night_from_gamelog_all_sports(pid, group, yday).items()
             }
+            # Fallback for environments where gameLog is sparse for that day.
+            if not any(v is not None for v in ln.values()):
+                ln = {}
+                for sid in SPORT_IDS_PRO:
+                    try:
+                        day_stats = fetch_player_stats(pid, group, "byDateRange", sid, yday, yday)
+                    except Exception:
+                        continue
+                    if any(v not in (None, "", 0, 0.0) for v in day_stats.values()):
+                        ln = {k: to_number(v) for k, v in day_stats.items()}
+                        break
+            base["last_night"] = ln
         except Exception:
             base["last_night"] = {}
         try:
             base["month_to_date"] = {
                 k: to_number(v)
-                for k, v in fetch_player_stats(pid, group, "byDateRange", sport_id, mstart, date.today()).items()
+                for k, v in fetch_player_stats(pid, group, "byDateRange", stat_sport_id, mstart, date.today()).items()
             }
         except Exception:
             base["month_to_date"] = {}
         try:
             base["season"] = {
-                k: to_number(v) for k, v in fetch_player_stats(pid, group, "season", sport_id).items()
+                k: to_number(v) for k, v in fetch_player_stats(pid, group, "season", stat_sport_id).items()
             }
         except Exception:
             base["season"] = {}

@@ -11,7 +11,8 @@
     button { background:#123026; color:#e6f7ef; border:1px solid #1f5c45; border-radius:6px; padding:8px 10px; cursor:pointer; }
     button.active { background:#16a34a; border-color:#16a34a; color:#03150e; font-weight:700; }
     table { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
-    th, td { border-bottom:1px solid #1f5c45; padding:6px 8px; text-align:left; white-space:nowrap; }
+    th, td { border-bottom:1px solid #1f5c45; border-right:1px solid #1f5c45; padding:6px 8px; text-align:left; white-space:nowrap; }
+    th:first-child, td:first-child { border-left:1px solid #1f5c45; }
     th { color:#86efac; cursor:pointer; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; }
     .panel { display:none; }
     .panel.active { display:block; }
@@ -78,31 +79,193 @@
       ];
     }
 
-    function statKeys(rows, key) {
+    const IGNORE_STAT_KEYS = new Set(["summary", "note", "opponent", "position", "gamepk", "gameid"]);
+
+    const HEADER_ABBR = {
+      atBats: "AB",
+      runs: "R",
+      hits: "H",
+      rbi: "RBI",
+      baseOnBalls: "BB",
+      strikeOuts: "SO",
+      homeRuns: "HR",
+      earnedRuns: "ER",
+      inningsPitched: "IP",
+      intentionalWalks: "IBB",
+      stolenBases: "SB",
+      caughtStealing: "CS",
+      plateAppearances: "PA",
+      doubles: "2B",
+      triples: "3B",
+      gamesPlayed: "G",
+      battersFaced: "BF",
+      numberOfPitches: "NP",
+      whip: "WHIP",
+      wins: "W",
+      losses: "L",
+      saves: "SV",
+      blownSaves: "BSV",
+      holds: "HLD",
+    };
+
+    function statHeaderFromKey(key) {
+      if (HEADER_ABBR[key]) return HEADER_ABBR[key];
+      return key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase()).trim();
+    }
+
+    function collectStatKeySet(rows, field) {
       const s = new Set();
-      rows.forEach(r => Object.keys(r[key] || {}).forEach(k => s.add(k)));
-      const all = Array.from(s);
-      const pitchingFirst = ["ip", "era", "w", "l", "sv", "so", "bb", "h", "hr", "whip", "k9", "bb9", "fip", "xfip"];
-      const hittingFirst = ["avg", "h", "hr", "2b", "3b", "rbi", "r", "ab", "pa", "bb", "so", "sb", "obp", "slg", "ops"];
-      const rolePitch = activeRole === "pitchers" || rows.every(r => r.is_pitcher);
-      const pref = rolePitch ? pitchingFirst : hittingFirst;
-      const pick = [];
-      for (const p of pref) {
-        const match = all.find(k => k.toLowerCase().replace(/[^a-z0-9]/g, "") === p);
-        if (match) pick.push(match);
+      rows.forEach((r) => Object.keys(r[field] || {}).forEach((k) => s.add(k)));
+      return s;
+    }
+
+    /**
+     * Hitters: AB, R, H, RBI, BB, then AVG & OPS (last night / MTD) or Season AVG & Season OPS at end (season).
+     * Pitchers: IP, H, R, ER, BB, SO, HR, then ERA (game/MTD) or Season ERA at end (season).
+     */
+    function statColumnPlan(rows, dataKey) {
+      const keysSet = collectStatKeySet(rows, dataKey);
+      if (dataKey === "last_night") {
+        collectStatKeySet(rows, "month_to_date").forEach((k) => keysSet.add(k));
       }
-      for (const k of all) {
-        if (!pick.includes(k)) pick.push(k);
+
+      const pitchersOnly =
+        activeRole === "pitchers" || (rows.length > 0 && rows.every((r) => r.is_pitcher));
+      const hittersOnly =
+        activeRole === "hitters" || (rows.length > 0 && rows.every((r) => !r.is_pitcher));
+      const mixed = !pitchersOnly && !hittersOnly;
+
+      const isSeason = dataKey === "season";
+
+      const cols = [];
+      const used = new Set();
+
+      function pushCol(apiKey, header) {
+        if (used.has(apiKey)) return;
+        cols.push({ key: apiKey, header });
+        used.add(apiKey);
       }
-      return pick.slice(0, 18);
+
+      function addRemainingBetween(skipRates) {
+        const skip = new Set(skipRates);
+        const rest = Array.from(keysSet)
+          .filter(
+            (k) =>
+              !used.has(k) &&
+              !skip.has(k) &&
+              !IGNORE_STAT_KEYS.has(String(k).toLowerCase())
+          )
+          .sort();
+        rest.slice(0, 24).forEach((k) => pushCol(k, statHeaderFromKey(k)));
+      }
+
+      function buildHitting() {
+        [
+          ["atBats", "AB"],
+          ["runs", "R"],
+          ["hits", "H"],
+          ["rbi", "RBI"],
+          ["baseOnBalls", "BB"],
+        ].forEach(([k, h]) => pushCol(k, h));
+
+        if (!isSeason) {
+          pushCol("avg", "AVG");
+          pushCol("ops", "OPS");
+          addRemainingBetween([]);
+        } else {
+          addRemainingBetween(["avg", "ops", "obp", "slg"]);
+          pushCol("avg", "Season AVG");
+          pushCol("ops", "Season OPS");
+        }
+      }
+
+      function buildPitching() {
+        [
+          ["inningsPitched", "IP"],
+          ["hits", "H"],
+          ["runs", "R"],
+          ["earnedRuns", "ER"],
+          ["baseOnBalls", "BB"],
+          ["strikeOuts", "SO"],
+          ["homeRuns", "HR"],
+        ].forEach(([k, h]) => pushCol(k, h));
+
+        if (!isSeason) {
+          pushCol("era", "ERA");
+          addRemainingBetween([]);
+        } else {
+          addRemainingBetween(["era"]);
+          pushCol("era", "Season ERA");
+        }
+      }
+
+      function buildMixed() {
+        [
+          ["atBats", "AB"],
+          ["runs", "R"],
+          ["hits", "H"],
+          ["rbi", "RBI"],
+          ["baseOnBalls", "BB"],
+        ].forEach(([k, h]) => pushCol(k, h));
+        pushCol("inningsPitched", "IP");
+        pushCol("earnedRuns", "ER");
+        pushCol("strikeOuts", "SO");
+        pushCol("homeRuns", "HR");
+
+        if (!isSeason) {
+          pushCol("avg", "AVG");
+          pushCol("ops", "OPS");
+          pushCol("era", "ERA");
+          addRemainingBetween([]);
+        } else {
+          addRemainingBetween(["avg", "ops", "obp", "slg", "era"]);
+          pushCol("avg", "Season AVG");
+          pushCol("ops", "Season OPS");
+          pushCol("era", "Season ERA");
+        }
+      }
+
+      if (mixed) buildMixed();
+      else if (pitchersOnly) buildPitching();
+      else buildHitting();
+
+      return cols;
+    }
+
+    function sortTable(panelKey, colIdx) {
+      const tbody = document.getElementById(`tbody-${panelKey}`);
+      if (!tbody) return;
+      const key = `${panelKey}:${colIdx}`;
+      sortState[key] = !sortState[key];
+      const asc = sortState[key];
+      const trs = Array.from(tbody.querySelectorAll("tr"));
+      trs.sort((a, b) => {
+        const av = (a.children[colIdx]?.textContent || "").trim();
+        const bv = (b.children[colIdx]?.textContent || "").trim();
+        const an = parseFloat(av.replace(/[%,$]/g, ""));
+        const bn = parseFloat(bv.replace(/[%,$]/g, ""));
+        if (!Number.isNaN(an) && !Number.isNaN(bn)) return asc ? an - bn : bn - an;
+        return asc ? av.localeCompare(bv) : bv.localeCompare(av);
+      });
+      trs.forEach((r) => tbody.appendChild(r));
     }
 
     function renderStatsTable(rows, statKey, target, panelKey) {
-      const keys = statKeys(rows, statKey);
+      const plan = statColumnPlan(rows, statKey);
+      const keys = plan.map((c) => c.key);
       const table = el("table");
       const thead = el("thead");
       const hr = el("tr");
-      const headers = ["Name","Agent Last","Pos","Level","Current Team","Team Location","Schedule", ...keys];
+      const headers = [
+        "Name",
+        "Agent Last",
+        "Pos",
+        "Level",
+        "Current Team",
+        "Team Location",
+        "Schedule",
+        ...plan.map((c) => c.header),
+      ];
       headers.forEach((h, i) => {
         const th = el("th", h);
         th.onclick = () => sortTable(panelKey, i);
@@ -112,9 +275,13 @@
       table.appendChild(thead);
       const tbody = el("tbody");
       tbody.id = `tbody-${panelKey}`;
-      rows.forEach(r => {
+      rows.forEach((r) => {
         const tr = el("tr");
-        [...baseCols(r), r.team_schedule_url || "", ...keys.map(k => (r[statKey] || {})[k] ?? "")].forEach(v => tr.appendChild(tdWithValue(v)));
+        [
+          ...baseCols(r),
+          r.team_schedule_url || "",
+          ...keys.map((k) => (r[statKey] || {})[k] ?? ""),
+        ].forEach((v) => tr.appendChild(tdWithValue(v)));
         tbody.appendChild(tr);
       });
       table.appendChild(tbody);
@@ -126,7 +293,22 @@
       const table = el("table");
       const thead = el("thead");
       const hr = el("tr");
-      const headers = ["Name","Agent Last","Pos","Level","Current Team","Team Location","Team Schedule","Opponent","Home/Away","Venue","Series Start","Series End","Location","Nearest Airport Code"];
+      const headers = [
+        "Name",
+        "Agent Last",
+        "Pos",
+        "Level",
+        "Current Team",
+        "Team Location",
+        "Team Schedule",
+        "Opponent",
+        "Home/Away",
+        "Venue",
+        "Series Start",
+        "Series End",
+        "Location",
+        "Nearest Airport Code",
+      ];
       headers.forEach((h, i) => {
         const th = el("th", h);
         th.onclick = () => sortTable(panelKey, i);
@@ -136,32 +318,29 @@
       table.appendChild(thead);
       const tbody = el("tbody");
       tbody.id = `tbody-${panelKey}`;
-      rows.forEach(r => {
-        (r.upcoming_series || []).forEach(s => {
+      rows.forEach((r) => {
+        (r.upcoming_series || []).forEach((s) => {
           const tr = el("tr");
-          const vals = [r.name, r.agent_last, r.position || "", r.team_level || "", r.current_team, r.current_team_location || "", r.team_schedule_url || "", s.opponent, s.home_away, s.venue, s.start_date, s.end_date, s.location, s.nearest_airport_code];
-          vals.forEach(v => tr.appendChild(tdWithValue(v)));
+          const vals = [
+            r.name,
+            r.agent_last,
+            r.position || "",
+            r.team_level || "",
+            r.current_team,
+            r.current_team_location || "",
+            r.team_schedule_url || "",
+            s.opponent,
+            s.home_away,
+            s.venue,
+            s.start_date,
+            s.end_date,
+            s.location,
+            s.nearest_airport_code,
+          ];
+          vals.forEach((v) => tr.appendChild(tdWithValue(v)));
           tbody.appendChild(tr);
         });
       });
-    function sortTable(panelKey, colIdx) {
-      const tbody = document.getElementById(`tbody-${panelKey}`);
-      if (!tbody) return;
-      const key = `${panelKey}:${colIdx}`;
-      sortState[key] = !sortState[key];
-      const asc = sortState[key];
-      const rows = Array.from(tbody.querySelectorAll("tr"));
-      rows.sort((a, b) => {
-        const av = (a.children[colIdx]?.textContent || "").trim();
-        const bv = (b.children[colIdx]?.textContent || "").trim();
-        const an = parseFloat(av.replace(/[%,$]/g, ""));
-        const bn = parseFloat(bv.replace(/[%,$]/g, ""));
-        if (!Number.isNaN(an) && !Number.isNaN(bn)) return asc ? an - bn : bn - an;
-        return asc ? av.localeCompare(bv) : bv.localeCompare(av);
-      });
-      rows.forEach(r => tbody.appendChild(r));
-    }
-
       table.appendChild(tbody);
       target.innerHTML = "";
       target.appendChild(table);
