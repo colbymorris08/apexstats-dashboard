@@ -23,6 +23,8 @@ NCAA_DIVISION = 1
 NCAA_SEASON_YEAR = 2025
 NCAA_CONTESTS_HASH = "6b26e5cda954c1302873c52835bfd223e169e2068b12511e92b3ef29fac779c2"
 NCAA_CONTESTS_BY_DATE: dict[str, list[dict[str, Any]]] = {}
+NCAA_BOX_BASEBALL_HASH = "5e92118b2f424040aa96067aba6d34e882165aaf02e9e73cb9d69317066c6ae8"
+NCAA_BOX_BY_CONTEST_ID: dict[int, dict[str, Any] | None] = {}
 
 PITCHER_POS = {"RHP", "LHP", "SP", "RP", "P"}
 AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
@@ -102,6 +104,12 @@ def _norm_school(s: str) -> str:
     return " ".join(parts)
 
 
+def _norm_token(s: str) -> str:
+    x = (s or "").lower().strip()
+    x = re.sub(r"[^a-z0-9]+", "", x)
+    return x
+
+
 def _ncaa_graphql_url(meta: str, sha: str, variables: dict[str, Any]) -> str:
     ext = json.dumps({"persistedQuery": {"version": 1, "sha256Hash": sha}}, separators=(",", ":"))
     var = json.dumps(variables, separators=(",", ":"))
@@ -133,6 +141,24 @@ def fetch_ncaa_contests_for_date(contest_date: date) -> list[dict[str, Any]]:
         contests = []
     NCAA_CONTESTS_BY_DATE[key] = contests
     return contests
+
+
+def fetch_ncaa_boxscore_baseball(contest_id: int) -> dict[str, Any] | None:
+    if contest_id in NCAA_BOX_BY_CONTEST_ID:
+        return NCAA_BOX_BY_CONTEST_ID[contest_id]
+    vars_ = {"contestId": int(contest_id)}
+    try:
+        url = _ncaa_graphql_url(
+            "NCAA_GetGamecenterBoxscoreBaseballById_web",
+            NCAA_BOX_BASEBALL_HASH,
+            vars_,
+        )
+        js = _req_json_with_headers(url)
+        box = (js.get("data") or {}).get("boxscore")
+    except Exception:
+        box = None
+    NCAA_BOX_BY_CONTEST_ID[contest_id] = box
+    return box
 
 
 def _contest_team_entries(contest: dict[str, Any]) -> list[dict[str, Any]]:
@@ -171,12 +197,94 @@ def _contest_for_school(contest: dict[str, Any], school: str) -> tuple[dict[str,
     return None
 
 
+def _name_parts(full_name: str) -> tuple[str, str]:
+    parts = [p for p in (full_name or "").strip().split() if p]
+    if not parts:
+        return "", ""
+    first = parts[0]
+    last = parts[-1]
+    # Keep apostrophes/hyphens handling loose for matching.
+    return first, last
+
+
+def _pick_ncaa_player_row(player_stats: list[dict[str, Any]], client_name: str) -> dict[str, Any] | None:
+    first, last = _name_parts(client_name)
+    f0 = _norm_token(first[:1])
+    ln = _norm_token(last)
+    # last-name exact + first initial best
+    for p in player_stats:
+        p_last = _norm_token(str(p.get("lastName") or ""))
+        p_first = _norm_token(str(p.get("firstName") or "")[:1])
+        if p_last and p_last == ln and (not f0 or p_first == f0):
+            return p
+    # fallback: last-name exact only
+    for p in player_stats:
+        p_last = _norm_token(str(p.get("lastName") or ""))
+        if p_last and p_last == ln:
+            return p
+    return None
+
+
+def _to_int(v: Any) -> int:
+    try:
+        return int(float(str(v).strip()))
+    except Exception:
+        return 0
+
+
+def _to_float(v: Any) -> float:
+    try:
+        return float(str(v).strip())
+    except Exception:
+        return 0.0
+
+
+def _blank_individual_line(is_pitcher_role: bool) -> dict[str, Any]:
+    if is_pitcher_role:
+        return {"ip": 0.0, "h": 0, "er": 0, "bb": 0, "k": 0, "bf": 0}
+    return {"ab": 0, "h": 0, "r": 0, "rbi": 0, "bb": 0, "k": 0}
+
+
+def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) -> dict[str, Any]:
+    if is_pitcher_role:
+        ps = player_row.get("pitcherStats") or {}
+        return {
+            "ip": round(_to_float(ps.get("inningsPitched")), 1),
+            "h": _to_int(ps.get("hitsAllowed")),
+            "er": _to_int(ps.get("earnedRunsAllowed")),
+            "bb": _to_int(ps.get("walksAllowed")),
+            "k": _to_int(ps.get("strikeouts")),
+            "bf": _to_int(ps.get("battersFaced")),
+        }
+    bs = player_row.get("batterStats") or {}
+    return {
+        "ab": _to_int(bs.get("atBats")),
+        "h": _to_int(bs.get("hits")),
+        "r": _to_int(bs.get("runsScored")),
+        "rbi": _to_int(bs.get("runsBattedIn")),
+        "bb": _to_int(bs.get("walks")),
+        "k": _to_int(bs.get("strikeouts")),
+    }
+
+
+def _add_lines(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for k in set(a.keys()) | set(b.keys()):
+        av = a.get(k, 0)
+        bv = b.get(k, 0)
+        if isinstance(av, float) or isinstance(bv, float):
+            out[k] = round(float(av) + float(bv), 1)
+        else:
+            out[k] = int(av) + int(bv)
+    return out
+
+
 def fetch_ncaa_school_payload(school: str, weeks: int = 4) -> dict[str, Any]:
     today = date.today()
     yday = today - timedelta(days=1)
     # Keep NCAA pulls fast: enough history for recent form + month/season summaries.
     # Full-season backfills are expensive and can stall dashboard refresh.
-    start = max(date(today.year, 2, 1), today - timedelta(days=45))
+    start = max(date(today.year, 2, 1), today - timedelta(days=21))
     end = today + timedelta(days=7 * weeks)
     contests_all: list[dict[str, Any]] = []
     d = start
@@ -198,6 +306,7 @@ def fetch_ncaa_school_payload(school: str, weeks: int = 4) -> dict[str, Any]:
             continue
         school_games.append(
             {
+                "contest_id": _safe_int(c.get("contestId")),
                 "date": gd,
                 "team": team,
                 "opp": opp,
@@ -274,6 +383,7 @@ def fetch_ncaa_school_payload(school: str, weeks: int = 4) -> dict[str, Any]:
         "last_night": last_night,
         "month_to_date": agg(month_games),
         "season": agg(season_games),
+        "_games": school_games,
     }
 
 
@@ -1025,6 +1135,93 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
             if not base["season"]:
                 base["season"] = ncaa_payload.get("season") or {}
             base["upcoming_series"] = ncaa_payload.get("upcoming_series") or []
+
+            # Upgrade from team summaries to individual player lines when NCAA boxscore data resolves.
+            games = ncaa_payload.get("_games") or []
+            if games:
+                today = date.today()
+                yday = today - timedelta(days=1)
+                is_p = is_pitcher(c.position)
+                month_line = _blank_individual_line(is_p)
+                season_line = _blank_individual_line(is_p)
+                last_line: dict[str, Any] = {}
+
+                def player_row_for_game(g: dict[str, Any]) -> dict[str, Any] | None:
+                    cid = _safe_int(g.get("contest_id"))
+                    if not cid:
+                        return None
+                    box = fetch_ncaa_boxscore_baseball(cid)
+                    if not box:
+                        return None
+                    team_box = box.get("teamBoxscore") or []
+                    if len(team_box) != 2:
+                        return None
+                    teams_meta = box.get("teams") or []
+                    idx = 0
+                    if len(teams_meta) >= 2:
+                        want_home = bool((g.get("team") or {}).get("is_home"))
+                        idx = 0 if bool(teams_meta[0].get("isHome")) == want_home else 1
+                    player_stats = (team_box[idx] or {}).get("playerStats") or []
+                    return _pick_ncaa_player_row(player_stats, c.name)
+
+                # Last-night individual line (if played)
+                yday_games = [g for g in games if g.get("date") == yday]
+                for g in yday_games:
+                    prow = player_row_for_game(g)
+                    if prow:
+                        last_line = _extract_individual_line(prow, is_p)
+                        break
+
+                # Season line from most recent appearance's season-to-date counters
+                recent_games = sorted(
+                    [g for g in games if isinstance(g.get("date"), date) and g.get("date") <= today],
+                    key=lambda x: x.get("date"),
+                    reverse=True,
+                )
+                for g in recent_games:
+                    prow = player_row_for_game(g)
+                    if not prow:
+                        continue
+                    if is_p:
+                        ps = prow.get("pitcherStats") or {}
+                        season_line = {
+                            "ip": round(_to_float(ps.get("inningsPitched")), 1),
+                            "h": _to_int(ps.get("hitsAllowed")),
+                            "er": _to_int(ps.get("earnedRunsAllowed")),
+                            "bb": _to_int(ps.get("walksAllowed")),
+                            "k": _to_int(ps.get("strikeouts")),
+                            "bf": _to_int(ps.get("battersFaced")),
+                        }
+                    else:
+                        hs = prow.get("hittingSeason") or prow.get("batterStats") or {}
+                        season_line = {
+                            "ab": _to_int(hs.get("atBats")),
+                            "h": _to_int(hs.get("hits")),
+                            "r": _to_int(hs.get("runsScored")),
+                            "rbi": _to_int(hs.get("runsBattedIn")),
+                            "bb": _to_int(hs.get("walks")),
+                            "k": _to_int(hs.get("strikeouts")),
+                        }
+                    break
+
+                # Month-to-date: aggregate up to the last 5 games this month where player appeared.
+                month_games = [
+                    g for g in recent_games
+                    if isinstance(g.get("date"), date) and g["date"].year == today.year and g["date"].month == today.month
+                ][:5]
+                for g in month_games:
+                    prow = player_row_for_game(g)
+                    if not prow:
+                        continue
+                    line = _extract_individual_line(prow, is_p)
+                    month_line = _add_lines(month_line, line)
+
+                if season_line != _blank_individual_line(is_p):
+                    base["season"] = season_line
+                if month_line != _blank_individual_line(is_p):
+                    base["month_to_date"] = month_line
+                if last_line:
+                    base["last_night"] = last_line
         except Exception:
             pass
     return base
