@@ -241,7 +241,7 @@ def _to_float(v: Any) -> float:
 
 def _blank_individual_line(is_pitcher_role: bool) -> dict[str, Any]:
     if is_pitcher_role:
-        return {"ip": 0.0, "h": 0, "er": 0, "bb": 0, "k": 0, "bf": 0}
+        return {"ip": 0.0, "h": 0, "r": 0, "er": 0, "bb": 0, "k": 0, "hr": 0, "bf": 0, "era": 0.0}
     return {"ab": 0, "h": 0, "r": 0, "rbi": 0, "bb": 0, "k": 0}
 
 
@@ -251,9 +251,11 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
         return {
             "ip": round(_to_float(ps.get("inningsPitched")), 1),
             "h": _to_int(ps.get("hitsAllowed")),
+            "r": _to_int(ps.get("runsAllowed")),
             "er": _to_int(ps.get("earnedRunsAllowed")),
             "bb": _to_int(ps.get("walksAllowed")),
             "k": _to_int(ps.get("strikeouts")),
+            "hr": _to_int(ps.get("homeRunsAllowed")),
             "bf": _to_int(ps.get("battersFaced")),
         }
     bs = player_row.get("batterStats") or {}
@@ -267,11 +269,54 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
     }
 
 
+def _ip_to_outs(ip: Any) -> int:
+    s = str(ip or "0").strip()
+    if not s:
+        return 0
+    if "." in s:
+        whole, frac = s.split(".", 1)
+        try:
+            w = int(whole)
+        except Exception:
+            w = 0
+        f = frac[:1]
+        o = 0
+        if f in {"1", "2"}:
+            o = int(f)
+        return max(0, w * 3 + o)
+    try:
+        return max(0, int(round(float(s) * 3)))
+    except Exception:
+        return 0
+
+
+def _outs_to_ip(outs: int) -> float:
+    whole = max(0, outs) // 3
+    rem = max(0, outs) % 3
+    return float(f"{whole}.{rem}")
+
+
+def _with_rate_stats(line: dict[str, Any], is_pitcher_role: bool) -> dict[str, Any]:
+    out = dict(line)
+    if is_pitcher_role:
+        outs = _ip_to_outs(out.get("ip"))
+        er = _to_int(out.get("er"))
+        out["era"] = round((er * 27.0 / outs), 2) if outs > 0 else 0.0
+    else:
+        ab = _to_int(out.get("ab"))
+        h = _to_int(out.get("h"))
+        out["avg"] = round((h / ab), 3) if ab > 0 else 0.0
+    return out
+
+
 def _add_lines(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
     out: dict[str, Any] = {}
     for k in set(a.keys()) | set(b.keys()):
         av = a.get(k, 0)
         bv = b.get(k, 0)
+        if k == "ip":
+            out[k] = _outs_to_ip(_ip_to_outs(av) + _ip_to_outs(bv))
+            continue
         if isinstance(av, float) or isinstance(bv, float):
             out[k] = round(float(av) + float(bv), 1)
         else:
@@ -1130,8 +1175,14 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
                 base["upcoming_series"] = fetch_team_schedule(tid, weeks=4)
             except Exception:
                 base["upcoming_series"] = []
-    # If pro/miLB APIs did not resolve amateur stats/schedules, use NCAA feed.
-    if not base["upcoming_series"]:
+    # Backfill amateur stats/schedules from NCAA feed when pro/miLB APIs are incomplete.
+    needs_ncaa = (
+        not base["upcoming_series"]
+        or not base["season"]
+        or not base["month_to_date"]
+        or not base["last_night"]
+    )
+    if needs_ncaa:
         try:
             ncaa_payload = fetch_ncaa_school_payload(c.school_or_team or c.minor_affiliate, weeks=4)
             if not base["last_night"]:
@@ -1223,11 +1274,11 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
                     month_line = _add_lines(month_line, line)
 
                 if season_line != _blank_individual_line(is_p):
-                    base["season"] = season_line
+                    base["season"] = _with_rate_stats(season_line, is_p)
                 if month_line != _blank_individual_line(is_p):
-                    base["month_to_date"] = month_line
+                    base["month_to_date"] = _with_rate_stats(month_line, is_p)
                 if last_line:
-                    base["last_night"] = last_line
+                    base["last_night"] = _with_rate_stats(last_line, is_p)
         except Exception:
             pass
     return base
