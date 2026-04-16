@@ -470,8 +470,12 @@ def load_clients(path: Path) -> list[Client]:
         level = _cell_str(r.get("Level", ""))
         league = _cell_str(r.get("League", ""))
         position = _cell_str(r.get("Position", "")).upper()
+        # Pro workbook now stores agent initials in Notes.
+        raw_notes = r.get("Notes", "")
+        notes_agent = "" if pd.isna(raw_notes) else str(raw_notes).strip()
         raw_agent = r.get("Agent", "")
-        agent = "" if pd.isna(raw_agent) else str(raw_agent).strip()
+        fallback_agent = "" if pd.isna(raw_agent) else str(raw_agent).strip()
+        agent = notes_agent or fallback_agent
         level_upper = level.upper()
         league_upper = league.upper()
         is_amateur = any(t in level_upper for t in AMATEUR_TOKENS) or any(

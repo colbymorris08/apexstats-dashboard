@@ -99,7 +99,7 @@
 
     const BASE_HEADERS = [
       "Name",
-      "Agent Last",
+      "Agent Initials",
       "Pos",
       "Level",
       "Organization",
@@ -115,8 +115,10 @@
       { keys: ["hits", "h"], header: "H", kind: "int" },
       { keys: ["rbi", "runsBattedIn"], header: "RBI", kind: "int" },
       { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
-      { keys: ["avg"], header: "AVG", kind: "avg" },
-      { keys: ["ops"], header: "OPS", kind: "ops" },
+      { keys: ["avg"], header: "Season AVG", kind: "avg", sourceStat: "season" },
+      { keys: ["ops"], header: "Season OPS", kind: "ops", sourceStat: "season" },
+      { keys: ["avg"], header: "Month AVG", kind: "avg", sourceStat: "month_to_date" },
+      { keys: ["ops"], header: "Month OPS", kind: "ops", sourceStat: "month_to_date" },
     ];
 
     const PITCHER_COLS = [
@@ -127,7 +129,8 @@
       { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
       { keys: ["strikeOuts", "k", "so"], header: "SO", kind: "int" },
       { keys: ["homeRuns", "hr"], header: "HR", kind: "int" },
-      { keys: ["era"], header: "ERA", kind: "era" },
+      { keys: ["era"], header: "Season ERA", kind: "era", sourceStat: "season" },
+      { keys: ["era"], header: "Month ERA", kind: "era", sourceStat: "month_to_date" },
     ];
 
     function el(tag, text = "") {
@@ -223,13 +226,19 @@
     function baseCols(row) {
       return [
         row.name || "",
-        row.agent_last || "",
+        row.agent || "",
         row.position || "",
         row.team_level || "",
         row.organization || row.major_affiliate || "",
         row.current_team || row.school_or_team || "",
         row.current_team_location || "",
       ];
+    }
+
+    function statForCol(row, defaultStatKey, col) {
+      const key = col && col.sourceStat ? col.sourceStat : defaultStatKey;
+      const st = row && row[key];
+      return st && typeof st === "object" ? st : {};
     }
 
     function buildStatTable(rows, statKey, tbodyId, cols, panelKeyPrefix) {
@@ -251,11 +260,10 @@
       tbody.id = `tbody-${panelKeyPrefix}-${tbodyId}`;
       rows.forEach((r) => {
         const tr = el("tr");
-        const st = r[statKey] || {};
         [
           ...baseCols(r),
           r.team_schedule_url || "",
-          ...cols.map((c) => formatStatCell(st, c)),
+          ...cols.map((c) => formatStatCell(statForCol(r, statKey, c), c)),
         ].forEach((v, i) => {
           const td = tdWithValue(v);
           if (i === 0) td.classList.add("text-left");
@@ -336,7 +344,7 @@
       const hr = el("tr");
       const headers = [
         "Name",
-        "Agent Last",
+        "Agent Initials",
         "Pos",
         "Level",
         "Organization",
@@ -366,7 +374,7 @@
           const tr = el("tr");
           const vals = [
             r.name,
-            r.agent_last,
+            r.agent || "",
             r.position || "",
             r.team_level || "",
             r.organization || r.major_affiliate || "",
