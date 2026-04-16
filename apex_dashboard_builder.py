@@ -12,7 +12,7 @@ import re
 import pandas as pd
 import requests
 
-SOURCE_XLSX = Path("/Users/colbymorris/Downloads/Apex Client List July 2024.xlsx")
+SOURCE_XLSX = Path("/Users/colbymorris/Downloads/Client List - 04-15-26.xlsx")
 AMATEUR_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/AmateurList.xlsx")
 OUT_JSON = Path("/Users/colbymorris/apexstats/apex_dashboard_data.json")
 SEASON = date.today().year
@@ -459,7 +459,9 @@ def lookup_team_by_name(team_name: str, level_hint: str = "") -> dict[str, Any] 
 
 
 def load_clients(path: Path) -> list[Client]:
-    df = pd.read_excel(path, sheet_name="Sorted By League")
+    xl = pd.ExcelFile(path)
+    sheet = "Sorted By League" if "Sorted By League" in xl.sheet_names else xl.sheet_names[0]
+    df = pd.read_excel(path, sheet_name=sheet)
     out: list[Client] = []
     for _, r in df.iterrows():
         raw_name = _cell_str(r.get("Name", ""))

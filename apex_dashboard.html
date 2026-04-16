@@ -5,24 +5,70 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Apex Client Dashboard</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 16px; background:#0b1f17; color:#e6f7ef; }
-    h1 { margin: 0 0 12px; font-size: 20px; }
-    .row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
-    button { background:#123026; color:#e6f7ef; border:1px solid #1f5c45; border-radius:6px; padding:8px 10px; cursor:pointer; }
-    button.active { background:#16a34a; border-color:#16a34a; color:#03150e; font-weight:700; }
-    table { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
-    th, td { border-bottom:1px solid #1f5c45; border-right:1px solid #1f5c45; padding:6px 8px; text-align:left; white-space:nowrap; }
-    th:first-child, td:first-child { border-left:1px solid #1f5c45; }
-    th { color:#86efac; cursor:pointer; font-weight:800; text-transform:uppercase; letter-spacing:0.04em; }
-    .panel { display:none; }
-    .panel.active { display:block; }
-    .muted { color:#9ad4b7; font-size:12px; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 16px;
+      background: #f0f0f0;
+      color: #1a1a1a;
+    }
+    h1 { margin: 0 0 12px; font-size: 22px; font-weight: 700; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    button {
+      background: #fff;
+      color: #1a1a1a;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.active { background: #1e3a5f; border-color: #1e3a5f; color: #fff; }
+    .muted { color: #555; font-size: 13px; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .stats-section-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #1e3a5f;
+      margin: 20px 0 8px 0;
+      padding-bottom: 4px;
+      border-bottom: 2px solid #1e3a5f;
+    }
+    .stats-section-title:first-child { margin-top: 0; }
+    .stats-wrap { margin-top: 8px; }
+    table.stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 8px;
+      background: #fff;
+    }
+    table.stats-table th {
+      background: #1e3a5f;
+      color: #fff;
+      font-weight: 700;
+      text-align: center;
+      padding: 10px 8px;
+      border: 1px solid #ccc;
+    }
+    table.stats-table td {
+      text-align: center;
+      padding: 8px;
+      border: 1px solid #d0d0d0;
+      background: #fff;
+      color: #1a1a1a;
+    }
+    table.stats-table td.text-left { text-align: left; }
+    table.stats-table th.sortable { cursor: pointer; user-select: none; }
+    table.stats-table th.sortable:hover { filter: brightness(1.08); }
+    table.stats-table a { color: #1e40af; }
   </style>
 </head>
 <body>
   <h1>Apex Baseball Client Dashboard</h1>
   <div class="muted" id="meta"></div>
-  <div class="muted" id="lastNightLabel" style="margin:6px 0 10px 0;"></div>
+  <div class="muted" id="lastNightLabel" style="margin: 6px 0 10px 0;"></div>
   <div class="row" id="mainTabs">
     <button data-tab="lastNight" class="active">Last Night</button>
     <button data-tab="pro">Pro Clients</button>
@@ -51,7 +97,114 @@
     let activeRole = "all";
     const sortState = {};
 
-    function el(tag, text="") { const e=document.createElement(tag); if(text) e.textContent=text; return e; }
+    const BASE_HEADERS = [
+      "Name",
+      "Agent Last",
+      "Pos",
+      "Level",
+      "Organization",
+      "Current Team",
+      "Team Location",
+      "Schedule",
+    ];
+
+    /** Pro + amateur: MLB Stats API keys and NCAA amateur aliases */
+    const HITTER_COLS = [
+      { keys: ["atBats", "ab"], header: "AB", kind: "int" },
+      { keys: ["runs", "r"], header: "R", kind: "int" },
+      { keys: ["hits", "h"], header: "H", kind: "int" },
+      { keys: ["rbi", "runsBattedIn"], header: "RBI", kind: "int" },
+      { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
+      { keys: ["avg"], header: "AVG", kind: "avg" },
+      { keys: ["ops"], header: "OPS", kind: "ops" },
+    ];
+
+    const PITCHER_COLS = [
+      { keys: ["inningsPitched", "ip"], header: "IP", kind: "ip" },
+      { keys: ["hits", "hitsAllowed", "h"], header: "H", kind: "int" },
+      { keys: ["runs", "r"], header: "R", kind: "int" },
+      { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
+      { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
+      { keys: ["strikeOuts", "k", "so"], header: "SO", kind: "int" },
+      { keys: ["homeRuns", "hr"], header: "HR", kind: "int" },
+      { keys: ["era"], header: "ERA", kind: "era" },
+    ];
+
+    function el(tag, text = "") {
+      const e = document.createElement(tag);
+      if (text) e.textContent = text;
+      return e;
+    }
+
+    function getRaw(stat, keys) {
+      if (!stat || typeof stat !== "object") return "";
+      for (const k of keys) {
+        if (stat[k] !== undefined && stat[k] !== null && stat[k] !== "") return stat[k];
+      }
+      return "";
+    }
+
+    function fmtInt(v) {
+      if (v === "" || v === undefined || v === null) return "";
+      const n = Number(v);
+      return Number.isFinite(n) ? String(Math.round(n)) : String(v);
+    }
+
+    /** Baseball-style .xxx for AVG */
+    function fmtAvg(v) {
+      const n = Number(v);
+      if (!Number.isFinite(n)) return "";
+      const x = n > 1.5 ? n / 1000 : n;
+      const s = x.toFixed(3);
+      return s.startsWith("0.") ? s.slice(1) : s;
+    }
+
+    function fmtOps(v) {
+      const n = Number(v);
+      if (!Number.isFinite(n)) return "";
+      const x = n > 4 ? n / 1000 : n;
+      return x.toFixed(3);
+    }
+
+    function fmtOpsFromStat(stat) {
+      let o = getRaw(stat, ["ops"]);
+      if (o !== "") return fmtOps(o);
+      const obp = Number(getRaw(stat, ["obp", "onBasePercentage"]));
+      const slg = Number(getRaw(stat, ["slg", "sluggingPercentage"]));
+      if (Number.isFinite(obp) && Number.isFinite(slg)) return (obp + slg).toFixed(3);
+      return "";
+    }
+
+    function fmtEra(v) {
+      const n = Number(v);
+      if (!Number.isFinite(n)) return "";
+      return n.toFixed(2);
+    }
+
+    function fmtIp(v) {
+      if (v === "" || v === undefined || v === null) return "";
+      return String(v);
+    }
+
+    function formatStatCell(stat, col) {
+      if (!col) return "";
+      const raw = getRaw(stat, col.keys);
+      switch (col.kind) {
+        case "int":
+          return fmtInt(raw);
+        case "avg":
+          return fmtAvg(raw);
+        case "ops":
+          return fmtOpsFromStat(stat);
+        case "era":
+          return fmtEra(raw);
+        case "ip":
+          return fmtIp(raw);
+        default:
+          return raw === "" ? "" : String(raw);
+      }
+    }
+
     function tdWithValue(v) {
       const td = el("td");
       const s = String(v || "");
@@ -60,7 +213,6 @@
         a.href = s;
         a.target = "_blank";
         a.rel = "noopener noreferrer";
-        a.style.color = "#93c5fd";
         td.appendChild(a);
       } else {
         td.textContent = s;
@@ -80,219 +232,106 @@
       ];
     }
 
-    const IGNORE_STAT_KEYS = new Set(["summary", "note", "opponent", "position", "gamepk", "gameid"]);
-
-    const HEADER_ABBR = {
-      atBats: "AB",
-      runs: "R",
-      hits: "H",
-      rbi: "RBI",
-      baseOnBalls: "BB",
-      strikeOuts: "SO",
-      homeRuns: "HR",
-      earnedRuns: "ER",
-      inningsPitched: "IP",
-      intentionalWalks: "IBB",
-      stolenBases: "SB",
-      caughtStealing: "CS",
-      plateAppearances: "PA",
-      doubles: "2B",
-      triples: "3B",
-      gamesPlayed: "G",
-      battersFaced: "BF",
-      numberOfPitches: "NP",
-      whip: "WHIP",
-      wins: "W",
-      losses: "L",
-      saves: "SV",
-      blownSaves: "BSV",
-      holds: "HLD",
-    };
-
-    function statHeaderFromKey(key) {
-      if (HEADER_ABBR[key]) return HEADER_ABBR[key];
-      return key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase()).trim();
+    function buildStatTable(rows, statKey, tbodyId, cols, panelKeyPrefix) {
+      const table = el("table");
+      table.className = "stats-table";
+      const thead = el("thead");
+      const hr = el("tr");
+      const headers = [...BASE_HEADERS, ...cols.map((c) => c.header)];
+      headers.forEach((h, i) => {
+        const th = el("th", h);
+        th.className = "sortable";
+        const colIdx = i;
+        th.onclick = () => sortTable(`${panelKeyPrefix}-${tbodyId}`, colIdx);
+        hr.appendChild(th);
+      });
+      thead.appendChild(hr);
+      table.appendChild(thead);
+      const tbody = el("tbody");
+      tbody.id = `tbody-${panelKeyPrefix}-${tbodyId}`;
+      rows.forEach((r) => {
+        const tr = el("tr");
+        const st = r[statKey] || {};
+        [
+          ...baseCols(r),
+          r.team_schedule_url || "",
+          ...cols.map((c) => formatStatCell(st, c)),
+        ].forEach((v, i) => {
+          const td = tdWithValue(v);
+          if (i === 0) td.classList.add("text-left");
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      return table;
     }
 
-    function collectStatKeySet(rows, field) {
-      const s = new Set();
-      rows.forEach((r) => Object.keys(r[field] || {}).forEach((k) => s.add(k)));
-      return s;
-    }
-
-    /**
-     * Hitters: AB, R, H, RBI, BB, then AVG & OPS (last night / MTD) or Season AVG & Season OPS at end (season).
-     * Pitchers: IP, H, R, ER, BB, SO, HR, then ERA (game/MTD) or Season ERA at end (season).
-     */
-    function statColumnPlan(rows, dataKey) {
-      const keysSet = collectStatKeySet(rows, dataKey);
-      if (dataKey === "last_night") {
-        collectStatKeySet(rows, "month_to_date").forEach((k) => keysSet.add(k));
-      }
-
-      const pitchersOnly =
-        activeRole === "pitchers" || (rows.length > 0 && rows.every((r) => r.is_pitcher));
-      const hittersOnly =
-        activeRole === "hitters" || (rows.length > 0 && rows.every((r) => !r.is_pitcher));
-      const mixed = !pitchersOnly && !hittersOnly;
-
-      const isSeason = dataKey === "season";
-
-      const cols = [];
-      const used = new Set();
-
-      function pushCol(apiKey, header) {
-        if (used.has(apiKey)) return;
-        cols.push({ key: apiKey, header });
-        used.add(apiKey);
-      }
-
-      function addRemainingBetween(skipRates) {
-        const skip = new Set(skipRates);
-        const rest = Array.from(keysSet)
-          .filter(
-            (k) =>
-              !used.has(k) &&
-              !skip.has(k) &&
-              !IGNORE_STAT_KEYS.has(String(k).toLowerCase())
-          )
-          .sort();
-        rest.slice(0, 24).forEach((k) => pushCol(k, statHeaderFromKey(k)));
-      }
-
-      function buildHitting() {
-        [
-          ["atBats", "AB"],
-          ["runs", "R"],
-          ["hits", "H"],
-          ["rbi", "RBI"],
-          ["baseOnBalls", "BB"],
-        ].forEach(([k, h]) => pushCol(k, h));
-
-        if (!isSeason) {
-          pushCol("avg", "AVG");
-          pushCol("ops", "OPS");
-          addRemainingBetween([]);
-        } else {
-          addRemainingBetween(["avg", "ops", "obp", "slg"]);
-          pushCol("avg", "Season AVG");
-          pushCol("ops", "Season OPS");
-        }
-      }
-
-      function buildPitching() {
-        [
-          ["inningsPitched", "IP"],
-          ["hits", "H"],
-          ["runs", "R"],
-          ["earnedRuns", "ER"],
-          ["baseOnBalls", "BB"],
-          ["strikeOuts", "SO"],
-          ["homeRuns", "HR"],
-        ].forEach(([k, h]) => pushCol(k, h));
-
-        if (!isSeason) {
-          pushCol("era", "ERA");
-          addRemainingBetween([]);
-        } else {
-          addRemainingBetween(["era"]);
-          pushCol("era", "Season ERA");
-        }
-      }
-
-      function buildMixed() {
-        [
-          ["atBats", "AB"],
-          ["runs", "R"],
-          ["hits", "H"],
-          ["rbi", "RBI"],
-          ["baseOnBalls", "BB"],
-        ].forEach(([k, h]) => pushCol(k, h));
-        pushCol("inningsPitched", "IP");
-        pushCol("earnedRuns", "ER");
-        pushCol("strikeOuts", "SO");
-        pushCol("homeRuns", "HR");
-
-        if (!isSeason) {
-          pushCol("avg", "AVG");
-          pushCol("ops", "OPS");
-          pushCol("era", "ERA");
-          addRemainingBetween([]);
-        } else {
-          addRemainingBetween(["avg", "ops", "obp", "slg", "era"]);
-          pushCol("avg", "Season AVG");
-          pushCol("ops", "Season OPS");
-          pushCol("era", "Season ERA");
-        }
-      }
-
-      if (mixed) buildMixed();
-      else if (pitchersOnly) buildPitching();
-      else buildHitting();
-
-      return cols;
-    }
-
-    function sortTable(panelKey, colIdx) {
-      const tbody = document.getElementById(`tbody-${panelKey}`);
+    function sortTable(fullId, colIdx) {
+      const tbody = document.getElementById(`tbody-${fullId}`);
       if (!tbody) return;
-      const key = `${panelKey}:${colIdx}`;
+      const key = `${fullId}:${colIdx}`;
       sortState[key] = !sortState[key];
       const asc = sortState[key];
       const trs = Array.from(tbody.querySelectorAll("tr"));
       trs.sort((a, b) => {
         const av = (a.children[colIdx]?.textContent || "").trim();
         const bv = (b.children[colIdx]?.textContent || "").trim();
-        const an = parseFloat(av.replace(/[%,$]/g, ""));
-        const bn = parseFloat(bv.replace(/[%,$]/g, ""));
-        if (!Number.isNaN(an) && !Number.isNaN(bn)) return asc ? an - bn : bn - an;
+        const an = parseFloat(av.replace(/^\.?/, "0."));
+        const bn = parseFloat(bv.replace(/^\.?/, "0."));
+        if (!Number.isNaN(an) && !Number.isNaN(bn) && av !== "" && bv !== "")
+          return asc ? an - bn : bn - an;
         return asc ? av.localeCompare(bv) : bv.localeCompare(av);
       });
       trs.forEach((r) => tbody.appendChild(r));
     }
 
     function renderStatsTable(rows, statKey, target, panelKey) {
-      const plan = statColumnPlan(rows, statKey);
-      const keys = plan.map((c) => c.key);
-      const table = el("table");
-      const thead = el("thead");
-      const hr = el("tr");
-      const headers = [
-        "Name",
-        "Agent Last",
-        "Pos",
-        "Level",
-        "Organization",
-        "Current Team",
-        "Team Location",
-        "Schedule",
-        ...plan.map((c) => c.header),
-      ];
-      headers.forEach((h, i) => {
-        const th = el("th", h);
-        th.onclick = () => sortTable(panelKey, i);
-        hr.appendChild(th);
-      });
-      thead.appendChild(hr);
-      table.appendChild(thead);
-      const tbody = el("tbody");
-      tbody.id = `tbody-${panelKey}`;
-      rows.forEach((r) => {
-        const tr = el("tr");
-        [
-          ...baseCols(r),
-          r.team_schedule_url || "",
-          ...keys.map((k) => (r[statKey] || {})[k] ?? ""),
-        ].forEach((v) => tr.appendChild(tdWithValue(v)));
-        tbody.appendChild(tr);
-      });
-      table.appendChild(tbody);
       target.innerHTML = "";
-      target.appendChild(table);
+      const hitters = rows.filter((r) => !r.is_pitcher);
+      const pitchers = rows.filter((r) => r.is_pitcher);
+      const wrap = el("div");
+      wrap.className = "stats-wrap";
+
+      if (activeRole === "hitters") {
+        if (!hitters.length) {
+          target.appendChild(el("p", "No hitters in this view."));
+          return;
+        }
+        target.appendChild(buildStatTable(hitters, statKey, "hit", HITTER_COLS, panelKey));
+        return;
+      }
+      if (activeRole === "pitchers") {
+        if (!pitchers.length) {
+          target.appendChild(el("p", "No pitchers in this view."));
+          return;
+        }
+        target.appendChild(buildStatTable(pitchers, statKey, "pit", PITCHER_COLS, panelKey));
+        return;
+      }
+
+      /* All: hitters on top, pitchers on bottom */
+      if (hitters.length) {
+        const h2h = el("h2", "Hitters");
+        h2h.className = "stats-section-title";
+        wrap.appendChild(h2h);
+        wrap.appendChild(buildStatTable(hitters, statKey, "hit", HITTER_COLS, panelKey));
+      }
+      if (pitchers.length) {
+        const h2 = el("h2", "Pitchers");
+        h2.className = "stats-section-title";
+        wrap.appendChild(h2);
+        wrap.appendChild(buildStatTable(pitchers, statKey, "pit", PITCHER_COLS, panelKey));
+      }
+      if (!hitters.length && !pitchers.length) {
+        wrap.appendChild(el("p", "No clients in this view."));
+      }
+      target.appendChild(wrap);
     }
 
     function renderScheduleTable(rows, target, panelKey) {
       const table = el("table");
+      table.className = "stats-table";
       const thead = el("thead");
       const hr = el("tr");
       const headers = [
@@ -314,13 +353,14 @@
       ];
       headers.forEach((h, i) => {
         const th = el("th", h);
-        th.onclick = () => sortTable(panelKey, i);
+        th.className = "sortable";
+        th.onclick = () => sortTable(`${panelKey}-sched`, i);
         hr.appendChild(th);
       });
       thead.appendChild(hr);
       table.appendChild(thead);
       const tbody = el("tbody");
-      tbody.id = `tbody-${panelKey}`;
+      tbody.id = `tbody-${panelKey}-sched`;
       rows.forEach((r) => {
         (r.upcoming_series || []).forEach((s) => {
           const tr = el("tr");
@@ -341,7 +381,11 @@
             s.location,
             s.nearest_airport_code,
           ];
-          vals.forEach((v) => tr.appendChild(tdWithValue(v)));
+          vals.forEach((v, i) => {
+            const td = tdWithValue(v);
+            if (i === 0) td.classList.add("text-left");
+            tr.appendChild(td);
+          });
           tbody.appendChild(tr);
         });
       });
@@ -357,8 +401,8 @@
     }
 
     function roleFilter(rows) {
-      if (activeRole === "pitchers") return rows.filter(r => r.is_pitcher);
-      if (activeRole === "hitters") return rows.filter(r => !r.is_pitcher);
+      if (activeRole === "pitchers") return rows.filter((r) => r.is_pitcher);
+      if (activeRole === "hitters") return rows.filter((r) => !r.is_pitcher);
       return rows;
     }
 
@@ -368,39 +412,39 @@
       const d = (DATA.last_night_date || "").split("-");
       const md = d.length === 3 ? `${Number(d[1])}/${Number(d[2])}` : DATA.last_night_date;
       document.getElementById("lastNightLabel").textContent = `LAST NIGHT DATE: ${md}`;
-      ["lastNight","pro","amateur"].forEach(t => {
+      ["lastNight", "pro", "amateur"].forEach((t) => {
         const panel = document.getElementById(`panel-${t}`);
-        const baseRows = t === "lastNight" ? (DATA.pro_clients || []) : rowsForTab(t);
+        const baseRows = t === "lastNight" ? DATA.pro_clients || [] : rowsForTab(t);
         const rows = roleFilter(baseRows);
         const panelKey = `${t}-${activeSubtab}-${activeRole}`;
         if (activeSubtab === "schedule") renderScheduleTable(rows, panel, panelKey);
         else renderStatsTable(rows, activeSubtab, panel, panelKey);
       });
-      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
       document.getElementById(`panel-${activeTab}`).classList.add("active");
     }
 
     function wireTabs() {
-      document.querySelectorAll("#mainTabs button").forEach(b => {
+      document.querySelectorAll("#mainTabs button").forEach((b) => {
         b.onclick = () => {
           activeTab = b.dataset.tab;
-          document.querySelectorAll("#mainTabs button").forEach(x => x.classList.remove("active"));
+          document.querySelectorAll("#mainTabs button").forEach((x) => x.classList.remove("active"));
           b.classList.add("active");
           render();
         };
       });
-      document.querySelectorAll("#subTabs button").forEach(b => {
+      document.querySelectorAll("#subTabs button").forEach((b) => {
         b.onclick = () => {
           activeSubtab = b.dataset.subtab;
-          document.querySelectorAll("#subTabs button").forEach(x => x.classList.remove("active"));
+          document.querySelectorAll("#subTabs button").forEach((x) => x.classList.remove("active"));
           b.classList.add("active");
           render();
         };
       });
-      document.querySelectorAll("#roleTabs button").forEach(b => {
+      document.querySelectorAll("#roleTabs button").forEach((b) => {
         b.onclick = () => {
           activeRole = b.dataset.role;
-          document.querySelectorAll("#roleTabs button").forEach(x => x.classList.remove("active"));
+          document.querySelectorAll("#roleTabs button").forEach((x) => x.classList.remove("active"));
           b.classList.add("active");
           render();
         };
@@ -421,7 +465,7 @@
       render();
     }
 
-    load().catch(err => {
+    load().catch((err) => {
       document.body.appendChild(el("pre", String(err)));
     });
   </script>
