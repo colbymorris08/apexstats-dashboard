@@ -239,6 +239,16 @@ def _to_float(v: Any) -> float:
         return 0.0
 
 
+def _to_float_or_none(v: Any) -> float | None:
+    s = str(v or "").strip()
+    if not s:
+        return None
+    try:
+        return float(s)
+    except Exception:
+        return None
+
+
 def _blank_individual_line(is_pitcher_role: bool) -> dict[str, Any]:
     if is_pitcher_role:
         return {"ip": 0.0, "h": 0, "r": 0, "er": 0, "bb": 0, "k": 0, "hr": 0, "bf": 0, "era": 0.0}
@@ -301,11 +311,20 @@ def _with_rate_stats(line: dict[str, Any], is_pitcher_role: bool) -> dict[str, A
     if is_pitcher_role:
         outs = _ip_to_outs(out.get("ip"))
         er = _to_int(out.get("er"))
-        out["era"] = round((er * 27.0 / outs), 2) if outs > 0 else 0.0
+        if outs > 0:
+            out["era"] = round((er * 27.0 / outs), 2)
+        else:
+            era_raw = _to_float_or_none(out.get("era"))
+            out["era"] = round(era_raw, 2) if era_raw is not None else 0.0
     else:
         ab = _to_int(out.get("ab"))
         h = _to_int(out.get("h"))
         out["avg"] = round((h / ab), 3) if ab > 0 else 0.0
+        if "ops" not in out:
+            obp = _to_float_or_none(out.get("obp"))
+            slg = _to_float_or_none(out.get("slg"))
+            if obp is not None and slg is not None:
+                out["ops"] = round(obp + slg, 3)
     return out
 
 
@@ -1245,12 +1264,20 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
                             "ip": round(_to_float(ps.get("inningsPitched")), 1),
                             "h": _to_int(ps.get("hitsAllowed")),
                             "er": _to_int(ps.get("earnedRunsAllowed")),
+                            "r": _to_int(ps.get("runsAllowed")),
                             "bb": _to_int(ps.get("walksAllowed")),
                             "k": _to_int(ps.get("strikeouts")),
+                            "hr": _to_int(ps.get("homeRunsAllowed")),
                             "bf": _to_int(ps.get("battersFaced")),
+                            "era": _to_float(ps.get("era")),
                         }
                     else:
                         hs = prow.get("hittingSeason") or prow.get("batterStats") or {}
+                        obp = _to_float_or_none(hs.get("onBasePercentage"))
+                        slg = _to_float_or_none(hs.get("sluggingPercentage"))
+                        ops = _to_float_or_none(hs.get("ops"))
+                        if ops is None and obp is not None and slg is not None:
+                            ops = round(obp + slg, 3)
                         season_line = {
                             "ab": _to_int(hs.get("atBats")),
                             "h": _to_int(hs.get("hits")),
@@ -1258,6 +1285,10 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
                             "rbi": _to_int(hs.get("runsBattedIn")),
                             "bb": _to_int(hs.get("walks")),
                             "k": _to_int(hs.get("strikeouts")),
+                            "avg": _to_float(hs.get("battingAvg")),
+                            "obp": obp if obp is not None else 0.0,
+                            "slg": slg if slg is not None else 0.0,
+                            "ops": ops if ops is not None else 0.0,
                         }
                     break
 
