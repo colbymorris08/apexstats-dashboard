@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
+from io import StringIO
 from pathlib import Path
 from typing import Any
 import urllib.parse
@@ -25,6 +26,9 @@ NCAA_CONTESTS_HASH = "6b26e5cda954c1302873c52835bfd223e169e2068b12511e92b3ef29fa
 NCAA_CONTESTS_BY_DATE: dict[str, list[dict[str, Any]]] = {}
 NCAA_BOX_BASEBALL_HASH = "5e92118b2f424040aa96067aba6d34e882165aaf02e9e73cb9d69317066c6ae8"
 NCAA_BOX_BY_CONTEST_ID: dict[int, dict[str, Any] | None] = {}
+D1_PLAYERS_SEARCH_JSON = "https://d1baseball.com/wp-content/themes/d1-staxx/data/2026-players.json"
+D1_PLAYERS_INDEX: list[dict[str, Any]] | None = None
+D1_PLAYER_STATS_CACHE: dict[str, dict[str, Any] | None] = {}
 
 PITCHER_POS = {"RHP", "LHP", "SP", "RP", "P"}
 AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
@@ -108,6 +112,161 @@ def _norm_token(s: str) -> str:
     x = (s or "").lower().strip()
     x = re.sub(r"[^a-z0-9]+", "", x)
     return x
+
+
+def _norm_player_name(s: str) -> str:
+    x = (s or "").strip().lower()
+    x = x.replace(".", " ").replace(",", " ").replace("-", " ")
+    parts = [p for p in x.split() if p not in {"jr", "sr", "ii", "iii", "iv"}]
+    return " ".join(parts)
+
+
+def _year_as_int(v: Any) -> int | None:
+    try:
+        return int(str(v).strip())
+    except Exception:
+        return None
+
+
+def _to_str_num(v: Any) -> str:
+    if pd.isna(v):
+        return ""
+    return str(v).strip()
+
+
+def get_d1_players_index() -> list[dict[str, Any]]:
+    global D1_PLAYERS_INDEX
+    if D1_PLAYERS_INDEX is not None:
+        return D1_PLAYERS_INDEX
+    try:
+        js = _req_json_with_headers(D1_PLAYERS_SEARCH_JSON)
+        if isinstance(js, list):
+            D1_PLAYERS_INDEX = js
+            return D1_PLAYERS_INDEX
+    except Exception:
+        pass
+    D1_PLAYERS_INDEX = []
+    return D1_PLAYERS_INDEX
+
+
+def resolve_d1_player_url(client_name: str, school: str = "") -> str:
+    idx = get_d1_players_index()
+    if not idx:
+        return ""
+    want_name = _norm_player_name(client_name)
+    want_school = _norm_school(school)
+    first, last = _name_parts(client_name)
+    first_i = _norm_token(first[:1])
+    last_n = _norm_token(last)
+
+    best_url = ""
+    best_score = -1
+    for p in idx:
+        pname = str(p.get("player_name") or "")
+        pteam = str(p.get("team_name") or "")
+        purl = str(p.get("player_url") or "")
+        if not purl:
+            continue
+        score = 0
+        pn = _norm_player_name(pname)
+        if pn == want_name:
+            score += 10
+        elif want_name and (pn.startswith(want_name) or want_name.startswith(pn)):
+            score += 6
+        # Last name + first initial fallback
+        pf, pl = _name_parts(pname)
+        if _norm_token(pl) == last_n:
+            score += 4
+            if first_i and _norm_token(pf[:1]) == first_i:
+                score += 2
+        if want_school:
+            pteam_n = _norm_school(pteam)
+            if pteam_n and (pteam_n in want_school or want_school in pteam_n):
+                score += 4
+        if score > best_score:
+            best_score = score
+            best_url = purl
+    if best_score <= 0:
+        return ""
+    if best_url.startswith("http://") or best_url.startswith("https://"):
+        return best_url
+    return f"https://d1baseball.com{best_url}"
+
+
+def _pick_d1_table(dfs: list[pd.DataFrame], is_pitcher_role: bool) -> pd.DataFrame | None:
+    # Player pages include multiple tables; choose the basic seasonal one.
+    for df in dfs:
+        cols = {str(c).strip().upper() for c in df.columns}
+        if "YEAR" not in cols:
+            continue
+        if is_pitcher_role and {"IP", "ERA", "APP"}.issubset(cols):
+            return df
+        if (not is_pitcher_role) and {"AB", "R", "H", "RBI", "OPS", "BA"}.issubset(cols):
+            return df
+    return None
+
+
+def fetch_d1_player_stats(player_url: str, is_pitcher_role: bool) -> dict[str, Any]:
+    if not player_url:
+        return {}
+    key = f"{player_url}|{'P' if is_pitcher_role else 'H'}"
+    if key in D1_PLAYER_STATS_CACHE:
+        return D1_PLAYER_STATS_CACHE[key] or {}
+    try:
+        html = requests.get(player_url, timeout=30, headers={"User-Agent": "Mozilla/5.0"}).text
+        dfs = pd.read_html(StringIO(html))
+    except Exception:
+        D1_PLAYER_STATS_CACHE[key] = None
+        return {}
+    table = _pick_d1_table(dfs, is_pitcher_role)
+    if table is None or table.empty:
+        D1_PLAYER_STATS_CACHE[key] = None
+        return {}
+    year_col = next((c for c in table.columns if str(c).strip().upper() == "YEAR"), None)
+    if not year_col:
+        D1_PLAYER_STATS_CACHE[key] = None
+        return {}
+    row = None
+    for _, r in table.iterrows():
+        y = _year_as_int(r.get(year_col))
+        if y == SEASON:
+            row = r
+            break
+    if row is None:
+        # Fall back to latest numeric year.
+        best_y = -1
+        for _, r in table.iterrows():
+            y = _year_as_int(r.get(year_col))
+            if y is not None and y > best_y:
+                best_y = y
+                row = r
+    if row is None:
+        D1_PLAYER_STATS_CACHE[key] = None
+        return {}
+
+    if is_pitcher_role:
+        out = {
+            "inningsPitched": _to_str_num(row.get("IP")),
+            "hits": to_number(row.get("H")),
+            "runs": to_number(row.get("R")),
+            "earnedRuns": to_number(row.get("ER")),
+            "baseOnBalls": to_number(row.get("BB")),
+            "strikeOuts": to_number(row.get("K")),
+            "homeRuns": to_number(row.get("HR")),
+            "era": to_number(row.get("ERA")),
+        }
+    else:
+        out = {
+            "atBats": to_number(row.get("AB")),
+            "runs": to_number(row.get("R")),
+            "hits": to_number(row.get("H")),
+            "rbi": to_number(row.get("RBI")),
+            "baseOnBalls": to_number(row.get("BB")),
+            "avg": to_number(row.get("BA")),
+            "ops": to_number(row.get("OPS")),
+        }
+    D1_PLAYER_STATS_CACHE[key] = out
+    return out
 
 
 def _ncaa_graphql_url(meta: str, sha: str, variables: dict[str, Any]) -> str:
@@ -1158,6 +1317,15 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
     group = stat_group(c.position)
     yday = date.today() - timedelta(days=1)
     mstart = date.today().replace(day=1)
+    is_p = is_pitcher(c.position)
+
+    # D1Baseball player search + player page season table (preferred source for college season stats).
+    d1_url = resolve_d1_player_url(c.name, c.school_or_team or c.minor_affiliate)
+    d1_season = fetch_d1_player_stats(d1_url, is_p) if d1_url else {}
+    if d1_url:
+        base["team_schedule_url"] = d1_url
+    if d1_season:
+        base["season"] = d1_season
 
     if pid:
         roster_team = fetch_current_team_from_person(pid)
@@ -1197,7 +1365,6 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
     # Backfill amateur stats/schedules from NCAA feed when pro/miLB APIs are incomplete.
     needs_ncaa = (
         not base["upcoming_series"]
-        or not base["season"]
         or not base["month_to_date"]
         or not base["last_night"]
     )
@@ -1211,105 +1378,6 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
             if not base["season"]:
                 base["season"] = ncaa_payload.get("season") or {}
             base["upcoming_series"] = ncaa_payload.get("upcoming_series") or []
-
-            # Upgrade from team summaries to individual player lines when NCAA boxscore data resolves.
-            games = ncaa_payload.get("_games") or []
-            if games:
-                today = date.today()
-                yday = today - timedelta(days=1)
-                is_p = is_pitcher(c.position)
-                month_line = _blank_individual_line(is_p)
-                season_line = _blank_individual_line(is_p)
-                last_line: dict[str, Any] = {}
-
-                def player_row_for_game(g: dict[str, Any]) -> dict[str, Any] | None:
-                    cid = _safe_int(g.get("contest_id"))
-                    if not cid:
-                        return None
-                    box = fetch_ncaa_boxscore_baseball(cid)
-                    if not box:
-                        return None
-                    team_box = box.get("teamBoxscore") or []
-                    if len(team_box) != 2:
-                        return None
-                    teams_meta = box.get("teams") or []
-                    idx = 0
-                    if len(teams_meta) >= 2:
-                        want_home = bool((g.get("team") or {}).get("is_home"))
-                        idx = 0 if bool(teams_meta[0].get("isHome")) == want_home else 1
-                    player_stats = (team_box[idx] or {}).get("playerStats") or []
-                    return _pick_ncaa_player_row(player_stats, c.name)
-
-                # Last-night individual line (if played)
-                yday_games = [g for g in games if g.get("date") == yday]
-                for g in yday_games:
-                    prow = player_row_for_game(g)
-                    if prow:
-                        last_line = _extract_individual_line(prow, is_p)
-                        break
-
-                # Season line from most recent appearance's season-to-date counters
-                recent_games = sorted(
-                    [g for g in games if isinstance(g.get("date"), date) and g.get("date") <= today],
-                    key=lambda x: x.get("date"),
-                    reverse=True,
-                )
-                for g in recent_games:
-                    prow = player_row_for_game(g)
-                    if not prow:
-                        continue
-                    if is_p:
-                        ps = prow.get("pitcherStats") or {}
-                        season_line = {
-                            "ip": round(_to_float(ps.get("inningsPitched")), 1),
-                            "h": _to_int(ps.get("hitsAllowed")),
-                            "er": _to_int(ps.get("earnedRunsAllowed")),
-                            "r": _to_int(ps.get("runsAllowed")),
-                            "bb": _to_int(ps.get("walksAllowed")),
-                            "k": _to_int(ps.get("strikeouts")),
-                            "hr": _to_int(ps.get("homeRunsAllowed")),
-                            "bf": _to_int(ps.get("battersFaced")),
-                            "era": _to_float(ps.get("era")),
-                        }
-                    else:
-                        hs = prow.get("hittingSeason") or prow.get("batterStats") or {}
-                        obp = _to_float_or_none(hs.get("onBasePercentage"))
-                        slg = _to_float_or_none(hs.get("sluggingPercentage"))
-                        ops = _to_float_or_none(hs.get("ops"))
-                        if ops is None and obp is not None and slg is not None:
-                            ops = round(obp + slg, 3)
-                        season_line = {
-                            "ab": _to_int(hs.get("atBats")),
-                            "h": _to_int(hs.get("hits")),
-                            "r": _to_int(hs.get("runsScored")),
-                            "rbi": _to_int(hs.get("runsBattedIn")),
-                            "bb": _to_int(hs.get("walks")),
-                            "k": _to_int(hs.get("strikeouts")),
-                            "avg": _to_float(hs.get("battingAvg")),
-                            "obp": obp if obp is not None else 0.0,
-                            "slg": slg if slg is not None else 0.0,
-                            "ops": ops if ops is not None else 0.0,
-                        }
-                    break
-
-                # Month-to-date: aggregate up to the last 5 games this month where player appeared.
-                month_games = [
-                    g for g in recent_games
-                    if isinstance(g.get("date"), date) and g["date"].year == today.year and g["date"].month == today.month
-                ][:5]
-                for g in month_games:
-                    prow = player_row_for_game(g)
-                    if not prow:
-                        continue
-                    line = _extract_individual_line(prow, is_p)
-                    month_line = _add_lines(month_line, line)
-
-                if season_line != _blank_individual_line(is_p):
-                    base["season"] = _with_rate_stats(season_line, is_p)
-                if month_line != _blank_individual_line(is_p):
-                    base["month_to_date"] = _with_rate_stats(month_line, is_p)
-                if last_line:
-                    base["last_night"] = _with_rate_stats(last_line, is_p)
         except Exception:
             pass
     return base
