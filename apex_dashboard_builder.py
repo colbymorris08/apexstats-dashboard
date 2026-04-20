@@ -21,7 +21,8 @@ API = "https://statsapi.mlb.com/api/v1"
 NCAA_GQL_BASE = "https://sdataprod.ncaa.com"
 NCAA_SPORT_CODE = "MBA"  # NCAA baseball sport code used by ncaa.com
 NCAA_DIVISION = 1
-NCAA_SEASON_YEAR = 2025
+# Must match the current college season for contest schedules (use calendar year).
+NCAA_SEASON_YEAR = SEASON
 NCAA_CONTESTS_HASH = "6b26e5cda954c1302873c52835bfd223e169e2068b12511e92b3ef29fac779c2"
 NCAA_CONTESTS_BY_DATE: dict[str, list[dict[str, Any]]] = {}
 NCAA_BOX_BASEBALL_HASH = "5e92118b2f424040aa96067aba6d34e882165aaf02e9e73cb9d69317066c6ae8"
@@ -29,8 +30,13 @@ NCAA_BOX_BY_CONTEST_ID: dict[int, dict[str, Any] | None] = {}
 D1_PLAYERS_SEARCH_JSON = "https://d1baseball.com/wp-content/themes/d1-staxx/data/2026-players.json"
 D1_PLAYERS_INDEX: list[dict[str, Any]] | None = None
 D1_PLAYER_STATS_CACHE: dict[str, dict[str, Any] | None] = {}
+NCAA_SCHOOL_PAYLOAD_CACHE: dict[str, dict[str, Any]] = {}
 
 PITCHER_POS = {"RHP", "LHP", "SP", "RP", "P"}
+# Exclude from pro tab (still in workbook for records, but not shown on dashboard).
+PRO_CLIENT_EXCLUDE_NAMES: frozenset[str] = frozenset({"alyssa nakken", "jordan viars"})
+# Sheet quirks: treat as hitter for college stat tables / D1 scrape.
+COLLEGE_FORCE_HITTER_NAMES: frozenset[str] = frozenset({"ethan surowiec"})
 AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
 TEAM_CATALOG: list[dict[str, Any]] | None = None
 # MLB + affiliated minors; used so call-ups and reassignments resolve from real game logs.
@@ -608,6 +614,122 @@ def fetch_ncaa_school_payload(school: str, weeks: int = 4) -> dict[str, Any]:
         "season": agg(season_games),
         "_games": school_games,
     }
+
+
+def get_cached_ncaa_school_payload(school: str, weeks: int = 4) -> dict[str, Any]:
+    key = _norm_school(school)
+    if not key:
+        return {}
+    if key not in NCAA_SCHOOL_PAYLOAD_CACHE:
+        NCAA_SCHOOL_PAYLOAD_CACHE[key] = fetch_ncaa_school_payload(school, weeks=weeks)
+    return NCAA_SCHOOL_PAYLOAD_CACHE[key]
+
+
+def college_is_pitcher(c: Client) -> bool:
+    if _norm_player_name(c.name) in COLLEGE_FORCE_HITTER_NAMES:
+        return False
+    return is_pitcher(c.position)
+
+
+def _amateur_line_to_pro_keys(raw: dict[str, Any], is_p: bool) -> dict[str, Any]:
+    """Align NCAA line dicts with MLB Stats API-ish keys for the dashboard tables."""
+    if is_p:
+        ip = raw.get("ip")
+        ip_s = ""
+        if ip is not None and ip != "":
+            ip_s = str(ip).strip()
+        return {
+            "inningsPitched": ip_s or "0",
+            "hits": to_number(raw.get("h")),
+            "runs": to_number(raw.get("r")),
+            "earnedRuns": to_number(raw.get("er")),
+            "baseOnBalls": to_number(raw.get("bb")),
+            "strikeOuts": to_number(raw.get("k")),
+            "homeRuns": to_number(raw.get("hr")),
+            "era": to_number(raw.get("era")),
+        }
+    return {
+        "atBats": to_number(raw.get("ab")),
+        "runs": to_number(raw.get("r")),
+        "hits": to_number(raw.get("h")),
+        "rbi": to_number(raw.get("rbi")),
+        "baseOnBalls": to_number(raw.get("bb")),
+        "strikeOuts": to_number(raw.get("k")),
+        "avg": to_number(raw.get("avg")),
+        "ops": to_number(raw.get("ops")),
+    }
+
+
+def _player_row_from_ncaa_contest(
+    g: dict[str, Any], school: str, client_name: str
+) -> dict[str, Any] | None:
+    cid = _safe_int(g.get("contest_id"))
+    if not cid:
+        return None
+    box = fetch_ncaa_boxscore_baseball(cid)
+    if not box:
+        return None
+    team_box = box.get("teamBoxscore") or []
+    if len(team_box) != 2:
+        return None
+    teams_meta = box.get("teams") or []
+    idx = 0
+    school_n = _norm_school(school)
+    if len(teams_meta) >= 2:
+        for i, tm in enumerate(teams_meta[:2]):
+            nm = str(tm.get("nameShort") or tm.get("name") or "")
+            sn = _norm_school(nm)
+            if sn and (sn == school_n or school_n in sn or sn in school_n):
+                idx = i
+                break
+        else:
+            want_home = bool((g.get("team") or {}).get("is_home"))
+            idx = 0 if bool(teams_meta[0].get("isHome")) == want_home else 1
+    player_stats = (team_box[idx] or {}).get("playerStats") or []
+    return _pick_ncaa_player_row(player_stats, client_name)
+
+
+def ncaa_player_last_night_and_month(
+    c: Client, school: str, is_p: bool, ncaa_payload: dict[str, Any]
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Per-player lines from NCAA.com team schedule + boxscores (same source as team search)."""
+    games: list[dict[str, Any]] = list(ncaa_payload.get("_games") or [])
+    today = date.today()
+    yday = today - timedelta(days=1)
+    mstart = today.replace(day=1)
+
+    def is_final(g: dict[str, Any]) -> bool:
+        return g.get("status") == "final" or g.get("state") in {"C", "F", "3"}
+
+    last_keys: dict[str, Any] = {}
+    for g in games:
+        if g.get("date") == yday and is_final(g):
+            prow = _player_row_from_ncaa_contest(g, school, c.name)
+            if prow:
+                last_raw = _with_rate_stats(_extract_individual_line(prow, is_p), is_p)
+                last_keys = _amateur_line_to_pro_keys(last_raw, is_p)
+                break
+
+    month_raw = _blank_individual_line(is_p)
+    month_games = [
+        g
+        for g in games
+        if isinstance(g.get("date"), date)
+        and mstart <= g["date"] <= today
+        and is_final(g)
+    ]
+    for g in month_games[:45]:
+        prow = _player_row_from_ncaa_contest(g, school, c.name)
+        if not prow:
+            continue
+        line = _extract_individual_line(prow, is_p)
+        month_raw = _add_lines(month_raw, line)
+    month_keys: dict[str, Any] = {}
+    if month_raw != _blank_individual_line(is_p):
+        month_merged = _with_rate_stats(month_raw, is_p)
+        month_keys = _amateur_line_to_pro_keys(month_merged, is_p)
+
+    return last_keys, month_keys
 
 
 def get_team_catalog() -> list[dict[str, Any]]:
@@ -1288,9 +1410,11 @@ def build_client_payload(c: Client) -> dict[str, Any]:
 
 def build_amateur_payload(c: Client) -> dict[str, Any]:
     """
-    Build amateur client payload.
-    Tries StatsAPI resolution first; otherwise keeps school/team metadata and schedule link.
+    College clients: D1Baseball season table + NCAA.com team schedule/boxscores for last night & MTD.
+    (No MLB Stats API for school-based amateurs — avoids wrong-player matches and bad P/pos splits.)
     """
+    school = (c.school_or_team or c.minor_affiliate or "").strip()
+    is_p = college_is_pitcher(c)
     base = {
         "name": c.name,
         "position": c.position,
@@ -1300,7 +1424,7 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
         "major_affiliate": c.major_affiliate,
         "agent": c.agent,
         "agent_last": c.agent_last,
-        "is_pitcher": is_pitcher(c.position),
+        "is_pitcher": is_p,
         "organization": c.school_or_team,
         "school_or_team": c.school_or_team,
         "current_team": c.school_or_team,
@@ -1313,79 +1437,43 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
         "season": {},
         "upcoming_series": [],
     }
-    pid = resolve_player_id(c) if c.name else None
-    group = stat_group(c.position)
-    yday = date.today() - timedelta(days=1)
-    mstart = date.today().replace(day=1)
-    is_p = is_pitcher(c.position)
 
-    # D1Baseball player search + player page season table (preferred source for college season stats).
-    d1_url = resolve_d1_player_url(c.name, c.school_or_team or c.minor_affiliate)
+    # Season totals from D1 player page (search index + 2026 table).
+    d1_url = resolve_d1_player_url(c.name, school)
     d1_season = fetch_d1_player_stats(d1_url, is_p) if d1_url else {}
     if d1_url:
         base["team_schedule_url"] = d1_url
     if d1_season:
         base["season"] = d1_season
 
-    if pid:
-        roster_team = fetch_current_team_from_person(pid)
-        latest_team = fetch_latest_team_from_gamelog_all_sports(pid, group)
-        tid = _safe_int(roster_team.get("team_id")) or _safe_int(latest_team.get("team_id"))
-        if tid:
-            team_ctx = get_team_context(tid)
-            stat_sport_id = team_ctx.get("sport_id") or 11
-            base["organization"] = team_ctx.get("organization") or base["organization"]
-            base["current_team"] = team_ctx.get("team_name") or base["current_team"]
-            base["current_team_location"] = team_ctx.get("team_location", "")
-            base["team_level"] = team_ctx.get("team_level") or base["team_level"]
-            base["team_schedule_url"] = team_ctx.get("schedule_url") or base["team_schedule_url"]
-            try:
-                base["last_night"] = {
-                    k: to_number(v) for k, v in fetch_last_night_from_gamelog_all_sports(pid, group, yday).items()
-                }
-            except Exception:
-                base["last_night"] = {}
-            try:
-                base["month_to_date"] = {
-                    k: to_number(v)
-                    for k, v in fetch_player_stats(pid, group, "byDateRange", stat_sport_id, mstart, date.today()).items()
-                }
-            except Exception:
-                base["month_to_date"] = {}
-            try:
-                base["season"] = {
-                    k: to_number(v) for k, v in fetch_player_stats(pid, group, "season", stat_sport_id).items()
-                }
-            except Exception:
-                base["season"] = {}
-            try:
-                base["upcoming_series"] = fetch_team_schedule(tid, weeks=4)
-            except Exception:
-                base["upcoming_series"] = []
-    # Backfill amateur stats/schedules from NCAA feed when pro/miLB APIs are incomplete.
-    needs_ncaa = (
-        not base["upcoming_series"]
-        or not base["month_to_date"]
-        or not base["last_night"]
-    )
-    if needs_ncaa:
+    if school:
         try:
-            ncaa_payload = fetch_ncaa_school_payload(c.school_or_team or c.minor_affiliate, weeks=4)
+            ncaa_payload = get_cached_ncaa_school_payload(school, weeks=4)
+            base["upcoming_series"] = ncaa_payload.get("upcoming_series") or []
+
+            ln_ind, mtd_ind = ncaa_player_last_night_and_month(c, school, is_p, ncaa_payload)
+            if ln_ind:
+                base["last_night"] = {k: to_number(v) for k, v in ln_ind.items() if v is not None}
+            if mtd_ind:
+                base["month_to_date"] = {k: to_number(v) for k, v in mtd_ind.items() if v is not None}
+
+            # Team-level fallbacks (W/L, runs) if boxscore did not resolve the player row.
             if not base["last_night"]:
                 base["last_night"] = ncaa_payload.get("last_night") or {}
             if not base["month_to_date"]:
                 base["month_to_date"] = ncaa_payload.get("month_to_date") or {}
             if not base["season"]:
                 base["season"] = ncaa_payload.get("season") or {}
-            base["upcoming_series"] = ncaa_payload.get("upcoming_series") or []
         except Exception:
             pass
     return base
 
 
 def build_dashboard_data() -> dict[str, Any]:
+    NCAA_SCHOOL_PAYLOAD_CACHE.clear()
     clients = load_clients(SOURCE_XLSX)
     pro = [c for c in clients if not c.is_amateur]
+    pro = [c for c in pro if _norm_player_name(c.name) not in PRO_CLIENT_EXCLUDE_NAMES]
     amateur = [c for c in clients if c.is_amateur]
     # Primary amateur source now comes from the dedicated Desktop list.
     # Fallback to legacy amateur rows from the main client workbook if needed.
