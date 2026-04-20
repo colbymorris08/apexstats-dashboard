@@ -7,6 +7,7 @@ from datetime import UTC, date, datetime, timedelta
 from io import StringIO
 from pathlib import Path
 from typing import Any
+import time
 import urllib.parse
 import re
 
@@ -57,17 +58,27 @@ class Client:
     school_or_team: str = ""
 
 
-def _req_json(url: str) -> dict[str, Any]:
-    r = requests.get(url, timeout=25)
-    r.raise_for_status()
-    return r.json()
+_HTTP_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; ApexDashboard/1.0; +https://github.com/colbymorris08/apexstats-dashboard)"}
+
+
+def _req_json(url: str, *, timeout: int = 45, retries: int = 4) -> dict[str, Any]:
+    """GET JSON with browser-like UA and short retries (MLB/NCAA can stall or reset connections)."""
+    last: Exception | None = None
+    for attempt in range(retries):
+        try:
+            r = requests.get(url, timeout=timeout, headers=_HTTP_HEADERS)
+            r.raise_for_status()
+            return r.json()
+        except (requests.RequestException, OSError) as e:
+            last = e
+            if attempt + 1 >= retries:
+                raise
+            time.sleep(0.75 * (2**attempt))
+    raise last  # pragma: no cover
 
 
 def _req_json_with_headers(url: str) -> dict[str, Any]:
-    headers = {"User-Agent": "Mozilla/5.0"}
-    r = requests.get(url, timeout=25, headers=headers)
-    r.raise_for_status()
-    return r.json()
+    return _req_json(url)
 
 
 def _safe_int(x: Any) -> int | None:
