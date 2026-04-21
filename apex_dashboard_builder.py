@@ -52,6 +52,16 @@ PRO_MLB_PLAYER_ID_OVERRIDES: dict[str, int] = {
     "dale stanavich": 689359,
     # people/search "Ryan Harvey" returns an unrelated older player (458243); Tigers prospect:
     "ryan harvey": 687308,
+    # people/search often returns [] for Tookoian despite valid player endpoint.
+    "samuel tookoian": 702494,
+    "sam tookoian": 702494,
+    "sarkis tookoian": 702494,
+    # Fraizer/Frazier spellings in client sheets.
+    "matthew frazier": 670208,
+    "matt frazier": 670208,
+    "matthew fraizer": 670208,
+    "matt fraizer": 670208,
+    "ruben ibarra": 702140,
 }
 # Normalized client name -> people/search query (API spelling differs from the roster sheet).
 PRO_MLB_PEOPLE_SEARCH_ALIASES: dict[str, str] = {
@@ -1087,8 +1097,11 @@ def fetch_player_stats(
     sport_id: int,
     start: date | None = None,
     end: date | None = None,
+    *,
+    season: int | None = None,
 ) -> dict[str, Any]:
-    params: dict[str, Any] = {"stats": stat_type, "group": group, "season": SEASON, "sportId": sport_id}
+    season_year = SEASON if season is None else season
+    params: dict[str, Any] = {"stats": stat_type, "group": group, "season": season_year, "sportId": sport_id}
     if sport_id == 1:
         params["gameType"] = "R"
     if start and end:
@@ -1098,6 +1111,35 @@ def fetch_player_stats(
     js = _req_json(url)
     splits = (js.get("stats") or [{}])[0].get("splits") or []
     return splits[0].get("stat", {}) if splits else {}
+
+
+def _stats_non_empty(st: dict[str, Any]) -> bool:
+    return bool(st) and any(v not in (None, "", 0, 0.0) for v in st.values())
+
+
+def fetch_player_stats_preferred_then_all_sports(
+    player_id: int,
+    group: str,
+    stat_type: str,
+    preferred_sport_id: int,
+    start: date | None = None,
+    end: date | None = None,
+    *,
+    season: int | None = None,
+) -> dict[str, Any]:
+    """Try preferred sport first, then scan other pro sport IDs for non-empty stats."""
+    order = [preferred_sport_id] + [s for s in SPORT_IDS_PRO if s != preferred_sport_id]
+    for sid in order:
+        try:
+            st = fetch_player_stats(player_id, group, stat_type, sid, start, end, season=season)
+        except Exception:
+            continue
+        if _stats_non_empty(st):
+            return st
+    try:
+        return fetch_player_stats(player_id, group, stat_type, preferred_sport_id, start, end, season=season)
+    except Exception:
+        return {}
 
 
 def _gamelog_splits_for_sport(player_id: int, group: str, sport_id: int) -> list[dict[str, Any]]:
@@ -1454,16 +1496,19 @@ def build_client_payload(c: Client) -> dict[str, Any]:
         except Exception:
             base["last_night"] = {}
         try:
-            base["month_to_date"] = {
-                k: json_stat_value(k, v)
-                for k, v in fetch_player_stats(pid, group, "byDateRange", stat_sport_id, mstart, date.today()).items()
-            }
+            mtd_raw = fetch_player_stats_preferred_then_all_sports(
+                pid, group, "byDateRange", stat_sport_id, mstart, date.today()
+            )
+            base["month_to_date"] = {k: json_stat_value(k, v) for k, v in mtd_raw.items()}
         except Exception:
             base["month_to_date"] = {}
         try:
-            base["season"] = {
-                k: json_stat_value(k, v) for k, v in fetch_player_stats(pid, group, "season", stat_sport_id).items()
-            }
+            st_season = fetch_player_stats_preferred_then_all_sports(pid, group, "season", stat_sport_id)
+            if not _stats_non_empty(st_season) and SEASON > 2001:
+                st_season = fetch_player_stats_preferred_then_all_sports(
+                    pid, group, "season", stat_sport_id, season=SEASON - 1
+                )
+            base["season"] = {k: json_stat_value(k, v) for k, v in st_season.items()}
         except Exception:
             base["season"] = {}
 

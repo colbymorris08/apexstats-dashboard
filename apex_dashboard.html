@@ -185,16 +185,13 @@
     function fmtIp(v) {
       if (v === "" || v === undefined || v === null) return "";
       const t = typeof v === "string" ? v.trim() : "";
-      if (t && /^\d+\.\d$/.test(t)) return t;
+      if (t && /^\d+\.[012]$/.test(t)) return t;
       const n = Number(v);
       if (!Number.isFinite(n)) return t || String(v);
-      const w = n >= 0 ? Math.floor(n) : Math.ceil(n);
-      const frac = Math.abs(n - w);
-      if (frac < 1e-6) return `${w}.0`;
-      const o3 = frac * 3;
-      const o = Math.round(o3);
-      if (o >= 1 && o <= 2 && Math.abs(o3 - o) < 0.01) return `${w}.${o}`;
-      return n.toFixed(2);
+      const outs = Math.max(0, Math.round(n * 3));
+      const whole = Math.floor(outs / 3);
+      const rem = outs % 3;
+      return `${whole}.${rem}`;
     }
 
     function formatStatCell(stat, col) {
