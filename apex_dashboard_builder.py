@@ -52,6 +52,8 @@ PRO_MLB_PLAYER_ID_OVERRIDES: dict[str, int] = {
     "dale stanavich": 689359,
     # people/search "Ryan Harvey" returns an unrelated older player (458243); Tigers prospect:
     "ryan harvey": 687308,
+    # Twins pitching prospect; people/search is unreliable for this entry.
+    "ryan gallagher": 801594,
     # people/search often returns [] for Tookoian despite valid player endpoint.
     "samuel tookoian": 702494,
     "sam tookoian": 702494,
@@ -75,6 +77,14 @@ AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
 TEAM_CATALOG: list[dict[str, Any]] | None = None
 # MLB + affiliated minors; used so call-ups and reassignments resolve from real game logs.
 SPORT_IDS_PRO: tuple[int, ...] = (1, 11, 12, 13, 14, 15, 16, 17)
+FOREIGN_LEAGUES: frozenset[str] = frozenset({"NPB", "KBO", "CPBL"})
+PRO_FOREIGN_BR_URLS: dict[str, str] = {
+    # International pro stats on Baseball-Reference register pages.
+    "spencer howard": "https://www.baseball-reference.com/register/player.fcgi?id=howard000spe",
+    "jackson stephens": "https://www.baseball-reference.com/register/player.fcgi?id=stephe003jac",
+    "mitch white": "https://www.baseball-reference.com/minors/player.cgi?id=white-000mit",
+}
+FOREIGN_BR_SEASON_CACHE: dict[tuple[str, bool], dict[str, Any] | None] = {}
 
 
 @dataclass
@@ -1142,6 +1152,118 @@ def fetch_player_stats_preferred_then_all_sports(
         return {}
 
 
+def _flatten_columns(df: pd.DataFrame) -> pd.DataFrame:
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = [" ".join(str(p) for p in c if str(p) != "nan").strip() for c in df.columns]
+    else:
+        df.columns = [str(c).strip() for c in df.columns]
+    return df
+
+
+def _find_col(cols: list[str], names: tuple[str, ...]) -> str | None:
+    low = {c.lower(): c for c in cols}
+    for n in names:
+        if n.lower() in low:
+            return low[n.lower()]
+    for c in cols:
+        cl = c.lower()
+        if any(n.lower() in cl for n in names):
+            return c
+    return None
+
+
+def fetch_foreign_br_season_stats(client_name: str, is_pitcher_role: bool) -> dict[str, Any]:
+    nn = _norm_player_name(client_name)
+    url = PRO_FOREIGN_BR_URLS.get(nn)
+    if not url:
+        return {}
+    key = (nn, is_pitcher_role)
+    if key in FOREIGN_BR_SEASON_CACHE:
+        return FOREIGN_BR_SEASON_CACHE[key] or {}
+    try:
+        html = requests.get(url, timeout=35, headers={"User-Agent": "Mozilla/5.0"}).text
+        dfs = pd.read_html(StringIO(html))
+    except Exception:
+        FOREIGN_BR_SEASON_CACHE[key] = None
+        return {}
+
+    best: tuple[int, dict[str, Any]] | None = None
+    for raw_df in dfs:
+        df = _flatten_columns(raw_df.copy())
+        cols = list(df.columns)
+        year_col = _find_col(cols, ("Year",))
+        lg_col = _find_col(cols, ("Lg", "League"))
+        lev_col = _find_col(cols, ("Lev", "Level"))
+        if not year_col or not lg_col:
+            continue
+        tm_col = _find_col(cols, ("Tm", "Team"))
+        ip_col = _find_col(cols, ("IP",))
+        era_col = _find_col(cols, ("ERA",))
+        so_col = _find_col(cols, ("SO", "K"))
+        bb_col = _find_col(cols, ("BB",))
+        h_col = _find_col(cols, ("H",))
+        er_col = _find_col(cols, ("ER",))
+        r_col = _find_col(cols, ("R",))
+        hr_col = _find_col(cols, ("HR",))
+        ab_col = _find_col(cols, ("AB",))
+        hit_col = _find_col(cols, ("H",))
+        rbi_col = _find_col(cols, ("RBI",))
+        avg_col = _find_col(cols, ("AVG",))
+        ops_col = _find_col(cols, ("OPS",))
+
+        for _, row in df.iterrows():
+            y = _year_as_int(row.get(year_col))
+            if y is None:
+                continue
+            lg = str(row.get(lg_col) or "").strip().upper()
+            lev = str(row.get(lev_col) or "").strip().upper() if lev_col else ""
+            is_foreign = (
+                lg in FOREIGN_LEAGUES
+                or "KBO" in lg
+                or "CPBL" in lg
+                or lg.startswith("JP")
+                or lev == "FGN"
+            )
+            if not is_foreign:
+                continue
+            if is_pitcher_role and not ip_col:
+                continue
+            season_line: dict[str, Any]
+            if is_pitcher_role:
+                season_line = {
+                    "inningsPitched": json_stat_value("inningsPitched", row.get(ip_col)) if ip_col else None,
+                    "hits": to_number(row.get(h_col)) if h_col else None,
+                    "runs": to_number(row.get(r_col)) if r_col else None,
+                    "earnedRuns": to_number(row.get(er_col)) if er_col else None,
+                    "baseOnBalls": to_number(row.get(bb_col)) if bb_col else None,
+                    "strikeOuts": to_number(row.get(so_col)) if so_col else None,
+                    "homeRuns": to_number(row.get(hr_col)) if hr_col else None,
+                    "era": to_number(row.get(era_col)) if era_col else None,
+                }
+            else:
+                season_line = {
+                    "atBats": to_number(row.get(ab_col)) if ab_col else None,
+                    "hits": to_number(row.get(hit_col)) if hit_col else None,
+                    "runs": to_number(row.get(r_col)) if r_col else None,
+                    "rbi": to_number(row.get(rbi_col)) if rbi_col else None,
+                    "avg": to_number(row.get(avg_col)) if avg_col else None,
+                    "ops": to_number(row.get(ops_col)) if ops_col else None,
+                }
+            if best is None or y > best[0]:
+                if tm_col:
+                    season_line["_foreign_team"] = str(row.get(tm_col) or "").strip()
+                season_line["_foreign_league"] = lg
+                season_line["_foreign_year"] = y
+                best = (y, season_line)
+
+    if best is None:
+        FOREIGN_BR_SEASON_CACHE[key] = None
+        return {}
+    out = {k: v for k, v in best[1].items() if v is not None}
+    FOREIGN_BR_SEASON_CACHE[key] = out
+    return out
+
+
 def _gamelog_splits_for_sport(player_id: int, group: str, sport_id: int) -> list[dict[str, Any]]:
     params: dict[str, Any] = {"stats": "gameLog", "group": group, "season": SEASON, "sportId": sport_id}
     if sport_id == 1:
@@ -1517,6 +1639,20 @@ def build_client_payload(c: Client) -> dict[str, Any]:
             base["upcoming_series"] = fetch_team_schedule(tid, weeks=4)
         except Exception:
             base["upcoming_series"] = []
+
+    # Foreign league preference for known clients (NPB/KBO/CPBL) from Baseball-Reference.
+    nn = _norm_player_name(c.name)
+    if nn in PRO_FOREIGN_BR_URLS:
+        foreign_season = fetch_foreign_br_season_stats(c.name, base["is_pitcher"])
+        if foreign_season:
+            base["season"] = {k: v for k, v in foreign_season.items() if not str(k).startswith("_")}
+            f_team = str(foreign_season.get("_foreign_team", "")).strip()
+            f_lg = str(foreign_season.get("_foreign_league", "")).strip()
+            if f_team:
+                base["current_team"] = f_team
+                base["organization"] = f_team
+            if f_lg:
+                base["team_level"] = f_lg
     return base
 
 
@@ -1587,6 +1723,7 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
 
 def build_dashboard_data() -> dict[str, Any]:
     NCAA_SCHOOL_PAYLOAD_CACHE.clear()
+    FOREIGN_BR_SEASON_CACHE.clear()
     clients = load_clients(SOURCE_XLSX)
     pro = [c for c in clients if not c.is_amateur]
     pro = [c for c in pro if _norm_player_name(c.name) not in PRO_CLIENT_EXCLUDE_NAMES]
