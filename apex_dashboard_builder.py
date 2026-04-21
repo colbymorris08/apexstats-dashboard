@@ -285,8 +285,9 @@ def fetch_d1_player_stats(player_url: str, is_pitcher_role: bool) -> dict[str, A
         return {}
 
     if is_pitcher_role:
+        ip_cell = _to_str_num(row.get("IP"))
         out = {
-            "inningsPitched": _to_str_num(row.get("IP")),
+            "inningsPitched": json_stat_value("inningsPitched", ip_cell) if ip_cell else "0.0",
             "hits": to_number(row.get("H")),
             "runs": to_number(row.get("R")),
             "earnedRuns": to_number(row.get("ER")),
@@ -668,12 +669,12 @@ def college_is_pitcher(c: Client) -> bool:
 def _amateur_line_to_pro_keys(raw: dict[str, Any], is_p: bool) -> dict[str, Any]:
     """Align NCAA line dicts with MLB Stats API-ish keys for the dashboard tables."""
     if is_p:
-        ip = raw.get("ip")
-        ip_s = ""
-        if ip is not None and ip != "":
-            ip_s = str(ip).strip()
+        ip_val = raw.get("ip")
+        ip_s = json_stat_value("inningsPitched", ip_val) if ip_val not in (None, "") else None
+        if not ip_s:
+            ip_s = "0.0"
         return {
-            "inningsPitched": ip_s or "0",
+            "inningsPitched": ip_s,
             "hits": to_number(raw.get("h")),
             "runs": to_number(raw.get("r")),
             "earnedRuns": to_number(raw.get("er")),
@@ -1284,6 +1285,26 @@ def to_number(v: Any) -> float | int | None:
         return None
 
 
+def json_stat_value(stat_key: str, v: Any) -> float | int | str | None:
+    """JSON-safe stat values. MLB inningsPitched uses baseball strings (4.0, 4.1, 4.2); never coerce to int."""
+    if stat_key != "inningsPitched":
+        return to_number(v)
+    if v is None or v == "":
+        return None
+    s = str(v).strip()
+    if not s:
+        return None
+    if re.fullmatch(r"\d+\.\d", s):
+        return s
+    try:
+        x = float(s)
+    except ValueError:
+        return s
+    outs = int(round(x * 3))
+    whole, rem = divmod(max(0, outs), 3)
+    return f"{whole}.{rem}"
+
+
 def _slug(s: str) -> str:
     return (
         (s or "")
@@ -1415,7 +1436,7 @@ def build_client_payload(c: Client) -> dict[str, Any]:
     if pid:
         try:
             ln = {
-                k: to_number(v)
+                k: json_stat_value(k, v)
                 for k, v in fetch_last_night_from_gamelog_all_sports(pid, group, yday).items()
             }
             # Fallback for environments where gameLog is sparse for that day.
@@ -1427,21 +1448,21 @@ def build_client_payload(c: Client) -> dict[str, Any]:
                     except Exception:
                         continue
                     if any(v not in (None, "", 0, 0.0) for v in day_stats.values()):
-                        ln = {k: to_number(v) for k, v in day_stats.items()}
+                        ln = {k: json_stat_value(k, v) for k, v in day_stats.items()}
                         break
             base["last_night"] = ln
         except Exception:
             base["last_night"] = {}
         try:
             base["month_to_date"] = {
-                k: to_number(v)
+                k: json_stat_value(k, v)
                 for k, v in fetch_player_stats(pid, group, "byDateRange", stat_sport_id, mstart, date.today()).items()
             }
         except Exception:
             base["month_to_date"] = {}
         try:
             base["season"] = {
-                k: to_number(v) for k, v in fetch_player_stats(pid, group, "season", stat_sport_id).items()
+                k: json_stat_value(k, v) for k, v in fetch_player_stats(pid, group, "season", stat_sport_id).items()
             }
         except Exception:
             base["season"] = {}
@@ -1499,9 +1520,13 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
 
             ln_ind, mtd_ind = ncaa_player_last_night_and_month(c, school, is_p, ncaa_payload)
             if ln_ind:
-                base["last_night"] = {k: to_number(v) for k, v in ln_ind.items() if v is not None}
+                base["last_night"] = {
+                    k: json_stat_value(k, v) for k, v in ln_ind.items() if v is not None
+                }
             if mtd_ind:
-                base["month_to_date"] = {k: to_number(v) for k, v in mtd_ind.items() if v is not None}
+                base["month_to_date"] = {
+                    k: json_stat_value(k, v) for k, v in mtd_ind.items() if v is not None
+                }
 
             # Team-level fallbacks (W/L, runs) if boxscore did not resolve the player row.
             if not base["last_night"]:

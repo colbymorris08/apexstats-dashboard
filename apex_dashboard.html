@@ -70,8 +70,7 @@
   <div class="muted" id="meta"></div>
   <div class="muted" id="lastNightLabel" style="margin: 6px 0 10px 0;"></div>
   <div class="row" id="mainTabs">
-    <button data-tab="lastNight" class="active">Last Night</button>
-    <button data-tab="pro">Pro Clients</button>
+    <button data-tab="pro" class="active">Pro Clients</button>
     <button data-tab="amateur">Amateur Clients</button>
   </div>
   <div class="row" id="subTabs">
@@ -86,13 +85,12 @@
     <button data-role="hitters">Hitters</button>
   </div>
 
-  <div id="panel-lastNight" class="panel active"></div>
-  <div id="panel-pro" class="panel"></div>
+  <div id="panel-pro" class="panel active"></div>
   <div id="panel-amateur" class="panel"></div>
 
   <script>
     let DATA = null;
-    let activeTab = "lastNight";
+    let activeTab = "pro";
     let activeSubtab = "last_night";
     let activeRole = "all";
     const sortState = {};
@@ -186,7 +184,17 @@
 
     function fmtIp(v) {
       if (v === "" || v === undefined || v === null) return "";
-      return String(v);
+      const t = typeof v === "string" ? v.trim() : "";
+      if (t && /^\d+\.\d$/.test(t)) return t;
+      const n = Number(v);
+      if (!Number.isFinite(n)) return t || String(v);
+      const w = n >= 0 ? Math.floor(n) : Math.ceil(n);
+      const frac = Math.abs(n - w);
+      if (frac < 1e-6) return `${w}.0`;
+      const o3 = frac * 3;
+      const o = Math.round(o3);
+      if (o >= 1 && o <= 2 && Math.abs(o3 - o) < 0.01) return `${w}.${o}`;
+      return n.toFixed(2);
     }
 
     function formatStatCell(stat, col) {
@@ -420,9 +428,9 @@
       const d = (DATA.last_night_date || "").split("-");
       const md = d.length === 3 ? `${Number(d[1])}/${Number(d[2])}` : DATA.last_night_date;
       document.getElementById("lastNightLabel").textContent = `LAST NIGHT DATE: ${md}`;
-      ["lastNight", "pro", "amateur"].forEach((t) => {
+      ["pro", "amateur"].forEach((t) => {
         const panel = document.getElementById(`panel-${t}`);
-        const baseRows = t === "lastNight" ? DATA.pro_clients || [] : rowsForTab(t);
+        const baseRows = rowsForTab(t);
         const rows = roleFilter(baseRows);
         const panelKey = `${t}-${activeSubtab}-${activeRole}`;
         if (activeSubtab === "schedule") renderScheduleTable(rows, panel, panelKey);
