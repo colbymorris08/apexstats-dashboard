@@ -73,6 +73,7 @@ PRO_MLB_PEOPLE_SEARCH_ALIASES: dict[str, str] = {
 }
 # Sheet quirks: treat as hitter for college stat tables / D1 scrape.
 COLLEGE_FORCE_HITTER_NAMES: frozenset[str] = frozenset({"ethan surowiec"})
+COLLEGE_TWO_WAY_NAMES: frozenset[str] = frozenset({"evan dempsey"})
 AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
 TEAM_CATALOG: list[dict[str, Any]] | None = None
 # MLB + affiliated minors; used so call-ups and reassignments resolve from real game logs.
@@ -398,22 +399,32 @@ def _contest_team_entries(contest: dict[str, Any]) -> list[dict[str, Any]]:
 
 def _contest_for_school(contest: dict[str, Any], school: str) -> tuple[dict[str, Any], dict[str, Any]] | None:
     school_n = _norm_school(school)
+    school_tokens = set(school_n.split())
+    raw_words = [w.lower() for w in re.findall(r"[a-zA-Z]+", school or "")]
+    acronym = "".join(w[0] for w in raw_words if w not in {"of", "the", "at"})
+    school_keys = {school_n}
+    if acronym:
+        school_keys.add(acronym)
     teams = _contest_team_entries(contest)
     if len(teams) != 2:
         return None
     for i, t in enumerate(teams):
         tn = _norm_school(t["name"])
         slug_n = _norm_school(t["slug"].replace("-", " "))
-        if (
-            school_n == tn
-            or school_n in tn
-            or tn in school_n
-            or school_n == slug_n
-            or school_n in slug_n
-            or slug_n in school_n
-        ):
+        team_keys = {tn, slug_n}
+        # strict key match first (exact normalized or acronym like UCF/FGCU)
+        if school_keys & team_keys:
             opp = teams[1 - i]
             return t, opp
+        # conservative token overlap fallback (avoid broad "florida" collisions)
+        for k in team_keys:
+            k_tokens = set(k.split())
+            if not school_tokens or not k_tokens:
+                continue
+            ov = school_tokens & k_tokens
+            if len(ov) >= 2 and (ov == school_tokens or ov == k_tokens):
+                opp = teams[1 - i]
+                return t, opp
     return None
 
 
@@ -433,13 +444,29 @@ def _pick_ncaa_player_row(player_stats: list[dict[str, Any]], client_name: str) 
     ln = _norm_token(last)
     # last-name exact + first initial best
     for p in player_stats:
-        p_last = _norm_token(str(p.get("lastName") or ""))
-        p_first = _norm_token(str(p.get("firstName") or "")[:1])
+        raw_last = str(p.get("lastName") or "")
+        raw_first = str(p.get("firstName") or "")
+        p_last = _norm_token(raw_last)
+        p_first = _norm_token(raw_first[:1])
+        # NCAA can return full name in lastName with empty firstName.
+        raw_combo = f"{raw_first} {raw_last}".strip()
+        combo_tokens = {_norm_token(tok) for tok in raw_combo.replace(",", " ").split() if tok}
+        combo_tokens.discard("")
+        combo_first_i = _norm_token(raw_combo[:1]) if raw_combo else ""
+        if ln and ln in combo_tokens and (not f0 or f0 == p_first or f0 == combo_first_i):
+            return p
         if p_last and p_last == ln and (not f0 or p_first == f0):
             return p
     # fallback: last-name exact only
     for p in player_stats:
-        p_last = _norm_token(str(p.get("lastName") or ""))
+        raw_last = str(p.get("lastName") or "")
+        raw_first = str(p.get("firstName") or "")
+        p_last = _norm_token(raw_last)
+        raw_combo = f"{raw_first} {raw_last}".strip()
+        combo_tokens = {_norm_token(tok) for tok in raw_combo.replace(",", " ").split() if tok}
+        combo_tokens.discard("")
+        if ln and ln in combo_tokens:
+            return p
         if p_last and p_last == ln:
             return p
     return None
@@ -684,6 +711,32 @@ def college_is_pitcher(c: Client) -> bool:
     if _norm_player_name(c.name) in COLLEGE_FORCE_HITTER_NAMES:
         return False
     return is_pitcher(c.position)
+
+
+def _split_two_way_amateur(c: Client) -> list[Client]:
+    nn = _norm_player_name(c.name)
+    if nn not in COLLEGE_TWO_WAY_NAMES:
+        return [c]
+    pos_parts = [p.strip().upper() for p in re.split(r"[/,]", c.position or "") if p.strip()]
+    if not pos_parts:
+        pos_parts = [c.position or ""]
+    out: list[Client] = []
+    for p in pos_parts:
+        out.append(
+            Client(
+                name=c.name,
+                position=p,
+                level=c.level,
+                league=c.league,
+                minor_affiliate=c.minor_affiliate,
+                major_affiliate=c.major_affiliate,
+                agent=c.agent,
+                agent_last=c.agent_last,
+                is_amateur=c.is_amateur,
+                school_or_team=c.school_or_team,
+            )
+        )
+    return out
 
 
 def _amateur_line_to_pro_keys(raw: dict[str, Any], is_p: bool) -> dict[str, Any]:
@@ -1729,10 +1782,20 @@ def build_dashboard_data() -> dict[str, Any]:
     pro = [c for c in pro if _norm_player_name(c.name) not in PRO_CLIENT_EXCLUDE_NAMES]
     amateur = [c for c in clients if c.is_amateur]
     # Primary amateur source now comes from the dedicated Desktop list.
-    # Fallback to legacy amateur rows from the main client workbook if needed.
+    # Merge with legacy workbook rows so dedicated list doesn't drop anyone.
     dedicated_amateur = load_amateur_clients(AMATEUR_SOURCE_XLSX)
     if dedicated_amateur:
-        amateur = dedicated_amateur
+        merged: dict[str, Client] = {}
+        for c in amateur:
+            merged[_norm_player_name(c.name)] = c
+        for c in dedicated_amateur:
+            merged[_norm_player_name(c.name)] = c
+        amateur = list(merged.values())
+    # Expand configured two-way amateurs into separate hitter/pitcher rows.
+    amateur_expanded: list[Client] = []
+    for c in amateur:
+        amateur_expanded.extend(_split_two_way_amateur(c))
+    amateur = amateur_expanded
 
     # Same roster + stats resolution for every pro row (no per-player exceptions).
     pro_rows = [build_client_payload(c) for c in pro]
