@@ -78,6 +78,12 @@ AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
 TEAM_CATALOG: list[dict[str, Any]] | None = None
 # MLB + affiliated minors; used so call-ups and reassignments resolve from real game logs.
 SPORT_IDS_PRO: tuple[int, ...] = (1, 11, 12, 13, 14, 15, 16, 17)
+NCAA_SCHOOL_ALIASES: dict[str, tuple[str, ...]] = {
+    # Common ncaa.com short-name variants
+    "florida gulf coast": ("fgcu", "florida gulf coast"),
+    "florida atlantic": ("fau", "florida atlantic", "fla atlantic"),
+    "uc berkeley": ("cal", "california", "uc berkeley"),
+}
 FOREIGN_LEAGUES: frozenset[str] = frozenset({"NPB", "KBO", "CPBL"})
 PRO_FOREIGN_BR_URLS: dict[str, str] = {
     # International pro stats on Baseball-Reference register pages.
@@ -403,6 +409,10 @@ def _contest_for_school(contest: dict[str, Any], school: str) -> tuple[dict[str,
     raw_words = [w.lower() for w in re.findall(r"[a-zA-Z]+", school or "")]
     acronym = "".join(w[0] for w in raw_words if w not in {"of", "the", "at"})
     school_keys = {school_n}
+    for a in NCAA_SCHOOL_ALIASES.get(school_n, ()):
+        aa = _norm_school(a)
+        if aa:
+            school_keys.add(aa)
     if acronym:
         school_keys.add(acronym)
     teams = _contest_team_entries(contest)
@@ -1679,10 +1689,6 @@ def build_client_payload(c: Client) -> dict[str, Any]:
             base["month_to_date"] = {}
         try:
             st_season = fetch_player_stats_preferred_then_all_sports(pid, group, "season", stat_sport_id)
-            if not _stats_non_empty(st_season) and SEASON > 2001:
-                st_season = fetch_player_stats_preferred_then_all_sports(
-                    pid, group, "season", stat_sport_id, season=SEASON - 1
-                )
             base["season"] = {k: json_stat_value(k, v) for k, v in st_season.items()}
         except Exception:
             base["season"] = {}

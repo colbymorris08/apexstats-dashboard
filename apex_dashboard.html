@@ -69,8 +69,13 @@
   <h1>Apex Baseball Client Dashboard</h1>
   <div class="muted" id="meta"></div>
   <div class="muted" id="lastNightLabel" style="margin: 6px 0 10px 0;"></div>
+  <div class="row" id="viewTabs">
+    <button data-view="desktop" class="active">Desktop View</button>
+    <button data-view="mobile">Mobile View</button>
+  </div>
   <div class="row" id="mainTabs">
-    <button data-tab="pro" class="active">Pro Clients</button>
+    <button data-tab="mlb" class="active">MLB</button>
+    <button data-tab="milb">MiLB/Overseas</button>
     <button data-tab="amateur">Amateur Clients</button>
   </div>
   <div class="row" id="subTabs">
@@ -85,17 +90,19 @@
     <button data-role="hitters">Hitters</button>
   </div>
 
-  <div id="panel-pro" class="panel active"></div>
+  <div id="panel-mlb" class="panel active"></div>
+  <div id="panel-milb" class="panel"></div>
   <div id="panel-amateur" class="panel"></div>
 
   <script>
     let DATA = null;
-    let activeTab = "pro";
+    let activeView = "desktop";
+    let activeTab = "mlb";
     let activeSubtab = "last_night";
     let activeRole = "all";
     const sortState = {};
 
-    const BASE_HEADERS = [
+    const BASE_HEADERS_DESKTOP = [
       "Name",
       "Agent Initials",
       "Pos",
@@ -105,6 +112,7 @@
       "Team Location",
       "Schedule",
     ];
+    const BASE_HEADERS_MOBILE = ["Name", "Pos"];
 
     /** Pro + amateur: MLB Stats API keys and NCAA amateur aliases */
     const HITTER_COLS = [
@@ -130,6 +138,59 @@
       { keys: ["era"], header: "Season ERA", kind: "era", sourceStat: "season" },
       { keys: ["era"], header: "Month ERA", kind: "era", sourceStat: "month_to_date" },
     ];
+    const MOBILE_HITTER_COLS_BY_TAB = {
+      last_night: [
+        { keys: ["atBats", "ab"], header: "AB", kind: "int" },
+        { keys: ["runs", "r"], header: "R", kind: "int" },
+        { keys: ["hits", "h"], header: "H", kind: "int" },
+        { keys: ["rbi", "runsBattedIn"], header: "RBI", kind: "int" },
+        { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
+      ],
+      month_to_date: [
+        { keys: ["atBats", "ab"], header: "AB", kind: "int" },
+        { keys: ["runs", "r"], header: "R", kind: "int" },
+        { keys: ["hits", "h"], header: "H", kind: "int" },
+        { keys: ["rbi", "runsBattedIn"], header: "RBI", kind: "int" },
+        { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
+        { keys: ["avg"], header: "AVG", kind: "avg" },
+        { keys: ["ops"], header: "OPS", kind: "ops" },
+      ],
+      season: [
+        { keys: ["atBats", "ab"], header: "AB", kind: "int" },
+        { keys: ["runs", "r"], header: "R", kind: "int" },
+        { keys: ["hits", "h"], header: "H", kind: "int" },
+        { keys: ["rbi", "runsBattedIn"], header: "RBI", kind: "int" },
+        { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
+        { keys: ["avg"], header: "AVG", kind: "avg" },
+        { keys: ["ops"], header: "OPS", kind: "ops" },
+      ],
+    };
+    const MOBILE_PITCHER_COLS_BY_TAB = {
+      last_night: [
+        { keys: ["inningsPitched", "ip"], header: "IP", kind: "ip" },
+        { keys: ["hits", "hitsAllowed", "h"], header: "H", kind: "int" },
+        { keys: ["runs", "r"], header: "R", kind: "int" },
+        { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
+        { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
+        { keys: ["strikeOuts", "k", "so"], header: "SO", kind: "int" },
+      ],
+      month_to_date: [
+        { keys: ["inningsPitched", "ip"], header: "IP", kind: "ip" },
+        { keys: ["hits", "hitsAllowed", "h"], header: "H", kind: "int" },
+        { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
+        { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
+        { keys: ["strikeOuts", "k", "so"], header: "SO", kind: "int" },
+        { keys: ["era"], header: "ERA", kind: "era" },
+      ],
+      season: [
+        { keys: ["inningsPitched", "ip"], header: "IP", kind: "ip" },
+        { keys: ["hits", "hitsAllowed", "h"], header: "H", kind: "int" },
+        { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
+        { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
+        { keys: ["strikeOuts", "k", "so"], header: "SO", kind: "int" },
+        { keys: ["era"], header: "ERA", kind: "era" },
+      ],
+    };
 
     function el(tag, text = "") {
       const e = document.createElement(tag);
@@ -228,7 +289,32 @@
       return td;
     }
 
-    function baseCols(row) {
+    function slugifyTeam(s) {
+      return String(s || "")
+        .trim()
+        .toLowerCase()
+        .replace(/&/g, "and")
+        .replace(/\./g, "")
+        .replace(/'/g, "")
+        .replace(/\s+/g, "-");
+    }
+
+    function scheduleUrlForRow(row) {
+      const level = String(row.team_level || "").toUpperCase();
+      const team = row.current_team || row.school_or_team || "";
+      if (activeTab === "amateur") {
+        if (String(row.team_schedule_url || "").startsWith("http")) return row.team_schedule_url;
+        if (team) return `https://d1baseball.com/?s=${encodeURIComponent(`${team} baseball`)}`;
+        return "";
+      }
+      if (level === "MLB") {
+        return team ? `https://www.mlb.com/${slugifyTeam(team)}/schedule` : row.team_schedule_url || "";
+      }
+      return team ? `https://www.milb.com/${slugifyTeam(team)}/schedule` : row.team_schedule_url || "";
+    }
+
+    function baseCols(row, mobileMode = false) {
+      if (mobileMode) return [row.name || "", row.position || ""];
       return [
         row.name || "",
         row.agent || "",
@@ -251,7 +337,8 @@
       table.className = "stats-table";
       const thead = el("thead");
       const hr = el("tr");
-      const headers = [...BASE_HEADERS, ...cols.map((c) => c.header)];
+      const baseHeaders = activeView === "mobile" ? BASE_HEADERS_MOBILE : BASE_HEADERS_DESKTOP;
+      const headers = [...baseHeaders, ...cols.map((c) => c.header)];
       headers.forEach((h, i) => {
         const th = el("th", h);
         th.className = "sortable";
@@ -266,8 +353,8 @@
       rows.forEach((r) => {
         const tr = el("tr");
         [
-          ...baseCols(r),
-          r.team_schedule_url || "",
+          ...baseCols(r, activeView === "mobile"),
+          ...(activeView === "mobile" ? [] : [scheduleUrlForRow(r)]),
           ...cols.map((c) => formatStatCell(statForCol(r, statKey, c), c)),
         ].forEach((v, i) => {
           const td = tdWithValue(v);
@@ -306,12 +393,17 @@
       const wrap = el("div");
       wrap.className = "stats-wrap";
 
+      const hitterCols =
+        activeView === "mobile" ? MOBILE_HITTER_COLS_BY_TAB[statKey] || MOBILE_HITTER_COLS_BY_TAB.season : HITTER_COLS;
+      const pitcherCols =
+        activeView === "mobile" ? MOBILE_PITCHER_COLS_BY_TAB[statKey] || MOBILE_PITCHER_COLS_BY_TAB.season : PITCHER_COLS;
+
       if (activeRole === "hitters") {
         if (!hitters.length) {
           target.appendChild(el("p", "No hitters in this view."));
           return;
         }
-        target.appendChild(buildStatTable(hitters, statKey, "hit", HITTER_COLS, panelKey));
+        target.appendChild(buildStatTable(hitters, statKey, "hit", hitterCols, panelKey));
         return;
       }
       if (activeRole === "pitchers") {
@@ -319,7 +411,7 @@
           target.appendChild(el("p", "No pitchers in this view."));
           return;
         }
-        target.appendChild(buildStatTable(pitchers, statKey, "pit", PITCHER_COLS, panelKey));
+        target.appendChild(buildStatTable(pitchers, statKey, "pit", pitcherCols, panelKey));
         return;
       }
 
@@ -328,13 +420,13 @@
         const h2h = el("h2", "Hitters");
         h2h.className = "stats-section-title";
         wrap.appendChild(h2h);
-        wrap.appendChild(buildStatTable(hitters, statKey, "hit", HITTER_COLS, panelKey));
+        wrap.appendChild(buildStatTable(hitters, statKey, "hit", hitterCols, panelKey));
       }
       if (pitchers.length) {
         const h2 = el("h2", "Pitchers");
         h2.className = "stats-section-title";
         wrap.appendChild(h2);
-        wrap.appendChild(buildStatTable(pitchers, statKey, "pit", PITCHER_COLS, panelKey));
+        wrap.appendChild(buildStatTable(pitchers, statKey, "pit", pitcherCols, panelKey));
       }
       if (!hitters.length && !pitchers.length) {
         wrap.appendChild(el("p", "No clients in this view."));
@@ -385,7 +477,7 @@
             r.organization || r.major_affiliate || "",
             r.current_team,
             r.current_team_location || "",
-            r.team_schedule_url || "",
+            scheduleUrlForRow(r),
             s.opponent,
             s.home_away,
             s.venue,
@@ -409,8 +501,11 @@
 
     function rowsForTab(tab) {
       if (!DATA) return [];
+      if (tab === "mlb") return (DATA.pro_clients || []).filter((r) => String(r.team_level || "").toUpperCase() === "MLB");
+      if (tab === "milb")
+        return (DATA.pro_clients || []).filter((r) => String(r.team_level || "").toUpperCase() !== "MLB");
       if (tab === "amateur") return DATA.amateur_clients || [];
-      return DATA.pro_clients || [];
+      return [];
     }
 
     function roleFilter(rows) {
@@ -425,7 +520,13 @@
       const d = (DATA.last_night_date || "").split("-");
       const md = d.length === 3 ? `${Number(d[1])}/${Number(d[2])}` : DATA.last_night_date;
       document.getElementById("lastNightLabel").textContent = `LAST NIGHT DATE: ${md}`;
-      ["pro", "amateur"].forEach((t) => {
+      const showSchedule = !(activeView === "mobile");
+      document.querySelectorAll("#subTabs button").forEach((b) => {
+        if (b.dataset.subtab === "schedule") b.style.display = showSchedule ? "" : "none";
+      });
+      if (!showSchedule && activeSubtab === "schedule") activeSubtab = "last_night";
+
+      ["mlb", "milb", "amateur"].forEach((t) => {
         const panel = document.getElementById(`panel-${t}`);
         const baseRows = rowsForTab(t);
         const rows = roleFilter(baseRows);
@@ -433,11 +534,20 @@
         if (activeSubtab === "schedule") renderScheduleTable(rows, panel, panelKey);
         else renderStatsTable(rows, activeSubtab, panel, panelKey);
       });
+      document.getElementById("roleTabs").style.display = activeView === "mobile" ? "none" : "";
       document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
       document.getElementById(`panel-${activeTab}`).classList.add("active");
     }
 
     function wireTabs() {
+      document.querySelectorAll("#viewTabs button").forEach((b) => {
+        b.onclick = () => {
+          activeView = b.dataset.view;
+          document.querySelectorAll("#viewTabs button").forEach((x) => x.classList.remove("active"));
+          b.classList.add("active");
+          render();
+        };
+      });
       document.querySelectorAll("#mainTabs button").forEach((b) => {
         b.onclick = () => {
           activeTab = b.dataset.tab;
