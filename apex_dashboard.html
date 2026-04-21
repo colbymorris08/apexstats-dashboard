@@ -109,7 +109,6 @@
       "Level",
       "Organization",
       "Current Team",
-      "Team Location",
       "Schedule",
     ];
     const BASE_HEADERS_MOBILE = ["Name", "Pos"];
@@ -299,18 +298,91 @@
         .replace(/\s+/g, "-");
     }
 
+    function targetScheduleDate() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = now.getMonth(); // 0-based
+      const d = now.getDate();
+      const lastDay = new Date(y, m + 1, 0).getDate();
+      const useNext = d >= lastDay - 2;
+      const dt = useNext ? new Date(y, m + 1, 1) : new Date(y, m, 1);
+      const yy = dt.getFullYear();
+      const mm = String(dt.getMonth() + 1).padStart(2, "0");
+      return `${yy}-${mm}-01`;
+    }
+
+    const MLB_SLUGS = {
+      "Arizona Diamondbacks": "d-backs",
+      "Athletics": "athletics",
+      "Atlanta Braves": "braves",
+      "Baltimore Orioles": "orioles",
+      "Boston Red Sox": "red-sox",
+      "Chicago Cubs": "cubs",
+      "Chicago White Sox": "white-sox",
+      "Cincinnati Reds": "reds",
+      "Cleveland Guardians": "guardians",
+      "Colorado Rockies": "rockies",
+      "Detroit Tigers": "tigers",
+      "Houston Astros": "astros",
+      "Kansas City Royals": "royals",
+      "Los Angeles Angels": "angels",
+      "Los Angeles Dodgers": "dodgers",
+      "Miami Marlins": "marlins",
+      "Milwaukee Brewers": "brewers",
+      "Minnesota Twins": "twins",
+      "New York Mets": "mets",
+      "New York Yankees": "yankees",
+      "Philadelphia Phillies": "phillies",
+      "Pittsburgh Pirates": "pirates",
+      "San Diego Padres": "padres",
+      "San Francisco Giants": "giants",
+      "Seattle Mariners": "mariners",
+      "St. Louis Cardinals": "cardinals",
+      "Tampa Bay Rays": "rays",
+      "Texas Rangers": "rangers",
+      "Toronto Blue Jays": "blue-jays",
+      "Washington Nationals": "nationals",
+    };
+
+    function d1TeamSlug(name) {
+      const s = String(name || "").trim().toLowerCase();
+      if (!s) return "";
+      return s
+        .replace(/^university of\s+/, "")
+        .replace(/^university\s+/, "")
+        .replace(/^uc\s+/, "uc-")
+        .replace(/&/g, "and")
+        .replace(/\./g, "")
+        .replace(/'/g, "")
+        .replace(/\s+/g, "-");
+    }
+
+    function milbCitySlug(teamName) {
+      const t = String(teamName || "").trim();
+      if (!t) return "";
+      const parts = t.split(/\s+/);
+      // Use city/location portion (before nickname), handling common 2-word cities.
+      const twoWordStarts = new Set(["Round", "Salt", "San", "Las", "Fort", "Des", "New", "Port", "El"]);
+      let city = parts[0] || "";
+      if (parts.length >= 2 && twoWordStarts.has(parts[0])) city = `${parts[0]} ${parts[1]}`;
+      return slugifyTeam(city);
+    }
+
     function scheduleUrlForRow(row) {
+      const dateQ = targetScheduleDate();
       const level = String(row.team_level || "").toUpperCase();
       const team = row.current_team || row.school_or_team || "";
       if (activeTab === "amateur") {
-        if (String(row.team_schedule_url || "").startsWith("http")) return row.team_schedule_url;
-        if (team) return `https://d1baseball.com/?s=${encodeURIComponent(`${team} baseball`)}`;
+        const schoolSlug = d1TeamSlug(row.school_or_team || row.current_team || "");
+        if (schoolSlug) return `https://d1baseball.com/team/${schoolSlug}/schedule/?date=${dateQ}`;
         return "";
       }
       if (level === "MLB") {
-        return team ? `https://www.mlb.com/${slugifyTeam(team)}/schedule` : row.team_schedule_url || "";
+        const slug = MLB_SLUGS[team] || slugifyTeam(team.split(/\s+/).slice(-1).join(" "));
+        return slug ? `https://www.mlb.com/${slug}/schedule?date=${dateQ}` : "";
       }
-      return team ? `https://www.milb.com/${slugifyTeam(team)}/schedule` : row.team_schedule_url || "";
+      const citySlug = milbCitySlug(team);
+      return citySlug ? `https://www.milb.com/${citySlug}/schedule?date=${dateQ}` : "";
     }
 
     function baseCols(row, mobileMode = false) {
@@ -322,7 +394,6 @@
         row.team_level || "",
         row.organization || row.major_affiliate || "",
         row.current_team || row.school_or_team || "",
-        row.current_team_location || "",
       ];
     }
 
@@ -446,7 +517,6 @@
         "Level",
         "Organization",
         "Current Team",
-        "Team Location",
         "Team Schedule",
         "Opponent",
         "Home/Away",
@@ -476,7 +546,6 @@
             r.team_level || "",
             r.organization || r.major_affiliate || "",
             r.current_team,
-            r.current_team_location || "",
             scheduleUrlForRow(r),
             s.opponent,
             s.home_away,
