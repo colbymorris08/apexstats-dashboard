@@ -260,6 +260,15 @@ def resolve_d1_player_url(client_name: str, school: str = "") -> str:
     return f"https://d1baseball.com{best_url}"
 
 
+def _d1_get(row: pd.Series, *candidates: str) -> Any:
+    cmap = {str(c).strip().lower(): c for c in row.index}
+    for cand in candidates:
+        k = cand.lower()
+        if k in cmap:
+            return row[cmap[k]]
+    return None
+
+
 def _pick_d1_table(dfs: list[pd.DataFrame], is_pitcher_role: bool) -> pd.DataFrame | None:
     # Player pages include multiple tables; choose the basic seasonal one.
     for df in dfs:
@@ -325,13 +334,18 @@ def fetch_d1_player_stats(player_url: str, is_pitcher_role: bool) -> dict[str, A
         }
     else:
         out = {
-            "atBats": to_number(row.get("AB")),
-            "runs": to_number(row.get("R")),
-            "hits": to_number(row.get("H")),
-            "rbi": to_number(row.get("RBI")),
-            "baseOnBalls": to_number(row.get("BB")),
-            "avg": to_number(row.get("BA")),
-            "ops": to_number(row.get("OPS")),
+            "atBats": to_number(_d1_get(row, "AB", "Ab")),
+            "runs": to_number(_d1_get(row, "R")),
+            "hits": to_number(_d1_get(row, "H")),
+            "rbi": to_number(_d1_get(row, "RBI")),
+            "baseOnBalls": to_number(_d1_get(row, "BB")),
+            "strikeOuts": to_number(_d1_get(row, "K", "SO")),
+            "avg": to_number(_d1_get(row, "BA", "AVG")),
+            "ops": to_number(_d1_get(row, "OPS")),
+            "homeRuns": to_number(_d1_get(row, "HR", "Home Runs")),
+            "doubles": to_number(_d1_get(row, "2B", "2b", "Doubles")),
+            "stolenBases": to_number(_d1_get(row, "SB", "Stolen Bases")),
+            "outfieldAssists": to_number(_d1_get(row, "OFA", "OF A", "Outfield Assists")),
         }
     D1_PLAYER_STATS_CACHE[key] = out
     return out
@@ -509,12 +523,28 @@ def _to_float_or_none(v: Any) -> float | None:
 def _blank_individual_line(is_pitcher_role: bool) -> dict[str, Any]:
     if is_pitcher_role:
         return {"ip": 0.0, "h": 0, "r": 0, "er": 0, "bb": 0, "k": 0, "hr": 0, "bf": 0, "era": 0.0}
-    return {"ab": 0, "h": 0, "r": 0, "rbi": 0, "bb": 0, "k": 0}
+    return {"ab": 0, "h": 0, "r": 0, "rbi": 0, "bb": 0, "k": 0, "doubles": 0, "hr": 0, "sb": 0, "ofa": 0}
+
+
+def _ncaa_stat_int(container: dict[str, Any], *keys: str) -> int:
+    for k in keys:
+        if k in container and container[k] is not None:
+            return _to_int(container.get(k))
+    return 0
 
 
 def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) -> dict[str, Any]:
     if is_pitcher_role:
         ps = player_row.get("pitcherStats") or {}
+        # Pitches thrown: last-game only in dashboard (not summed for month/season).
+        pitches = _ncaa_stat_int(
+            ps,
+            "pitchesThrown",
+            "numberOfPitches",
+            "totalPitches",
+            "pitches",
+            "pitchCount",
+        )
         return {
             "ip": round(_to_float(ps.get("inningsPitched")), 1),
             "h": _to_int(ps.get("hitsAllowed")),
@@ -524,6 +554,7 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
             "k": _to_int(ps.get("strikeouts")),
             "hr": _to_int(ps.get("homeRunsAllowed")),
             "bf": _to_int(ps.get("battersFaced")),
+            "pitches": pitches,
         }
     bs = player_row.get("batterStats") or {}
     return {
@@ -533,6 +564,16 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
         "rbi": _to_int(bs.get("runsBattedIn")),
         "bb": _to_int(bs.get("walks")),
         "k": _to_int(bs.get("strikeouts")),
+        "doubles": _ncaa_stat_int(bs, "doubles", "double", "twoBaseHits"),
+        "hr": _ncaa_stat_int(bs, "homeRuns", "homeRun", "hr"),
+        "sb": _ncaa_stat_int(bs, "stolenBases", "stolenBase", "sb"),
+        "ofa": _ncaa_stat_int(
+            bs,
+            "outfieldAssists",
+            "outFieldAssists",
+            "ofAssists",
+            "assistsOutfield",
+        ),
     }
 
 
@@ -756,7 +797,7 @@ def _amateur_line_to_pro_keys(raw: dict[str, Any], is_p: bool) -> dict[str, Any]
         ip_s = json_stat_value("inningsPitched", ip_val) if ip_val not in (None, "") else None
         if not ip_s:
             ip_s = "0.0"
-        return {
+        out: dict[str, Any] = {
             "inningsPitched": ip_s,
             "hits": to_number(raw.get("h")),
             "runs": to_number(raw.get("r")),
@@ -766,6 +807,14 @@ def _amateur_line_to_pro_keys(raw: dict[str, Any], is_p: bool) -> dict[str, Any]
             "homeRuns": to_number(raw.get("hr")),
             "era": to_number(raw.get("era")),
         }
+        pt = to_number(raw.get("pitches"))
+        if pt is not None:
+            try:
+                fv = float(pt)
+                out["numberOfPitches"] = int(fv) if fv == int(fv) else int(round(fv))
+            except (TypeError, ValueError):
+                out["numberOfPitches"] = pt
+        return out
     return {
         "atBats": to_number(raw.get("ab")),
         "runs": to_number(raw.get("r")),
@@ -775,6 +824,10 @@ def _amateur_line_to_pro_keys(raw: dict[str, Any], is_p: bool) -> dict[str, Any]
         "strikeOuts": to_number(raw.get("k")),
         "avg": to_number(raw.get("avg")),
         "ops": to_number(raw.get("ops")),
+        "homeRuns": to_number(raw.get("hr")),
+        "doubles": to_number(raw.get("doubles")),
+        "stolenBases": to_number(raw.get("sb")),
+        "outfieldAssists": to_number(raw.get("ofa")),
     }
 
 
@@ -841,6 +894,8 @@ def ncaa_player_last_night_and_month(
         if not prow:
             continue
         line = _extract_individual_line(prow, is_p)
+        if is_p:
+            line.pop("pitches", None)
         month_raw = _add_lines(month_raw, line)
     month_keys: dict[str, Any] = {}
     if month_raw != _blank_individual_line(is_p):
@@ -1273,6 +1328,9 @@ def fetch_foreign_br_season_stats(client_name: str, is_pitcher_role: bool) -> di
         rbi_col = _find_col(cols, ("RBI",))
         avg_col = _find_col(cols, ("AVG",))
         ops_col = _find_col(cols, ("OPS",))
+        d2_col = _find_col(cols, ("2B", "Doubles"))
+        sb_col = _find_col(cols, ("SB",))
+        ofa_col = _find_col(cols, ("Outfield Assists", "OFA"))
 
         for _, row in df.iterrows():
             y = _year_as_int(row.get(year_col))
@@ -1311,6 +1369,10 @@ def fetch_foreign_br_season_stats(client_name: str, is_pitcher_role: bool) -> di
                     "rbi": to_number(row.get(rbi_col)) if rbi_col else None,
                     "avg": to_number(row.get(avg_col)) if avg_col else None,
                     "ops": to_number(row.get(ops_col)) if ops_col else None,
+                    "homeRuns": to_number(row.get(hr_col)) if hr_col else None,
+                    "doubles": to_number(row.get(d2_col)) if d2_col else None,
+                    "stolenBases": to_number(row.get(sb_col)) if sb_col else None,
+                    "outfieldAssists": to_number(row.get(ofa_col)) if ofa_col else None,
                 }
             if best is None or y > best[0]:
                 if tm_col:
@@ -1334,6 +1396,34 @@ def _gamelog_splits_for_sport(player_id: int, group: str, sport_id: int) -> list
     url = f"{API}/people/{player_id}/stats?" + urllib.parse.urlencode(params)
     js = _req_json(url)
     return (js.get("stats") or [{}])[0].get("splits") or []
+
+
+def fetch_last_night_outfield_assists_all_sports(player_id: int, target_day: date) -> int:
+    """Sum outfield assists (LF/CF/RF) from fielding game logs for one calendar day."""
+    day = target_day.isoformat()
+    total = 0
+    for sport_id in SPORT_IDS_PRO:
+        try:
+            splits = _gamelog_splits_for_sport(player_id, "fielding", sport_id)
+        except Exception:
+            continue
+        for sp in splits:
+            if sp.get("date") != day:
+                continue
+            pos = (sp.get("position") or {}).get("abbreviation") or ""
+            if pos not in ("LF", "CF", "RF"):
+                continue
+            st = sp.get("stat") or {}
+            total += _to_int(st.get("assists"))
+    return total
+
+
+def _strip_pitch_count_fields(st: dict[str, Any]) -> dict[str, Any]:
+    """Pitch counts belong in last-game lines only, not month/season tables."""
+    if not st:
+        return st
+    out = {k: v for k, v in st.items() if k not in ("numberOfPitches", "strikes", "balls")}
+    return out
 
 
 def fetch_latest_team_from_gamelog_all_sports(player_id: int, group: str) -> dict[str, Any]:
@@ -1678,18 +1768,34 @@ def build_client_payload(c: Client) -> dict[str, Any]:
                         ln = {k: json_stat_value(k, v) for k, v in day_stats.items()}
                         break
             base["last_night"] = ln
+            if base["last_night"]:
+                if base["is_pitcher"]:
+                    pass  # keep numberOfPitches for last game only
+                else:
+                    base["last_night"].pop("numberOfPitches", None)
+                    try:
+                        base["last_night"]["outfieldAssists"] = json_stat_value(
+                            "outfieldAssists",
+                            fetch_last_night_outfield_assists_all_sports(pid, yday),
+                        )
+                    except Exception:
+                        base["last_night"]["outfieldAssists"] = 0
         except Exception:
             base["last_night"] = {}
         try:
             mtd_raw = fetch_player_stats_preferred_then_all_sports(
                 pid, group, "byDateRange", stat_sport_id, mstart, date.today()
             )
-            base["month_to_date"] = {k: json_stat_value(k, v) for k, v in mtd_raw.items()}
+            base["month_to_date"] = _strip_pitch_count_fields(
+                {k: json_stat_value(k, v) for k, v in mtd_raw.items()}
+            )
         except Exception:
             base["month_to_date"] = {}
         try:
             st_season = fetch_player_stats_preferred_then_all_sports(pid, group, "season", stat_sport_id)
-            base["season"] = {k: json_stat_value(k, v) for k, v in st_season.items()}
+            base["season"] = _strip_pitch_count_fields(
+                {k: json_stat_value(k, v) for k, v in st_season.items()}
+            )
         except Exception:
             base["season"] = {}
 
@@ -1704,7 +1810,9 @@ def build_client_payload(c: Client) -> dict[str, Any]:
     if nn in PRO_FOREIGN_BR_URLS:
         foreign_season = fetch_foreign_br_season_stats(c.name, base["is_pitcher"])
         if foreign_season:
-            base["season"] = {k: v for k, v in foreign_season.items() if not str(k).startswith("_")}
+            base["season"] = _strip_pitch_count_fields(
+                {k: v for k, v in foreign_season.items() if not str(k).startswith("_")}
+            )
             f_team = str(foreign_season.get("_foreign_team", "")).strip()
             f_lg = str(foreign_season.get("_foreign_league", "")).strip()
             if f_team:
