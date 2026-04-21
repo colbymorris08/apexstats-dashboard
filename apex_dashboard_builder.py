@@ -22,8 +22,9 @@ API = "https://statsapi.mlb.com/api/v1"
 NCAA_GQL_BASE = "https://sdataprod.ncaa.com"
 NCAA_SPORT_CODE = "MBA"  # NCAA baseball sport code used by ncaa.com
 NCAA_DIVISION = 1
-# Must match the current college season for contest schedules (use calendar year).
-NCAA_SEASON_YEAR = SEASON
+# NCAA GraphQL uses an academic/sport year that lags the calendar for spring baseball
+# (e.g. April 2026 contests appear under seasonYear 2025).
+NCAA_SEASON_YEAR = SEASON - 1
 NCAA_CONTESTS_HASH = "6b26e5cda954c1302873c52835bfd223e169e2068b12511e92b3ef29fac779c2"
 NCAA_CONTESTS_BY_DATE: dict[str, list[dict[str, Any]]] = {}
 NCAA_BOX_BASEBALL_HASH = "5e92118b2f424040aa96067aba6d34e882165aaf02e9e73cb9d69317066c6ae8"
@@ -35,7 +36,29 @@ NCAA_SCHOOL_PAYLOAD_CACHE: dict[str, dict[str, Any]] = {}
 
 PITCHER_POS = {"RHP", "LHP", "SP", "RP", "P"}
 # Exclude from pro tab (still in workbook for records, but not shown on dashboard).
-PRO_CLIENT_EXCLUDE_NAMES: frozenset[str] = frozenset({"alyssa nakken", "jordan viars"})
+PRO_CLIENT_EXCLUDE_NAMES: frozenset[str] = frozenset(
+    {"alyssa nakken", "jordan viars", "daulton jefferies", "adam wolf"}
+)
+# Normalized client name -> Stats API person id when search is ambiguous or returns no hits.
+PRO_MLB_PLAYER_ID_OVERRIDES: dict[str, int] = {
+    "alexander darby": 801592,  # listed as Zander Darby
+    "zander darby": 801592,
+    "matthew klein": 702600,  # listed as Matt Klein (Rockies)
+    "matt klein": 702600,
+    "carter mathison": 701296,
+    "alexander barr": 828781,  # listed as Alex Barr
+    "alex barr": 828781,
+    "walter ford": 703609,
+    "dale stanavich": 689359,
+    # people/search "Ryan Harvey" returns an unrelated older player (458243); Tigers prospect:
+    "ryan harvey": 687308,
+}
+# Normalized client name -> people/search query (API spelling differs from the roster sheet).
+PRO_MLB_PEOPLE_SEARCH_ALIASES: dict[str, str] = {
+    # MLB lists "Matt Fraizer" (670208); sheet often uses "Frazier"; Texas Rangers org per client.
+    "matthew frazier": "Matt Fraizer",
+    "matt frazier": "Matt Fraizer",
+}
 # Sheet quirks: treat as hitter for college stat tables / D1 scrape.
 COLLEGE_FORCE_HITTER_NAMES: frozenset[str] = frozenset({"ethan surowiec"})
 AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
@@ -966,8 +989,20 @@ def _name_search_variants(name: str) -> list[str]:
 
 def resolve_player_id(c: Client) -> int | None:
     """Resolve Stats API person id; disambiguate when search returns multiple players."""
+    nn = _norm_player_name(c.name)
+    oid = PRO_MLB_PLAYER_ID_OVERRIDES.get(nn)
+    if oid is not None:
+        return oid
+    alias_q = PRO_MLB_PEOPLE_SEARCH_ALIASES.get(nn)
+    variants = _name_search_variants(c.name)
+    if alias_q:
+        seen_l = {v.casefold() for v in variants}
+        if alias_q.casefold() not in seen_l:
+            variants = [alias_q] + variants
+        else:
+            variants = [alias_q] + [v for v in variants if v.casefold() != alias_q.casefold()]
     people: list[dict[str, Any]] = []
-    for variant in _name_search_variants(c.name):
+    for variant in variants:
         people = search_people(variant)
         if people:
             break
