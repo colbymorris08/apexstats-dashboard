@@ -381,20 +381,33 @@
         const slug = MLB_SLUGS[team] || slugifyTeam(team.split(/\s+/).slice(-1).join(" "));
         return slug ? `https://www.mlb.com/${slug}/schedule?date=${dateQ}` : "";
       }
+      // Rookie/complex levels should use the generic MiLB rookie schedule page.
+      const t = String(team || "").toUpperCase();
+      if (
+        level === "RK" ||
+        t.startsWith("ACL ") ||
+        t.startsWith("FCL ") ||
+        t.startsWith("DSL ") ||
+        t.includes(" COMPLEX ")
+      ) {
+        return `https://www.mlb.com/milb/schedule/rookie?date=${dateQ}`;
+      }
       const citySlug = milbCitySlug(team);
       return citySlug ? `https://www.milb.com/${citySlug}/schedule?date=${dateQ}` : "";
     }
 
     function baseCols(row, mobileMode = false) {
       if (mobileMode) return [row.name || "", row.position || ""];
-      return [
+      const cols = [
         row.name || "",
         row.agent || "",
         row.position || "",
         row.team_level || "",
-        row.organization || row.major_affiliate || "",
         row.current_team || row.school_or_team || "",
       ];
+      // MLB tab: hide organization column as requested.
+      if (activeTab !== "mlb") cols.splice(4, 0, row.organization || row.major_affiliate || "");
+      return cols;
     }
 
     function statForCol(row, defaultStatKey, col) {
@@ -408,7 +421,10 @@
       table.className = "stats-table";
       const thead = el("thead");
       const hr = el("tr");
-      const baseHeaders = activeView === "mobile" ? BASE_HEADERS_MOBILE : BASE_HEADERS_DESKTOP;
+      let baseHeaders = activeView === "mobile" ? BASE_HEADERS_MOBILE : BASE_HEADERS_DESKTOP;
+      if (activeView !== "mobile" && activeTab === "mlb") {
+        baseHeaders = BASE_HEADERS_DESKTOP.filter((h) => h !== "Organization");
+      }
       const headers = [...baseHeaders, ...cols.map((c) => c.header)];
       headers.forEach((h, i) => {
         const th = el("th", h);
@@ -510,7 +526,7 @@
       table.className = "stats-table";
       const thead = el("thead");
       const hr = el("tr");
-      const headers = [
+      let headers = [
         "Name",
         "Agent Initials",
         "Pos",
@@ -526,6 +542,7 @@
         "Location",
         "Nearest Airport Code",
       ];
+      if (activeTab === "mlb") headers = headers.filter((h) => h !== "Organization");
       headers.forEach((h, i) => {
         const th = el("th", h);
         th.className = "sortable";
@@ -544,7 +561,6 @@
             r.agent || "",
             r.position || "",
             r.team_level || "",
-            r.organization || r.major_affiliate || "",
             r.current_team,
             scheduleUrlForRow(r),
             s.opponent,
@@ -555,6 +571,7 @@
             s.location,
             s.nearest_airport_code,
           ];
+          if (activeTab !== "mlb") vals.splice(4, 0, r.organization || r.major_affiliate || "");
           vals.forEach((v, i) => {
             const td = tdWithValue(v);
             if (i === 0) td.classList.add("text-left");
