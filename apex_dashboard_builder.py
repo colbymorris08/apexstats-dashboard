@@ -533,18 +533,105 @@ def _ncaa_stat_int(container: dict[str, Any], *keys: str) -> int:
     return 0
 
 
+def _ncaa_dict_get_ci(container: dict[str, Any], *candidates: str) -> Any:
+    """Case-insensitive key lookup for NCAA GraphQL objects."""
+    if not isinstance(container, dict):
+        return None
+    lower_map = {str(k).lower().replace(" ", ""): k for k in container}
+    for cand in candidates:
+        ck = cand.lower().replace(" ", "")
+        k = lower_map.get(ck)
+        if k is not None:
+            return container.get(k)
+    return None
+
+
+def _is_ncaa_outfield_position(pos_raw: str) -> bool:
+    """True if NCAA position string includes LF/CF/RF/OF (box-score defensive line)."""
+    low = (pos_raw or "").strip().lower()
+    if not low:
+        return False
+    if "outfield" in low:
+        return True
+    toks = [t.strip() for t in re.split(r"[/,\s]+", low) if t.strip()]
+    of_set = {"lf", "cf", "rf", "of"}
+    return any(t in of_set for t in toks)
+
+
+def _ncaa_outfield_assists_from_row(player_row: dict[str, Any]) -> int:
+    """
+    NCAA.com boxscores expose defensive assists on fieldStats (not batterStats).
+    For LF/CF/RF/OF, the box 'A' column is fieldStats.assists.
+    """
+    if not _is_ncaa_outfield_position(str(player_row.get("position") or "")):
+        return 0
+    fs = player_row.get("fieldStats")
+    if isinstance(fs, dict):
+        return _to_int(fs.get("assists"))
+    return 0
+
+
+def _ncaa_pitch_count_from_pitcher_row(player_row: dict[str, Any]) -> int:
+    """
+    NCAA GraphQL usually omits total pitch count; pitcherStats almost always
+    includes 'strikes'. When 'balls' (or similar) is present, sum strikes+balls.
+    Otherwise report strikes so the dashboard shows a real number (not zero).
+    """
+    ps = player_row.get("pitcherStats")
+    if not isinstance(ps, dict):
+        return 0
+    for key in (
+        "pitchesThrown",
+        "numberOfPitches",
+        "pitchCount",
+        "totalPitches",
+        "pitches",
+        "npc",
+        "totalPitchCount",
+    ):
+        v = _ncaa_dict_get_ci(ps, key)
+        if v is not None and str(v).strip() != "":
+            n = _to_int(v)
+            if n > 0:
+                return n
+    strikes = _to_int(ps.get("strikes"))
+    balls = 0
+    for k, v in ps.items():
+        if str(k) == "__typename":
+            continue
+        lk = str(k).lower().replace(" ", "")
+        if lk in ("balls", "ballsthrown", "ballcount", "nonstrikes", "ballsseen"):
+            balls = _to_int(v)
+            break
+    if strikes > 0 and balls > 0:
+        return strikes + balls
+    if strikes > 0:
+        return strikes
+    return 0
+
+
+def _ncaa_batter_extra_counts(bs: dict[str, Any]) -> dict[str, int]:
+    """When NCAA includes extra columns on BatterStat (varies by feed)."""
+    out = {"doubles": 0, "hr": 0, "sb": 0}
+    if not isinstance(bs, dict):
+        return out
+    for k, v in bs.items():
+        if str(k) == "__typename":
+            continue
+        lk = str(k).lower().replace(" ", "").replace("_", "")
+        if lk in ("doubles", "double", "twobasehits", "2b"):
+            out["doubles"] = _to_int(v)
+        elif lk in ("homeruns", "homerun", "hr"):
+            out["hr"] = _to_int(v)
+        elif lk in ("stolenbases", "stolenbase", "sb"):
+            out["sb"] = _to_int(v)
+    return out
+
+
 def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) -> dict[str, Any]:
     if is_pitcher_role:
         ps = player_row.get("pitcherStats") or {}
-        # Pitches thrown: last-game only in dashboard (not summed for month/season).
-        pitches = _ncaa_stat_int(
-            ps,
-            "pitchesThrown",
-            "numberOfPitches",
-            "totalPitches",
-            "pitches",
-            "pitchCount",
-        )
+        pitches = _ncaa_pitch_count_from_pitcher_row(player_row)
         return {
             "ip": round(_to_float(ps.get("inningsPitched")), 1),
             "h": _to_int(ps.get("hitsAllowed")),
@@ -557,6 +644,16 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
             "pitches": pitches,
         }
     bs = player_row.get("batterStats") or {}
+    extra = _ncaa_batter_extra_counts(bs)
+    ofa_field = _ncaa_outfield_assists_from_row(player_row)
+    ofa_bat = _ncaa_stat_int(
+        bs,
+        "outfieldAssists",
+        "outFieldAssists",
+        "ofAssists",
+        "assistsOutfield",
+    )
+    ofa = max(ofa_field, ofa_bat)
     return {
         "ab": _to_int(bs.get("atBats")),
         "h": _to_int(bs.get("hits")),
@@ -564,16 +661,13 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
         "rbi": _to_int(bs.get("runsBattedIn")),
         "bb": _to_int(bs.get("walks")),
         "k": _to_int(bs.get("strikeouts")),
-        "doubles": _ncaa_stat_int(bs, "doubles", "double", "twoBaseHits"),
-        "hr": _ncaa_stat_int(bs, "homeRuns", "homeRun", "hr"),
-        "sb": _ncaa_stat_int(bs, "stolenBases", "stolenBase", "sb"),
-        "ofa": _ncaa_stat_int(
-            bs,
-            "outfieldAssists",
-            "outFieldAssists",
-            "ofAssists",
-            "assistsOutfield",
+        "doubles": max(
+            extra["doubles"],
+            _ncaa_stat_int(bs, "doubles", "double", "twoBaseHits"),
         ),
+        "hr": max(extra["hr"], _ncaa_stat_int(bs, "homeRuns", "homeRun", "hr")),
+        "sb": max(extra["sb"], _ncaa_stat_int(bs, "stolenBases", "stolenBase", "sb")),
+        "ofa": ofa,
     }
 
 
@@ -994,6 +1088,9 @@ def load_clients(path: Path) -> list[Client]:
         raw_agent = r.get("Agent", "")
         fallback_agent = "" if pd.isna(raw_agent) else str(raw_agent).strip()
         agent = notes_agent or fallback_agent
+        # Keep requested manual assignment for known client.
+        if _parse_name(raw_name).strip().lower() == "brock burke":
+            agent = "PC"
         level_upper = level.upper()
         league_upper = league.upper()
         is_amateur = any(t in level_upper for t in AMATEUR_TOKENS) or any(
