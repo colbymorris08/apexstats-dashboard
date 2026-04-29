@@ -553,12 +553,31 @@ def _apply_ncaa_pitcher_k_fallback(
     if team_opp_k <= 0:
         return selected_row
 
-    starter = max(pitchers, key=lambda x: x["ip"])["row"]
-    if starter is not selected_row:
+    by_ip = sorted(pitchers, key=lambda x: x["ip"], reverse=True)
+    top_ip = by_ip[0]["ip"]
+    top_count = sum(1 for p in by_ip if p["ip"] == top_ip)
+    # If one pitcher clearly carried the bulk innings, attribute team Ks to that arm.
+    if top_count == 1 and top_ip >= 2:
+        starter = by_ip[0]["row"]
+        if starter is not selected_row:
+            return selected_row
+        patched = dict(selected_row)
+        patched_ps = dict(ps_sel)
+        patched_ps["strikeouts"] = str(team_opp_k)
+        patched["pitcherStats"] = patched_ps
+        return patched
+
+    # Otherwise estimate per-pitcher Ks by share of batters faced.
+    sel_bf = _ncaa_stat_int(ps_sel, "battersFaced", "bf")
+    total_bf = sum(max(0, _ncaa_stat_int((p["row"].get("pitcherStats") or {}), "battersFaced", "bf")) for p in pitchers)
+    if sel_bf <= 0 or total_bf <= 0:
         return selected_row
+    est = int(round((team_opp_k * sel_bf) / total_bf))
+    if est <= 0 and team_opp_k > 0 and sel_bf >= 3:
+        est = 1
     patched = dict(selected_row)
     patched_ps = dict(ps_sel)
-    patched_ps["strikeouts"] = str(team_opp_k)
+    patched_ps["strikeouts"] = str(est)
     patched["pitcherStats"] = patched_ps
     return patched
 
