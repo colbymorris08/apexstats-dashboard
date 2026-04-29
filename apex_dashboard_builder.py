@@ -509,6 +509,60 @@ def _pick_ncaa_player_row(player_stats: list[dict[str, Any]], client_name: str) 
     return None
 
 
+def _ncaa_ip_value(ps: dict[str, Any]) -> float:
+    return _to_float(_ncaa_dict_get_ci(ps, "inningsPitched", "ip", "innings"))
+
+
+def _apply_ncaa_pitcher_k_fallback(
+    selected_row: dict[str, Any] | None,
+    team_rows: list[dict[str, Any]],
+    opp_rows: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """Fallback when NCAA feed reports 0 K for every pitcher in a game.
+
+    Some NCAA box payloads zero out per-pitcher strikeouts while batter rows still
+    include opponent team strikeout totals. In that case, assign team K total to
+    the pitcher with the most IP so last-night dashboards don't show false zeros.
+    """
+    if not selected_row:
+        return selected_row
+    ps_sel = selected_row.get("pitcherStats") or {}
+    if not ps_sel:
+        return selected_row
+
+    pitchers: list[dict[str, Any]] = []
+    all_zero = True
+    for r in team_rows:
+        ps = r.get("pitcherStats") or {}
+        if not ps:
+            continue
+        ip = _ncaa_ip_value(ps)
+        if ip <= 0:
+            continue
+        k = _ncaa_stat_int(ps, "strikeouts", "strikeOuts", "battersStruckOut", "struckOut", "k", "so")
+        pitchers.append({"row": r, "ip": ip, "k": k})
+        if k > 0:
+            all_zero = False
+    if not pitchers or not all_zero:
+        return selected_row
+
+    team_opp_k = 0
+    for r in opp_rows:
+        bs = r.get("batterStats") or {}
+        team_opp_k += _ncaa_stat_int(bs, "strikeouts", "strikeOuts", "struckOut", "k", "so")
+    if team_opp_k <= 0:
+        return selected_row
+
+    starter = max(pitchers, key=lambda x: x["ip"])["row"]
+    if starter is not selected_row:
+        return selected_row
+    patched = dict(selected_row)
+    patched_ps = dict(ps_sel)
+    patched_ps["strikeouts"] = str(team_opp_k)
+    patched["pitcherStats"] = patched_ps
+    return patched
+
+
 def _to_int(v: Any) -> int:
     try:
         return int(float(str(v).strip()))
@@ -973,7 +1027,9 @@ def _player_row_from_ncaa_contest(
             want_home = bool((g.get("team") or {}).get("is_home"))
             idx = 0 if bool(teams_meta[0].get("isHome")) == want_home else 1
     player_stats = (team_box[idx] or {}).get("playerStats") or []
-    return _pick_ncaa_player_row(player_stats, client_name)
+    selected = _pick_ncaa_player_row(player_stats, client_name)
+    opp_stats = (team_box[1 - idx] or {}).get("playerStats") or []
+    return _apply_ncaa_pitcher_k_fallback(selected, player_stats, opp_stats)
 
 
 def ncaa_player_last_night_and_month(
