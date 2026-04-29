@@ -77,6 +77,7 @@
     <button data-tab="mlb" class="active">MLB</button>
     <button data-tab="milb">MiLB/Overseas</button>
     <button data-tab="amateur">Amateur Clients</button>
+    <button data-tab="high_school">High School</button>
   </div>
   <div class="row" id="subTabs">
     <button data-subtab="last_night" class="active">Last Night Stats</button>
@@ -93,6 +94,7 @@
   <div id="panel-mlb" class="panel active"></div>
   <div id="panel-milb" class="panel"></div>
   <div id="panel-amateur" class="panel"></div>
+  <div id="panel-high_school" class="panel"></div>
 
   <script>
     let DATA = null;
@@ -110,8 +112,9 @@
       "Organization",
       "Current Team",
       "Schedule",
+      "Last Night Box",
     ];
-    const BASE_HEADERS_MOBILE = ["Name", "Pos"];
+    const BASE_HEADERS_MOBILE = ["Name", "Pos", "Box"];
 
     /** Pro + amateur: MLB Stats API keys and NCAA amateur aliases */
     const HITTER_COLS = [
@@ -136,7 +139,7 @@
       { keys: ["runs", "r"], header: "R", kind: "int" },
       { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
       { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
-      { keys: ["strikeOuts", "k", "so"], header: "SO", kind: "int" },
+      { keys: ["strikeOuts", "k", "so"], header: "K", kind: "int" },
       { keys: ["homeRuns", "hr"], header: "HR", kind: "int" },
       {
         keys: ["numberOfPitches", "pitches"],
@@ -193,7 +196,7 @@
         { keys: ["runs", "r"], header: "R", kind: "int" },
         { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
         { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
-        { keys: ["strikeOuts", "k", "so"], header: "SO", kind: "int" },
+        { keys: ["strikeOuts", "k", "so"], header: "K", kind: "int" },
         {
           keys: ["numberOfPitches", "pitches"],
           header: "Pit (last)",
@@ -206,7 +209,7 @@
         { keys: ["hits", "hitsAllowed", "h"], header: "H", kind: "int" },
         { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
         { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
-        { keys: ["strikeOuts", "k", "so"], header: "SO", kind: "int" },
+        { keys: ["strikeOuts", "k", "so"], header: "K", kind: "int" },
         { keys: ["era"], header: "ERA", kind: "era" },
       ],
       season: [
@@ -214,7 +217,7 @@
         { keys: ["hits", "hitsAllowed", "h"], header: "H", kind: "int" },
         { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
         { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
-        { keys: ["strikeOuts", "k", "so"], header: "SO", kind: "int" },
+        { keys: ["strikeOuts", "k", "so"], header: "K", kind: "int" },
         { keys: ["era"], header: "ERA", kind: "era" },
       ],
     };
@@ -405,6 +408,7 @@
         if (schoolSlug) return `https://d1baseball.com/team/${schoolSlug}/schedule/?date=${dateQ}`;
         return "";
       }
+      if (activeTab === "high_school") return row.team_schedule_url || "";
       if (level === "MLB") {
         const slug = MLB_SLUGS[team] || slugifyTeam(team.split(/\s+/).slice(-1).join(" "));
         return slug ? `https://www.mlb.com/${slug}/schedule?date=${dateQ}` : "";
@@ -425,7 +429,7 @@
     }
 
     function baseCols(row, mobileMode = false) {
-      if (mobileMode) return [row.name || "", row.position || ""];
+      if (mobileMode) return [row.name || "", row.position || "", row.last_night_boxscore_url || ""];
       const cols = [
         row.name || "",
         row.agent || "",
@@ -469,7 +473,7 @@
         const tr = el("tr");
         [
           ...baseCols(r, activeView === "mobile"),
-          ...(activeView === "mobile" ? [] : [scheduleUrlForRow(r)]),
+          ...(activeView === "mobile" ? [] : [scheduleUrlForRow(r), r.last_night_boxscore_url || ""]),
           ...cols.map((c) => formatStatCell(statForCol(r, statKey, c), c)),
         ].forEach((v, i) => {
           const td = tdWithValue(v);
@@ -619,6 +623,7 @@
       if (tab === "milb")
         return (DATA.pro_clients || []).filter((r) => String(r.team_level || "").toUpperCase() !== "MLB");
       if (tab === "amateur") return DATA.amateur_clients || [];
+      if (tab === "high_school") return DATA.high_school_clients || [];
       return [];
     }
 
@@ -640,7 +645,7 @@
       });
       if (!showSchedule && activeSubtab === "schedule") activeSubtab = "last_night";
 
-      ["mlb", "milb", "amateur"].forEach((t) => {
+      ["mlb", "milb", "amateur", "high_school"].forEach((t) => {
         const panel = document.getElementById(`panel-${t}`);
         const baseRows = rowsForTab(t);
         const rows = roleFilter(baseRows);
