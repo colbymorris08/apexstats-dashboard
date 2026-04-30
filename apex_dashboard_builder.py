@@ -114,6 +114,7 @@ class Client:
     agent_last: str
     is_amateur: bool
     school_or_team: str = ""
+    schedule_link: str = ""
 
 
 _HTTP_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; ApexDashboard/1.0; +https://github.com/colbymorris08/apexstats-dashboard)"}
@@ -977,6 +978,7 @@ def _split_two_way_amateur(c: Client) -> list[Client]:
                 agent_last=c.agent_last,
                 is_amateur=c.is_amateur,
                 school_or_team=c.school_or_team,
+                schedule_link=c.schedule_link,
             )
         )
     return out
@@ -1099,6 +1101,90 @@ def ncaa_player_last_night_and_month(
     return last_keys, month_keys
 
 
+def _sidearm_player_last_night_from_schedule_link(
+    schedule_url: str, player_name: str, is_p: bool, target_day: date
+) -> dict[str, Any]:
+    """Best-effort fallback from Sidearm schedule link -> boxscore tables."""
+    url = (schedule_url or "").strip()
+    if not url:
+        return {}
+    try:
+        html = requests.get(url, timeout=25, headers=_HTTP_HEADERS).text
+    except Exception:
+        return {}
+    hrefs = re.findall(r'href="([^"]*boxscore[^"]*)"', html, flags=re.I)
+    cand_urls: list[str] = []
+    seen: set[str] = set()
+    for h in hrefs:
+        full = urllib.parse.urljoin(url, h)
+        if full in seen:
+            continue
+        seen.add(full)
+        cand_urls.append(full)
+    if not cand_urls:
+        return {}
+    first, last = _name_parts(player_name)
+    first_i = _norm_token(first[:1])
+    last_n = _norm_token(last)
+    target_tokens = {
+        target_day.isoformat(),
+        target_day.strftime("%m/%d/%Y"),
+        target_day.strftime("%-m/%-d/%Y"),
+        target_day.strftime("%b %-d, %Y"),
+    }
+    for bu in cand_urls[:14]:
+        try:
+            bhtml = requests.get(bu, timeout=20, headers=_HTTP_HEADERS).text
+        except Exception:
+            continue
+        if not any(tok in bhtml for tok in target_tokens):
+            continue
+        try:
+            tables = pd.read_html(StringIO(bhtml))
+        except Exception:
+            continue
+        for t in tables:
+            df = _flatten_columns(t.copy())
+            cols_l = [str(c).strip().lower() for c in df.columns]
+            if is_p and not any(c in cols_l for c in ("ip", "so", "k", "bb", "er")):
+                continue
+            if (not is_p) and not any(c in cols_l for c in ("ab", "h", "rbi")):
+                continue
+            for _, row in df.iterrows():
+                row_vals = [str(v) for v in row.tolist()]
+                row_text = " ".join(row_vals).lower()
+                if last_n and last_n not in _norm_token(row_text):
+                    continue
+                if first_i and first_i not in _norm_token(row_text):
+                    continue
+                if is_p:
+                    return _amateur_line_to_pro_keys(
+                        {
+                            "ip": row.get(_find_col(list(df.columns), ("IP", "Innings"))),
+                            "h": row.get(_find_col(list(df.columns), ("H", "Hits"))),
+                            "r": row.get(_find_col(list(df.columns), ("R", "Runs"))),
+                            "er": row.get(_find_col(list(df.columns), ("ER", "Earned"))),
+                            "bb": row.get(_find_col(list(df.columns), ("BB", "Walks"))),
+                            "k": row.get(_find_col(list(df.columns), ("SO", "K", "Strikeouts"))),
+                            "hr": row.get(_find_col(list(df.columns), ("HR", "Home Runs"))),
+                        },
+                        True,
+                    )
+                return _amateur_line_to_pro_keys(
+                    {
+                        "ab": row.get(_find_col(list(df.columns), ("AB", "At Bats"))),
+                        "r": row.get(_find_col(list(df.columns), ("R", "Runs"))),
+                        "h": row.get(_find_col(list(df.columns), ("H", "Hits"))),
+                        "rbi": row.get(_find_col(list(df.columns), ("RBI",))),
+                        "bb": row.get(_find_col(list(df.columns), ("BB", "Walks"))),
+                        "k": row.get(_find_col(list(df.columns), ("SO", "K", "Strikeouts"))),
+                        "hr": row.get(_find_col(list(df.columns), ("HR", "Home Runs"))),
+                    },
+                    False,
+                )
+    return {}
+
+
 def get_team_catalog() -> list[dict[str, Any]]:
     global TEAM_CATALOG
     if TEAM_CATALOG is not None:
@@ -1207,6 +1293,7 @@ def load_clients(path: Path) -> list[Client]:
                 agent=agent,
                 agent_last=_agent_last(agent),
                 is_amateur=is_amateur,
+                schedule_link="",
             )
         )
     return out
@@ -1240,6 +1327,7 @@ def load_amateur_clients(path: Path) -> list[Client]:
             "Agent Name",
         ]
     )
+    link_col = pick_col(["Link", "Schedule Link", "Stats Link", "URL"])
 
     if not name_col:
         return []
@@ -1252,6 +1340,7 @@ def load_amateur_clients(path: Path) -> list[Client]:
         position = _cell_str(r.get(pos_col, "")).upper() if pos_col else ""
         school = _cell_str(r.get(school_col, "")) if school_col else ""
         agent_val = _normalize_agent_initials(_cell_str(r.get(agent_col, "")) if agent_col else "")
+        schedule_link = _cell_str(r.get(link_col, "")) if link_col else ""
         out.append(
             Client(
                 name=_parse_name(raw_name),
@@ -1264,6 +1353,7 @@ def load_amateur_clients(path: Path) -> list[Client]:
                 agent_last=_agent_last(agent_val) if agent_val else "",
                 is_amateur=True,
                 school_or_team=school,
+                schedule_link=schedule_link,
             )
         )
     return out
@@ -2080,7 +2170,7 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
         "current_team": c.school_or_team,
         "current_team_location": "",
         "team_level": c.level or "NCAA",
-        "team_schedule_url": school_schedule_url(c.school_or_team),
+        "team_schedule_url": c.schedule_link or school_schedule_url(c.school_or_team),
         "last_night_boxscore_url": "",
         "last_night_date": (date.today() - timedelta(days=1)).isoformat(),
         "last_night": {},
@@ -2113,6 +2203,24 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
             if ln_ind:
                 base["last_night"] = {
                     k: json_stat_value(k, v) for k, v in ln_ind.items() if v is not None
+                }
+            # Backup source: explicit Sidearm schedule link from AmateurList.
+            # Use only when NCAA line is missing or likely under-counted (IP>0 but K=0).
+            ln_backup = {}
+            if c.schedule_link and (
+                not base["last_night"]
+                or (
+                    is_p
+                    and str(base["last_night"].get("inningsPitched", "")).strip() not in ("", "0", "0.0")
+                    and _to_int(base["last_night"].get("strikeOuts")) == 0
+                )
+            ):
+                ln_backup = _sidearm_player_last_night_from_schedule_link(
+                    c.schedule_link, c.name, is_p, yday
+                )
+            if ln_backup:
+                base["last_night"] = {
+                    k: json_stat_value(k, v) for k, v in ln_backup.items() if v is not None
                 }
             if mtd_ind:
                 base["month_to_date"] = {

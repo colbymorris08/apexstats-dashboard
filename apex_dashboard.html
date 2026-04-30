@@ -159,6 +159,13 @@
       ApexGeneral1: { key: "general", label: "General", center: null },
       ApexPartner1: { key: "partner", label: "Partner", center: { city: "Las Vegas, NV", lat: 36.1699, lon: -115.1398 } },
     };
+    const PROFILE_NEARBY_KEYWORDS = {
+      bayarea: ["san francisco", "oakland", "san jose", "santa clara", "fremont", "walnut creek", "sacramento"],
+      midwest: ["chicago", "milwaukee", "south bend", "rockford", "indianapolis"],
+      florida: ["orlando", "tampa", "st. petersburg", "lakeland", "clearwater", "jacksonville", "miami"],
+      newyork: ["new york", "nyc", "brooklyn", "bronx", "queens", "newark", "staten island"],
+      partner: ["las vegas", "summerlin", "henderson", "aviators"],
+    };
     const GEO_CACHE = new Map();
 
     const BASE_HEADERS_DESKTOP = [
@@ -839,6 +846,9 @@
         : [...(DATA.pro_clients || [])];
       const out = [];
       const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      const candidates = [];
+      const places = new Set();
       for (const r of allRows) {
         for (const s of r.upcoming_series || []) {
           const ds = String(s.start_date || "");
@@ -846,20 +856,46 @@
           if (!dt || Number.isNaN(dt.getTime())) continue;
           const days = Math.floor((dt - now) / (1000 * 60 * 60 * 24));
           if (days < 0 || days > 21) continue;
-          const geo = await geocodeLocation(`${s.location || ""} ${s.venue || ""}`.trim());
-          if (!geo) continue;
-          const miles = haversineMiles(center, geo);
-          if (miles > 100) continue;
-          out.push({
-            week: days <= 7 ? "Week 1 (0-7 days)" : days <= 14 ? "Week 2 (8-14 days)" : "Week 3 (15-21 days)",
-            name: r.name,
-            team: r.current_team || r.school_or_team || "",
-            opponent: s.opponent || "",
-            location: `${s.location || ""}${s.venue ? ` (${s.venue})` : ""}`,
-            date: s.start_date || "",
-            miles: Math.round(miles),
+          const place = `${s.location || ""}`.trim();
+          if (place) places.add(place);
+          candidates.push({
+            row: r,
+            series: s,
+            days,
+            place,
+            text: `${r.current_team || ""} ${s.opponent || ""} ${s.location || ""} ${s.venue || ""}`.toLowerCase(),
           });
         }
+      }
+
+      const geos = new Map();
+      await Promise.all(
+        Array.from(places).map(async (p) => {
+          geos.set(p, await geocodeLocation(p));
+        })
+      );
+
+      const kw = PROFILE_NEARBY_KEYWORDS[(ACCESS_PROFILE && ACCESS_PROFILE.key) || ""] || [];
+      for (const c of candidates) {
+        let miles = 9999;
+        const keywordHit = kw.some((k) => c.text.includes(k));
+        if (keywordHit) {
+          miles = 0;
+        } else {
+          const geo = geos.get(c.place);
+          if (!geo) continue;
+          miles = haversineMiles(center, geo);
+        }
+        if (miles > 100) continue;
+        out.push({
+            week: c.days <= 7 ? "Week 1 (0-7 days)" : c.days <= 14 ? "Week 2 (8-14 days)" : "Week 3 (15-21 days)",
+            name: c.row.name,
+            team: c.row.current_team || c.row.school_or_team || "",
+            opponent: c.series.opponent || "",
+            location: `${c.series.location || ""}${c.series.venue ? ` (${c.series.venue})` : ""}`,
+            date: c.series.start_date || "",
+            miles: Math.round(miles),
+          });
       }
       out.sort((a, b) => a.date.localeCompare(b.date) || a.miles - b.miles);
       return out;
