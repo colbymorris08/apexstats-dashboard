@@ -157,7 +157,7 @@
       Florida1: { key: "florida", label: "Florida", center: { city: "Orlando, FL", lat: 28.5383, lon: -81.3792 } },
       NewYork1: { key: "newyork", label: "New York", center: { city: "NYC, NY", lat: 40.7128, lon: -74.006 } },
       ApexGeneral1: { key: "general", label: "General", center: null },
-      ApexParter1: { key: "partner", label: "Partner", center: { city: "Las Vegas, NV", lat: 36.1699, lon: -115.1398 } },
+      ApexPartner1: { key: "partner", label: "Partner", center: { city: "Las Vegas, NV", lat: 36.1699, lon: -115.1398 } },
     };
     const GEO_CACHE = new Map();
 
@@ -833,7 +833,10 @@
     }
 
     async function buildNearbySeriesRows(center) {
-      const allRows = [...(DATA.pro_clients || []), ...(DATA.amateur_clients || [])];
+      const includeAmateur = !ACCESS_PROFILE || ACCESS_PROFILE.key !== "partner";
+      const allRows = includeAmateur
+        ? [...(DATA.pro_clients || []), ...(DATA.amateur_clients || [])]
+        : [...(DATA.pro_clients || [])];
       const out = [];
       const now = new Date();
       for (const r of allRows) {
@@ -862,9 +865,10 @@
       return out;
     }
 
-    function showNearbyModal(rows) {
+    function showNearbyModal(rows, loading = false) {
       const overlay = el("div");
       overlay.className = "overlay";
+      overlay.id = "nearbySeriesOverlay";
       const modal = el("div");
       modal.className = "modal";
       const head = el("div");
@@ -875,7 +879,9 @@
       close.onclick = () => overlay.remove();
       head.appendChild(close);
       modal.appendChild(head);
-      if (!rows.length) {
+      if (loading) {
+        modal.appendChild(el("p", "Loading nearby series..."));
+      } else if (!rows.length) {
         modal.appendChild(el("p", "No upcoming series within 100 miles for your location profile."));
       } else {
         const groups = ["Week 1 (0-7 days)", "Week 2 (8-14 days)", "Week 3 (15-21 days)"];
@@ -916,7 +922,10 @@
       wireTabs();
       render();
       if (ACCESS_PROFILE && ACCESS_PROFILE.center) {
+        showNearbyModal([], true);
         const rows = await buildNearbySeriesRows(ACCESS_PROFILE.center);
+        const existing = document.getElementById("nearbySeriesOverlay");
+        if (existing) existing.remove();
         showNearbyModal(rows);
       }
     }
