@@ -2182,7 +2182,7 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
     # Season totals from D1 player page (search index + 2026 table).
     d1_url = resolve_d1_player_url(c.name, school)
     d1_season = fetch_d1_player_stats(d1_url, is_p) if d1_url else {}
-    if d1_url:
+    if d1_url and not c.schedule_link:
         base["team_schedule_url"] = d1_url
     if d1_season:
         base["season"] = d1_season
@@ -2207,18 +2207,21 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
             # Backup source: explicit Sidearm schedule link from AmateurList.
             # Use only when NCAA line is missing or likely under-counted (IP>0 but K=0).
             ln_backup = {}
+            ip_now = _to_float((base["last_night"] or {}).get("inningsPitched"))
+            k_now = _to_int((base["last_night"] or {}).get("strikeOuts"))
             if c.schedule_link and (
                 not base["last_night"]
                 or (
                     is_p
-                    and str(base["last_night"].get("inningsPitched", "")).strip() not in ("", "0", "0.0")
-                    and _to_int(base["last_night"].get("strikeOuts")) == 0
+                    and (ip_now <= 0 or k_now == 0)
                 )
             ):
                 ln_backup = _sidearm_player_last_night_from_schedule_link(
                     c.schedule_link, c.name, is_p, yday
                 )
-            if ln_backup:
+            if ln_backup and any(
+                _to_float(v) > 0 for k, v in ln_backup.items() if k not in ("era",)
+            ):
                 base["last_night"] = {
                     k: json_stat_value(k, v) for k, v in ln_backup.items() if v is not None
                 }
