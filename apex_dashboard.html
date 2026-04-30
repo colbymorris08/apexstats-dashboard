@@ -562,17 +562,30 @@
       table.appendChild(thead);
       const tbody = el("tbody");
       tbody.id = `tbody-${panelKeyPrefix}-${tbodyId}`;
+      const totalColumns = (activeView === "mobile" ? BASE_HEADERS_MOBILE.length : baseHeaders.length) + cols.length;
       rows.forEach((r) => {
         const tr = el("tr");
-        [
-          ...baseCols(r, activeView === "mobile"),
-          ...(activeView === "mobile" ? [] : [scheduleUrlForRow(r), r.last_night_boxscore_url || ""]),
-          ...cols.map((c) => formatStatCell(statForCol(r, statKey, c), c)),
-        ].forEach((v, i) => {
-          const td = tdWithValue(v);
-          if (i === 0) td.classList.add("text-left");
-          tr.appendChild(td);
+        const statVals = cols.map((c) => formatStatCell(statForCol(r, statKey, c), c));
+        const hasStats = statVals.some((v) => {
+          const s = String(v ?? "").trim();
+          return s !== "" && s.toUpperCase() !== "N/A";
         });
+        if (!hasStats) {
+          const td = el("td");
+          td.colSpan = totalColumns;
+          td.innerHTML = `<em>${r.name || "Player"}: Team stats not on maxpreps</em>`;
+          tr.appendChild(td);
+        } else {
+          [
+            ...baseCols(r, activeView === "mobile"),
+            ...(activeView === "mobile" ? [] : [scheduleUrlForRow(r), r.last_night_boxscore_url || ""]),
+            ...statVals,
+          ].forEach((v, i) => {
+            const td = tdWithValue(v);
+            if (i === 0) td.classList.add("text-left");
+            tr.appendChild(td);
+          });
+        }
         tbody.appendChild(tr);
       });
       table.appendChild(tbody);
