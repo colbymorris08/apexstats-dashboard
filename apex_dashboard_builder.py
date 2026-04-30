@@ -174,6 +174,14 @@ def _agent_last(agent: str) -> str:
     return parts[-1] if parts else ""
 
 
+def _normalize_agent_initials(agent: str) -> str:
+    """Map legacy workbook codes to display initials."""
+    a = (agent or "").strip()
+    if a.upper() == "S":
+        return "SK"
+    return a
+
+
 def _cell_str(v: Any) -> str:
     if pd.isna(v):
         return ""
@@ -1184,7 +1192,7 @@ def load_clients(path: Path) -> list[Client]:
         notes_agent = "" if pd.isna(raw_notes) else str(raw_notes).strip()
         raw_agent = r.get("Agent", "")
         fallback_agent = "" if pd.isna(raw_agent) else str(raw_agent).strip()
-        agent = notes_agent or fallback_agent
+        agent = _normalize_agent_initials(notes_agent or fallback_agent)
         # Keep requested manual assignment for known client.
         if _parse_name(raw_name).strip().lower() == "brock burke":
             agent = "PC"
@@ -1248,7 +1256,7 @@ def load_amateur_clients(path: Path) -> list[Client]:
             continue
         position = _cell_str(r.get(pos_col, "")).upper() if pos_col else ""
         school = _cell_str(r.get(school_col, "")) if school_col else ""
-        agent_val = _cell_str(r.get(agent_col, "")) if agent_col else ""
+        agent_val = _normalize_agent_initials(_cell_str(r.get(agent_col, "")) if agent_col else "")
         out.append(
             Client(
                 name=_parse_name(raw_name),
