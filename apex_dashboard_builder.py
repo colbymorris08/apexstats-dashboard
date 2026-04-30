@@ -14,8 +14,9 @@ import re
 import pandas as pd
 import requests
 
-SOURCE_XLSX = Path("/Users/colbymorris/Downloads/Client List - 04-15-26.xlsx")
-AMATEUR_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/AmateurList.xlsx")
+SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/Client List - 04-15-26.xlsx")
+AMATEUR_SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/AmateurList.xlsx")
+HS_SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/HSList.xlsx")
 OUT_JSON = Path("/Users/colbymorris/apexstats/apex_dashboard_data.json")
 SEASON = date.today().year
 API = "https://statsapi.mlb.com/api/v1"
@@ -37,15 +38,9 @@ MAXPREPS_HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; ApexDashboard/1.0)",
     "Accept-Language": "en-US,en;q=0.9",
 }
-MAXPREPS_TEST_PLAYERS: list[dict[str, str]] = [
-    {
-        "name": "Jensen Hirschkorn",
-        "position": "OF",
-        "school": "Kingsburg",
-        "agent": "",
-        "stats_url": "https://www.maxpreps.com/ca/kingsburg/kingsburg-vikings/athletes/jensen-hirschkorn/baseball/stats/?careerid=nl0cjhntsf600&sportSeasonId=1278779e-84df-4e60-8d03-db0024535aa6",
-    }
-]
+HS_MAXPREPS_URL_OVERRIDES: dict[str, str] = {
+    "jensen hirschkorn": "https://www.maxpreps.com/ca/kingsburg/kingsburg-vikings/athletes/jensen-hirschkorn/baseball/stats/?careerid=nl0cjhntsf600&sportSeasonId=1278779e-84df-4e60-8d03-db0024535aa6",
+}
 
 PITCHER_POS = {"RHP", "LHP", "SP", "RP", "P"}
 # Exclude from pro tab (still in workbook for records, but not shown on dashboard).
@@ -2249,6 +2244,25 @@ def _pick_maxpreps_tables(tables: list[pd.DataFrame]) -> tuple[pd.DataFrame | No
     return batting, pitching
 
 
+def _hs_position_flags(position: str) -> tuple[bool, bool]:
+    """Return (is_pitcher, is_hitter) from HS sheet position text."""
+    raw = (position or "").upper().strip()
+    if not raw:
+        return False, True
+    toks = [t for t in re.split(r"[/,\\s]+", raw) if t]
+    if not toks:
+        toks = [raw]
+    is_p = any(("HP" in t) or (t in PITCHER_POS) or (t == "P") for t in toks)
+    is_h = any(not (("HP" in t) or (t in PITCHER_POS) or (t == "P")) for t in toks)
+    if is_p and not is_h:
+        return True, False
+    if is_h and not is_p:
+        return False, True
+    if is_p and is_h:
+        return True, True
+    return False, True
+
+
 def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
     today = date.today()
     yday = today - timedelta(days=1)
@@ -2278,91 +2292,105 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
     base_pitcher = dict(base_hitter)
     base_pitcher["position"] = "P"
     base_pitcher["is_pitcher"] = True
+    wants_pitcher = bool(entry.get("hs_is_pitcher"))
+    wants_hitter = bool(entry.get("hs_is_hitter"))
+    if not wants_pitcher and not wants_hitter:
+        wants_hitter = True
     url = entry.get("stats_url", "").strip()
     if not url:
-        return [base_hitter]
+        out_no_url: list[dict[str, Any]] = []
+        if wants_hitter:
+            out_no_url.append(base_hitter)
+        if wants_pitcher:
+            out_no_url.append(base_pitcher)
+        return out_no_url
     try:
         html = _maxpreps_get(url)
         tables = pd.read_html(StringIO(html))
     except Exception:
-        return [base_hitter]
+        out_err: list[dict[str, Any]] = []
+        if wants_hitter:
+            out_err.append(base_hitter)
+        if wants_pitcher:
+            out_err.append(base_pitcher)
+        return out_err
     batting, pitching = _pick_maxpreps_tables(tables)
-    if batting is None:
-        return [base_hitter]
-    batting.columns = [str(c).strip() for c in batting.columns]
-    if "Date" not in batting.columns:
-        return [base_hitter]
-    last_row = None
-    month_rows: list[pd.Series] = []
-    for _, row in batting.iterrows():
-        ds = str(row.get("Date", "")).strip()
-        if not ds:
-            continue
-        if ds.lower().startswith("season total"):
-            base_hitter["season"] = _amateur_line_to_pro_keys(
-                {
-                    "ab": row.get("AB"),
-                    "r": row.get("R"),
-                    "h": row.get("H"),
-                    "rbi": row.get("RBI"),
-                    "bb": row.get("BB"),
-                    "k": row.get("K"),
-                    "hr": row.get("HR"),
-                    "doubles": row.get("2B"),
-                    "avg": row.get("Avg"),
-                    "ops": row.get("OPS"),
-                },
-                False,
-            )
-            continue
-        try:
-            mm_s, dd_s = ds.split("/", 1)
-            gd = date(today.year, int(mm_s), int(dd_s))
-        except Exception:
-            continue
-        if gd == yday:
-            last_row = row
-        if gd.month == today.month and gd <= today:
-            month_rows.append(row)
-    if last_row is not None:
-        base_hitter["last_night"] = _amateur_line_to_pro_keys(
-            {
-                "ab": last_row.get("AB"),
-                "r": last_row.get("R"),
-                "h": last_row.get("H"),
-                "rbi": last_row.get("RBI"),
-                "bb": last_row.get("BB"),
-                "k": last_row.get("K"),
-                "hr": last_row.get("HR"),
-                "doubles": last_row.get("2B"),
-                "avg": last_row.get("Avg"),
-                "ops": last_row.get("OPS"),
-            },
-            False,
-        )
-    if month_rows:
-        agg = {"ab": 0, "r": 0, "h": 0, "rbi": 0, "bb": 0, "k": 0, "hr": 0, "doubles": 0}
-        for r in month_rows:
-            for k, c in (
-                ("ab", "AB"),
-                ("r", "R"),
-                ("h", "H"),
-                ("rbi", "RBI"),
-                ("bb", "BB"),
-                ("k", "K"),
-                ("hr", "HR"),
-                ("doubles", "2B"),
-            ):
-                agg[k] += int(to_number(r.get(c)) or 0)
-        agg["avg"] = round((agg["h"] / agg["ab"]), 3) if agg["ab"] else 0.0
-        base_hitter["month_to_date"] = _amateur_line_to_pro_keys(agg, False)
+    if wants_hitter and batting is not None:
+        batting.columns = [str(c).strip() for c in batting.columns]
+        if "Date" in batting.columns:
+            last_row = None
+            month_rows: list[pd.Series] = []
+            for _, row in batting.iterrows():
+                ds = str(row.get("Date", "")).strip()
+                if not ds:
+                    continue
+                if ds.lower().startswith("season total"):
+                    base_hitter["season"] = _amateur_line_to_pro_keys(
+                        {
+                            "ab": row.get("AB"),
+                            "r": row.get("R"),
+                            "h": row.get("H"),
+                            "rbi": row.get("RBI"),
+                            "bb": row.get("BB"),
+                            "k": row.get("K"),
+                            "hr": row.get("HR"),
+                            "doubles": row.get("2B"),
+                            "avg": row.get("Avg"),
+                            "ops": row.get("OPS"),
+                        },
+                        False,
+                    )
+                    continue
+                try:
+                    mm_s, dd_s = ds.split("/", 1)
+                    gd = date(today.year, int(mm_s), int(dd_s))
+                except Exception:
+                    continue
+                if gd == yday:
+                    last_row = row
+                if gd.month == today.month and gd <= today:
+                    month_rows.append(row)
+            if last_row is not None:
+                base_hitter["last_night"] = _amateur_line_to_pro_keys(
+                    {
+                        "ab": last_row.get("AB"),
+                        "r": last_row.get("R"),
+                        "h": last_row.get("H"),
+                        "rbi": last_row.get("RBI"),
+                        "bb": last_row.get("BB"),
+                        "k": last_row.get("K"),
+                        "hr": last_row.get("HR"),
+                        "doubles": last_row.get("2B"),
+                        "avg": last_row.get("Avg"),
+                        "ops": last_row.get("OPS"),
+                    },
+                    False,
+                )
+            if month_rows:
+                agg = {"ab": 0, "r": 0, "h": 0, "rbi": 0, "bb": 0, "k": 0, "hr": 0, "doubles": 0}
+                for r in month_rows:
+                    for k, c in (
+                        ("ab", "AB"),
+                        ("r", "R"),
+                        ("h", "H"),
+                        ("rbi", "RBI"),
+                        ("bb", "BB"),
+                        ("k", "K"),
+                        ("hr", "HR"),
+                        ("doubles", "2B"),
+                    ):
+                        agg[k] += int(to_number(r.get(c)) or 0)
+                agg["avg"] = round((agg["h"] / agg["ab"]), 3) if agg["ab"] else 0.0
+                base_hitter["month_to_date"] = _amateur_line_to_pro_keys(agg, False)
     box_link = _maxpreps_link_for_day(html, yday)
     base_hitter["last_night_boxscore_url"] = box_link
 
-    out = [base_hitter]
+    out: list[dict[str, Any]] = []
+    if wants_hitter:
+        out.append(base_hitter)
     next_data = _maxpreps_next_data(html)
     p_rows, p_season = _maxpreps_pitching_rows(next_data)
-    if p_season:
+    if wants_pitcher and p_season:
         base_pitcher["season"] = _amateur_line_to_pro_keys(p_season, True)
     p_last_row = None
     p_month_rows: list[dict[str, Any]] = []
@@ -2383,9 +2411,9 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
                     box_link = cu if cu.startswith("http") else f"https://www.maxpreps.com{cu}"
         if gd.month == today.month and gd <= today:
             p_month_rows.append(row)
-    if p_last_row is not None:
+    if wants_pitcher and p_last_row is not None:
         base_pitcher["last_night"] = _amateur_line_to_pro_keys(p_last_row, True)
-    if p_month_rows:
+    if wants_pitcher and p_month_rows:
         p_month = _blank_individual_line(True)
         for r in p_month_rows:
             p_month = _add_lines(
@@ -2403,8 +2431,52 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
         p_month = _with_rate_stats(p_month, True)
         base_pitcher["month_to_date"] = _amateur_line_to_pro_keys(p_month, True)
     base_pitcher["last_night_boxscore_url"] = box_link
-    if base_pitcher["season"] or base_pitcher["month_to_date"] or base_pitcher["last_night"]:
+    if wants_pitcher and (base_pitcher["season"] or base_pitcher["month_to_date"] or base_pitcher["last_night"] or not wants_hitter):
         out.append(base_pitcher)
+    return out
+
+
+def load_high_school_clients(path: Path) -> list[dict[str, str]]:
+    if not path.is_file():
+        return []
+    df = pd.read_excel(path)
+    lower = {str(c).strip().lower(): c for c in df.columns}
+
+    def pick_col(cands: list[str]) -> str | None:
+        for c in cands:
+            if c.lower() in lower:
+                return str(lower[c.lower()])
+        return None
+
+    name_col = pick_col(["Name", "Player", "Player Name"])
+    pos_col = pick_col(["Position", "Pos"])
+    school_col = pick_col(["School", "Team", "High School"])
+    agent_col = pick_col(["Agent", "Agent Initials", "Agt"])
+    url_col = pick_col(["MaxPreps URL", "Stats URL", "URL", "Profile URL", "Link"])
+    if not name_col:
+        return []
+
+    out: list[dict[str, str]] = []
+    for _, r in df.iterrows():
+        raw_name = _cell_str(r.get(name_col, ""))
+        if not raw_name:
+            continue
+        name = _parse_name(raw_name)
+        norm = _norm_player_name(name)
+        stats_url = _cell_str(r.get(url_col, "")) if url_col else ""
+        if not stats_url:
+            stats_url = HS_MAXPREPS_URL_OVERRIDES.get(norm, "")
+        out.append(
+            {
+                "name": name,
+                "position": _cell_str(r.get(pos_col, "")) if pos_col else "",
+                "school": _cell_str(r.get(school_col, "")) if school_col else "",
+                "agent": _normalize_agent_initials(_cell_str(r.get(agent_col, "")) if agent_col else ""),
+                "stats_url": stats_url,
+                "hs_is_pitcher": _hs_position_flags(_cell_str(r.get(pos_col, "")) if pos_col else "")[0],
+                "hs_is_hitter": _hs_position_flags(_cell_str(r.get(pos_col, "")) if pos_col else "")[1],
+            }
+        )
     return out
 
 
@@ -2435,7 +2507,7 @@ def build_dashboard_data() -> dict[str, Any]:
     pro_rows = [build_client_payload(c) for c in pro]
     amateur_rows = [build_amateur_payload(c) for c in amateur]
     high_school_rows: list[dict[str, Any]] = []
-    for p in MAXPREPS_TEST_PLAYERS:
+    for p in load_high_school_clients(HS_SOURCE_XLSX):
         high_school_rows.extend(build_high_school_payloads(p))
 
     data = {

@@ -63,6 +63,52 @@
     table.stats-table th.sortable { cursor: pointer; user-select: none; }
     table.stats-table th.sortable:hover { filter: brightness(1.08); }
     table.stats-table a { color: #1e40af; }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    .modal {
+      width: min(980px, 95vw);
+      max-height: 85vh;
+      overflow: auto;
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #d0d0d0;
+      padding: 14px 16px;
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .modal-close {
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      background: #fff;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .modal h3 {
+      margin: 8px 0;
+      font-size: 16px;
+      color: #1e3a5f;
+    }
+    .modal table { width: 100%; border-collapse: collapse; }
+    .modal th, .modal td {
+      border: 1px solid #ddd;
+      padding: 6px;
+      font-size: 13px;
+      text-align: left;
+    }
+    .modal th { background: #f4f7fb; }
   </style>
 </head>
 <body>
@@ -103,6 +149,17 @@
     let activeSubtab = "last_night";
     let activeRole = "all";
     const sortState = {};
+    let ACCESS_PROFILE = null;
+
+    const PASSWORD_PROFILES = {
+      BayArea1: { key: "bayarea", label: "Bay Area", center: { city: "San Francisco, CA", lat: 37.7749, lon: -122.4194 } },
+      Midwest1: { key: "midwest", label: "Midwest", center: { city: "Chicago, IL", lat: 41.8781, lon: -87.6298 } },
+      Florida1: { key: "florida", label: "Florida", center: { city: "Orlando, FL", lat: 28.5383, lon: -81.3792 } },
+      NewYork1: { key: "newyork", label: "New York", center: { city: "NYC, NY", lat: 40.7128, lon: -74.006 } },
+      ApexGeneral1: { key: "general", label: "General", center: null },
+      ApexParter1: { key: "partner", label: "Partner", center: { city: "Las Vegas, NV", lat: 36.1699, lon: -115.1398 } },
+    };
+    const GEO_CACHE = new Map();
 
     const BASE_HEADERS_DESKTOP = [
       "Name",
@@ -319,6 +376,36 @@
       return td;
     }
 
+    function haversineMiles(a, b) {
+      const R = 3958.8;
+      const toRad = (x) => (x * Math.PI) / 180;
+      const dLat = toRad(b.lat - a.lat);
+      const dLon = toRad(b.lon - a.lon);
+      const q =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLon / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(q));
+    }
+
+    async function geocodeLocation(name) {
+      const key = String(name || "").trim();
+      if (!key) return null;
+      if (GEO_CACHE.has(key)) return GEO_CACHE.get(key);
+      try {
+        const u = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(key)}&count=1&language=en&format=json`;
+        const r = await fetch(u);
+        if (!r.ok) throw new Error(`geo ${r.status}`);
+        const js = await r.json();
+        const row = (js.results || [])[0];
+        const val = row ? { lat: Number(row.latitude), lon: Number(row.longitude) } : null;
+        GEO_CACHE.set(key, val);
+        return val;
+      } catch (_) {
+        GEO_CACHE.set(key, null);
+        return null;
+      }
+    }
+
     function slugifyTeam(s) {
       return String(s || "")
         .trim()
@@ -426,6 +513,12 @@
       }
       const citySlug = milbCitySlug(team);
       return citySlug ? `https://www.milb.com/${citySlug}/schedule?date=${dateQ}` : "";
+    }
+
+    function restaurantUrlForSeries(s) {
+      const q = [s.venue || "", s.location || ""].filter(Boolean).join(", ");
+      if (!q) return "";
+      return `https://www.yelp.com/search?find_desc=restaurants&find_loc=${encodeURIComponent(q)}`;
     }
 
     function baseCols(row, mobileMode = false) {
@@ -573,6 +666,7 @@
         "Series End",
         "Location",
         "Nearest Airport Code",
+        "Restaurants",
       ];
       if (activeTab === "mlb") headers = headers.filter((h) => h !== "Organization");
       headers.forEach((h, i) => {
@@ -602,6 +696,7 @@
             s.end_date,
             s.location,
             s.nearest_airport_code,
+            restaurantUrlForSeries(s),
           ];
           if (activeTab !== "mlb") vals.splice(4, 0, r.organization || r.major_affiliate || "");
           vals.forEach((v, i) => {
@@ -627,6 +722,12 @@
       return [];
     }
 
+    function allowedMainTabs() {
+      if (!ACCESS_PROFILE) return ["mlb", "milb", "amateur", "high_school"];
+      if (ACCESS_PROFILE.key === "partner") return ["mlb", "milb"];
+      return ["mlb", "milb", "amateur", "high_school"];
+    }
+
     function roleFilter(rows) {
       if (activeRole === "pitchers") return rows.filter((r) => r.is_pitcher);
       if (activeRole === "hitters") return rows.filter((r) => !r.is_pitcher);
@@ -645,8 +746,19 @@
       });
       if (!showSchedule && activeSubtab === "schedule") activeSubtab = "last_night";
 
+      const allowed = new Set(allowedMainTabs());
+      document.querySelectorAll("#mainTabs button").forEach((b) => {
+        b.style.display = allowed.has(b.dataset.tab) ? "" : "none";
+      });
+      if (!allowed.has(activeTab)) activeTab = "mlb";
+
       ["mlb", "milb", "amateur", "high_school"].forEach((t) => {
         const panel = document.getElementById(`panel-${t}`);
+        if (!allowed.has(t)) {
+          panel.classList.remove("active");
+          panel.innerHTML = "";
+          return;
+        }
         const baseRows = rowsForTab(t);
         const rows = roleFilter(baseRows);
         const panelKey = `${t}-${activeSubtab}-${activeRole}`;
@@ -693,7 +805,92 @@
       });
     }
 
+    function authenticateUser() {
+      for (let i = 0; i < 4; i += 1) {
+        const pw = window.prompt("Enter Apex access password");
+        if (pw === null) return false;
+        const profile = PASSWORD_PROFILES[pw.trim()];
+        if (profile) {
+          ACCESS_PROFILE = profile;
+          return true;
+        }
+        window.alert("Invalid password.");
+      }
+      return false;
+    }
+
+    async function buildNearbySeriesRows(center) {
+      const allRows = [...(DATA.pro_clients || []), ...(DATA.amateur_clients || [])];
+      const out = [];
+      const now = new Date();
+      for (const r of allRows) {
+        for (const s of r.upcoming_series || []) {
+          const ds = String(s.start_date || "");
+          const dt = ds ? new Date(`${ds}T00:00:00`) : null;
+          if (!dt || Number.isNaN(dt.getTime())) continue;
+          const days = Math.floor((dt - now) / (1000 * 60 * 60 * 24));
+          if (days < 0 || days > 21) continue;
+          const geo = await geocodeLocation(`${s.location || ""} ${s.venue || ""}`.trim());
+          if (!geo) continue;
+          const miles = haversineMiles(center, geo);
+          if (miles > 100) continue;
+          out.push({
+            week: days <= 7 ? "Week 1 (0-7 days)" : days <= 14 ? "Week 2 (8-14 days)" : "Week 3 (15-21 days)",
+            name: r.name,
+            team: r.current_team || r.school_or_team || "",
+            opponent: s.opponent || "",
+            location: `${s.location || ""}${s.venue ? ` (${s.venue})` : ""}`,
+            date: s.start_date || "",
+            miles: Math.round(miles),
+          });
+        }
+      }
+      out.sort((a, b) => a.date.localeCompare(b.date) || a.miles - b.miles);
+      return out;
+    }
+
+    function showNearbyModal(rows) {
+      const overlay = el("div");
+      overlay.className = "overlay";
+      const modal = el("div");
+      modal.className = "modal";
+      const head = el("div");
+      head.className = "modal-head";
+      head.appendChild(el("h2", "Nearby Player Series (next 21 days)"));
+      const close = el("button", "X");
+      close.className = "modal-close";
+      close.onclick = () => overlay.remove();
+      head.appendChild(close);
+      modal.appendChild(head);
+      if (!rows.length) {
+        modal.appendChild(el("p", "No upcoming series within 100 miles for your location profile."));
+      } else {
+        const groups = ["Week 1 (0-7 days)", "Week 2 (8-14 days)", "Week 3 (15-21 days)"];
+        groups.forEach((g) => {
+          const gRows = rows.filter((r) => r.week === g);
+          if (!gRows.length) return;
+          modal.appendChild(el("h3", g));
+          const t = el("table");
+          const h = el("tr");
+          ["Player", "Team", "Opponent", "Location", "Date", "Miles"].forEach((x) => h.appendChild(el("th", x)));
+          t.appendChild(h);
+          gRows.forEach((r) => {
+            const tr = el("tr");
+            [r.name, r.team, r.opponent, r.location, r.date, String(r.miles)].forEach((x) => tr.appendChild(el("td", x)));
+            t.appendChild(tr);
+          });
+          modal.appendChild(t);
+        });
+      }
+      overlay.appendChild(modal);
+      document.body.appendChild(overlay);
+    }
+
     async function load() {
+      if (!authenticateUser()) {
+        document.body.innerHTML = "<h2>Access cancelled.</h2>";
+        return;
+      }
       try {
         const r = await fetch("/api/data");
         if (!r.ok) throw new Error(`api ${r.status}`);
@@ -705,6 +902,10 @@
       }
       wireTabs();
       render();
+      if (ACCESS_PROFILE && ACCESS_PROFILE.center) {
+        const rows = await buildNearbySeriesRows(ACCESS_PROFILE.center);
+        showNearbyModal(rows);
+      }
     }
 
     load().catch((err) => {
