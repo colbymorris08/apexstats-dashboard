@@ -587,14 +587,16 @@
       rows.forEach((r) => {
         const tr = el("tr");
         const statVals = cols.map((c) => formatStatCell(statForCol(r, statKey, c), c));
+        const hsUnavailable = activeTab === "high_school" && String(r.stats_unavailable_reason || "").trim();
         const hasStats = statVals.some((v) => {
           const s = String(v ?? "").trim();
           return s !== "" && s.toUpperCase() !== "N/A";
         });
-        if (!hasStats) {
+        if (hsUnavailable || !hasStats) {
           const td = el("td");
           td.colSpan = totalColumns;
-          td.innerHTML = `<em>${r.name || "Player"}: Team stats not on maxpreps</em>`;
+          const msg = hsUnavailable ? r.stats_unavailable_reason : "Team stats not on maxpreps";
+          td.innerHTML = `<em>${r.name || "Player"}: ${msg}</em>`;
           tr.appendChild(td);
         } else {
           [
