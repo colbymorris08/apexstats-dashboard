@@ -591,11 +591,10 @@
           ...(activeView === "mobile" ? [] : [scheduleUrlForRow(r), r.last_night_boxscore_url || ""]),
         ];
         const statVals = cols.map((c) => formatStatCell(statForCol(r, statKey, c), c));
-        const hsUnavailable = activeTab === "high_school" && String(r.stats_unavailable_reason || "").trim();
-        const hasStats = statVals.some((v) => {
-          const s = String(v ?? "").trim();
-          return s !== "" && s.toUpperCase() !== "N/A";
-        });
+        const hsUnavailable =
+          activeTab === "high_school" &&
+          statKey === "season" &&
+          String(r.stats_unavailable_reason || "").trim();
         if (hsUnavailable) {
           const nameTd = tdWithValue(baseVals[0] || r.name || "");
           nameTd.classList.add("text-left");
@@ -605,11 +604,6 @@
           const msg = r.stats_unavailable_reason;
           td.innerHTML = `<em>${r.name || "Player"}: ${msg}</em>`;
           td.style.textAlign = "center";
-          tr.appendChild(td);
-        } else if (!hasStats) {
-          const td = el("td");
-          td.colSpan = totalColumns;
-          td.innerHTML = `<em>${r.name || "Player"}: Team stats not on maxpreps</em>`;
           tr.appendChild(td);
         } else {
           [...baseVals, ...statVals].forEach((v, i) => {
