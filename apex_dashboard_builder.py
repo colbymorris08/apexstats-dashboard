@@ -513,7 +513,16 @@ def _name_parts(full_name: str) -> tuple[str, str]:
     return first, last
 
 
-def _pick_ncaa_player_row(player_stats: list[dict[str, Any]], client_name: str) -> dict[str, Any] | None:
+def _pick_ncaa_player_row(
+    player_stats: list[dict[str, Any]], client_name: str, is_pitcher_role: bool | None = None
+) -> dict[str, Any] | None:
+    def role_ok(p: dict[str, Any]) -> bool:
+        if is_pitcher_role is None:
+            return True
+        if is_pitcher_role:
+            return bool(p.get("pitcherStats"))
+        return bool(p.get("batterStats"))
+
     first, last = _name_parts(client_name)
     f0 = _norm_token(first[:1])
     ln = _norm_token(last)
@@ -529,8 +538,12 @@ def _pick_ncaa_player_row(player_stats: list[dict[str, Any]], client_name: str) 
         combo_tokens.discard("")
         combo_first_i = _norm_token(raw_combo[:1]) if raw_combo else ""
         if ln and ln in combo_tokens and (not f0 or f0 == p_first or f0 == combo_first_i):
+            if not role_ok(p):
+                continue
             return p
         if p_last and p_last == ln and (not f0 or p_first == f0):
+            if not role_ok(p):
+                continue
             return p
     # fallback: last-name exact only
     for p in player_stats:
@@ -541,8 +554,12 @@ def _pick_ncaa_player_row(player_stats: list[dict[str, Any]], client_name: str) 
         combo_tokens = {_norm_token(tok) for tok in raw_combo.replace(",", " ").split() if tok}
         combo_tokens.discard("")
         if ln and ln in combo_tokens:
+            if not role_ok(p):
+                continue
             return p
         if p_last and p_last == ln:
+            if not role_ok(p):
+                continue
             return p
     return None
 
@@ -594,14 +611,27 @@ def _apply_ncaa_pitcher_k_fallback(
     by_ip = sorted(pitchers, key=lambda x: x["ip"], reverse=True)
     top_ip = by_ip[0]["ip"]
     top_count = sum(1 for p in by_ip if p["ip"] == top_ip)
+    def bounded_k(raw_k: int, ps: dict[str, Any]) -> int:
+        # Keep fallback Ks in a plausible single-player range.
+        # Primary guardrail is outs recorded from IP, with small room for
+        # dropped-third-strike reach events; also never exceed batters faced.
+        ip = _ncaa_ip_value(ps)
+        outs = int(round(ip * 3))
+        bf = _ncaa_stat_int(ps, "battersFaced", "bf")
+        cap = outs + 2 if outs > 0 else 2
+        if bf > 0:
+            cap = min(cap, bf)
+        return max(0, min(int(raw_k), cap))
+
     # If one pitcher clearly carried the bulk innings, attribute team Ks to that arm.
-    if top_count == 1 and top_ip >= 2:
+    # Require a true bulk outing to avoid over-crediting short starts/openers.
+    if top_count == 1 and top_ip >= 5:
         starter = by_ip[0]["row"]
         if starter is not selected_row:
             return selected_row
         patched = dict(selected_row)
         patched_ps = dict(ps_sel)
-        patched_ps["strikeouts"] = str(team_opp_k)
+        patched_ps["strikeouts"] = str(bounded_k(team_opp_k, patched_ps))
         patched["pitcherStats"] = patched_ps
         return patched
 
@@ -615,7 +645,7 @@ def _apply_ncaa_pitcher_k_fallback(
         est = 1
     patched = dict(selected_row)
     patched_ps = dict(ps_sel)
-    patched_ps["strikeouts"] = str(est)
+    patched_ps["strikeouts"] = str(bounded_k(est, patched_ps))
     patched["pitcherStats"] = patched_ps
     return patched
 
@@ -632,6 +662,21 @@ def _to_float(v: Any) -> float:
         return float(str(v).strip())
     except Exception:
         return 0.0
+
+
+def _is_valid_hitter_last_night_line(line: dict[str, Any]) -> bool:
+    """
+    Reject obvious non-player aggregate lines accidentally attributed to a hitter.
+    A single player's AB in one game should never approach full-team totals.
+    """
+    if not isinstance(line, dict):
+        return True
+    ab = _to_int(line.get("atBats"))
+    # Defensive cap: protects two-way hitter rows from occasional team/opponent
+    # aggregate stat lines (e.g., 19 AB).
+    if ab > 12:
+        return False
+    return True
 
 
 def _to_float_or_none(v: Any) -> float | None:
@@ -1062,7 +1107,7 @@ def _amateur_line_to_pro_keys(raw: dict[str, Any], is_p: bool) -> dict[str, Any]
 
 
 def _player_row_from_ncaa_contest(
-    g: dict[str, Any], school: str, client_name: str
+    g: dict[str, Any], school: str, client_name: str, is_pitcher_role: bool | None = None
 ) -> dict[str, Any] | None:
     cid = _safe_int(g.get("contest_id"))
     if not cid:
@@ -1087,7 +1132,7 @@ def _player_row_from_ncaa_contest(
             want_home = bool((g.get("team") or {}).get("is_home"))
             idx = 0 if bool(teams_meta[0].get("isHome")) == want_home else 1
     player_stats = (team_box[idx] or {}).get("playerStats") or []
-    selected = _pick_ncaa_player_row(player_stats, client_name)
+    selected = _pick_ncaa_player_row(player_stats, client_name, is_pitcher_role=is_pitcher_role)
     opp_stats = (team_box[1 - idx] or {}).get("playerStats") or []
     return _apply_ncaa_pitcher_k_fallback(selected, player_stats, opp_stats)
 
@@ -1107,7 +1152,7 @@ def ncaa_player_last_night_and_month(
     last_keys: dict[str, Any] = {}
     for g in games:
         if g.get("date") == yday and is_final(g):
-            prow = _player_row_from_ncaa_contest(g, school, c.name)
+            prow = _player_row_from_ncaa_contest(g, school, c.name, is_pitcher_role=is_p)
             if prow:
                 last_raw = _with_rate_stats(_extract_individual_line(prow, is_p), is_p)
                 last_keys = _amateur_line_to_pro_keys(last_raw, is_p)
@@ -1122,7 +1167,7 @@ def ncaa_player_last_night_and_month(
         and is_final(g)
     ]
     for g in month_games[:45]:
-        prow = _player_row_from_ncaa_contest(g, school, c.name)
+        prow = _player_row_from_ncaa_contest(g, school, c.name, is_pitcher_role=is_p)
         if not prow:
             continue
         line = _extract_individual_line(prow, is_p)
@@ -1173,7 +1218,18 @@ def _sidearm_player_last_night_from_schedule_link(
             bhtml = requests.get(bu, timeout=20, headers=_HTTP_HEADERS).text
         except Exception:
             continue
-        if not any(tok in bhtml for tok in target_tokens):
+        # Sidearm pages can contain unrelated date tokens in scripts. Require the
+        # explicit game date from title/meta/url text when available.
+        actual_game_day: date | None = None
+        for m in re.finditer(r"\bon\s+(\d{1,2}/\d{1,2}/\d{4})\b", bhtml, flags=re.I):
+            try:
+                actual_game_day = datetime.strptime(m.group(1), "%m/%d/%Y").date()
+                break
+            except Exception:
+                continue
+        if actual_game_day is not None and actual_game_day != target_day:
+            continue
+        if actual_game_day is None and not any(tok in bhtml for tok in target_tokens):
             continue
         try:
             tables = pd.read_html(StringIO(bhtml))
@@ -2266,13 +2322,7 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
             ln_backup = {}
             ip_now = _to_float((base["last_night"] or {}).get("inningsPitched"))
             k_now = _to_int((base["last_night"] or {}).get("strikeOuts"))
-            if c.schedule_link and (
-                not base["last_night"]
-                or (
-                    is_p
-                    and (ip_now <= 0 or k_now == 0)
-                )
-            ):
+            if is_p and c.schedule_link and (not base["last_night"] or (ip_now <= 0 or k_now == 0)):
                 ln_backup = _sidearm_player_last_night_from_schedule_link(
                     c.schedule_link, c.name, is_p, yday
                 )
@@ -2282,6 +2332,8 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
                 base["last_night"] = {
                     k: json_stat_value(k, v) for k, v in ln_backup.items() if v is not None
                 }
+            if (not is_p) and base["last_night"] and not _is_valid_hitter_last_night_line(base["last_night"]):
+                base["last_night"] = {}
             if mtd_ind:
                 base["month_to_date"] = {
                     k: json_stat_value(k, v) for k, v in mtd_ind.items() if v is not None
@@ -2539,6 +2591,8 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
                     },
                     False,
                 )
+                if not _is_valid_hitter_last_night_line(base_hitter["last_night"]):
+                    base_hitter["last_night"] = {}
             if month_rows:
                 agg = {"ab": 0, "r": 0, "h": 0, "rbi": 0, "bb": 0, "k": 0, "hr": 0, "doubles": 0}
                 for r in month_rows:
