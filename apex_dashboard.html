@@ -159,38 +159,19 @@
       ApexGeneral1: { key: "general", label: "General", center: null },
       ApexPartner1: { key: "partner", label: "Partner", center: { city: "Las Vegas, NV", lat: 36.1699, lon: -115.1398 } },
     };
-    const PROFILE_NEARBY_KEYWORDS = {
-      bayarea: ["san francisco", "oakland", "san jose", "santa clara", "fremont", "walnut creek", "sacramento"],
-      midwest: ["chicago", "milwaukee", "south bend", "rockford", "indianapolis"],
-      florida: ["orlando", "tampa", "st. petersburg", "lakeland", "clearwater", "jacksonville", "miami"],
-      newyork: ["new york", "nyc", "brooklyn", "bronx", "queens", "newark", "staten island"],
-      partner: ["las vegas", "summerlin", "henderson", "aviators"],
-    };
-    const PROFILE_ENTITY_KEYWORDS = {
-      bayarea: [
-        "san jose giants",
-        "sacramento river cats",
-        "river cats",
-        "sacramento athletics",
-        "athletics",
-        "san francisco giants",
-        "st mary",
-        "university of san francisco",
-        "sac state",
-        "stanford",
-        "pacific",
-        "cal poly",
-        "santa barbara",
-        "santa clara",
-        "reno aces",
-        "stockton ports",
-      ],
-      partner: ["las vegas aviators", "los angeles dodgers", "dodgers"],
-      newyork: ["new york mets", "new york yankees", "brooklyn cyclones", "cyclones"],
-    };
-    const PROFILE_STATE_RULES = {
-      midwest: new Set(["IL", "KY", "IA", "MI", "IN"]),
-      florida: new Set(["FL"]),
+    const PROFILE_RULES = {
+      bayarea: {
+        teams: [
+          "san jose giants", "sacramento river cats", "river cats", "sacramento athletics", "athletics",
+          "san francisco giants", "st mary", "university of san francisco", "san fransico", "sac state",
+          "stanford", "cal", "pacific", "cal poly", "santa barbara", "santa clara", "nevada", "reno", "stockton ports",
+        ],
+        places: ["san francisco", "san jose", "sacramento", "moraga", "stockton", "reno", "santa clara", "berkeley", "santa barbara"],
+      },
+      midwest: { states: ["illinois", "kentucky", "iowa", "michigan", "indiana"] },
+      florida: { states: ["florida"] },
+      newyork: { teams: ["new york mets", "new york yankees", "brooklyn cyclones"], places: ["new york", "brooklyn", "bronx", "queens"] },
+      partner: { teams: ["las vegas aviators", "los angeles dodgers"], places: ["las vegas"] },
     };
     const GEO_CACHE = new Map();
 
@@ -430,7 +411,14 @@
         if (!r.ok) throw new Error(`geo ${r.status}`);
         const js = await r.json();
         const row = (js.results || [])[0];
-        const val = row ? { lat: Number(row.latitude), lon: Number(row.longitude) } : null;
+        const val = row
+          ? {
+              lat: Number(row.latitude),
+              lon: Number(row.longitude),
+              state: String(row.admin1 || "").toLowerCase(),
+              country: String(row.country || "").toLowerCase(),
+            }
+          : null;
         GEO_CACHE.set(key, val);
         return val;
       } catch (_) {
@@ -552,30 +540,6 @@
       const q = [s.venue || "", s.location || ""].filter(Boolean).join(", ");
       if (!q) return "";
       return `https://www.yelp.com/search?find_desc=restaurants&find_loc=${encodeURIComponent(q)}`;
-    }
-
-    function isMexicoRow(row) {
-      const txt = `${row.league || ""} ${row.current_team || ""} ${row.organization || ""}`.toLowerCase();
-      return txt.includes("mexico") || txt.includes("mexican league");
-    }
-
-    function stateFromLocation(loc) {
-      const m = String(loc || "").match(/,\s*([A-Z]{2})\s*$/);
-      return m ? m[1] : "";
-    }
-
-    function profileMatchesSeries(row, series) {
-      const key = ACCESS_PROFILE ? ACCESS_PROFILE.key : "";
-      if (!key || key === "general") return false;
-      const text = `${row.current_team || ""} ${row.school_or_team || ""} ${series.opponent || ""} ${series.location || ""} ${series.venue || ""}`.toLowerCase();
-      const exactKeywords = PROFILE_ENTITY_KEYWORDS[key] || [];
-      if (exactKeywords.some((k) => text.includes(k.toLowerCase()))) return true;
-      const stateRules = PROFILE_STATE_RULES[key];
-      if (stateRules) {
-        const st = stateFromLocation(series.location || "");
-        if (st && stateRules.has(st)) return true;
-      }
-      return false;
     }
 
     function baseCols(row, mobileMode = false) {
@@ -786,9 +750,7 @@
       if (!DATA) return [];
       if (tab === "mlb") return (DATA.pro_clients || []).filter((r) => String(r.team_level || "").toUpperCase() === "MLB");
       if (tab === "milb")
-        return (DATA.pro_clients || []).filter(
-          (r) => String(r.team_level || "").toUpperCase() !== "MLB" && !isMexicoRow(r)
-        );
+        return (DATA.pro_clients || []).filter((r) => String(r.team_level || "").toUpperCase() !== "MLB");
       if (tab === "amateur") return DATA.amateur_clients || [];
       if (tab === "high_school") return DATA.high_school_clients || [];
       return [];
@@ -891,13 +853,24 @@
       return false;
     }
 
+    function profileAllowsSeries(profileKey, text, geo) {
+      const rule = PROFILE_RULES[profileKey] || {};
+      if (rule.teams && rule.teams.some((k) => text.includes(k))) return true;
+      if (rule.places && rule.places.some((k) => text.includes(k))) return true;
+      if (rule.states && geo && geo.state && rule.states.some((s) => geo.state.includes(s))) return true;
+      return false;
+    }
+
     async function buildNearbySeriesRows(center) {
       const includeAmateur = !ACCESS_PROFILE || ACCESS_PROFILE.key !== "partner";
-      const basePro = (DATA.pro_clients || []).filter((r) => !isMexicoRow(r));
-      const allRows = includeAmateur ? [...basePro, ...(DATA.amateur_clients || [])] : [...basePro];
+      const allRows = includeAmateur
+        ? [...(DATA.pro_clients || []), ...(DATA.amateur_clients || [])]
+        : [...(DATA.pro_clients || [])];
       const out = [];
       const now = new Date();
       now.setHours(0, 0, 0, 0);
+      const candidates = [];
+      const places = new Set();
       for (const r of allRows) {
         for (const s of r.upcoming_series || []) {
           const ds = String(s.start_date || "");
@@ -905,22 +878,42 @@
           if (!dt || Number.isNaN(dt.getTime())) continue;
           const days = Math.floor((dt - now) / (1000 * 60 * 60 * 24));
           if (days < 0 || days > 21) continue;
-          if (!profileMatchesSeries(r, s)) continue;
-          out.push({
-            week: days <= 7 ? "Week 1 (0-7 days)" : days <= 14 ? "Week 2 (8-14 days)" : "Week 3 (15-21 days)",
-            name: r.name,
-            team: r.current_team || r.school_or_team || "",
-            opponent: s.opponent || "",
-            location: `${s.location || ""}${s.venue ? ` (${s.venue})` : ""}`,
-            date_range:
-              s.start_date && s.end_date && s.start_date !== s.end_date
-                ? `${s.start_date} to ${s.end_date}`
-                : s.start_date || s.end_date || "",
-            restaurants: restaurantUrlForSeries(s),
+          const place = `${s.location || ""}`.trim();
+          if (place) places.add(place);
+          candidates.push({
+            row: r,
+            series: s,
+            days,
+            place,
+            text: `${r.current_team || ""} ${s.opponent || ""} ${s.location || ""} ${s.venue || ""}`.toLowerCase(),
           });
         }
       }
-      out.sort((a, b) => a.date_range.localeCompare(b.date_range) || a.name.localeCompare(b.name));
+
+      const geos = new Map();
+      await Promise.all(
+        Array.from(places).map(async (p) => {
+          geos.set(p, await geocodeLocation(p));
+        })
+      );
+
+      const pkey = (ACCESS_PROFILE && ACCESS_PROFILE.key) || "";
+      for (const c of candidates) {
+        const geo = geos.get(c.place) || null;
+        if (!profileAllowsSeries(pkey, c.text, geo)) continue;
+        // Keep as safeguard; location should be nearby profile hub.
+        if (center && geo && haversineMiles(center, geo) > 100) continue;
+        out.push({
+            week: c.days <= 7 ? "Week 1 (0-7 days)" : c.days <= 14 ? "Week 2 (8-14 days)" : "Week 3 (15-21 days)",
+            name: c.row.name,
+            team: c.row.current_team || c.row.school_or_team || "",
+            opponent: c.series.opponent || "",
+            location: `${c.series.location || ""}${c.series.venue ? ` (${c.series.venue})` : ""}`,
+            dates: `${c.series.start_date || ""}${c.series.end_date && c.series.end_date !== c.series.start_date ? ` to ${c.series.end_date}` : ""}`,
+            restaurants: restaurantUrlForSeries(c.series),
+          });
+      }
+      out.sort((a, b) => a.dates.localeCompare(b.dates));
       return out;
     }
 
@@ -950,15 +943,11 @@
           modal.appendChild(el("h3", g));
           const t = el("table");
           const h = el("tr");
-          ["Player", "Team", "Opponent", "Location", "Series Dates", "Restaurants"].forEach((x) =>
-            h.appendChild(el("th", x))
-          );
+          ["Player", "Team", "Opponent", "Location", "Dates", "Restaurants"].forEach((x) => h.appendChild(el("th", x)));
           t.appendChild(h);
           gRows.forEach((r) => {
             const tr = el("tr");
-            [r.name, r.team, r.opponent, r.location, r.date_range, r.restaurants].forEach((x) =>
-              tr.appendChild(tdWithValue(x))
-            );
+            [r.name, r.team, r.opponent, r.location, r.dates, r.restaurants].forEach((x) => tr.appendChild(tdWithValue(x)));
             t.appendChild(tr);
           });
           modal.appendChild(t);

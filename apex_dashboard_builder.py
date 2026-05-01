@@ -100,6 +100,17 @@ PRO_FOREIGN_BR_URLS: dict[str, str] = {
     "mitch white": "https://www.baseball-reference.com/minors/player.cgi?id=white-000mit",
 }
 FOREIGN_BR_SEASON_CACHE: dict[tuple[str, bool], dict[str, Any] | None] = {}
+MANUAL_PRO_CLIENTS: list[dict[str, str]] = [
+    {
+        "name": "Aaron Shortridge",
+        "position": "RHP",
+        "level": "Double-A",
+        "league": "Eastern League",
+        "minor_affiliate": "Harrisburg Senators",
+        "major_affiliate": "Washington Nationals",
+        "agent": "",
+    }
+]
 
 
 @dataclass
@@ -115,23 +126,6 @@ class Client:
     is_amateur: bool
     school_or_team: str = ""
     schedule_link: str = ""
-
-
-FORCED_PRO_CLIENTS: tuple[Client, ...] = (
-    Client(
-        name="Aaron Shortridge",
-        position="RHP",
-        level="Double-A",
-        league="Eastern League",
-        minor_affiliate="Harrisburg Senators",
-        major_affiliate="Nationals",
-        agent="",
-        agent_last="",
-        is_amateur=False,
-        school_or_team="",
-        schedule_link="",
-    ),
-)
 
 
 _HTTP_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; ApexDashboard/1.0; +https://github.com/colbymorris08/apexstats-dashboard)"}
@@ -1313,6 +1307,27 @@ def load_clients(path: Path) -> list[Client]:
                 schedule_link="",
             )
         )
+    existing = {_norm_player_name(c.name) for c in out}
+    for m in MANUAL_PRO_CLIENTS:
+        nm = _norm_player_name(m.get("name", ""))
+        if not nm or nm in existing:
+            continue
+        agent = _normalize_agent_initials(m.get("agent", ""))
+        out.append(
+            Client(
+                name=m.get("name", ""),
+                position=m.get("position", ""),
+                level=m.get("level", ""),
+                league=m.get("league", ""),
+                minor_affiliate=m.get("minor_affiliate", ""),
+                major_affiliate=m.get("major_affiliate", ""),
+                agent=agent,
+                agent_last=_agent_last(agent),
+                is_amateur=False,
+                school_or_team="",
+                schedule_link="",
+            )
+        )
     return out
 
 
@@ -2416,6 +2431,7 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
         "month_to_date": {},
         "season": {},
         "upcoming_series": [],
+        "stats_unavailable_reason": "",
     }
     base_pitcher = dict(base_hitter)
     base_pitcher["position"] = "P"
@@ -2428,8 +2444,10 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
     if not url:
         out_no_url: list[dict[str, Any]] = []
         if wants_hitter:
+            base_hitter["stats_unavailable_reason"] = "MaxPreps statistics not available"
             out_no_url.append(base_hitter)
         if wants_pitcher:
+            base_pitcher["stats_unavailable_reason"] = "MaxPreps statistics not available"
             out_no_url.append(base_pitcher)
         return out_no_url
     try:
@@ -2438,8 +2456,10 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
     except Exception:
         out_err: list[dict[str, Any]] = []
         if wants_hitter:
+            base_hitter["stats_unavailable_reason"] = "MaxPreps statistics not available"
             out_err.append(base_hitter)
         if wants_pitcher:
+            base_pitcher["stats_unavailable_reason"] = "MaxPreps statistics not available"
             out_err.append(base_pitcher)
         return out_err
     batting, pitching = _pick_maxpreps_tables(tables)
@@ -2561,6 +2581,25 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
     base_pitcher["last_night_boxscore_url"] = box_link
     if wants_pitcher and (base_pitcher["season"] or base_pitcher["month_to_date"] or base_pitcher["last_night"] or not wants_hitter):
         out.append(base_pitcher)
+    # Flag rows with only empty/zero numeric output so UI can show explicit unavailability text.
+    for row in out:
+        is_hs = str(row.get("team_level", "")).upper() == "HS"
+        if not is_hs:
+            continue
+        has_positive = False
+        for section in ("last_night", "month_to_date", "season"):
+            st = row.get(section) or {}
+            if not isinstance(st, dict):
+                continue
+            for v in st.values():
+                n = _to_float(v)
+                if n > 0:
+                    has_positive = True
+                    break
+            if has_positive:
+                break
+        if not has_positive:
+            row["stats_unavailable_reason"] = "MaxPreps statistics not available"
     return out
 
 
@@ -2613,11 +2652,14 @@ def build_dashboard_data() -> dict[str, Any]:
     FOREIGN_BR_SEASON_CACHE.clear()
     clients = load_clients(SOURCE_XLSX)
     pro = [c for c in clients if not c.is_amateur]
-    existing_pro = {_norm_player_name(c.name) for c in pro}
-    for forced in FORCED_PRO_CLIENTS:
-        if _norm_player_name(forced.name) not in existing_pro:
-            pro.append(forced)
     pro = [c for c in pro if _norm_player_name(c.name) not in PRO_CLIENT_EXCLUDE_NAMES]
+    # Exclude Mexico-based MiLB/international rows from dashboard.
+    pro = [
+        c
+        for c in pro
+        if "MEXIC"
+        not in f"{c.league} {c.level} {c.minor_affiliate} {c.major_affiliate}".upper()
+    ]
     amateur = [c for c in clients if c.is_amateur]
     # Primary amateur source now comes from the dedicated Desktop list.
     # Merge with legacy workbook rows so dedicated list doesn't drop anyone.
