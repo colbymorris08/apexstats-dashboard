@@ -166,6 +166,32 @@
       newyork: ["new york", "nyc", "brooklyn", "bronx", "queens", "newark", "staten island"],
       partner: ["las vegas", "summerlin", "henderson", "aviators"],
     };
+    const PROFILE_ENTITY_KEYWORDS = {
+      bayarea: [
+        "san jose giants",
+        "sacramento river cats",
+        "river cats",
+        "sacramento athletics",
+        "athletics",
+        "san francisco giants",
+        "st mary",
+        "university of san francisco",
+        "sac state",
+        "stanford",
+        "pacific",
+        "cal poly",
+        "santa barbara",
+        "santa clara",
+        "reno aces",
+        "stockton ports",
+      ],
+      partner: ["las vegas aviators", "los angeles dodgers", "dodgers"],
+      newyork: ["new york mets", "new york yankees", "brooklyn cyclones", "cyclones"],
+    };
+    const PROFILE_STATE_RULES = {
+      midwest: new Set(["IL", "KY", "IA", "MI", "IN"]),
+      florida: new Set(["FL"]),
+    };
     const GEO_CACHE = new Map();
 
     const BASE_HEADERS_DESKTOP = [
@@ -528,6 +554,30 @@
       return `https://www.yelp.com/search?find_desc=restaurants&find_loc=${encodeURIComponent(q)}`;
     }
 
+    function isMexicoRow(row) {
+      const txt = `${row.league || ""} ${row.current_team || ""} ${row.organization || ""}`.toLowerCase();
+      return txt.includes("mexico") || txt.includes("mexican league");
+    }
+
+    function stateFromLocation(loc) {
+      const m = String(loc || "").match(/,\s*([A-Z]{2})\s*$/);
+      return m ? m[1] : "";
+    }
+
+    function profileMatchesSeries(row, series) {
+      const key = ACCESS_PROFILE ? ACCESS_PROFILE.key : "";
+      if (!key || key === "general") return false;
+      const text = `${row.current_team || ""} ${row.school_or_team || ""} ${series.opponent || ""} ${series.location || ""} ${series.venue || ""}`.toLowerCase();
+      const exactKeywords = PROFILE_ENTITY_KEYWORDS[key] || [];
+      if (exactKeywords.some((k) => text.includes(k.toLowerCase()))) return true;
+      const stateRules = PROFILE_STATE_RULES[key];
+      if (stateRules) {
+        const st = stateFromLocation(series.location || "");
+        if (st && stateRules.has(st)) return true;
+      }
+      return false;
+    }
+
     function baseCols(row, mobileMode = false) {
       if (mobileMode) return [row.name || "", row.position || "", row.last_night_boxscore_url || ""];
       const cols = [
@@ -736,7 +786,9 @@
       if (!DATA) return [];
       if (tab === "mlb") return (DATA.pro_clients || []).filter((r) => String(r.team_level || "").toUpperCase() === "MLB");
       if (tab === "milb")
-        return (DATA.pro_clients || []).filter((r) => String(r.team_level || "").toUpperCase() !== "MLB");
+        return (DATA.pro_clients || []).filter(
+          (r) => String(r.team_level || "").toUpperCase() !== "MLB" && !isMexicoRow(r)
+        );
       if (tab === "amateur") return DATA.amateur_clients || [];
       if (tab === "high_school") return DATA.high_school_clients || [];
       return [];
@@ -841,14 +893,11 @@
 
     async function buildNearbySeriesRows(center) {
       const includeAmateur = !ACCESS_PROFILE || ACCESS_PROFILE.key !== "partner";
-      const allRows = includeAmateur
-        ? [...(DATA.pro_clients || []), ...(DATA.amateur_clients || [])]
-        : [...(DATA.pro_clients || [])];
+      const basePro = (DATA.pro_clients || []).filter((r) => !isMexicoRow(r));
+      const allRows = includeAmateur ? [...basePro, ...(DATA.amateur_clients || [])] : [...basePro];
       const out = [];
       const now = new Date();
       now.setHours(0, 0, 0, 0);
-      const candidates = [];
-      const places = new Set();
       for (const r of allRows) {
         for (const s of r.upcoming_series || []) {
           const ds = String(s.start_date || "");
@@ -856,48 +905,22 @@
           if (!dt || Number.isNaN(dt.getTime())) continue;
           const days = Math.floor((dt - now) / (1000 * 60 * 60 * 24));
           if (days < 0 || days > 21) continue;
-          const place = `${s.location || ""}`.trim();
-          if (place) places.add(place);
-          candidates.push({
-            row: r,
-            series: s,
-            days,
-            place,
-            text: `${r.current_team || ""} ${s.opponent || ""} ${s.location || ""} ${s.venue || ""}`.toLowerCase(),
+          if (!profileMatchesSeries(r, s)) continue;
+          out.push({
+            week: days <= 7 ? "Week 1 (0-7 days)" : days <= 14 ? "Week 2 (8-14 days)" : "Week 3 (15-21 days)",
+            name: r.name,
+            team: r.current_team || r.school_or_team || "",
+            opponent: s.opponent || "",
+            location: `${s.location || ""}${s.venue ? ` (${s.venue})` : ""}`,
+            date_range:
+              s.start_date && s.end_date && s.start_date !== s.end_date
+                ? `${s.start_date} to ${s.end_date}`
+                : s.start_date || s.end_date || "",
+            restaurants: restaurantUrlForSeries(s),
           });
         }
       }
-
-      const geos = new Map();
-      await Promise.all(
-        Array.from(places).map(async (p) => {
-          geos.set(p, await geocodeLocation(p));
-        })
-      );
-
-      const kw = PROFILE_NEARBY_KEYWORDS[(ACCESS_PROFILE && ACCESS_PROFILE.key) || ""] || [];
-      for (const c of candidates) {
-        let miles = 9999;
-        const keywordHit = kw.some((k) => c.text.includes(k));
-        if (keywordHit) {
-          miles = 0;
-        } else {
-          const geo = geos.get(c.place);
-          if (!geo) continue;
-          miles = haversineMiles(center, geo);
-        }
-        if (miles > 100) continue;
-        out.push({
-            week: c.days <= 7 ? "Week 1 (0-7 days)" : c.days <= 14 ? "Week 2 (8-14 days)" : "Week 3 (15-21 days)",
-            name: c.row.name,
-            team: c.row.current_team || c.row.school_or_team || "",
-            opponent: c.series.opponent || "",
-            location: `${c.series.location || ""}${c.series.venue ? ` (${c.series.venue})` : ""}`,
-            date: c.series.start_date || "",
-            miles: Math.round(miles),
-          });
-      }
-      out.sort((a, b) => a.date.localeCompare(b.date) || a.miles - b.miles);
+      out.sort((a, b) => a.date_range.localeCompare(b.date_range) || a.name.localeCompare(b.name));
       return out;
     }
 
@@ -927,11 +950,15 @@
           modal.appendChild(el("h3", g));
           const t = el("table");
           const h = el("tr");
-          ["Player", "Team", "Opponent", "Location", "Date", "Miles"].forEach((x) => h.appendChild(el("th", x)));
+          ["Player", "Team", "Opponent", "Location", "Series Dates", "Restaurants"].forEach((x) =>
+            h.appendChild(el("th", x))
+          );
           t.appendChild(h);
           gRows.forEach((r) => {
             const tr = el("tr");
-            [r.name, r.team, r.opponent, r.location, r.date, String(r.miles)].forEach((x) => tr.appendChild(el("td", x)));
+            [r.name, r.team, r.opponent, r.location, r.date_range, r.restaurants].forEach((x) =>
+              tr.appendChild(tdWithValue(x))
+            );
             t.appendChild(tr);
           });
           modal.appendChild(t);

@@ -117,6 +117,23 @@ class Client:
     schedule_link: str = ""
 
 
+FORCED_PRO_CLIENTS: tuple[Client, ...] = (
+    Client(
+        name="Aaron Shortridge",
+        position="RHP",
+        level="Double-A",
+        league="Eastern League",
+        minor_affiliate="Harrisburg Senators",
+        major_affiliate="Nationals",
+        agent="",
+        agent_last="",
+        is_amateur=False,
+        school_or_team="",
+        schedule_link="",
+    ),
+)
+
+
 _HTTP_HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; ApexDashboard/1.0; +https://github.com/colbymorris08/apexstats-dashboard)"}
 
 
@@ -2156,14 +2173,14 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
     school = (c.school_or_team or c.minor_affiliate or "").strip()
     is_p = college_is_pitcher(c)
     base = {
-        "name": c.name,
-        "position": c.position,
+            "name": c.name,
+            "position": c.position,
         "level": c.level or "NCAA",
         "league": c.league or "Amateur",
         "minor_affiliate": c.minor_affiliate,
         "major_affiliate": c.major_affiliate,
-        "agent": c.agent,
-        "agent_last": c.agent_last,
+            "agent": c.agent,
+            "agent_last": c.agent_last,
         "is_pitcher": is_p,
         "organization": c.school_or_team,
         "school_or_team": c.school_or_team,
@@ -2172,12 +2189,12 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
         "team_level": c.level or "NCAA",
         "team_schedule_url": c.schedule_link or school_schedule_url(c.school_or_team),
         "last_night_boxscore_url": "",
-        "last_night_date": (date.today() - timedelta(days=1)).isoformat(),
-        "last_night": {},
-        "month_to_date": {},
-        "season": {},
-        "upcoming_series": [],
-    }
+            "last_night_date": (date.today() - timedelta(days=1)).isoformat(),
+            "last_night": {},
+            "month_to_date": {},
+            "season": {},
+            "upcoming_series": [],
+        }
 
     # Season totals from D1 player page (search index + 2026 table).
     d1_url = resolve_d1_player_url(c.name, school)
@@ -2596,6 +2613,10 @@ def build_dashboard_data() -> dict[str, Any]:
     FOREIGN_BR_SEASON_CACHE.clear()
     clients = load_clients(SOURCE_XLSX)
     pro = [c for c in clients if not c.is_amateur]
+    existing_pro = {_norm_player_name(c.name) for c in pro}
+    for forced in FORCED_PRO_CLIENTS:
+        if _norm_player_name(forced.name) not in existing_pro:
+            pro.append(forced)
     pro = [c for c in pro if _norm_player_name(c.name) not in PRO_CLIENT_EXCLUDE_NAMES]
     amateur = [c for c in clients if c.is_amateur]
     # Primary amateur source now comes from the dedicated Desktop list.
