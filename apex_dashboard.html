@@ -586,24 +586,33 @@
       const totalColumns = (activeView === "mobile" ? BASE_HEADERS_MOBILE.length : baseHeaders.length) + cols.length;
       rows.forEach((r) => {
         const tr = el("tr");
+        const baseVals = [
+          ...baseCols(r, activeView === "mobile"),
+          ...(activeView === "mobile" ? [] : [scheduleUrlForRow(r), r.last_night_boxscore_url || ""]),
+        ];
         const statVals = cols.map((c) => formatStatCell(statForCol(r, statKey, c), c));
         const hsUnavailable = activeTab === "high_school" && String(r.stats_unavailable_reason || "").trim();
         const hasStats = statVals.some((v) => {
           const s = String(v ?? "").trim();
           return s !== "" && s.toUpperCase() !== "N/A";
         });
-        if (hsUnavailable || !hasStats) {
+        if (hsUnavailable) {
+          const nameTd = tdWithValue(baseVals[0] || r.name || "");
+          nameTd.classList.add("text-left");
+          tr.appendChild(nameTd);
+          const td = el("td");
+          td.colSpan = Math.max(1, totalColumns - 1);
+          const msg = r.stats_unavailable_reason;
+          td.innerHTML = `<em>${r.name || "Player"}: ${msg}</em>`;
+          td.style.textAlign = "center";
+          tr.appendChild(td);
+        } else if (!hasStats) {
           const td = el("td");
           td.colSpan = totalColumns;
-          const msg = hsUnavailable ? r.stats_unavailable_reason : "Team stats not on maxpreps";
-          td.innerHTML = `<em>${r.name || "Player"}: ${msg}</em>`;
+          td.innerHTML = `<em>${r.name || "Player"}: Team stats not on maxpreps</em>`;
           tr.appendChild(td);
         } else {
-          [
-            ...baseCols(r, activeView === "mobile"),
-            ...(activeView === "mobile" ? [] : [scheduleUrlForRow(r), r.last_night_boxscore_url || ""]),
-            ...statVals,
-          ].forEach((v, i) => {
+          [...baseVals, ...statVals].forEach((v, i) => {
             const td = tdWithValue(v);
             if (i === 0) td.classList.add("text-left");
             tr.appendChild(td);
@@ -715,11 +724,44 @@
       table.appendChild(thead);
       const tbody = el("tbody");
       tbody.id = `tbody-${panelKey}-sched`;
-      rows.forEach((r) => {
-        (r.upcoming_series || []).forEach((s) => {
+      const scheduleRows = [];
+      if (activeTab === "amateur") {
+        const grouped = new Map();
+        rows.forEach((r) => {
+          (r.upcoming_series || []).forEach((s) => {
+            const key = [
+              (r.current_team || r.school_or_team || "").toLowerCase(),
+              (s.opponent || "").toLowerCase(),
+              s.home_away || "",
+              s.venue || "",
+              s.start_date || "",
+              s.end_date || "",
+              s.location || "",
+            ].join("|");
+            if (!grouped.has(key)) {
+              grouped.set(key, { base: r, series: s, names: new Set() });
+            }
+            grouped.get(key).names.add(r.name || "");
+          });
+        });
+        grouped.forEach((g) => {
+          scheduleRows.push({
+            row: g.base,
+            series: g.series,
+            displayName: Array.from(g.names).filter(Boolean).sort().join(", "),
+          });
+        });
+      } else {
+        rows.forEach((r) => {
+          (r.upcoming_series || []).forEach((s) => {
+            scheduleRows.push({ row: r, series: s, displayName: r.name });
+          });
+        });
+      }
+      scheduleRows.forEach(({ row: r, series: s, displayName }) => {
           const tr = el("tr");
           const vals = [
-            r.name,
+            displayName || r.name,
             r.agent || "",
             r.position || "",
             r.team_level || "",
@@ -741,7 +783,6 @@
             tr.appendChild(td);
           });
           tbody.appendChild(tr);
-        });
       });
       table.appendChild(tbody);
       target.innerHTML = "";

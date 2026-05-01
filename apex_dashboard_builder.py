@@ -34,6 +34,7 @@ D1_PLAYERS_SEARCH_JSON = "https://d1baseball.com/wp-content/themes/d1-staxx/data
 D1_PLAYERS_INDEX: list[dict[str, Any]] | None = None
 D1_PLAYER_STATS_CACHE: dict[str, dict[str, Any] | None] = {}
 NCAA_SCHOOL_PAYLOAD_CACHE: dict[str, dict[str, Any]] = {}
+NCAA_COLLEGE_LOCATION_CACHE: dict[str, str] = {}
 MAXPREPS_HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; ApexDashboard/1.0)",
     "Accept-Language": "en-US,en;q=0.9",
@@ -149,6 +150,28 @@ def _req_json(url: str, *, timeout: int = 45, retries: int = 4) -> dict[str, Any
 
 def _req_json_with_headers(url: str) -> dict[str, Any]:
     return _req_json(url)
+
+
+def _college_home_location(name: str) -> str:
+    key = (name or "").strip()
+    if not key:
+        return ""
+    if key in NCAA_COLLEGE_LOCATION_CACHE:
+        return NCAA_COLLEGE_LOCATION_CACHE[key]
+    try:
+        url = (
+            "https://geocoding-api.open-meteo.com/v1/search?"
+            + urllib.parse.urlencode({"name": f"{key} university", "count": 1, "language": "en", "format": "json"})
+        )
+        js = _req_json(url, timeout=15, retries=2)
+        row = (js.get("results") or [{}])[0]
+        city = str(row.get("name") or "").strip()
+        admin = str(row.get("admin1") or "").strip()
+        loc = f"{city}, {admin}".strip(", ") if city else ""
+    except Exception:
+        loc = ""
+    NCAA_COLLEGE_LOCATION_CACHE[key] = loc
+    return loc
 
 
 def _safe_int(x: Any) -> int | None:
@@ -883,11 +906,13 @@ def fetch_ncaa_school_payload(school: str, weeks: int = 4) -> dict[str, Any]:
     school_games.sort(key=lambda g: g["date"])
 
     def mk_series(g: dict[str, Any]) -> dict[str, Any]:
+        home_name = g["team"]["name"] if g["team"]["is_home"] else g["opp"]["name"]
+        loc = _college_home_location(home_name) or home_name
         return {
             "opponent": g["opp"]["name"],
             "home_away": "Home" if g["team"]["is_home"] else "Away",
             "venue": "",
-            "location": "",
+            "location": loc,
             "start_date": g["date"].isoformat(),
             "end_date": g["date"].isoformat(),
             "nearest_airport_code": "",
