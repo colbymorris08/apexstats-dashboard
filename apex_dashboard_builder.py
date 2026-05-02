@@ -1138,6 +1138,8 @@ def _sidearm_player_last_night_from_schedule_link(
     cand_urls: list[str] = []
     seen: set[str] = set()
     for h in hrefs:
+        if "sidearm-icons.svg" in h:
+            continue
         full = urllib.parse.urljoin(url, h)
         if full in seen:
             continue
@@ -1148,13 +1150,25 @@ def _sidearm_player_last_night_from_schedule_link(
     first, last = _name_parts(player_name)
     first_i = _norm_token(first[:1])
     last_n = _norm_token(last)
-    target_tokens = {
-        target_day.isoformat(),
-        target_day.strftime("%m/%d/%Y"),
-        target_day.strftime("%-m/%-d/%Y"),
-        target_day.strftime("%b %-d, %Y"),
-    }
-    for bu in cand_urls[:14]:
+    # Backup date matching priority:
+    # 1) target+1 day (requested behavior for some school sites)
+    # 2) exact target day (common Sidearm behavior)
+    lookup_days = [target_day + timedelta(days=1), target_day]
+    accepted_days = set(lookup_days)
+    target_tokens = set()
+    for d in lookup_days:
+        target_tokens.update(
+            {
+                d.isoformat(),
+                d.strftime("%m/%d/%Y"),
+                d.strftime("%-m/%-d/%Y"),
+                d.strftime("%b %-d, %Y"),
+            }
+        )
+    # Sidearm schedule pages are usually oldest -> newest; prioritize most recent
+    # games and scan a larger window so late-season dates are reachable.
+    recent_urls = list(reversed(cand_urls))[:60]
+    for bu in recent_urls:
         try:
             bhtml = requests.get(bu, timeout=20, headers=_HTTP_HEADERS).text
         except Exception:
@@ -1168,7 +1182,7 @@ def _sidearm_player_last_night_from_schedule_link(
                 break
             except Exception:
                 continue
-        if actual_game_day is not None and actual_game_day != target_day:
+        if actual_game_day is not None and actual_game_day not in accepted_days:
             continue
         if actual_game_day is None and not any(tok in bhtml for tok in target_tokens):
             continue
@@ -1189,8 +1203,6 @@ def _sidearm_player_last_night_from_schedule_link(
                 row_vals = [str(v) for v in row.tolist()]
                 row_text = " ".join(row_vals).lower()
                 if last_n and last_n not in _norm_token(row_text):
-                    continue
-                if first_i and first_i not in _norm_token(row_text):
                     continue
                 if is_p:
                     return _amateur_line_to_pro_keys(
