@@ -10,6 +10,7 @@ from typing import Any
 import time
 import urllib.parse
 import re
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import requests
@@ -18,7 +19,15 @@ SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/Client List - 04-1
 AMATEUR_SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/AmateurList.xlsx")
 HS_SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/HSList.xlsx")
 OUT_JSON = Path("/Users/colbymorris/apexstats/apex_dashboard_data.json")
-SEASON = date.today().year
+PACIFIC_TZ = ZoneInfo("America/Los_Angeles")
+
+
+def dashboard_date() -> date:
+    """Calendar day in US Pacific; matches how we think about MLB/college night games."""
+    return datetime.now(PACIFIC_TZ).date()
+
+
+SEASON = dashboard_date().year
 API = "https://statsapi.mlb.com/api/v1"
 NCAA_GQL_BASE = "https://sdataprod.ncaa.com"
 NCAA_SPORT_CODE = "MBA"  # NCAA baseball sport code used by ncaa.com
@@ -846,7 +855,7 @@ def _add_lines(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
 
 
 def fetch_ncaa_school_payload(school: str, weeks: int = 4) -> dict[str, Any]:
-    today = date.today()
+    today = dashboard_date()
     yday = today - timedelta(days=1)
     # Keep NCAA pulls fast: enough history for recent form + month/season summaries.
     # Full-season backfills are expensive and can stall dashboard refresh.
@@ -1074,7 +1083,7 @@ def ncaa_player_last_night_and_month(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Per-player lines from NCAA.com team schedule + boxscores (same source as team search)."""
     games: list[dict[str, Any]] = list(ncaa_payload.get("_games") or [])
-    today = date.today()
+    today = dashboard_date()
     yday = today - timedelta(days=1)
     mstart = today.replace(day=1)
 
@@ -1844,7 +1853,7 @@ def fetch_last_night_boxscore_url_all_sports(player_id: int, group: str, target_
 
 
 def fetch_team_schedule(team_id: int, weeks: int = 4) -> list[dict[str, Any]]:
-    start = date.today()
+    start = dashboard_date()
     end = start + timedelta(days=7 * weeks)
     games: list[dict[str, Any]] = []
     # Try MLB + MiLB sport IDs so each client pulls from their team context.
@@ -2089,7 +2098,7 @@ def build_client_payload(c: Client) -> dict[str, Any]:
         "team_level": "",
         "team_schedule_url": "",
         "last_night_boxscore_url": "",
-        "last_night_date": (date.today() - timedelta(days=1)).isoformat(),
+        "last_night_date": (dashboard_date() - timedelta(days=1)).isoformat(),
         "last_night": {},
         "month_to_date": {},
         "season": {},
@@ -2119,8 +2128,8 @@ def build_client_payload(c: Client) -> dict[str, Any]:
     base["team_schedule_url"] = team_ctx["schedule_url"] or fallback_schedule_url(
         base["current_team"], base["team_level"]
     )
-    yday = date.today() - timedelta(days=1)
-    mstart = date.today().replace(day=1)
+    yday = dashboard_date() - timedelta(days=1)
+    mstart = dashboard_date().replace(day=1)
     if pid:
         try:
             ln = {
@@ -2156,7 +2165,7 @@ def build_client_payload(c: Client) -> dict[str, Any]:
             base["last_night"] = {}
         try:
             mtd_raw = fetch_player_stats_preferred_then_all_sports(
-                pid, group, "byDateRange", stat_sport_id, mstart, date.today()
+                pid, group, "byDateRange", stat_sport_id, mstart, dashboard_date()
             )
             base["month_to_date"] = _strip_pitch_count_fields(
                 {k: json_stat_value(k, v) for k, v in mtd_raw.items()}
@@ -2219,7 +2228,7 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
         "team_level": c.level or "NCAA",
         "team_schedule_url": c.schedule_link or school_schedule_url(c.school_or_team),
         "last_night_boxscore_url": "",
-            "last_night_date": (date.today() - timedelta(days=1)).isoformat(),
+            "last_night_date": (dashboard_date() - timedelta(days=1)).isoformat(),
             "last_night": {},
             "month_to_date": {},
             "season": {},
@@ -2240,7 +2249,7 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
             base["upcoming_series"] = ncaa_payload.get("upcoming_series") or []
 
             ln_ind, mtd_ind = ncaa_player_last_night_and_month(c, school, is_p, ncaa_payload)
-            yday = date.today() - timedelta(days=1)
+            yday = dashboard_date() - timedelta(days=1)
             for g in list(ncaa_payload.get("_games") or []):
                 if g.get("date") == yday and (g.get("status") == "final" or g.get("state") in {"C", "F", "3"}):
                     cid = _safe_int(g.get("contest_id"))
@@ -2415,7 +2424,7 @@ def _hs_position_flags(position: str) -> tuple[bool, bool]:
 
 
 def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
-    today = date.today()
+    today = dashboard_date()
     yday = today - timedelta(days=1)
     base_hitter: dict[str, Any] = {
         "name": entry.get("name", ""),
@@ -2697,7 +2706,7 @@ def build_dashboard_data() -> dict[str, Any]:
     data = {
         "generated_at": datetime.now(UTC).isoformat(),
         "season": SEASON,
-        "last_night_date": (date.today() - timedelta(days=1)).isoformat(),
+        "last_night_date": (dashboard_date() - timedelta(days=1)).isoformat(),
         "pro_clients": pro_rows,
         "amateur_clients": amateur_rows,
         "high_school_clients": high_school_rows,
