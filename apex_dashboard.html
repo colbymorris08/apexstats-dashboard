@@ -415,6 +415,7 @@
           ? {
               lat: Number(row.latitude),
               lon: Number(row.longitude),
+              city: String(row.name || "").trim().toLowerCase(),
               state: String(row.admin1 || "").toLowerCase(),
               country: String(row.country || "").toLowerCase(),
             }
@@ -890,16 +891,25 @@
       return false;
     }
 
+    function locationLooksLikeEugeneOregon(place) {
+      const p = String(place || "").trim().toLowerCase();
+      if (!p) return false;
+      return (
+        /\beugene,?\s*(or|oregon)\b/.test(p) || /\buniv(?:ersity)?\s+of\s+oregon\b/.test(p)
+      );
+    }
+
+    function geocodedEugeneOregon(geo) {
+      if (!geo) return false;
+      const city = geo.city || "";
+      const st = geo.state || "";
+      const usa = geo.country.includes("united states") || geo.country === "usa" || geo.country === "us";
+      if (!(city === "eugene" && usa && (st === "oregon" || st === "or"))) return false;
+      return true;
+    }
+
     function profileAllowsSeries(profileKey, text, geo) {
       const rule = PROFILE_RULES[profileKey] || {};
-      // Midwest: ignore Oregon-school matchups visiting the region; still allow Oregon, IL/city venue text.
-      if (
-        profileKey === "midwest" &&
-        /\boregon\b/.test(text) &&
-        !/\boregon,?\s*(il|illinois)\b/.test(text)
-      ) {
-        return false;
-      }
       if (rule.teams && rule.teams.some((k) => text.includes(k))) return true;
       if (rule.places && rule.places.some((k) => text.includes(k))) return true;
       if (rule.states && geo && geo.state && rule.states.some((s) => geo.state.includes(s))) return true;
@@ -945,6 +955,7 @@
       const pkey = (ACCESS_PROFILE && ACCESS_PROFILE.key) || "";
       for (const c of candidates) {
         const geo = geos.get(c.place) || null;
+        if (pkey === "midwest" && (locationLooksLikeEugeneOregon(c.place) || geocodedEugeneOregon(geo))) continue;
         if (!profileAllowsSeries(pkey, c.text, geo)) continue;
         // Keep as safeguard; location should be nearby profile hub.
         if (center && geo && haversineMiles(center, geo) > 100) continue;
