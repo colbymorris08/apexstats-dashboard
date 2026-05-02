@@ -892,6 +892,14 @@
 
     function profileAllowsSeries(profileKey, text, geo) {
       const rule = PROFILE_RULES[profileKey] || {};
+      // Midwest: ignore Oregon-school matchups visiting the region; still allow Oregon, IL/city venue text.
+      if (
+        profileKey === "midwest" &&
+        /\boregon\b/.test(text) &&
+        !/\boregon,?\s*(il|illinois)\b/.test(text)
+      ) {
+        return false;
+      }
       if (rule.teams && rule.teams.some((k) => text.includes(k))) return true;
       if (rule.places && rule.places.some((k) => text.includes(k))) return true;
       if (rule.states && geo && geo.state && rule.states.some((s) => geo.state.includes(s))) return true;
