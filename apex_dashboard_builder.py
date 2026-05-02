@@ -573,81 +573,13 @@ def _apply_ncaa_pitcher_k_fallback(
     team_rows: list[dict[str, Any]],
     opp_rows: list[dict[str, Any]],
 ) -> dict[str, Any] | None:
-    """Fallback when NCAA feed reports 0 K for every pitcher in a game.
+    """Deliberately does nothing.
 
-    Some NCAA box payloads zero out per-pitcher strikeouts while batter rows still
-    include opponent team strikeout totals. In that case, assign team K total to
-    the pitcher with the most IP so last-night dashboards don't show false zeros.
+    We previously inferred pitcher strikeouts when NCAA fed per-pitcher zeros.
+    Product requirement: never synthesize stats — use NCAA/Sidearm values only,
+    or leave zeros/missing and rely on the AmateurList schedule Link fallback.
     """
-    if not selected_row:
-        return selected_row
-    ps_sel = selected_row.get("pitcherStats") or {}
-    if not ps_sel:
-        return selected_row
-
-    pitchers: list[dict[str, Any]] = []
-    all_zero = True
-    for r in team_rows:
-        ps = r.get("pitcherStats") or {}
-        if not ps:
-            continue
-        ip = _ncaa_ip_value(ps)
-        if ip <= 0:
-            continue
-        k = _ncaa_stat_int(ps, "strikeouts", "strikeOuts", "battersStruckOut", "struckOut", "k", "so")
-        pitchers.append({"row": r, "ip": ip, "k": k})
-        if k > 0:
-            all_zero = False
-    if not pitchers or not all_zero:
-        return selected_row
-
-    team_opp_k = 0
-    for r in opp_rows:
-        bs = r.get("batterStats") or {}
-        team_opp_k += _ncaa_stat_int(bs, "strikeouts", "strikeOuts", "struckOut", "k", "so")
-    if team_opp_k <= 0:
-        return selected_row
-
-    by_ip = sorted(pitchers, key=lambda x: x["ip"], reverse=True)
-    top_ip = by_ip[0]["ip"]
-    top_count = sum(1 for p in by_ip if p["ip"] == top_ip)
-    def bounded_k(raw_k: int, ps: dict[str, Any]) -> int:
-        # Keep fallback Ks in a plausible single-player range.
-        # Primary guardrail is outs recorded from IP, with small room for
-        # dropped-third-strike reach events; also never exceed batters faced.
-        ip = _ncaa_ip_value(ps)
-        outs = int(round(ip * 3))
-        bf = _ncaa_stat_int(ps, "battersFaced", "bf")
-        cap = outs + 2 if outs > 0 else 2
-        if bf > 0:
-            cap = min(cap, bf)
-        return max(0, min(int(raw_k), cap))
-
-    # If one pitcher clearly carried the bulk innings, attribute team Ks to that arm.
-    # Require a true bulk outing to avoid over-crediting short starts/openers.
-    if top_count == 1 and top_ip >= 5:
-        starter = by_ip[0]["row"]
-        if starter is not selected_row:
-            return selected_row
-        patched = dict(selected_row)
-        patched_ps = dict(ps_sel)
-        patched_ps["strikeouts"] = str(bounded_k(team_opp_k, patched_ps))
-        patched["pitcherStats"] = patched_ps
-        return patched
-
-    # Otherwise estimate per-pitcher Ks by share of batters faced.
-    sel_bf = _ncaa_stat_int(ps_sel, "battersFaced", "bf")
-    total_bf = sum(max(0, _ncaa_stat_int((p["row"].get("pitcherStats") or {}), "battersFaced", "bf")) for p in pitchers)
-    if sel_bf <= 0 or total_bf <= 0:
-        return selected_row
-    est = int(round((team_opp_k * sel_bf) / total_bf))
-    if est <= 0 and team_opp_k > 0 and sel_bf >= 3:
-        est = 1
-    patched = dict(selected_row)
-    patched_ps = dict(ps_sel)
-    patched_ps["strikeouts"] = str(bounded_k(est, patched_ps))
-    patched["pitcherStats"] = patched_ps
-    return patched
+    return selected_row
 
 
 def _to_int(v: Any) -> int:
@@ -1238,7 +1170,9 @@ def _sidearm_player_last_night_from_schedule_link(
         for t in tables:
             df = _flatten_columns(t.copy())
             cols_l = [str(c).strip().lower() for c in df.columns]
-            if is_p and not any(c in cols_l for c in ("ip", "so", "k", "bb", "er")):
+            # For pitchers, require an innings column so we don't accidentally
+            # parse batter tables where SO means hitter strikeouts.
+            if is_p and "ip" not in cols_l:
                 continue
             if (not is_p) and not any(c in cols_l for c in ("ab", "h", "rbi")):
                 continue
@@ -2318,17 +2252,14 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
                     k: json_stat_value(k, v) for k, v in ln_ind.items() if v is not None
                 }
             # Backup source: explicit Sidearm schedule link from AmateurList.
-            # Use only when NCAA line is missing or likely under-counted (IP>0 but K=0).
+            # For pitchers, prefer a valid Sidearm player line whenever present;
+            # NCAA GraphQL occasionally reports zero/incorrect pitcher strikeouts.
             ln_backup = {}
-            ip_now = _to_float((base["last_night"] or {}).get("inningsPitched"))
-            k_now = _to_int((base["last_night"] or {}).get("strikeOuts"))
-            if is_p and c.schedule_link and (not base["last_night"] or (ip_now <= 0 or k_now == 0)):
+            if is_p and c.schedule_link:
                 ln_backup = _sidearm_player_last_night_from_schedule_link(
                     c.schedule_link, c.name, is_p, yday
                 )
-            if ln_backup and any(
-                _to_float(v) > 0 for k, v in ln_backup.items() if k not in ("era",)
-            ):
+            if ln_backup and _to_float(ln_backup.get("inningsPitched")) > 0:
                 base["last_night"] = {
                     k: json_stat_value(k, v) for k, v in ln_backup.items() if v is not None
                 }
