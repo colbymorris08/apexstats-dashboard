@@ -124,6 +124,9 @@
     <button data-tab="milb">MiLB/Overseas</button>
     <button data-tab="amateur">Amateur Clients</button>
     <button data-tab="high_school">High School</button>
+    <button data-tab="watch_list">Watch List</button>
+    <button data-tab="arbitration_tracker">Arbitration Tracker</button>
+    <button data-tab="free_agency_tracker">Free Agency Tracker</button>
   </div>
   <div class="row" id="subTabs">
     <button data-subtab="last_night" class="active">Last Night Stats</button>
@@ -141,6 +144,9 @@
   <div id="panel-milb" class="panel"></div>
   <div id="panel-amateur" class="panel"></div>
   <div id="panel-high_school" class="panel"></div>
+  <div id="panel-watch_list" class="panel"></div>
+  <div id="panel-arbitration_tracker" class="panel"></div>
+  <div id="panel-free_agency_tracker" class="panel"></div>
 
   <script>
     let DATA = null;
@@ -148,8 +154,23 @@
     let activeTab = "mlb";
     let activeSubtab = "last_night";
     let activeRole = "all";
+    let activeWatchAgent = "JF";
     const sortState = {};
     let ACCESS_PROFILE = null;
+    const WATCH_LIST_DATA = {
+      JF: [
+        { name: "Brady Cunningham", position: "3B", grad_year: "2027", school: "Brother Rice HS, IL", commit: "Texas A&M" },
+        { name: "Jack Postma", position: "RHP", grad_year: "2028", school: "Barrington HS, Barrington IL", commit: "" },
+        { name: "Traxton Roberts", position: "RHP", grad_year: "2027", school: "Armstrong HS, Armstrong IL", commit: "Kentucky" },
+        { name: "Anderson Kaufman", position: "RHP/SS", grad_year: "2028", school: "Alton, IL", commit: "" },
+        { name: "Cody Busch", position: "SS", grad_year: "2029", school: "Joliet Catholic HS, Joliet IL", commit: "" },
+        { name: "Mason Carlson", position: "C", grad_year: "2029", school: "Joliet Catholic HS, Joliet IL", commit: "" },
+        { name: "Isiah Wolter", position: "C", grad_year: "2028", school: "Oswego East HS, Oswego, IL", commit: "" },
+        { name: "Todd Dulaney", position: "SS", grad_year: "2029", school: "Nazareth HS, La Grange IL", commit: "" },
+        { name: "Colin Lawlor", position: "LHP", grad_year: "2028", school: "Marist, IL", commit: "" },
+        { name: "Landon Connolly", position: "RHP", grad_year: "2028", school: "Naperville Central HS, Naperville, IL", commit: "" },
+      ],
+    };
 
     const PASSWORD_PROFILES = {
       BayArea1: { key: "bayarea", label: "Bay Area", center: { city: "San Francisco, CA", lat: 37.7749, lon: -122.4194 } },
@@ -795,15 +816,72 @@
     }
 
     function allowedMainTabs() {
-      if (!ACCESS_PROFILE) return ["mlb", "milb", "amateur", "high_school"];
+      if (!ACCESS_PROFILE) return ["mlb", "milb", "amateur", "high_school", "watch_list", "arbitration_tracker", "free_agency_tracker"];
       if (ACCESS_PROFILE.key === "partner") return ["mlb", "milb"];
-      return ["mlb", "milb", "amateur", "high_school"];
+      return ["mlb", "milb", "amateur", "high_school", "watch_list", "arbitration_tracker", "free_agency_tracker"];
     }
 
     function roleFilter(rows) {
       if (activeRole === "pitchers") return rows.filter((r) => r.is_pitcher);
       if (activeRole === "hitters") return rows.filter((r) => !r.is_pitcher);
       return rows;
+    }
+
+    function renderWatchList(target) {
+      target.innerHTML = "";
+      const wrap = el("div");
+      wrap.className = "stats-wrap";
+      const controls = el("div");
+      controls.className = "row";
+      const label = el("strong", "Agent Initials:");
+      const select = document.createElement("select");
+      select.style.padding = "8px";
+      select.style.borderRadius = "6px";
+      select.style.border = "1px solid #ccc";
+      const agents = Object.keys(WATCH_LIST_DATA).sort();
+      if (!agents.includes(activeWatchAgent)) activeWatchAgent = agents[0] || "";
+      agents.forEach((a) => {
+        const opt = document.createElement("option");
+        opt.value = a;
+        opt.textContent = a;
+        if (a === activeWatchAgent) opt.selected = true;
+        select.appendChild(opt);
+      });
+      select.onchange = () => {
+        activeWatchAgent = select.value;
+        renderWatchList(target);
+      };
+      controls.appendChild(label);
+      controls.appendChild(select);
+      wrap.appendChild(controls);
+
+      const rows = WATCH_LIST_DATA[activeWatchAgent] || [];
+      const table = el("table");
+      table.className = "stats-table";
+      const thead = el("thead");
+      const hr = el("tr");
+      ["Name", "Pos", "Grad Year", "School", "Commitment"].forEach((h) => hr.appendChild(el("th", h)));
+      thead.appendChild(hr);
+      table.appendChild(thead);
+      const tbody = el("tbody");
+      rows.forEach((r) => {
+        const tr = el("tr");
+        [r.name, r.position, r.grad_year, r.school, r.commit || ""].forEach((v, i) => {
+          const td = tdWithValue(v);
+          if (i === 0 || i === 3 || i === 4) td.classList.add("text-left");
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      wrap.appendChild(table);
+      target.appendChild(wrap);
+    }
+
+    function renderTrackerShell(target, title) {
+      target.innerHTML = "";
+      target.appendChild(el("h3", title));
+      target.appendChild(el("p", "Shell ready. Add tracker fields and rows when you are ready."));
     }
 
     function render() {
@@ -813,6 +891,9 @@
       const md = d.length === 3 ? `${Number(d[1])}/${Number(d[2])}` : DATA.last_night_date;
       document.getElementById("lastNightLabel").textContent = `LAST NIGHT DATE: ${md}`;
       const showSchedule = !(activeView === "mobile");
+      const isCustomTab = ["watch_list", "arbitration_tracker", "free_agency_tracker"].includes(activeTab);
+      document.getElementById("subTabs").style.display = isCustomTab ? "none" : "";
+      document.getElementById("roleTabs").style.display = (activeView === "mobile" || isCustomTab) ? "none" : "";
       document.querySelectorAll("#subTabs button").forEach((b) => {
         if (b.dataset.subtab === "schedule") b.style.display = showSchedule ? "" : "none";
       });
@@ -824,11 +905,23 @@
       });
       if (!allowed.has(activeTab)) activeTab = "mlb";
 
-      ["mlb", "milb", "amateur", "high_school"].forEach((t) => {
+      ["mlb", "milb", "amateur", "high_school", "watch_list", "arbitration_tracker", "free_agency_tracker"].forEach((t) => {
         const panel = document.getElementById(`panel-${t}`);
         if (!allowed.has(t)) {
           panel.classList.remove("active");
           panel.innerHTML = "";
+          return;
+        }
+        if (t === "watch_list") {
+          renderWatchList(panel);
+          return;
+        }
+        if (t === "arbitration_tracker") {
+          renderTrackerShell(panel, "Arbitration Tracker");
+          return;
+        }
+        if (t === "free_agency_tracker") {
+          renderTrackerShell(panel, "Free Agency Tracker");
           return;
         }
         const baseRows = rowsForTab(t);
@@ -837,7 +930,6 @@
         if (activeSubtab === "schedule") renderScheduleTable(rows, panel, panelKey);
         else renderStatsTable(rows, activeSubtab, panel, panelKey);
       });
-      document.getElementById("roleTabs").style.display = activeView === "mobile" ? "none" : "";
       document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
       document.getElementById(`panel-${activeTab}`).classList.add("active");
     }
