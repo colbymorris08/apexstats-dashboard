@@ -154,23 +154,28 @@
     let activeTab = "mlb";
     let activeSubtab = "last_night";
     let activeRole = "all";
-    let activeWatchAgent = "JF";
+    let activeWatchAgent = "AK";
     const sortState = {};
     let ACCESS_PROFILE = null;
     const WATCH_LIST_DATA = {
+      AK: [],
+      AR: [],
+      PC: [],
+      TJ: [],
       JF: [
-        { name: "Brady Cunningham", position: "3B", grad_year: "2027", school: "Brother Rice HS, IL", commit: "Texas A&M" },
-        { name: "Jack Postma", position: "RHP", grad_year: "2028", school: "Barrington HS, Barrington IL", commit: "" },
-        { name: "Traxton Roberts", position: "RHP", grad_year: "2027", school: "Armstrong HS, Armstrong IL", commit: "Kentucky" },
-        { name: "Anderson Kaufman", position: "RHP/SS", grad_year: "2028", school: "Alton, IL", commit: "" },
-        { name: "Cody Busch", position: "SS", grad_year: "2029", school: "Joliet Catholic HS, Joliet IL", commit: "" },
-        { name: "Mason Carlson", position: "C", grad_year: "2029", school: "Joliet Catholic HS, Joliet IL", commit: "" },
-        { name: "Isiah Wolter", position: "C", grad_year: "2028", school: "Oswego East HS, Oswego, IL", commit: "" },
-        { name: "Todd Dulaney", position: "SS", grad_year: "2029", school: "Nazareth HS, La Grange IL", commit: "" },
-        { name: "Colin Lawlor", position: "LHP", grad_year: "2028", school: "Marist, IL", commit: "" },
-        { name: "Landon Connolly", position: "RHP", grad_year: "2028", school: "Naperville Central HS, Naperville, IL", commit: "" },
+        { agent: "JF", name: "Brady Cunningham", position: "3B", grad_year: "2027", school: "Brother Rice HS, IL", commit: "Texas A&M" },
+        { agent: "JF", name: "Jack Postma", position: "RHP", grad_year: "2028", school: "Barrington HS, Barrington IL", commit: "" },
+        { agent: "JF", name: "Traxton Roberts", position: "RHP", grad_year: "2027", school: "Armstrong HS, Armstrong IL", commit: "Kentucky" },
+        { agent: "JF", name: "Anderson Kaufman", position: "RHP/SS", grad_year: "2028", school: "Alton, IL", commit: "" },
+        { agent: "JF", name: "Cody Busch", position: "SS", grad_year: "2029", school: "Joliet Catholic HS, Joliet IL", commit: "" },
+        { agent: "JF", name: "Mason Carlson", position: "C", grad_year: "2029", school: "Joliet Catholic HS, Joliet IL", commit: "" },
+        { agent: "JF", name: "Isiah Wolter", position: "C", grad_year: "2028", school: "Oswego East HS, Oswego, IL", commit: "" },
+        { agent: "JF", name: "Todd Dulaney", position: "SS", grad_year: "2029", school: "Nazareth HS, La Grange IL", commit: "" },
+        { agent: "JF", name: "Colin Lawlor", position: "LHP", grad_year: "2028", school: "Marist, IL", commit: "" },
+        { agent: "JF", name: "Landon Connolly", position: "RHP", grad_year: "2028", school: "Naperville Central HS, Naperville, IL", commit: "" },
       ],
     };
+    const WATCH_LIST_AGENT_ORDER = ["AK", "AR", "PC", "TJ", "JF"];
 
     const PASSWORD_PROFILES = {
       BayArea1: { key: "bayarea", label: "Bay Area", center: { city: "San Francisco, CA", lat: 37.7749, lon: -122.4194 } },
@@ -838,7 +843,7 @@
       select.style.padding = "8px";
       select.style.borderRadius = "6px";
       select.style.border = "1px solid #ccc";
-      const agents = Object.keys(WATCH_LIST_DATA).sort();
+      const agents = WATCH_LIST_AGENT_ORDER.filter((a) => Object.prototype.hasOwnProperty.call(WATCH_LIST_DATA, a));
       if (!agents.includes(activeWatchAgent)) activeWatchAgent = agents[0] || "";
       agents.forEach((a) => {
         const opt = document.createElement("option");
@@ -860,15 +865,15 @@
       table.className = "stats-table";
       const thead = el("thead");
       const hr = el("tr");
-      ["Name", "Pos", "Grad Year", "School", "Commitment"].forEach((h) => hr.appendChild(el("th", h)));
+      ["Agent", "Name", "Pos", "Grad Year", "School", "Commitment"].forEach((h) => hr.appendChild(el("th", h)));
       thead.appendChild(hr);
       table.appendChild(thead);
       const tbody = el("tbody");
       rows.forEach((r) => {
         const tr = el("tr");
-        [r.name, r.position, r.grad_year, r.school, r.commit || ""].forEach((v, i) => {
+        [r.agent || activeWatchAgent, r.name, r.position, r.grad_year, r.school, r.commit || ""].forEach((v, i) => {
           const td = tdWithValue(v);
-          if (i === 0 || i === 3 || i === 4) td.classList.add("text-left");
+          if (i === 1 || i === 4 || i === 5) td.classList.add("text-left");
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
