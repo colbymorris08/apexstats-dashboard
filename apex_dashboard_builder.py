@@ -102,14 +102,33 @@ NCAA_SCHOOL_ALIASES: dict[str, tuple[str, ...]] = {
     "florida atlantic": ("fau", "florida atlantic", "fla atlantic"),
     "uc berkeley": ("cal", "california", "uc berkeley"),
 }
+# Big West teamstats.aspx `school=` slug -> official NCAA conference cumulative JSON (ERA/IP/ER
+# agree with NCAA; D1Baseball scraping can drift — e.g. one extra earned run on the seasonal row).
+BIG_WEST_TEAMSTATS_SLUG_BY_NORM_SCHOOL: dict[str, str] = {
+    "cal poly": "calpoly",
+    "cal poly san luis obispo": "calpoly",
+}
+BIG_WEST_TEAM_STATS_JSON_CACHE: dict[str, dict[str, Any] | None] = {}
 FOREIGN_LEAGUES: frozenset[str] = frozenset({"NPB", "KBO", "CPBL"})
 PRO_FOREIGN_BR_URLS: dict[str, str] = {
     # International pro stats on Baseball-Reference register pages.
     "spencer howard": "https://www.baseball-reference.com/register/player.fcgi?id=howard000spe",
     "jackson stephens": "https://www.baseball-reference.com/register/player.fcgi?id=stephe003jac",
-    "mitch white": "https://www.baseball-reference.com/minors/player.cgi?id=white-000mit",
+    "mitch white": "https://www.baseball-reference.com/register/player.fcgi?id=white-000mit",
 }
 FOREIGN_BR_SEASON_CACHE: dict[tuple[str, bool], dict[str, Any] | None] = {}
+
+
+def _foreign_league_schedule_url(league: str) -> str:
+    """Official-ish schedule hub when a client is on KBO/NPB/CPBL (not in MLB Stats API)."""
+    u = (league or "").strip().upper()
+    if "KBO" in u:
+        return "https://eng.koreabaseball.com/Schedule/DailySchedule.aspx"
+    if "CPBL" in u:
+        return "https://www.cpbl.com.tw/"
+    if u.startswith("JP") or "NPB" in u:
+        return "https://npb.jp/eng/"
+    return ""
 MANUAL_PRO_CLIENTS: list[dict[str, str]] = [
     {
         "name": "Aaron Shortridge",
@@ -418,6 +437,84 @@ def fetch_d1_player_stats(player_url: str, is_pitcher_role: bool) -> dict[str, A
         }
     D1_PLAYER_STATS_CACHE[key] = out
     return out
+
+
+def _bigwest_teamstats_slug(school: str) -> str | None:
+    return BIG_WEST_TEAMSTATS_SLUG_BY_NORM_SCHOOL.get(_norm_school(school))
+
+
+def _bigwest_team_stats_payload(slug: str) -> dict[str, Any] | None:
+    key = f"{slug}|{SEASON}"
+    if key in BIG_WEST_TEAM_STATS_JSON_CACHE:
+        return BIG_WEST_TEAM_STATS_JSON_CACHE[key]
+    page_url = "https://bigwest.org/teamstats.aspx?" + urllib.parse.urlencode(
+        {"path": "baseball", "school": slug, "year": str(SEASON)}
+    )
+    try:
+        html = requests.get(page_url, timeout=35, headers=_HTTP_HEADERS).text
+        m = re.search(r"team_id:\s*'(\d+)'", html)
+        if not m:
+            BIG_WEST_TEAM_STATS_JSON_CACHE[key] = None
+            return None
+        api_url = "https://bigwest.org/services/conf_stats.ashx?" + urllib.parse.urlencode(
+            {
+                "method": "get_team_stats",
+                "team_id": m.group(1),
+                "sport": "baseball",
+                "year": str(SEASON),
+                "conf": "False",
+                "postseason": "False",
+            }
+        )
+        js = _req_json(api_url, timeout=45, retries=2)
+    except Exception:
+        BIG_WEST_TEAM_STATS_JSON_CACHE[key] = None
+        return None
+    BIG_WEST_TEAM_STATS_JSON_CACHE[key] = js if isinstance(js, dict) else None
+    return BIG_WEST_TEAM_STATS_JSON_CACHE[key]
+
+
+def _pitching_line_from_big_west_pitching_stats(ps: dict[str, Any]) -> dict[str, Any]:
+    """Map Sidearm pitching_stats blob to MLB-ish keys used by the dashboard."""
+    ip_raw = ps.get("innings_pitched")
+    ip_s = json_stat_value("inningsPitched", ip_raw) if ip_raw not in (None, "") else None
+    if not ip_s:
+        ip_s = "0.0"
+    out: dict[str, Any] = {
+        "inningsPitched": ip_s,
+        "hits": to_number(ps.get("hits_allowed")),
+        "runs": to_number(ps.get("runs_allowed")),
+        "earnedRuns": to_number(ps.get("earned_runs_allowed")),
+        "baseOnBalls": to_number(ps.get("walks_allowed")),
+        "strikeOuts": to_number(ps.get("strikeouts")),
+        "homeRuns": to_number(ps.get("home_runs_allowed")),
+        "era": to_number(ps.get("earned_run_average")),
+    }
+    return {k: v for k, v in out.items() if v not in (None, "")}
+
+
+def fetch_big_west_pitching_season_line(school: str, client_full_name: str) -> dict[str, Any]:
+    """Official Big West pitcher season line when the school plays in that conference."""
+    slug = _bigwest_teamstats_slug(school)
+    if not slug:
+        return {}
+    js = _bigwest_team_stats_payload(slug)
+    if not js:
+        return {}
+    want = _norm_player_name(_parse_name(client_full_name))
+    for p in js.get("players") or []:
+        if not isinstance(p, dict):
+            continue
+        nm = str(p.get("name") or "").strip()
+        if not nm:
+            continue
+        if _norm_player_name(_parse_name(nm)) != want:
+            continue
+        ps = p.get("pitching_stats")
+        if not isinstance(ps, dict):
+            continue
+        return _pitching_line_from_big_west_pitching_stats(ps)
+    return {}
 
 
 def _ncaa_graphql_url(meta: str, sha: str, variables: dict[str, Any]) -> str:
@@ -2092,9 +2189,9 @@ def get_team_context(team_id: int | None) -> dict[str, Any]:
         schedule_url = f"https://www.mlb.com/{team_slug}/schedule"
         organization = team_name
     else:
-        # MiLB schedule page.
-        nickname = t.get("teamName") or team_name
-        schedule_url = f"https://www.milb.com/{_slug(nickname)}/schedule"
+        # MiLB schedule page (use full Stats API club name slug — matches milb.com paths;
+        # nickname-only slugs like "dust-devils" redirect but are easy to confuse with wrong clubs).
+        schedule_url = f"https://www.milb.com/{_slug(team_name)}/schedule"
         organization = str(t.get("parentOrgName", "") or "").strip() or team_name
     return {
         "team_name": team_name,
@@ -2227,6 +2324,11 @@ def build_client_payload(c: Client) -> dict[str, Any]:
                 base["organization"] = f_team
             if f_lg:
                 base["team_level"] = f_lg
+            # Stats API still lists org affiliates (e.g. MiLB); drop MLB/MiLB schedule rows.
+            base["upcoming_series"] = []
+            sched = _foreign_league_schedule_url(f_lg)
+            if sched:
+                base["team_schedule_url"] = sched
     return base
 
 
@@ -2261,13 +2363,15 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
             "upcoming_series": [],
         }
 
-    # Season totals from D1 player page (search index + 2026 table).
+    # Season totals: Big West conference JSON (NCAA-aligned) when available; else D1Baseball scrape.
     d1_url = resolve_d1_player_url(c.name, school)
     d1_season = fetch_d1_player_stats(d1_url, is_p) if d1_url else {}
+    bw_season = fetch_big_west_pitching_season_line(school, c.name) if is_p else {}
     if d1_url and not c.schedule_link:
         base["team_schedule_url"] = d1_url
-    if d1_season:
-        base["season"] = d1_season
+    season_preferred = bw_season or d1_season
+    if season_preferred:
+        base["season"] = season_preferred
 
     if school:
         try:
