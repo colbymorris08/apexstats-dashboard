@@ -261,12 +261,19 @@ def _to_str_num(v: Any) -> str:
     return str(v).strip()
 
 
+def _cache_bust_url(url: str) -> str:
+    """Append a daily cache-buster so CDN/browser caches don't serve stale HTML/JSON."""
+    day = dashboard_date().isoformat()
+    sep = "&" if ("?" in url) else "?"
+    return f"{url}{sep}_apexcb={day}"
+
+
 def get_d1_players_index() -> list[dict[str, Any]]:
     global D1_PLAYERS_INDEX
     if D1_PLAYERS_INDEX is not None:
         return D1_PLAYERS_INDEX
     try:
-        js = _req_json_with_headers(D1_PLAYERS_SEARCH_JSON)
+        js = _req_json_with_headers(_cache_bust_url(D1_PLAYERS_SEARCH_JSON))
         if isinstance(js, list):
             D1_PLAYERS_INDEX = js
             return D1_PLAYERS_INDEX
@@ -345,11 +352,13 @@ def _pick_d1_table(dfs: list[pd.DataFrame], is_pitcher_role: bool) -> pd.DataFra
 def fetch_d1_player_stats(player_url: str, is_pitcher_role: bool) -> dict[str, Any]:
     if not player_url:
         return {}
-    key = f"{player_url}|{'P' if is_pitcher_role else 'H'}"
+    key = f"{player_url}|{'P' if is_pitcher_role else 'H'}|{dashboard_date().isoformat()}"
     if key in D1_PLAYER_STATS_CACHE:
         return D1_PLAYER_STATS_CACHE[key] or {}
     try:
-        html = requests.get(player_url, timeout=30, headers={"User-Agent": "Mozilla/5.0"}).text
+        html = requests.get(
+            _cache_bust_url(player_url), timeout=30, headers={"User-Agent": "Mozilla/5.0"}
+        ).text
         dfs = pd.read_html(StringIO(html))
     except Exception:
         D1_PLAYER_STATS_CACHE[key] = None
@@ -763,6 +772,9 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
             "pitches": pitches,
         }
     bs = player_row.get("batterStats") or {}
+    # NCAA GraphQL often omits XBH / HR in `batterStats` while still exposing them
+    # on the sibling `hittingSeason` object for that game row (see Molony example).
+    hs = player_row.get("hittingSeason") if isinstance(player_row.get("hittingSeason"), dict) else {}
     extra = _ncaa_batter_extra_counts(bs)
     ofa_field = _ncaa_outfield_assists_from_row(player_row)
     ofa_bat = _ncaa_stat_int(
@@ -773,6 +785,11 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
         "assistsOutfield",
     )
     ofa = max(ofa_field, ofa_bat)
+    doubles_bs = max(extra["doubles"], _ncaa_stat_int(bs, "doubles", "double", "twoBaseHits"))
+    hr_bs = max(extra["hr"], _ncaa_stat_int(bs, "homeRuns", "homeRun", "hr"))
+    doubles_hs = _ncaa_stat_int(hs, "doubles", "double", "twoBaseHits") if hs else 0
+    triples_hs = _ncaa_stat_int(hs, "triples", "triple", "threeBaseHits") if hs else 0
+    hr_hs = _ncaa_stat_int(hs, "homeRuns", "homeRun", "hr") if hs else 0
     return {
         "ab": _to_int(bs.get("atBats")),
         "h": _to_int(bs.get("hits")),
@@ -780,11 +797,8 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
         "rbi": _to_int(bs.get("runsBattedIn")),
         "bb": _to_int(bs.get("walks")),
         "k": _to_int(bs.get("strikeouts")),
-        "doubles": max(
-            extra["doubles"],
-            _ncaa_stat_int(bs, "doubles", "double", "twoBaseHits"),
-        ),
-        "hr": max(extra["hr"], _ncaa_stat_int(bs, "homeRuns", "homeRun", "hr")),
+        "doubles": max(doubles_bs, doubles_hs, triples_hs),
+        "hr": max(hr_bs, hr_hs),
         "sb": max(extra["sb"], _ncaa_stat_int(bs, "stolenBases", "stolenBase", "sb")),
         "ofa": ofa,
     }
@@ -2681,6 +2695,10 @@ def load_high_school_clients(path: Path) -> list[dict[str, str]]:
 def build_dashboard_data() -> dict[str, Any]:
     NCAA_SCHOOL_PAYLOAD_CACHE.clear()
     FOREIGN_BR_SEASON_CACHE.clear()
+    # D1Baseball: always refresh player index + per-player season tables on each sync.
+    global D1_PLAYERS_INDEX
+    D1_PLAYERS_INDEX = None
+    D1_PLAYER_STATS_CACHE.clear()
     clients = load_clients(SOURCE_XLSX)
     pro = [c for c in clients if not c.is_amateur]
     pro = [c for c in pro if _norm_player_name(c.name) not in PRO_CLIENT_EXCLUDE_NAMES]
