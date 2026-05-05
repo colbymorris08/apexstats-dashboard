@@ -130,6 +130,7 @@ PRO_FOREIGN_BR_URLS: dict[str, str] = {
 FOREIGN_BR_SEASON_CACHE: dict[tuple[str, bool], dict[str, Any] | None] = {}
 TRACKER_BREF_WAR_CACHE: dict[str, dict[str, Any]] = {}
 TRACKER_PYB_SEASON_CACHE: dict[tuple[int, bool, str], pd.DataFrame | None] = {}
+TRACKER_DEBUT_DATE_CACHE: dict[int, str] = {}
 
 
 def _foreign_league_schedule_url(league: str) -> str:
@@ -490,6 +491,31 @@ def _fetch_war_by_year(player_name: str, is_pitcher_role: bool) -> dict[str, Any
     return _fetch_bref_war_by_year(player_name, is_pitcher_role).get("war_by_year", {})
 
 
+def _bulk_war_maps() -> dict[str, dict[str, Any]]:
+    """
+    Build normalized-name -> {year: WAR} maps for all rows from bWAR tables.
+    Returns dict with keys: pitcher, hitter.
+    """
+    out: dict[str, dict[str, dict[str, Any]]] = {"pitcher": {}, "hitter": {}}
+    for role_key, is_pitcher_role in (("pitcher", True), ("hitter", False)):
+        df = _pyb_season_war_table(SEASON, is_pitcher_role)
+        if df is None or df.empty or "name_common" not in df.columns or "year_ID" not in df.columns:
+            continue
+        for _, row in df.iterrows():
+            y = _year_as_int(row.get("year_ID"))
+            if y is None or y not in {SEASON, SEASON - 1, SEASON - 2}:
+                continue
+            nn = _norm_player_name(str(row.get("name_common") or ""))
+            if not nn:
+                continue
+            war = to_number(row.get("WAR"))
+            if war is None:
+                continue
+            cur = out[role_key].setdefault(nn, {})
+            cur[str(y)] = round(_to_float(cur.get(str(y))) + _to_float(war), 2)
+    return out
+
+
 def _fetch_player_transactions_summary(player_id: int, debut_year: int | None) -> dict[str, Any]:
     start = f"{max(2018, int(debut_year or SEASON - 7))}-01-01"
     end = dashboard_date().isoformat()
@@ -522,6 +548,73 @@ def _fetch_player_transactions_summary(player_id: int, debut_year: int | None) -
     except Exception:
         pass
     return out
+
+
+def _fetch_player_debut_date(player_id: int) -> str:
+    if player_id in TRACKER_DEBUT_DATE_CACHE:
+        return TRACKER_DEBUT_DATE_CACHE[player_id]
+    val = ""
+    try:
+        js = _req_json(f"{API}/people/{player_id}", timeout=25, retries=2)
+        p = (js.get("people") or [{}])[0]
+        val = str(p.get("mlbDebutDate") or "").strip()
+    except Exception:
+        val = ""
+    TRACKER_DEBUT_DATE_CACHE[player_id] = val
+    return val
+
+
+def _service_time_to_days(mls: Any) -> int | None:
+    s = _clean_text(mls)
+    if not s:
+        return None
+    m = re.fullmatch(r"(\d+)(?:\.(\d{1,3}))?", s)
+    if m:
+        years = int(m.group(1))
+        days_s = (m.group(2) or "0").ljust(3, "0")[:3]
+        days = int(days_s)
+        return years * 172 + days
+    try:
+        f = float(s)
+        years = int(f)
+        days = int(round((f - years) * 1000))
+        return years * 172 + max(0, days)
+    except Exception:
+        return None
+
+
+def _estimated_max_service_days_entering_season(debut_date_iso: str, fallback_debut_year: int | None) -> int | None:
+    """
+    Approx max service days entering current season based on promotion/debut date.
+    Uses MLB season-day envelope (max 187 service days in debut season) and
+    caps each full subsequent season to 172 for one full service year.
+    """
+    debut_y = fallback_debut_year
+    md = ""
+    if debut_date_iso:
+        try:
+            d = datetime.strptime(debut_date_iso, "%Y-%m-%d").date()
+            debut_y = d.year
+            md = d.strftime("%m-%d")
+        except Exception:
+            pass
+    if not debut_y or debut_y >= SEASON:
+        return None
+    # Approx opening day anchor for debut-season remaining service days.
+    # Conservative envelope to avoid false positives.
+    season_start = date(debut_y, 3, 20)
+    season_days = 187
+    debut_days = 172
+    if md:
+        try:
+            d0 = datetime.strptime(f"{debut_y}-{md}", "%Y-%m-%d").date()
+            offset = max(0, (d0 - season_start).days)
+            rem = max(0, season_days - offset)
+            debut_days = min(172, rem)
+        except Exception:
+            debut_days = 172
+    full_years_after = max(0, SEASON - debut_y - 1)
+    return debut_days + (172 * full_years_after)
 
 
 def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
@@ -564,9 +657,11 @@ def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
     # 1) explicit MLB->minors transaction moves
     # 2) service-time gap vs debut season count entering current season
     #    (e.g., debut 2022 entering 2026 => max 4.000 years possible)
-    mls_f = _to_float(row.get("mls"))
-    expected_years = max(0.0, float(SEASON - debut_year_i)) if debut_year_i else 0.0
-    service_gap_broken = bool(mls_f > 0 and expected_years > 0 and (mls_f + 0.02) < expected_years)
+    debut_date = _fetch_player_debut_date(pid) if pid else ""
+    service_days = _service_time_to_days(row.get("mls"))
+    max_days = _estimated_max_service_days_entering_season(debut_date, debut_year_i)
+    # tolerance avoids false positives from approximation / scorekeeper variance
+    service_gap_broken = bool(service_days is not None and max_days is not None and service_days + 20 < max_days)
     row["broken_service"] = "Yes" if (tx.get("minor_league_moves", 0) > 0 or service_gap_broken) else "No"
     row["position_group"] = "SP" if pos == "SP" else "RP" if pos == "RP" else "OF" if pos in {"LF", "RF", "CF"} else pos
     return row
@@ -577,6 +672,23 @@ def build_tracker_data(path: Path, pinned_names: tuple[str, ...]) -> dict[str, A
     if not rows:
         return {"rows": [], "pinned": [], "year_options": [str(SEASON), str(SEASON - 1), str(SEASON - 2), "career"]}
     pinned_norm = {_norm_player_name(n) for n in pinned_names}
+    war_maps = _bulk_war_maps()
+    # Populate WAR for every row so wide tables can show it globally.
+    for i, r in enumerate(rows):
+        pos = str(r.get("primary_position", "")).upper()
+        is_pitcher_role = pos in PITCHER_POS or pos in {"SP", "RP"}
+        role_key = "pitcher" if is_pitcher_role else "hitter"
+        wn = war_maps.get(role_key, {}).get(r.get("name_norm", ""), {})
+        row_years: dict[str, Any] = {
+            str(SEASON): {"war": wn.get(str(SEASON))},
+            str(SEASON - 1): {"war": wn.get(str(SEASON - 1))},
+            str(SEASON - 2): {"war": wn.get(str(SEASON - 2))},
+        }
+        row_career_war = round(sum(_to_float(v) for v in wn.values()), 1) if wn else None
+        r["stats_by_year"] = row_years
+        r["stats_career"] = {"war": row_career_war}
+        r["broken_service"] = r.get("broken_service", "No")
+        rows[i] = r
     for i, r in enumerate(rows):
         if r.get("name_norm") in pinned_norm:
             rows[i] = _enrich_tracker_player(r)
