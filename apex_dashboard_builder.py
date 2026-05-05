@@ -18,6 +18,8 @@ import requests
 SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/Client List - 04-15-26.xlsx")
 AMATEUR_SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/AmateurList.xlsx")
 HS_SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/HSList.xlsx")
+ARB_TRACKER_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/DashboardArb.xlsx")
+FA_TRACKER_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/DashboardFA.xlsx")
 OUT_JSON = Path("/Users/colbymorris/apexstats/apex_dashboard_data.json")
 PACIFIC_TZ = ZoneInfo("America/Los_Angeles")
 
@@ -117,6 +119,8 @@ PRO_FOREIGN_BR_URLS: dict[str, str] = {
     "mitch white": "https://www.baseball-reference.com/register/player.fcgi?id=white-000mit",
 }
 FOREIGN_BR_SEASON_CACHE: dict[tuple[str, bool], dict[str, Any] | None] = {}
+TRACKER_BREF_WAR_CACHE: dict[str, dict[str, Any]] = {}
+TRACKER_PYB_SEASON_CACHE: dict[tuple[int, bool], pd.DataFrame | None] = {}
 
 
 def _foreign_league_schedule_url(league: str) -> str:
@@ -265,6 +269,294 @@ def _norm_player_name(s: str) -> str:
     x = x.replace(".", " ").replace(",", " ").replace("-", " ")
     parts = [p for p in x.split() if p not in {"jr", "sr", "ii", "iii", "iv"}]
     return " ".join(parts)
+
+
+TRACKER_PINNED_ARB: tuple[str, ...] = ("Lucas Erceg", "Bryan Woo", "James Outman")
+TRACKER_PINNED_FA: tuple[str, ...] = ("Brock Burke", "Kris Bubic")
+TRACKER_BREF_URLS: dict[str, str] = {
+    "bryan woo": "https://www.baseball-reference.com/players/w/woobr01.shtml",
+    "lucas erceg": "https://www.baseball-reference.com/players/e/erceglu01.shtml",
+    "james outman": "https://www.baseball-reference.com/players/o/outmaja01.shtml",
+    "brock burke": "https://www.baseball-reference.com/players/b/burkebr01.shtml",
+    "kris bubic": "https://www.baseball-reference.com/players/b/bubickr01.shtml",
+}
+
+
+def _tracker_json_num(v: Any) -> int | float | str | None:
+    n = to_number(v)
+    if n is not None:
+        return n
+    s = str(v or "").strip()
+    return s or None
+
+
+def _tracker_col(row: pd.Series, cols: dict[str, str], name: str) -> Any:
+    c = cols.get(name.lower())
+    return row.get(c) if c else None
+
+
+def _find_tracker_header_row(df: pd.DataFrame) -> int | None:
+    for i, row in df.iterrows():
+        v0 = str(row.iloc[0] or "").strip().lower()
+        if "player" in v0 and "(1)" in v0:
+            return int(i)
+    return None
+
+
+def _load_tracker_sheet(path: Path) -> list[dict[str, Any]]:
+    if not path.is_file():
+        return []
+    raw = pd.read_excel(path)
+    hi = _find_tracker_header_row(raw)
+    if hi is None:
+        return []
+    header = [str(v).strip() for v in raw.iloc[hi].tolist()]
+    body = raw.iloc[hi + 1 :].copy()
+    body.columns = header
+    out: list[dict[str, Any]] = []
+    cols = {str(c).strip().lower(): str(c) for c in body.columns}
+    for _, row in body.iterrows():
+        name_raw = _tracker_col(row, cols, "player(1)")
+        if pd.isna(name_raw):
+            continue
+        name = _parse_name(str(name_raw).strip())
+        if not name:
+            continue
+        age = _tracker_json_num(_tracker_col(row, cols, "age(1)"))
+        debut = _tracker_json_num(_tracker_col(row, cols, "debut year(1)"))
+        year = _tracker_json_num(_tracker_col(row, cols, "year(1)"))
+        primary_position = str(_tracker_col(row, cols, "primary position(1)") or "").strip().upper()
+        if not primary_position:
+            continue
+        out.append(
+            {
+                "name": name,
+                "name_norm": _norm_player_name(name),
+                "age": age,
+                "year": year,
+                "debut_year": debut,
+                "primary_position": primary_position,
+                "mls": _tracker_json_num(_tracker_col(row, cols, "mls(2)")),
+                "awards": [str(_tracker_col(row, cols, k) or "").strip() for k in ("awards(1)", "awards(3)", "awards(4)") if str(_tracker_col(row, cols, k) or "").strip()],
+                "award_votes": [str(_tracker_col(row, cols, k) or "").strip() for k in ("award votes(1)", "award votes(3)", "award votes(4)") if str(_tracker_col(row, cols, k) or "").strip()],
+                "il_stints_sheet": str(_tracker_col(row, cols, "il(2)") or "").strip(),
+                "yearly_salary_3": _tracker_json_num(_tracker_col(row, cols, "yearly salary(3)")),
+                "yearly_salary_4": _tracker_json_num(_tracker_col(row, cols, "yearly salary(4)")),
+            }
+        )
+    return out
+
+
+def _mlb_stat_line_for_year(player_id: int, group: str, season_year: int) -> dict[str, Any]:
+    try:
+        return fetch_player_stats_preferred_then_all_sports(player_id, group, "season", 1, season=season_year)
+    except Exception:
+        return {}
+
+
+def _mlb_stat_line_career(player_id: int, group: str) -> dict[str, Any]:
+    try:
+        return fetch_player_stats_preferred_then_all_sports(player_id, group, "career", 1)
+    except Exception:
+        return {}
+
+
+def _tracker_pitching_line(raw: dict[str, Any]) -> dict[str, Any]:
+    bf = _to_float(raw.get("battersFaced"))
+    bb = _to_float(raw.get("baseOnBalls"))
+    kk = _to_float(raw.get("strikeOuts"))
+    out = {
+        "ip": json_stat_value("inningsPitched", raw.get("inningsPitched")),
+        "w": _tracker_json_num(raw.get("wins")),
+        "k": _tracker_json_num(raw.get("strikeOuts")),
+        "bb": _tracker_json_num(raw.get("baseOnBalls")),
+        "qs": _tracker_json_num(raw.get("qualityStarts")),
+        "bb_pct": round((bb / bf) * 100, 1) if bf > 0 else None,
+        "k_pct": round((kk / bf) * 100, 1) if bf > 0 else None,
+        "whip": _tracker_json_num(raw.get("whip")),
+        "era": _tracker_json_num(raw.get("era")),
+    }
+    return out
+
+
+def _tracker_hitting_line(raw: dict[str, Any]) -> dict[str, Any]:
+    pa = _to_float(raw.get("plateAppearances"))
+    bb = _to_float(raw.get("baseOnBalls"))
+    kk = _to_float(raw.get("strikeOuts"))
+    return {
+        "hr": _tracker_json_num(raw.get("homeRuns")),
+        "sb": _tracker_json_num(raw.get("stolenBases")),
+        "avg": _tracker_json_num(raw.get("avg")),
+        "slg": _tracker_json_num(raw.get("slg")),
+        "ops": _tracker_json_num(raw.get("ops")),
+        "k": _tracker_json_num(raw.get("strikeOuts")),
+        "bb": _tracker_json_num(raw.get("baseOnBalls")),
+        "k_pct": round((kk / pa) * 100, 1) if pa > 0 else None,
+        "bb_pct": round((bb / pa) * 100, 1) if pa > 0 else None,
+        "games_started": _tracker_json_num(raw.get("gamesStarted")),
+    }
+
+
+def _fetch_bref_war_by_year(player_name: str, is_pitcher_role: bool) -> dict[str, Any]:
+    nn = _norm_player_name(player_name)
+    if nn in TRACKER_BREF_WAR_CACHE:
+        return TRACKER_BREF_WAR_CACHE[nn]
+    url = TRACKER_BREF_URLS.get(nn, "")
+    if not url:
+        TRACKER_BREF_WAR_CACHE[nn] = {"war_by_year": {}, "teams_by_year": {}}
+        return TRACKER_BREF_WAR_CACHE[nn]
+    war_by_year: dict[str, Any] = {}
+    teams_by_year: dict[str, str] = {}
+    try:
+        html = requests.get(url, timeout=35, headers=_HTTP_HEADERS).text
+        blobs = [html]
+        # Baseball-Reference keeps key tables in HTML comments.
+        blobs.extend(re.findall(r"<!--(.*?)-->", html, flags=re.S))
+        dfs: list[pd.DataFrame] = []
+        for blob in blobs:
+            if "WAR" not in blob or "Year" not in blob:
+                continue
+            try:
+                dfs.extend(pd.read_html(StringIO(blob)))
+            except Exception:
+                continue
+        for raw in dfs:
+            df = _flatten_columns(raw.copy())
+            cols = [str(c) for c in df.columns]
+            year_col = _find_col(cols, ("Year",))
+            team_col = _find_col(cols, ("Tm", "Team"))
+            war_col = _find_col(cols, ("WAR",))
+            if not year_col or not war_col:
+                continue
+            for _, row in df.iterrows():
+                y = _year_as_int(row.get(year_col))
+                if y is None:
+                    continue
+                war_val = to_number(row.get(war_col))
+                if war_val is not None:
+                    war_by_year[str(y)] = war_val
+                if team_col:
+                    tm = str(row.get(team_col) or "").strip()
+                    if tm and tm not in {"TOT", "Team"}:
+                        teams_by_year[str(y)] = tm
+            if war_by_year:
+                break
+    except Exception:
+        pass
+    TRACKER_BREF_WAR_CACHE[nn] = {"war_by_year": war_by_year, "teams_by_year": teams_by_year}
+    return TRACKER_BREF_WAR_CACHE[nn]
+
+
+def _pyb_season_war_table(year: int, is_pitcher_role: bool) -> pd.DataFrame | None:
+    key = (int(year), bool(is_pitcher_role))
+    if key in TRACKER_PYB_SEASON_CACHE:
+        return TRACKER_PYB_SEASON_CACHE[key]
+    try:
+        from pybaseball import batting_stats, pitching_stats
+
+        df = pitching_stats(year, qual=0) if is_pitcher_role else batting_stats(year, qual=0)
+    except Exception:
+        TRACKER_PYB_SEASON_CACHE[key] = None
+        return None
+    TRACKER_PYB_SEASON_CACHE[key] = df if isinstance(df, pd.DataFrame) else None
+    return TRACKER_PYB_SEASON_CACHE[key]
+
+
+def _fetch_war_by_year(player_name: str, is_pitcher_role: bool) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for y in (SEASON, SEASON - 1, SEASON - 2):
+        df = _pyb_season_war_table(y, is_pitcher_role)
+        if df is None or df.empty or "Name" not in df.columns:
+            continue
+        mask = df["Name"].astype(str).map(_norm_player_name) == _norm_player_name(player_name)
+        hit = df[mask]
+        if hit.empty:
+            continue
+        if "WAR" in hit.columns:
+            out[str(y)] = to_number(hit.iloc[0].get("WAR"))
+        elif "WAR7" in hit.columns:
+            out[str(y)] = to_number(hit.iloc[0].get("WAR7"))
+    if out:
+        return out
+    # Fallback to Baseball-Reference scrape when pybaseball lookup fails.
+    return _fetch_bref_war_by_year(player_name, is_pitcher_role).get("war_by_year", {})
+
+
+def _fetch_player_transactions_summary(player_id: int, debut_year: int | None) -> dict[str, Any]:
+    start = f"{max(2018, int(debut_year or SEASON - 7))}-01-01"
+    end = dashboard_date().isoformat()
+    out = {"il_stints_live": 0, "minor_league_moves": 0}
+    try:
+        url = f"{API}/transactions?" + urllib.parse.urlencode({"playerId": player_id, "startDate": start, "endDate": end})
+        js = _req_json(url, timeout=35, retries=2)
+        txs = js.get("transactions") or []
+        for tx in txs:
+            desc = str(tx.get("description") or "").lower()
+            typ = str(tx.get("typeCode") or "").lower()
+            if "injured list" in desc or typ in {"udl", "d60", "d15", "d10", "d7"}:
+                out["il_stints_live"] += 1
+            if "optioned" in desc or "outrighted" in desc or "assigned to" in desc:
+                out["minor_league_moves"] += 1
+    except Exception:
+        pass
+    return out
+
+
+def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
+    name = row.get("name", "")
+    pos = str(row.get("primary_position", "")).upper()
+    is_pitcher_role = pos in PITCHER_POS or pos in {"SP", "RP"}
+    c = Client(
+        name=name,
+        position="P" if is_pitcher_role else "OF",
+        level="MLB",
+        league="MLB",
+        minor_affiliate="",
+        major_affiliate="",
+        agent="",
+        agent_last="",
+        is_amateur=False,
+    )
+    pid = resolve_player_id(c)
+    years = [SEASON, SEASON - 1, SEASON - 2]
+    by_year: dict[str, Any] = {}
+    for y in years:
+        raw = _mlb_stat_line_for_year(pid, "pitching" if is_pitcher_role else "hitting", y) if pid else {}
+        by_year[str(y)] = _tracker_pitching_line(raw) if is_pitcher_role else _tracker_hitting_line(raw)
+    raw_career = _mlb_stat_line_career(pid, "pitching" if is_pitcher_role else "hitting") if pid else {}
+    career = _tracker_pitching_line(raw_career) if is_pitcher_role else _tracker_hitting_line(raw_career)
+    bref = _fetch_bref_war_by_year(name, is_pitcher_role)
+    war_by_year = _fetch_war_by_year(name, is_pitcher_role)
+    teams_by_year = bref.get("teams_by_year", {})
+    tx = _fetch_player_transactions_summary(pid, _safe_int(row.get("debut_year"))) if pid else {"il_stints_live": 0, "minor_league_moves": 0}
+    for y in list(by_year.keys()):
+        by_year[y]["war"] = war_by_year.get(y)
+    career["war"] = round(sum(_to_float(v) for v in war_by_year.values()), 1) if war_by_year else None
+    row["stats_by_year"] = by_year
+    row["stats_career"] = career
+    row["teams_by_year"] = teams_by_year
+    row["il_stints_live"] = tx.get("il_stints_live", 0)
+    row["minor_league_moves"] = tx.get("minor_league_moves", 0)
+    row["broken_service"] = "Yes" if tx.get("minor_league_moves", 0) > 0 else "No"
+    row["position_group"] = "SP" if pos == "SP" else "RP" if pos == "RP" else "OF" if pos in {"LF", "RF", "CF"} else pos
+    return row
+
+
+def build_tracker_data(path: Path, pinned_names: tuple[str, ...]) -> dict[str, Any]:
+    rows = _load_tracker_sheet(path)
+    if not rows:
+        return {"rows": [], "pinned": [], "year_options": [str(SEASON), str(SEASON - 1), str(SEASON - 2), "career"]}
+    pinned_norm = {_norm_player_name(n) for n in pinned_names}
+    for i, r in enumerate(rows):
+        if r.get("name_norm") in pinned_norm:
+            rows[i] = _enrich_tracker_player(r)
+    pinned = [r for r in rows if r.get("name_norm") in pinned_norm]
+    pinned.sort(key=lambda r: list(pinned_names).index(r.get("name", "")) if r.get("name", "") in pinned_names else 999)
+    return {
+        "rows": rows,
+        "pinned": pinned,
+        "year_options": [str(SEASON), str(SEASON - 1), str(SEASON - 2), "career"],
+    }
 
 
 def _year_as_int(v: Any) -> int | None:
@@ -2844,6 +3136,8 @@ def build_dashboard_data() -> dict[str, Any]:
         "pro_clients": pro_rows,
         "amateur_clients": amateur_rows,
         "high_school_clients": high_school_rows,
+        "arbitration_tracker": build_tracker_data(ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB),
+        "free_agency_tracker": build_tracker_data(FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA),
     }
     return data
 

@@ -155,6 +155,10 @@
     let activeSubtab = "last_night";
     let activeRole = "all";
     let activeWatchAgent = "AK";
+    let activeArbPlayer = "Bryan Woo";
+    let activeFaPlayer = "Kris Bubic";
+    let activeArbYear = String(new Date().getFullYear());
+    let activeFaYear = String(new Date().getFullYear());
     const sortState = {};
     let ACCESS_PROFILE = null;
     const WATCH_LIST_DATA = {
@@ -883,10 +887,145 @@
       target.appendChild(wrap);
     }
 
-    function renderTrackerShell(target, title) {
+    function trackerPositionFilterForPlayer(nameNorm) {
+      if (nameNorm === "bryan woo" || nameNorm === "kris bubic") return new Set(["SP"]);
+      if (nameNorm === "lucas erceg" || nameNorm === "brock burke") return new Set(["RP"]);
+      if (nameNorm === "james outman") return new Set(["LF", "RF", "CF", "OF"]);
+      return new Set();
+    }
+
+    function trackerStatsForYear(row, yearSel) {
+      if (!row) return {};
+      if (yearSel === "career") return row.stats_career || {};
+      const by = row.stats_by_year || {};
+      return by[yearSel] || {};
+    }
+
+    function renderTrackerTable(target, trackerKey) {
       target.innerHTML = "";
-      target.appendChild(el("h3", title));
-      target.appendChild(el("p", "Shell ready. Add tracker fields and rows when you are ready."));
+      const data = DATA && DATA[trackerKey];
+      const rows = (data && data.rows) || [];
+      const pinned = (data && data.pinned) || [];
+      const isArb = trackerKey === "arbitration_tracker";
+      const pinnedNames = isArb ? ["Lucas Erceg", "Bryan Woo", "James Outman"] : ["Brock Burke", "Kris Bubic"];
+      let activePlayer = isArb ? activeArbPlayer : activeFaPlayer;
+      let activeYear = isArb ? activeArbYear : activeFaYear;
+      const yearOptions = (data && data.year_options) || [String(new Date().getFullYear()), String(new Date().getFullYear() - 1), String(new Date().getFullYear() - 2), "career"];
+
+      if (!pinnedNames.includes(activePlayer)) activePlayer = pinnedNames[0];
+      if (!yearOptions.includes(activeYear)) activeYear = yearOptions[0];
+      if (isArb) {
+        activeArbPlayer = activePlayer;
+        activeArbYear = activeYear;
+      } else {
+        activeFaPlayer = activePlayer;
+        activeFaYear = activeYear;
+      }
+
+      const selectedNorm = String(activePlayer || "").toLowerCase();
+      const selectedPinned = pinned.find((r) => String(r.name || "").toLowerCase() === selectedNorm);
+      const posAllow = trackerPositionFilterForPlayer(selectedNorm);
+      const compare = rows.filter((r) => {
+        if (!r || !r.name) return false;
+        if (String(r.name).toLowerCase() === selectedNorm) return true;
+        if (!posAllow.size) return true;
+        return posAllow.has(String(r.primary_position || "").toUpperCase());
+      });
+
+      const controls = el("div");
+      controls.className = "row";
+      const pLbl = el("strong", "Player:");
+      const pSel = document.createElement("select");
+      pSel.style.padding = "8px";
+      pSel.style.borderRadius = "6px";
+      pSel.style.border = "1px solid #ccc";
+      pinnedNames.forEach((nm) => {
+        const opt = document.createElement("option");
+        opt.value = nm;
+        opt.textContent = nm;
+        if (nm === activePlayer) opt.selected = true;
+        pSel.appendChild(opt);
+      });
+      pSel.onchange = () => {
+        if (isArb) activeArbPlayer = pSel.value;
+        else activeFaPlayer = pSel.value;
+        renderTrackerTable(target, trackerKey);
+      };
+      const yLbl = el("strong", "Stats Year:");
+      const ySel = document.createElement("select");
+      ySel.style.padding = "8px";
+      ySel.style.borderRadius = "6px";
+      ySel.style.border = "1px solid #ccc";
+      yearOptions.forEach((yy) => {
+        const opt = document.createElement("option");
+        opt.value = yy;
+        opt.textContent = yy === "career" ? "Career To Date" : String(yy);
+        if (yy === activeYear) opt.selected = true;
+        ySel.appendChild(opt);
+      });
+      ySel.onchange = () => {
+        if (isArb) activeArbYear = ySel.value;
+        else activeFaYear = ySel.value;
+        renderTrackerTable(target, trackerKey);
+      };
+      controls.appendChild(pLbl);
+      controls.appendChild(pSel);
+      controls.appendChild(yLbl);
+      controls.appendChild(ySel);
+      target.appendChild(controls);
+
+      if (selectedPinned) {
+        const card = el("div");
+        card.style.background = "#fff";
+        card.style.border = "1px solid #d0d0d0";
+        card.style.borderRadius = "8px";
+        card.style.padding = "10px";
+        card.style.marginBottom = "10px";
+        const stats = trackerStatsForYear(selectedPinned, activeYear);
+        const statsEntries = Object.entries(stats || {}).filter(([, v]) => v !== null && v !== undefined && v !== "");
+        card.appendChild(el("strong", `${selectedPinned.name} - ${activeYear === "career" ? "Career To Date" : activeYear}`));
+        card.appendChild(el("div", `Primary Pos: ${selectedPinned.primary_position || ""} | ERA: ${stats.era ?? ""} | WHIP: ${stats.whip ?? ""} | WAR: ${stats.war ?? ""}`));
+        card.appendChild(el("div", `Awards: ${(selectedPinned.awards || []).join("; ") || "None"} | Votes: ${(selectedPinned.award_votes || []).join("; ") || "None"}`));
+        card.appendChild(el("div", `IL Stints (sheet/live): ${selectedPinned.il_stints_sheet || "0"} / ${selectedPinned.il_stints_live || 0} | Broken Service: ${selectedPinned.broken_service || "No"}`));
+        if (statsEntries.length) {
+          card.appendChild(el("div", statsEntries.map(([k, v]) => `${k}: ${v}`).join(" | ")));
+        }
+        target.appendChild(card);
+      }
+
+      const table = el("table");
+      table.className = "stats-table";
+      const thead = el("thead");
+      const hr = el("tr");
+      const headers = ["Name", "Pos", "Age", "Debut", "MLS", "Awards", "Award Votes", "IL (sheet)", "Live IL", "Broken Service", "WAR"];
+      headers.forEach((h) => hr.appendChild(el("th", h)));
+      thead.appendChild(hr);
+      table.appendChild(thead);
+      const tbody = el("tbody");
+      compare.forEach((r) => {
+        const tr = el("tr");
+        const stats = trackerStatsForYear(r, activeYear);
+        [
+          r.name || "",
+          r.primary_position || "",
+          r.age || "",
+          r.debut_year || "",
+          r.mls || "",
+          (r.awards || []).join("; "),
+          (r.award_votes || []).join("; "),
+          r.il_stints_sheet || "",
+          r.il_stints_live || 0,
+          r.broken_service || "No",
+          stats.war ?? "",
+        ].forEach((v, i) => {
+          const td = tdWithValue(v);
+          if (i === 0) td.classList.add("text-left");
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      target.appendChild(table);
     }
 
     function render() {
@@ -922,11 +1061,11 @@
           return;
         }
         if (t === "arbitration_tracker") {
-          renderTrackerShell(panel, "Arbitration Tracker");
+          renderTrackerTable(panel, "arbitration_tracker");
           return;
         }
         if (t === "free_agency_tracker") {
-          renderTrackerShell(panel, "Free Agency Tracker");
+          renderTrackerTable(panel, "free_agency_tracker");
           return;
         }
         const baseRows = rowsForTab(t);
