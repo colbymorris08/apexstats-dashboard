@@ -550,7 +550,8 @@ def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
     bref = _fetch_bref_war_by_year(name, is_pitcher_role)
     war_by_year = _fetch_war_by_year(name, is_pitcher_role)
     teams_by_year = bref.get("teams_by_year", {})
-    tx = _fetch_player_transactions_summary(pid, _safe_int(row.get("debut_year"))) if pid else {"il_stints_live": 0, "minor_league_moves": 0}
+    debut_year_i = _safe_int(row.get("debut_year"))
+    tx = _fetch_player_transactions_summary(pid, debut_year_i) if pid else {"il_stints_live": 0, "minor_league_moves": 0}
     for y in list(by_year.keys()):
         by_year[y]["war"] = war_by_year.get(y)
     career["war"] = round(sum(_to_float(v) for v in war_by_year.values()), 1) if war_by_year else None
@@ -559,7 +560,14 @@ def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
     row["teams_by_year"] = teams_by_year
     row["il_stints_live"] = tx.get("il_stints_live", 0)
     row["minor_league_moves"] = tx.get("minor_league_moves", 0)
-    row["broken_service"] = "Yes" if tx.get("minor_league_moves", 0) > 0 else "No"
+    # Broken service heuristic:
+    # 1) explicit MLB->minors transaction moves
+    # 2) service-time gap vs debut season count entering current season
+    #    (e.g., debut 2022 entering 2026 => max 4.000 years possible)
+    mls_f = _to_float(row.get("mls"))
+    expected_years = max(0.0, float(SEASON - debut_year_i)) if debut_year_i else 0.0
+    service_gap_broken = bool(mls_f > 0 and expected_years > 0 and (mls_f + 0.02) < expected_years)
+    row["broken_service"] = "Yes" if (tx.get("minor_league_moves", 0) > 0 or service_gap_broken) else "No"
     row["position_group"] = "SP" if pos == "SP" else "RP" if pos == "RP" else "OF" if pos in {"LF", "RF", "CF"} else pos
     return row
 
