@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from io import StringIO
@@ -496,7 +497,21 @@ def _fetch_player_transactions_summary(player_id: int, debut_year: int | None) -
             typ = str(tx.get("typeCode") or "").lower()
             if "injured list" in desc or typ in {"udl", "d60", "d15", "d10", "d7"}:
                 out["il_stints_live"] += 1
-            if "optioned" in desc or "outrighted" in desc or "assigned to" in desc:
+            # Tightened "broken service" signal:
+            # count only clear MLB<->minors service breaks and ignore rehab/admin moves.
+            if "rehab assignment" in desc or "rehabilitation assignment" in desc:
+                continue
+            minor_move = (
+                ("optioned to" in desc and "optioned to mlb" not in desc)
+                or ("outrighted to" in desc)
+                or ("sent outright to minors" in desc)
+                or ("assigned to" in desc and "triple-a" in desc)
+                or ("assigned to" in desc and "double-a" in desc)
+                or ("assigned to" in desc and "high-a" in desc)
+                or ("assigned to" in desc and "single-a" in desc)
+                or ("assigned to" in desc and "rookie" in desc)
+            )
+            if minor_move:
                 out["minor_league_moves"] += 1
     except Exception:
         pass
@@ -3214,8 +3229,18 @@ def build_dashboard_data() -> dict[str, Any]:
 
 
 def write_dashboard_data(out: Path = OUT_JSON) -> Path:
+    def _json_safe(v: Any) -> Any:
+        if isinstance(v, float):
+            return v if math.isfinite(v) else None
+        if isinstance(v, dict):
+            return {k: _json_safe(x) for k, x in v.items()}
+        if isinstance(v, list):
+            return [_json_safe(x) for x in v]
+        return v
+
     data = build_dashboard_data()
-    out.write_text(json.dumps(data, separators=(",", ":")))
+    # Strict JSON for browser parsing: prevent NaN/Infinity tokens.
+    out.write_text(json.dumps(_json_safe(data), separators=(",", ":"), allow_nan=False))
     return out
 
 
