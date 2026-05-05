@@ -393,7 +393,7 @@ def _tracker_hitting_line(raw: dict[str, Any]) -> dict[str, Any]:
     pa = _to_float(raw.get("plateAppearances"))
     bb = _to_float(raw.get("baseOnBalls"))
     kk = _to_float(raw.get("strikeOuts"))
-    return {
+    out = {
         "hr": _tracker_json_num(raw.get("homeRuns")),
         "sb": _tracker_json_num(raw.get("stolenBases")),
         "avg": _tracker_json_num(raw.get("avg")),
@@ -405,6 +405,24 @@ def _tracker_hitting_line(raw: dict[str, Any]) -> dict[str, Any]:
         "bb_pct": round((bb / pa) * 100, 1) if pa > 0 else None,
         "games_started": _tracker_json_num(raw.get("gamesStarted")),
     }
+    if out.get("ops") in (None, ""):
+        obp = _to_float(raw.get("obp"))
+        slg = _to_float(raw.get("slg"))
+        if obp > 0 or slg > 0:
+            out["ops"] = round(obp + slg, 3)
+    return out
+
+
+def _ensure_ops_from_obp_slg(st: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(st, dict):
+        return st
+    if st.get("ops") not in (None, ""):
+        return st
+    obp = _to_float(st.get("obp"))
+    slg = _to_float(st.get("slg"))
+    if obp > 0 or slg > 0:
+        st["ops"] = round(obp + slg, 3)
+    return st
 
 
 def _fetch_bref_war_by_year(player_name: str, is_pitcher_role: bool) -> dict[str, Any]:
@@ -3292,6 +3310,43 @@ def load_jf_follow_clients(path: Path) -> list[dict[str, str]]:
     return out
 
 
+def build_jf_follow_rows(path: Path) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for p in load_jf_follow_clients(path):
+        built_rows = build_high_school_payloads(p)
+        # Fallback: if a pitcher-only row has no stat line but the MaxPreps page
+        # has hitter tables, try hitter parse too so the follow tab still shows data.
+        has_any_stats = any(
+            bool((br.get("season") or {}) or (br.get("month_to_date") or {}) or (br.get("last_night") or {}))
+            for br in built_rows
+        )
+        if (not has_any_stats) and p.get("hs_is_pitcher") and (not p.get("hs_is_hitter")):
+            p2 = dict(p)
+            p2["hs_is_hitter"] = True
+            p2["hs_is_pitcher"] = False
+            built_rows.extend(build_high_school_payloads(p2))
+        for br in built_rows:
+            season = _ensure_ops_from_obp_slg(br.get("season", {}) or {})
+            month_to_date = _ensure_ops_from_obp_slg(br.get("month_to_date", {}) or {})
+            last_night = _ensure_ops_from_obp_slg(br.get("last_night", {}) or {})
+            out.append(
+                {
+                    "agent": "JF",
+                    "name": br.get("name", p.get("name", "")),
+                    "position": br.get("position", p.get("position", "")),
+                    "grad_year": p.get("grad_year", ""),
+                    "school": p.get("school", ""),
+                    "commitment": p.get("commitment", ""),
+                    "stats_url": p.get("stats_url", ""),
+                    "season": season,
+                    "month_to_date": month_to_date,
+                    "last_night": last_night,
+                    "stats_unavailable_reason": br.get("stats_unavailable_reason", ""),
+                }
+            )
+    return out
+
+
 def build_dashboard_data() -> dict[str, Any]:
     NCAA_SCHOOL_PAYLOAD_CACHE.clear()
     FOREIGN_BR_SEASON_CACHE.clear()
@@ -3332,25 +3387,7 @@ def build_dashboard_data() -> dict[str, Any]:
     high_school_rows: list[dict[str, Any]] = []
     for p in load_high_school_clients(HS_SOURCE_XLSX):
         high_school_rows.extend(build_high_school_payloads(p))
-    jf_watch_rows: list[dict[str, Any]] = []
-    for p in load_jf_follow_clients(JF_FOLLOW_SOURCE_XLSX):
-        built_rows = build_high_school_payloads(p)
-        for br in built_rows:
-            jf_watch_rows.append(
-                {
-                    "agent": "JF",
-                    "name": br.get("name", p.get("name", "")),
-                    "position": br.get("position", p.get("position", "")),
-                    "grad_year": p.get("grad_year", ""),
-                    "school": p.get("school", ""),
-                    "commitment": p.get("commitment", ""),
-                    "stats_url": p.get("stats_url", ""),
-                    "season": br.get("season", {}) or {},
-                    "month_to_date": br.get("month_to_date", {}) or {},
-                    "last_night": br.get("last_night", {}) or {},
-                    "stats_unavailable_reason": br.get("stats_unavailable_reason", ""),
-                }
-            )
+    jf_watch_rows: list[dict[str, Any]] = build_jf_follow_rows(JF_FOLLOW_SOURCE_XLSX)
 
     data = {
         "generated_at": datetime.now(UTC).isoformat(),
