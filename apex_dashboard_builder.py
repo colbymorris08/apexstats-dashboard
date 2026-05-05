@@ -18,6 +18,7 @@ import requests
 SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/Client List - 04-15-26.xlsx")
 AMATEUR_SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/AmateurList.xlsx")
 HS_SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/HSList.xlsx")
+JF_FOLLOW_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/Apex/FurmaniakFollow.xlsx")
 ARB_TRACKER_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/DashboardArb.xlsx")
 FA_TRACKER_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/DashboardFA.xlsx")
 OUT_JSON = Path("/Users/colbymorris/apexstats/apex_dashboard_data.json")
@@ -3088,6 +3089,56 @@ def load_high_school_clients(path: Path) -> list[dict[str, str]]:
     return out
 
 
+def load_jf_follow_clients(path: Path) -> list[dict[str, str]]:
+    if not path.is_file():
+        return []
+    df = pd.read_excel(path)
+    lower = {str(c).strip().lower(): c for c in df.columns}
+
+    def pick_col(cands: list[str]) -> str | None:
+        for c in cands:
+            if c.lower() in lower:
+                return str(lower[c.lower()])
+        return None
+
+    name_col = pick_col(["Name", "Player", "Player Name"])
+    pos_col = pick_col(["Position", "Pos"])
+    school_col = pick_col(["School", "Team", "High School"])
+    year_col = pick_col(["Year", "Grad Year", "Graduation Year"])
+    city_col = pick_col(["City"])
+    state_col = pick_col(["State"])
+    commit_col = pick_col(["Commitment", "Commit"])
+    url_col = pick_col(["MaxPreps URL", "Stats URL", "URL", "Profile URL", "Link"])
+    if not name_col:
+        return []
+    out: list[dict[str, str]] = []
+    for _, r in df.iterrows():
+        name = _parse_name(_cell_str(r.get(name_col, "")))
+        if not name:
+            continue
+        pos = _cell_str(r.get(pos_col, "")) if pos_col else ""
+        school = _cell_str(r.get(school_col, "")) if school_col else ""
+        city = _cell_str(r.get(city_col, "")) if city_col else ""
+        state = _cell_str(r.get(state_col, "")) if state_col else ""
+        loc = ", ".join([x for x in [city, state] if x])
+        school_full = f"{school}, {loc}".strip(", ") if loc else school
+        stats_url = _cell_str(r.get(url_col, "")) if url_col else ""
+        out.append(
+            {
+                "name": name,
+                "position": pos,
+                "school": school_full,
+                "commitment": _cell_str(r.get(commit_col, "")) if commit_col else "",
+                "grad_year": _cell_str(r.get(year_col, "")) if year_col else "",
+                "agent": "JF",
+                "stats_url": stats_url,
+                "hs_is_pitcher": _hs_position_flags(pos)[0],
+                "hs_is_hitter": _hs_position_flags(pos)[1],
+            }
+        )
+    return out
+
+
 def build_dashboard_data() -> dict[str, Any]:
     NCAA_SCHOOL_PAYLOAD_CACHE.clear()
     FOREIGN_BR_SEASON_CACHE.clear()
@@ -3128,6 +3179,25 @@ def build_dashboard_data() -> dict[str, Any]:
     high_school_rows: list[dict[str, Any]] = []
     for p in load_high_school_clients(HS_SOURCE_XLSX):
         high_school_rows.extend(build_high_school_payloads(p))
+    jf_watch_rows: list[dict[str, Any]] = []
+    for p in load_jf_follow_clients(JF_FOLLOW_SOURCE_XLSX):
+        built_rows = build_high_school_payloads(p)
+        for br in built_rows:
+            jf_watch_rows.append(
+                {
+                    "agent": "JF",
+                    "name": br.get("name", p.get("name", "")),
+                    "position": br.get("position", p.get("position", "")),
+                    "grad_year": p.get("grad_year", ""),
+                    "school": p.get("school", ""),
+                    "commitment": p.get("commitment", ""),
+                    "stats_url": p.get("stats_url", ""),
+                    "season": br.get("season", {}) or {},
+                    "month_to_date": br.get("month_to_date", {}) or {},
+                    "last_night": br.get("last_night", {}) or {},
+                    "stats_unavailable_reason": br.get("stats_unavailable_reason", ""),
+                }
+            )
 
     data = {
         "generated_at": datetime.now(UTC).isoformat(),
@@ -3136,6 +3206,7 @@ def build_dashboard_data() -> dict[str, Any]:
         "pro_clients": pro_rows,
         "amateur_clients": amateur_rows,
         "high_school_clients": high_school_rows,
+        "watch_list": {"JF": jf_watch_rows},
         "arbitration_tracker": build_tracker_data(ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB),
         "free_agency_tracker": build_tracker_data(FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA),
     }

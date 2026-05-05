@@ -864,22 +864,53 @@
       controls.appendChild(select);
       wrap.appendChild(controls);
 
-      const rows = WATCH_LIST_DATA[activeWatchAgent] || [];
+      const dynamic = (DATA && DATA.watch_list && DATA.watch_list[activeWatchAgent]) || null;
+      const rows = dynamic && dynamic.length ? dynamic : (WATCH_LIST_DATA[activeWatchAgent] || []);
+      const isStatsMode = activeWatchAgent === "JF" && dynamic && dynamic.length;
       const table = el("table");
       table.className = "stats-table";
       const thead = el("thead");
       const hr = el("tr");
-      ["Agent", "Name", "Pos", "Grad Year", "School", "Commitment"].forEach((h) => hr.appendChild(el("th", h)));
+      const headers = isStatsMode
+        ? ["Agent", "Name", "Pos", "Grad Year", "School", "Commitment", "AB", "H", "HR", "AVG", "OPS", "IP", "K", "BB", "ERA", "Stats URL"]
+        : ["Agent", "Name", "Pos", "Grad Year", "School", "Commitment"];
+      headers.forEach((h) => hr.appendChild(el("th", h)));
       thead.appendChild(hr);
       table.appendChild(thead);
       const tbody = el("tbody");
       rows.forEach((r) => {
         const tr = el("tr");
-        [r.agent || activeWatchAgent, r.name, r.position, r.grad_year, r.school, r.commit || ""].forEach((v, i) => {
-          const td = tdWithValue(v);
-          if (i === 1 || i === 4 || i === 5) td.classList.add("text-left");
-          tr.appendChild(td);
-        });
+        if (isStatsMode) {
+          const s = r.season || {};
+          [
+            r.agent || activeWatchAgent,
+            r.name || "",
+            r.position || "",
+            r.grad_year || "",
+            r.school || "",
+            r.commitment || r.commit || "",
+            s.atBats ?? "",
+            s.hits ?? "",
+            s.homeRuns ?? "",
+            s.avg ?? "",
+            s.ops ?? "",
+            s.inningsPitched ?? "",
+            s.strikeOuts ?? "",
+            s.baseOnBalls ?? "",
+            s.era ?? "",
+            r.stats_url || "",
+          ].forEach((v, i) => {
+            const td = tdWithValue(v);
+            if (i === 1 || i === 4 || i === 5) td.classList.add("text-left");
+            tr.appendChild(td);
+          });
+        } else {
+          [r.agent || activeWatchAgent, r.name, r.position, r.grad_year, r.school, r.commit || ""].forEach((v, i) => {
+            const td = tdWithValue(v);
+            if (i === 1 || i === 4 || i === 5) td.classList.add("text-left");
+            tr.appendChild(td);
+          });
+        }
         tbody.appendChild(tr);
       });
       table.appendChild(tbody);
@@ -997,7 +1028,7 @@
       table.className = "stats-table";
       const thead = el("thead");
       const hr = el("tr");
-      const headers = ["Name", "Pos", "Age", "Debut", "MLS", "Awards", "Award Votes", "IL (sheet)", "Live IL", "Broken Service", "WAR"];
+      const headers = ["Name", "Pos", "Age", "Debut", "Service Time Entering 2026", "Awards", "Award Votes", "IL (sheet)", "Live IL", "Broken Service", "WAR"];
       headers.forEach((h) => hr.appendChild(el("th", h)));
       thead.appendChild(hr);
       table.appendChild(thead);
