@@ -867,54 +867,66 @@
       const dynamic = (DATA && DATA.watch_list && DATA.watch_list[activeWatchAgent]) || null;
       const rows = dynamic && dynamic.length ? dynamic : (WATCH_LIST_DATA[activeWatchAgent] || []);
       const isStatsMode = activeWatchAgent === "JF" && dynamic && dynamic.length;
-      const table = el("table");
-      table.className = "stats-table";
-      const thead = el("thead");
-      const hr = el("tr");
-      const headers = isStatsMode
-        ? ["Agent", "Name", "Pos", "Grad Year", "School", "Commitment", "AB", "H", "HR", "AVG", "OPS", "IP", "K", "BB", "ERA", "Stats URL"]
-        : ["Agent", "Name", "Pos", "Grad Year", "School", "Commitment"];
-      headers.forEach((h) => hr.appendChild(el("th", h)));
-      thead.appendChild(hr);
-      table.appendChild(thead);
-      const tbody = el("tbody");
-      rows.forEach((r) => {
-        const tr = el("tr");
-        if (isStatsMode) {
-          const s = r.season || {};
-          [
-            r.agent || activeWatchAgent,
-            r.name || "",
-            r.position || "",
-            r.grad_year || "",
-            r.school || "",
-            r.commitment || r.commit || "",
-            s.atBats ?? "",
-            s.hits ?? "",
-            s.homeRuns ?? "",
-            s.avg ?? "",
-            s.ops ?? "",
-            s.inningsPitched ?? "",
-            s.strikeOuts ?? "",
-            s.baseOnBalls ?? "",
-            s.era ?? "",
-            r.stats_url || "",
-          ].forEach((v, i) => {
-            const td = tdWithValue(v);
-            if (i === 1 || i === 4 || i === 5) td.classList.add("text-left");
-            tr.appendChild(td);
-          });
-        } else {
+      if (isStatsMode) {
+        // Match High School tab structure/format (same season hitter/pitcher tables).
+        const hsRows = rows.map((r) => {
+          const pos = String(r.position || "");
+          const isPitcher = /\b(RHP|LHP|SP|RP|P)\b/i.test(pos);
+          return {
+            name: r.name || "",
+            agent: r.agent || activeWatchAgent,
+            position: pos || (isPitcher ? "P" : "H"),
+            team_level: "HS",
+            organization: "",
+            current_team: r.school || "",
+            school_or_team: r.school || "",
+            last_night_boxscore_url: r.stats_url || "",
+            is_pitcher: isPitcher,
+            season: r.season || {},
+            month_to_date: r.month_to_date || {},
+            last_night: r.last_night || {},
+            stats_unavailable_reason: r.stats_unavailable_reason || "",
+          };
+        });
+        const hsLike = el("div");
+        hsLike.className = "stats-wrap";
+        const hitters = hsRows.filter((r) => !r.is_pitcher);
+        const pitchers = hsRows.filter((r) => r.is_pitcher);
+        if (hitters.length) {
+          const h = el("h2", "Hitters");
+          h.className = "stats-section-title";
+          hsLike.appendChild(h);
+          hsLike.appendChild(buildStatTable(hitters, "season", "watch-jf-hit", HITTER_COLS, "watch-jf"));
+        }
+        if (pitchers.length) {
+          const p = el("h2", "Pitchers");
+          p.className = "stats-section-title";
+          hsLike.appendChild(p);
+          hsLike.appendChild(buildStatTable(pitchers, "season", "watch-jf-pit", PITCHER_COLS, "watch-jf"));
+        }
+        if (!hitters.length && !pitchers.length) hsLike.appendChild(el("p", "No watch list stats available."));
+        wrap.appendChild(hsLike);
+      } else {
+        const table = el("table");
+        table.className = "stats-table";
+        const thead = el("thead");
+        const hr = el("tr");
+        ["Agent", "Name", "Pos", "Grad Year", "School", "Commitment"].forEach((h) => hr.appendChild(el("th", h)));
+        thead.appendChild(hr);
+        table.appendChild(thead);
+        const tbody = el("tbody");
+        rows.forEach((r) => {
+          const tr = el("tr");
           [r.agent || activeWatchAgent, r.name, r.position, r.grad_year, r.school, r.commit || ""].forEach((v, i) => {
             const td = tdWithValue(v);
             if (i === 1 || i === 4 || i === 5) td.classList.add("text-left");
             tr.appendChild(td);
           });
-        }
-        tbody.appendChild(tr);
-      });
-      table.appendChild(tbody);
-      wrap.appendChild(table);
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        wrap.appendChild(table);
+      }
       target.appendChild(wrap);
     }
 
