@@ -59,7 +59,14 @@ HS_MAXPREPS_URL_OVERRIDES: dict[str, str] = {
 PITCHER_POS = {"RHP", "LHP", "SP", "RP", "P"}
 # Exclude from pro tab (still in workbook for records, but not shown on dashboard).
 PRO_CLIENT_EXCLUDE_NAMES: frozenset[str] = frozenset(
-    {"alyssa nakken", "jordan viars", "daulton jefferies", "adam wolf"}
+    {
+        "alyssa nakken",
+        "jordan viars",
+        "daulton jefferies",
+        "adam wolf",
+        "scott alexander",
+        "colin barber",
+    }
 )
 # Normalized client name -> Stats API person id when search is ambiguous or returns no hits.
 PRO_MLB_PLAYER_ID_OVERRIDES: dict[str, int] = {
@@ -122,7 +129,7 @@ PRO_FOREIGN_BR_URLS: dict[str, str] = {
 }
 FOREIGN_BR_SEASON_CACHE: dict[tuple[str, bool], dict[str, Any] | None] = {}
 TRACKER_BREF_WAR_CACHE: dict[str, dict[str, Any]] = {}
-TRACKER_PYB_SEASON_CACHE: dict[tuple[int, bool], pd.DataFrame | None] = {}
+TRACKER_PYB_SEASON_CACHE: dict[tuple[int, bool, str], pd.DataFrame | None] = {}
 
 
 def _foreign_league_schedule_url(league: str) -> str:
@@ -321,13 +328,13 @@ def _load_tracker_sheet(path: Path) -> list[dict[str, Any]]:
         name_raw = _tracker_col(row, cols, "player(1)")
         if pd.isna(name_raw):
             continue
-        name = _parse_name(str(name_raw).strip())
+        name = _parse_name(_clean_text(name_raw))
         if not name:
             continue
         age = _tracker_json_num(_tracker_col(row, cols, "age(1)"))
         debut = _tracker_json_num(_tracker_col(row, cols, "debut year(1)"))
         year = _tracker_json_num(_tracker_col(row, cols, "year(1)"))
-        primary_position = str(_tracker_col(row, cols, "primary position(1)") or "").strip().upper()
+        primary_position = _clean_text(_tracker_col(row, cols, "primary position(1)")).upper()
         if not primary_position:
             continue
         out.append(
@@ -339,9 +346,9 @@ def _load_tracker_sheet(path: Path) -> list[dict[str, Any]]:
                 "debut_year": debut,
                 "primary_position": primary_position,
                 "mls": _tracker_json_num(_tracker_col(row, cols, "mls(2)")),
-                "awards": [str(_tracker_col(row, cols, k) or "").strip() for k in ("awards(1)", "awards(3)", "awards(4)") if str(_tracker_col(row, cols, k) or "").strip()],
-                "award_votes": [str(_tracker_col(row, cols, k) or "").strip() for k in ("award votes(1)", "award votes(3)", "award votes(4)") if str(_tracker_col(row, cols, k) or "").strip()],
-                "il_stints_sheet": str(_tracker_col(row, cols, "il(2)") or "").strip(),
+                "awards": [_clean_text(_tracker_col(row, cols, k)) for k in ("awards(1)", "awards(3)", "awards(4)") if _clean_text(_tracker_col(row, cols, k))],
+                "award_votes": [_clean_text(_tracker_col(row, cols, k)) for k in ("award votes(1)", "award votes(3)", "award votes(4)") if _clean_text(_tracker_col(row, cols, k))],
+                "il_stints_sheet": _clean_text(_tracker_col(row, cols, "il(2)")),
                 "yearly_salary_3": _tracker_json_num(_tracker_col(row, cols, "yearly salary(3)")),
                 "yearly_salary_4": _tracker_json_num(_tracker_col(row, cols, "yearly salary(4)")),
             }
@@ -450,13 +457,13 @@ def _fetch_bref_war_by_year(player_name: str, is_pitcher_role: bool) -> dict[str
 
 
 def _pyb_season_war_table(year: int, is_pitcher_role: bool) -> pd.DataFrame | None:
-    key = (int(year), bool(is_pitcher_role))
+    key = (int(year), bool(is_pitcher_role), "legacy")
     if key in TRACKER_PYB_SEASON_CACHE:
         return TRACKER_PYB_SEASON_CACHE[key]
     try:
-        from pybaseball import batting_stats, pitching_stats
+        from pybaseball import bwar_bat, bwar_pitch
 
-        df = pitching_stats(year, qual=0) if is_pitcher_role else batting_stats(year, qual=0)
+        df = bwar_pitch() if is_pitcher_role else bwar_bat()
     except Exception:
         TRACKER_PYB_SEASON_CACHE[key] = None
         return None
@@ -466,18 +473,17 @@ def _pyb_season_war_table(year: int, is_pitcher_role: bool) -> pd.DataFrame | No
 
 def _fetch_war_by_year(player_name: str, is_pitcher_role: bool) -> dict[str, Any]:
     out: dict[str, Any] = {}
-    for y in (SEASON, SEASON - 1, SEASON - 2):
-        df = _pyb_season_war_table(y, is_pitcher_role)
-        if df is None or df.empty or "Name" not in df.columns:
-            continue
-        mask = df["Name"].astype(str).map(_norm_player_name) == _norm_player_name(player_name)
+    df = _pyb_season_war_table(SEASON, is_pitcher_role)
+    if df is not None and not df.empty and "name_common" in df.columns and "year_ID" in df.columns:
+        mask = df["name_common"].astype(str).map(_norm_player_name) == _norm_player_name(player_name)
         hit = df[mask]
-        if hit.empty:
-            continue
-        if "WAR" in hit.columns:
-            out[str(y)] = to_number(hit.iloc[0].get("WAR"))
-        elif "WAR7" in hit.columns:
-            out[str(y)] = to_number(hit.iloc[0].get("WAR7"))
+        if not hit.empty:
+            for y in (SEASON, SEASON - 1, SEASON - 2):
+                yr = hit[hit["year_ID"] == y]
+                if yr.empty:
+                    continue
+                war_sum = yr["WAR"].apply(_to_float).sum() if "WAR" in yr.columns else 0.0
+                out[str(y)] = round(war_sum, 2)
     if out:
         return out
     # Fallback to Baseball-Reference scrape when pybaseball lookup fails.
@@ -586,6 +592,18 @@ def _to_str_num(v: Any) -> str:
     if pd.isna(v):
         return ""
     return str(v).strip()
+
+
+def _clean_text(v: Any) -> str:
+    if v is None:
+        return ""
+    try:
+        if pd.isna(v):
+            return ""
+    except Exception:
+        pass
+    s = str(v).strip()
+    return "" if s.lower() in {"nan", "none", "nat"} else s
 
 
 def _cache_bust_url(url: str) -> str:

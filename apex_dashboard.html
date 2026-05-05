@@ -407,7 +407,7 @@
 
     function tdWithValue(v) {
       const td = el("td");
-      const s = String(v || "");
+      const s = v === null || v === undefined ? "" : String(v);
       if (s.startsWith("http://") || s.startsWith("https://")) {
         try {
           const u = new URL(s);
@@ -874,7 +874,7 @@
       const rows = dynamic && dynamic.length ? dynamic : (WATCH_LIST_DATA[activeWatchAgent] || []);
       const isStatsMode = activeWatchAgent === "JF" && dynamic && dynamic.length;
       if (isStatsMode) {
-        // Match High School tab structure/format (same season hitter/pitcher tables).
+        // Match High School tab structure/format (same season + last-night hitter/pitcher tables).
         const hsRows = rows.map((r) => {
           const pos = String(r.position || "");
           const isPitcher = /\b(RHP|LHP|SP|RP|P)\b/i.test(pos);
@@ -898,6 +898,28 @@
         hsLike.className = "stats-wrap";
         const hitters = hsRows.filter((r) => !r.is_pitcher);
         const pitchers = hsRows.filter((r) => r.is_pitcher);
+        const lnHitters = hitters.filter((r) => r.last_night && Object.keys(r.last_night).length);
+        const lnPitchers = pitchers.filter((r) => r.last_night && Object.keys(r.last_night).length);
+        if (lnHitters.length || lnPitchers.length) {
+          const ln = el("h2", "Last Night Stats");
+          ln.className = "stats-section-title";
+          hsLike.appendChild(ln);
+          if (lnHitters.length) {
+            const h = el("h2", "Hitters");
+            h.className = "stats-section-title";
+            hsLike.appendChild(h);
+            hsLike.appendChild(buildStatTable(lnHitters, "last_night", "watch-jf-ln-hit", HITTER_COLS, "watch-jf"));
+          }
+          if (lnPitchers.length) {
+            const p = el("h2", "Pitchers");
+            p.className = "stats-section-title";
+            hsLike.appendChild(p);
+            hsLike.appendChild(buildStatTable(lnPitchers, "last_night", "watch-jf-ln-pit", PITCHER_COLS, "watch-jf"));
+          }
+        }
+        const seasonHdr = el("h2", "Season Stats");
+        seasonHdr.className = "stats-section-title";
+        hsLike.appendChild(seasonHdr);
         if (hitters.length) {
           const h = el("h2", "Hitters");
           h.className = "stats-section-title";
@@ -948,6 +970,28 @@
       if (yearSel === "career") return row.stats_career || {};
       const by = row.stats_by_year || {};
       return by[yearSel] || {};
+    }
+
+    function trackerStatLabel(k) {
+      const map = {
+        ip: "IP",
+        w: "W",
+        k: "K",
+        bb: "BB",
+        qs: "QS",
+        bb_pct: "BB%",
+        k_pct: "K%",
+        whip: "WHIP",
+        era: "ERA",
+        war: "WAR",
+        hr: "HR",
+        sb: "SB",
+        avg: "AVG",
+        slg: "SLG",
+        ops: "OPS",
+        games_started: "GS",
+      };
+      return map[k] || k;
     }
 
     function renderTrackerTable(target, trackerKey) {
@@ -1034,7 +1078,7 @@
         const statsEntries = Object.entries(stats || {}).filter(([, v]) => v !== null && v !== undefined && v !== "");
         card.appendChild(el("strong", `${selectedPinned.name} - ${activeYear === "career" ? "Career To Date" : activeYear}`));
         card.appendChild(el("div", `Primary Pos: ${selectedPinned.primary_position || ""} | ERA: ${stats.era ?? ""} | WHIP: ${stats.whip ?? ""} | WAR: ${stats.war ?? ""}`));
-        card.appendChild(el("div", `Awards: ${(selectedPinned.awards || []).join("; ") || "None"} | Votes: ${(selectedPinned.award_votes || []).join("; ") || "None"}`));
+        card.appendChild(el("div", `Awards: ${(selectedPinned.awards || []).join("; ")} | Votes: ${(selectedPinned.award_votes || []).join("; ")}`));
         card.appendChild(el("div", `IL Stints (sheet/live): ${selectedPinned.il_stints_sheet || "0"} / ${selectedPinned.il_stints_live || 0} | Broken Service: ${selectedPinned.broken_service || "No"}`));
         if (statsEntries.length) {
           card.appendChild(el("div", statsEntries.map(([k, v]) => `${k}: ${v}`).join(" | ")));
@@ -1042,16 +1086,53 @@
         target.appendChild(card);
       }
 
+      const selectedStats = trackerStatsForYear(selectedPinned || {}, activeYear) || {};
+      const statKeys = Object.keys(selectedStats).filter((k) => selectedStats[k] !== null && selectedStats[k] !== undefined && selectedStats[k] !== "");
       const table = el("table");
       table.className = "stats-table";
       const thead = el("thead");
       const hr = el("tr");
-      const headers = ["Name", "Pos", "Age", "Debut", "Service Time Entering 2026", "Awards", "Award Votes", "IL (sheet)", "Live IL", "Broken Service", "WAR"];
+      const headers = [
+        "Name",
+        "Pos",
+        "Age",
+        "Debut",
+        "Service Time Entering 2026",
+        "Awards",
+        "Award Votes",
+        "IL (sheet)",
+        "Live IL",
+        "Broken Service",
+        ...statKeys.map(trackerStatLabel),
+      ];
       headers.forEach((h) => hr.appendChild(el("th", h)));
       thead.appendChild(hr);
       table.appendChild(thead);
       const tbody = el("tbody");
+      if (selectedPinned) {
+        const trPinned = el("tr");
+        const ps = trackerStatsForYear(selectedPinned, activeYear);
+        [
+          selectedPinned.name || "",
+          selectedPinned.primary_position || "",
+          selectedPinned.age || "",
+          selectedPinned.debut_year || "",
+          selectedPinned.mls || "",
+          (selectedPinned.awards || []).join("; "),
+          (selectedPinned.award_votes || []).join("; "),
+          selectedPinned.il_stints_sheet || "",
+          selectedPinned.il_stints_live || 0,
+          selectedPinned.broken_service || "No",
+          ...statKeys.map((k) => (ps[k] ?? "")),
+        ].forEach((v, i) => {
+          const td = tdWithValue(v);
+          if (i === 0) td.classList.add("text-left");
+          trPinned.appendChild(td);
+        });
+        tbody.appendChild(trPinned);
+      }
       compare.forEach((r) => {
+        if (selectedPinned && String(r.name || "").toLowerCase() === String(selectedPinned.name || "").toLowerCase()) return;
         const tr = el("tr");
         const stats = trackerStatsForYear(r, activeYear);
         [
@@ -1065,7 +1146,7 @@
           r.il_stints_sheet || "",
           r.il_stints_live || 0,
           r.broken_service || "No",
-          stats.war ?? "",
+          ...statKeys.map((k) => (stats[k] ?? "")),
         ].forEach((v, i) => {
           const td = tdWithValue(v);
           if (i === 0) td.classList.add("text-left");
