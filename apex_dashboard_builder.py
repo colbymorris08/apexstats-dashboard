@@ -3245,8 +3245,12 @@ def load_high_school_clients(path: Path) -> list[dict[str, str]]:
         name = _parse_name(raw_name)
         norm = _norm_player_name(name)
         stats_url = _cell_str(r.get(url_col, "")) if url_col else ""
-        if not stats_url:
-            stats_url = HS_MAXPREPS_URL_OVERRIDES.get(norm, "")
+        # Force known overrides when sheet links are stale/wrong sport pages.
+        override_url = HS_MAXPREPS_URL_OVERRIDES.get(norm, "")
+        if override_url:
+            stats_url = override_url
+        elif not stats_url:
+            stats_url = ""
         out.append(
             {
                 "name": name,

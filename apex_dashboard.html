@@ -236,6 +236,8 @@
 
     const PITCHER_COLS = [
       { keys: ["inningsPitched", "ip"], header: "IP", kind: "ip" },
+      { keys: ["wins", "w"], header: "W", kind: "int" },
+      { keys: ["saves", "sv"], header: "SV", kind: "int" },
       { keys: ["hits", "hitsAllowed", "h"], header: "H", kind: "int" },
       { keys: ["runs", "r"], header: "R", kind: "int" },
       { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
@@ -293,6 +295,8 @@
     const MOBILE_PITCHER_COLS_BY_TAB = {
       last_night: [
         { keys: ["inningsPitched", "ip"], header: "IP", kind: "ip" },
+        { keys: ["wins", "w"], header: "W", kind: "int" },
+        { keys: ["saves", "sv"], header: "SV", kind: "int" },
         { keys: ["hits", "hitsAllowed", "h"], header: "H", kind: "int" },
         { keys: ["runs", "r"], header: "R", kind: "int" },
         { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
@@ -307,6 +311,8 @@
       ],
       month_to_date: [
         { keys: ["inningsPitched", "ip"], header: "IP", kind: "ip" },
+        { keys: ["wins", "w"], header: "W", kind: "int" },
+        { keys: ["saves", "sv"], header: "SV", kind: "int" },
         { keys: ["hits", "hitsAllowed", "h"], header: "H", kind: "int" },
         { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
         { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
@@ -315,6 +321,8 @@
       ],
       season: [
         { keys: ["inningsPitched", "ip"], header: "IP", kind: "ip" },
+        { keys: ["wins", "w"], header: "W", kind: "int" },
+        { keys: ["saves", "sv"], header: "SV", kind: "int" },
         { keys: ["hits", "hitsAllowed", "h"], header: "H", kind: "int" },
         { keys: ["earnedRuns", "er"], header: "ER", kind: "int" },
         { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
