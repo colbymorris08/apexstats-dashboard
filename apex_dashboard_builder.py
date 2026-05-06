@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import math
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from io import StringIO
@@ -3381,12 +3382,29 @@ def build_dashboard_data() -> dict[str, Any]:
         amateur_expanded.extend(_split_two_way_amateur(c))
     amateur = amateur_expanded
 
+    def _parallel_map(items: list[Any], fn, max_workers: int = 12) -> list[Any]:
+        if not items:
+            return []
+        out: list[Any] = [None] * len(items)
+        with ThreadPoolExecutor(max_workers=max_workers) as ex:
+            fut_map = {ex.submit(fn, item): i for i, item in enumerate(items)}
+            for fut in as_completed(fut_map):
+                idx = fut_map[fut]
+                try:
+                    out[idx] = fut.result()
+                except Exception:
+                    out[idx] = None
+        return out
+
     # Same roster + stats resolution for every pro row (no per-player exceptions).
-    pro_rows = [build_client_payload(c) for c in pro]
-    amateur_rows = [build_amateur_payload(c) for c in amateur]
+    pro_rows = [r for r in _parallel_map(pro, build_client_payload, max_workers=10) if isinstance(r, dict)]
+    amateur_rows = [r for r in _parallel_map(amateur, build_amateur_payload, max_workers=10) if isinstance(r, dict)]
     high_school_rows: list[dict[str, Any]] = []
-    for p in load_high_school_clients(HS_SOURCE_XLSX):
-        high_school_rows.extend(build_high_school_payloads(p))
+    hs_clients = load_high_school_clients(HS_SOURCE_XLSX)
+    hs_built = _parallel_map(hs_clients, build_high_school_payloads, max_workers=8)
+    for rows in hs_built:
+        if isinstance(rows, list):
+            high_school_rows.extend(rows)
     jf_watch_rows: list[dict[str, Any]] = build_jf_follow_rows(JF_FOLLOW_SOURCE_XLSX)
 
     data = {
