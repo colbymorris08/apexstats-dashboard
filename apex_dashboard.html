@@ -977,11 +977,27 @@
       if (!row) return {};
       if (yearSel === "career") return row.stats_career || {};
       const by = row.stats_by_year || {};
-      return by[yearSel] || {};
+      const key = String(yearSel);
+      return by[key] || {};
     }
 
     function trackerStatLabel(k) {
       const map = {
+        inningsPitched: "IP",
+        wins: "W",
+        saves: "SV",
+        hits: "H",
+        runs: "R",
+        earnedRuns: "ER",
+        baseOnBalls: "BB",
+        strikeOuts: "K",
+        homeRuns: "HR",
+        gamesStarted: "GS",
+        atBats: "AB",
+        rbi: "RBI",
+        doubles: "2B",
+        stolenBases: "SB",
+        obp: "OBP",
         ip: "IP",
         w: "W",
         k: "K",
@@ -1001,6 +1017,49 @@
       };
       return map[k] || k;
     }
+
+    function trackerRoleFromSelected(nameNorm) {
+      if (nameNorm === "james outman") return "hitter";
+      return "pitcher";
+    }
+
+    const TRACKER_PITCHER_COLS = [
+      { keys: ["inningsPitched", "ip"], header: "IP", kind: "ip" },
+      { keys: ["wins", "w"], header: "W", kind: "int" },
+      { keys: ["saves", "sv"], header: "SV", kind: "int" },
+      { keys: ["hits"], header: "H", kind: "int" },
+      { keys: ["runs"], header: "R", kind: "int" },
+      { keys: ["earnedRuns"], header: "ER", kind: "int" },
+      { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
+      { keys: ["strikeOuts", "k"], header: "K", kind: "int" },
+      { keys: ["homeRuns", "hr"], header: "HR", kind: "int" },
+      { keys: ["qs"], header: "QS", kind: "int" },
+      { keys: ["bb_pct"], header: "BB%", kind: "era" },
+      { keys: ["k_pct"], header: "K%", kind: "era" },
+      { keys: ["whip"], header: "WHIP", kind: "era" },
+      { keys: ["era"], header: "ERA", kind: "era" },
+      { keys: ["war"], header: "WAR", kind: "era" },
+    ];
+
+    const TRACKER_HITTER_COLS = [
+      { keys: ["atBats"], header: "AB", kind: "int" },
+      { keys: ["runs"], header: "R", kind: "int" },
+      { keys: ["hits"], header: "H", kind: "int" },
+      { keys: ["rbi"], header: "RBI", kind: "int" },
+      { keys: ["baseOnBalls", "bb"], header: "BB", kind: "int" },
+      { keys: ["homeRuns", "hr"], header: "HR", kind: "int" },
+      { keys: ["doubles"], header: "2B", kind: "int" },
+      { keys: ["stolenBases", "sb"], header: "SB", kind: "int" },
+      { keys: ["strikeOuts", "k"], header: "K", kind: "int" },
+      { keys: ["gamesStarted", "games_started"], header: "GS", kind: "int" },
+      { keys: ["avg"], header: "AVG", kind: "avg" },
+      { keys: ["obp"], header: "OBP", kind: "avg" },
+      { keys: ["slg"], header: "SLG", kind: "avg" },
+      { keys: ["ops"], header: "OPS", kind: "ops" },
+      { keys: ["bb_pct"], header: "BB%", kind: "era" },
+      { keys: ["k_pct"], header: "K%", kind: "era" },
+      { keys: ["war"], header: "WAR", kind: "era" },
+    ];
 
     function renderTrackerTable(target, trackerKey) {
       target.innerHTML = "";
@@ -1095,7 +1154,8 @@
       }
 
       const selectedStats = trackerStatsForYear(selectedPinned || {}, activeYear) || {};
-      const statKeys = Object.keys(selectedStats).filter((k) => selectedStats[k] !== null && selectedStats[k] !== undefined && selectedStats[k] !== "");
+      const trackerRole = trackerRoleFromSelected(selectedNorm);
+      const trackerCols = trackerRole === "hitter" ? TRACKER_HITTER_COLS : TRACKER_PITCHER_COLS;
       const table = el("table");
       table.className = "stats-table";
       const thead = el("thead");
@@ -1111,7 +1171,7 @@
         "IL (sheet)",
         "Live IL",
         "Broken Service",
-        ...statKeys.map(trackerStatLabel),
+        ...trackerCols.map((c) => c.header),
       ];
       headers.forEach((h) => hr.appendChild(el("th", h)));
       thead.appendChild(hr);
@@ -1131,7 +1191,7 @@
           selectedPinned.il_stints_sheet || "",
           selectedPinned.il_stints_live || 0,
           selectedPinned.broken_service || "No",
-          ...statKeys.map((k) => (ps[k] ?? "")),
+          ...trackerCols.map((c) => formatStatCell(ps, c)),
         ].forEach((v, i) => {
           const td = tdWithValue(v);
           if (i === 0) td.classList.add("text-left");
@@ -1154,7 +1214,7 @@
           r.il_stints_sheet || "",
           r.il_stints_live || 0,
           r.broken_service || "No",
-          ...statKeys.map((k) => (stats[k] ?? "")),
+          ...trackerCols.map((c) => formatStatCell(stats, c)),
         ].forEach((v, i) => {
           const td = tdWithValue(v);
           if (i === 0) td.classList.add("text-left");

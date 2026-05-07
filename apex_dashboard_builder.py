@@ -377,6 +377,17 @@ def _tracker_pitching_line(raw: dict[str, Any]) -> dict[str, Any]:
     bb = _to_float(raw.get("baseOnBalls"))
     kk = _to_float(raw.get("strikeOuts"))
     out = {
+        "inningsPitched": json_stat_value("inningsPitched", raw.get("inningsPitched")),
+        "wins": _tracker_json_num(raw.get("wins")),
+        "saves": _tracker_json_num(raw.get("saves")),
+        "hits": _tracker_json_num(raw.get("hits")),
+        "runs": _tracker_json_num(raw.get("runs")),
+        "earnedRuns": _tracker_json_num(raw.get("earnedRuns")),
+        "baseOnBalls": _tracker_json_num(raw.get("baseOnBalls")),
+        "strikeOuts": _tracker_json_num(raw.get("strikeOuts")),
+        "homeRuns": _tracker_json_num(raw.get("homeRuns")),
+        "gamesStarted": _tracker_json_num(raw.get("gamesStarted")),
+        "battersFaced": _tracker_json_num(raw.get("battersFaced")),
         "ip": json_stat_value("inningsPitched", raw.get("inningsPitched")),
         "w": _tracker_json_num(raw.get("wins")),
         "k": _tracker_json_num(raw.get("strikeOuts")),
@@ -395,6 +406,16 @@ def _tracker_hitting_line(raw: dict[str, Any]) -> dict[str, Any]:
     bb = _to_float(raw.get("baseOnBalls"))
     kk = _to_float(raw.get("strikeOuts"))
     out = {
+        "atBats": _tracker_json_num(raw.get("atBats")),
+        "runs": _tracker_json_num(raw.get("runs")),
+        "hits": _tracker_json_num(raw.get("hits")),
+        "rbi": _tracker_json_num(raw.get("rbi")),
+        "baseOnBalls": _tracker_json_num(raw.get("baseOnBalls")),
+        "homeRuns": _tracker_json_num(raw.get("homeRuns")),
+        "doubles": _tracker_json_num(raw.get("doubles")),
+        "stolenBases": _tracker_json_num(raw.get("stolenBases")),
+        "strikeOuts": _tracker_json_num(raw.get("strikeOuts")),
+        "obp": _tracker_json_num(raw.get("obp")),
         "hr": _tracker_json_num(raw.get("homeRuns")),
         "sb": _tracker_json_num(raw.get("stolenBases")),
         "avg": _tracker_json_num(raw.get("avg")),
@@ -404,6 +425,7 @@ def _tracker_hitting_line(raw: dict[str, Any]) -> dict[str, Any]:
         "bb": _tracker_json_num(raw.get("baseOnBalls")),
         "k_pct": round((kk / pa) * 100, 1) if pa > 0 else None,
         "bb_pct": round((bb / pa) * 100, 1) if pa > 0 else None,
+        "gamesStarted": _tracker_json_num(raw.get("gamesStarted")),
         "games_started": _tracker_json_num(raw.get("gamesStarted")),
     }
     if out.get("ops") in (None, ""):
@@ -489,6 +511,20 @@ def _pyb_season_war_table(year: int, is_pitcher_role: bool) -> pd.DataFrame | No
         return None
     TRACKER_PYB_SEASON_CACHE[key] = df if isinstance(df, pd.DataFrame) else None
     return TRACKER_PYB_SEASON_CACHE[key]
+
+
+def _bwar_career_total(player_name: str, is_pitcher_role: bool) -> float | None:
+    """Full career Baseball-Reference WAR total from pybaseball bWAR tables (all seasons)."""
+    df = _pyb_season_war_table(SEASON, is_pitcher_role)
+    if df is None or df.empty or "name_common" not in df.columns or "WAR" not in df.columns:
+        return None
+    nn = _norm_player_name(player_name)
+    mask = df["name_common"].astype(str).map(_norm_player_name) == nn
+    hit = df[mask]
+    if hit.empty:
+        return None
+    total = sum(_to_float(x) for x in hit["WAR"].tolist())
+    return round(total, 1)
 
 
 def _fetch_war_by_year(player_name: str, is_pitcher_role: bool) -> dict[str, Any]:
@@ -666,7 +702,22 @@ def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
     tx = _fetch_player_transactions_summary(pid, debut_year_i) if pid else {"il_stints_live": 0, "minor_league_moves": 0}
     for y in list(by_year.keys()):
         by_year[y]["war"] = war_by_year.get(y)
-    career["war"] = round(sum(_to_float(v) for v in war_by_year.values()), 1) if war_by_year else None
+    career_bwar = _bwar_career_total(name, is_pitcher_role)
+    if career_bwar is None:
+        bref_wars = bref.get("war_by_year") or {}
+        partial = 0.0
+        saw = False
+        for yr_s, wv in bref_wars.items():
+            if _year_as_int(yr_s) is None:
+                continue
+            partial += _to_float(wv)
+            saw = True
+        if saw:
+            career_bwar = round(partial, 1)
+    if career_bwar is None and war_by_year:
+        career_bwar = round(sum(_to_float(v) for v in war_by_year.values()), 1)
+    career["war"] = career_bwar
+    row["career_bwar"] = career_bwar
     row["stats_by_year"] = by_year
     row["stats_career"] = career
     row["teams_by_year"] = teams_by_year
@@ -686,7 +737,7 @@ def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
     return row
 
 
-def build_tracker_data(path: Path, pinned_names: tuple[str, ...]) -> dict[str, Any]:
+def build_tracker_data(path: Path, pinned_names: tuple[str, ...], enrich_all_rows: bool = False) -> dict[str, Any]:
     rows = _load_tracker_sheet(path)
     if not rows:
         return {"rows": [], "pinned": [], "year_options": [str(SEASON), str(SEASON - 1), str(SEASON - 2), "career"]}
@@ -709,8 +760,16 @@ def build_tracker_data(path: Path, pinned_names: tuple[str, ...]) -> dict[str, A
         r["broken_service"] = r.get("broken_service", "No")
         rows[i] = r
     for i, r in enumerate(rows):
-        if r.get("name_norm") in pinned_norm:
+        if enrich_all_rows or r.get("name_norm") in pinned_norm:
             rows[i] = _enrich_tracker_player(r)
+    # Remove players with negative career bWAR from tracker lists.
+    filtered_rows: list[dict[str, Any]] = []
+    for r in rows:
+        cbwar = r.get("career_bwar")
+        if cbwar is not None and float(cbwar) < 0:
+            continue
+        filtered_rows.append(r)
+    rows = filtered_rows
     pinned = [r for r in rows if r.get("name_norm") in pinned_norm]
     pinned.sort(key=lambda r: list(pinned_names).index(r.get("name", "")) if r.get("name", "") in pinned_names else 999)
     return {
@@ -2699,13 +2758,22 @@ def build_client_payload(c: Client) -> dict[str, Any]:
     roster_team = fetch_current_team_from_person(pid) if pid else {}
     latest_team = fetch_latest_team_from_gamelog_all_sports(pid, group) if pid else {}
     tid = _safe_int(roster_team.get("team_id"))
+    latest_tid = _safe_int(latest_team.get("team_id"))
     team_name_guess = roster_team.get("team_name") or latest_team.get("team_name") or pick_current_team_name(c)
     if not tid:
-        tid = _safe_int(latest_team.get("team_id"))
+        tid = latest_tid
     if not tid:
         team_obj = lookup_team_by_name(team_name_guess, c.level)
         tid = _safe_int((team_obj or {}).get("id"))
     team_ctx = get_team_context(tid)
+    # Promotion handling: if latest game log shows MLB but roster still points to MiLB,
+    # trust latest appearance so player auto-moves to MLB tab/schedule.
+    if latest_tid:
+        latest_ctx = get_team_context(latest_tid)
+        if latest_ctx.get("sport_id") == 1 and team_ctx.get("sport_id") != 1:
+            tid = latest_tid
+            team_ctx = latest_ctx
+            team_name_guess = latest_team.get("team_name") or team_name_guess
     stat_sport_id = team_ctx.get("sport_id")
     if stat_sport_id is None:
         stat_sport_id = fallback_sport_id
@@ -3419,8 +3487,12 @@ def build_dashboard_data() -> dict[str, Any]:
         "amateur_clients": amateur_rows,
         "high_school_clients": high_school_rows,
         "watch_list": {"JF": jf_watch_rows},
-        "arbitration_tracker": build_tracker_data(ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB),
-        "free_agency_tracker": build_tracker_data(FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA),
+        "arbitration_tracker": build_tracker_data(
+            ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB, enrich_all_rows=True
+        ),
+        "free_agency_tracker": build_tracker_data(
+            FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA, enrich_all_rows=True
+        ),
     }
     return data
 
