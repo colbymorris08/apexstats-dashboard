@@ -128,10 +128,33 @@ PRO_FOREIGN_BR_URLS: dict[str, str] = {
     "jackson stephens": "https://www.baseball-reference.com/register/player.fcgi?id=stephe003jac",
     "mitch white": "https://www.baseball-reference.com/register/player.fcgi?id=white-000mit",
 }
+# Roster/Excel spelling -> key in PRO_FOREIGN_BR_URLS (same register player).
+PRO_FOREIGN_BR_NAME_ALIASES: dict[str, str] = {
+    "mitchell white": "mitch white",
+}
 FOREIGN_BR_SEASON_CACHE: dict[tuple[str, bool], dict[str, Any] | None] = {}
 TRACKER_BREF_WAR_CACHE: dict[str, dict[str, Any]] = {}
 TRACKER_PYB_SEASON_CACHE: dict[tuple[int, bool, str], pd.DataFrame | None] = {}
 TRACKER_DEBUT_DATE_CACHE: dict[int, str] = {}
+
+
+def _foreign_br_primary_norm(nn: str) -> str | None:
+    """Canonical PRO_FOREIGN_BR_URLS key for a normalized client name, or None."""
+    if nn in PRO_FOREIGN_BR_URLS:
+        return nn
+    primary = PRO_FOREIGN_BR_NAME_ALIASES.get(nn)
+    if primary and primary in PRO_FOREIGN_BR_URLS:
+        return primary
+    return None
+
+
+def _foreign_br_register_url(nn: str) -> str | None:
+    k = _foreign_br_primary_norm(nn)
+    return PRO_FOREIGN_BR_URLS.get(k) if k else None
+
+
+def _is_foreign_br_register_client_norm(nn: str) -> bool:
+    return _foreign_br_register_url(nn) is not None
 
 
 def _foreign_league_schedule_url(league: str) -> str:
@@ -2298,7 +2321,7 @@ def _find_col(cols: list[str], names: tuple[str, ...]) -> str | None:
 
 def fetch_foreign_br_season_stats(client_name: str, is_pitcher_role: bool) -> dict[str, Any]:
     nn = _norm_player_name(client_name)
-    url = PRO_FOREIGN_BR_URLS.get(nn)
+    url = _foreign_br_register_url(nn)
     if not url:
         return {}
     key = (nn, is_pitcher_role)
@@ -2751,7 +2774,10 @@ def build_client_payload(c: Client) -> dict[str, Any]:
         "season": {},
         "upcoming_series": [],
     }
-    pid = resolve_player_id(c) if c.name else None
+    nn = _norm_player_name(c.name or "")
+    # Stats API name collisions (e.g. another "Mitch White" still listed on a MiLB affiliate) are wrong
+    # for KBO/NPB/CPBL; use Baseball-Reference register URLs only (no MLB person id).
+    pid = None if _is_foreign_br_register_client_norm(nn) else (resolve_player_id(c) if c.name else None)
 
     group = stat_group(c.position)
     fallback_sport_id = sport_id_for_level(c.level)
@@ -2842,10 +2868,9 @@ def build_client_payload(c: Client) -> dict[str, Any]:
         except Exception:
             base["upcoming_series"] = []
 
-    # Foreign league preference for known clients (NPB/KBO/CPBL) from Baseball-Reference.
-    nn = _norm_player_name(c.name)
-    if nn in PRO_FOREIGN_BR_URLS:
-        foreign_season = fetch_foreign_br_season_stats(c.name, base["is_pitcher"])
+    # Foreign league: season/team/schedule from Baseball-Reference register (authoritative vs MiLB roster noise).
+    if _is_foreign_br_register_client_norm(nn):
+        foreign_season = fetch_foreign_br_season_stats(c.name, True)
         if foreign_season:
             base["season"] = _strip_pitch_count_fields(
                 {k: v for k, v in foreign_season.items() if not str(k).startswith("_")}
