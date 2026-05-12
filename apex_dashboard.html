@@ -607,6 +607,72 @@
       return st && typeof st === "object" ? st : {};
     }
 
+    function normReportDate(s) {
+      const t = String(s || "").trim().replace(/\//g, "-");
+      if (t.length >= 10 && t[4] === "-" && t[7] === "-") return t.slice(0, 10);
+      return t;
+    }
+
+    function truthyStatVal(v) {
+      if (v === null || v === undefined) return false;
+      if (typeof v === "number") return v !== 0;
+      const s = String(v).trim().toLowerCase();
+      if (["", "nan", "none", "null", "0", "0.0"].includes(s)) return false;
+      return true;
+    }
+
+    function lastNightNonempty(row) {
+      const ln = row && row.last_night;
+      if (!ln || typeof ln !== "object" || !Object.keys(ln).length) return false;
+      for (const [k, v] of Object.entries(ln)) {
+        if (k === "summary" && v) return true;
+        if (k !== "summary" && truthyStatVal(v)) return true;
+      }
+      return false;
+    }
+
+    function lastNightPitcherLineIsIndividual(ln) {
+      if (!ln || typeof ln !== "object") return false;
+      if ("result" in ln && "runs_for" in ln && !("inningsPitched" in ln)) return false;
+      return true;
+    }
+
+    function lastNightHitterLineIsIndividual(ln) {
+      if (!ln || typeof ln !== "object") return false;
+      const keys = new Set(Object.keys(ln));
+      if (
+        keys.has("result") &&
+        keys.has("runs_for") &&
+        !keys.has("atBats") &&
+        !keys.has("plateAppearances")
+      )
+        return false;
+      return true;
+    }
+
+    /**
+     * Last Night tab only: keep the row, but blank last-night stats (and box link) unless
+     * row.last_night_date matches the dashboard last night and the line is a real player line.
+     */
+    function rowForLastNightSiteDisplay(row, reportIso) {
+      const rd = normReportDate(reportIso);
+      const rowD = normReportDate(row.last_night_date);
+      if (!rd || !rowD || rowD !== rd) {
+        return { ...row, last_night: {}, last_night_boxscore_url: "" };
+      }
+      if (!lastNightNonempty(row)) {
+        return { ...row, last_night: {}, last_night_boxscore_url: "" };
+      }
+      const ln = row.last_night || {};
+      if (row.is_pitcher && !lastNightPitcherLineIsIndividual(ln)) {
+        return { ...row, last_night: {}, last_night_boxscore_url: "" };
+      }
+      if (!row.is_pitcher && !lastNightHitterLineIsIndividual(ln)) {
+        return { ...row, last_night: {}, last_night_boxscore_url: "" };
+      }
+      return row;
+    }
+
     function buildStatTable(rows, statKey, tbodyId, cols, panelKeyPrefix) {
       const table = el("table");
       table.className = "stats-table";
@@ -684,8 +750,13 @@
 
     function renderStatsTable(rows, statKey, target, panelKey) {
       target.innerHTML = "";
-      const hitters = rows.filter((r) => !r.is_pitcher);
-      const pitchers = rows.filter((r) => r.is_pitcher);
+      const report = DATA && DATA.last_night_date ? String(DATA.last_night_date) : "";
+      const useRows =
+        statKey === "last_night" && report
+          ? rows.map((r) => rowForLastNightSiteDisplay(r, report))
+          : rows;
+      const hitters = useRows.filter((r) => !r.is_pitcher);
+      const pitchers = useRows.filter((r) => r.is_pitcher);
       const wrap = el("div");
       wrap.className = "stats-wrap";
 
@@ -899,6 +970,7 @@
             season: r.season || {},
             month_to_date: r.month_to_date || {},
             last_night: r.last_night || {},
+            last_night_date: r.last_night_date || (DATA && DATA.last_night_date) || "",
             stats_unavailable_reason: r.stats_unavailable_reason || "",
           };
         });
@@ -906,23 +978,24 @@
         hsLike.className = "stats-wrap";
         const hitters = hsRows.filter((r) => !r.is_pitcher);
         const pitchers = hsRows.filter((r) => r.is_pitcher);
-        const lnHitters = hitters.filter((r) => r.last_night && Object.keys(r.last_night).length);
-        const lnPitchers = pitchers.filter((r) => r.last_night && Object.keys(r.last_night).length);
-        if (lnHitters.length || lnPitchers.length) {
+        const reportLn = DATA && DATA.last_night_date ? String(DATA.last_night_date) : "";
+        const hittersLn = reportLn ? hitters.map((r) => rowForLastNightSiteDisplay(r, reportLn)) : hitters;
+        const pitchersLn = reportLn ? pitchers.map((r) => rowForLastNightSiteDisplay(r, reportLn)) : pitchers;
+        if (hitters.length || pitchers.length) {
           const ln = el("h2", "Last Night Stats");
           ln.className = "stats-section-title";
           hsLike.appendChild(ln);
-          if (lnHitters.length) {
+          if (hitters.length) {
             const h = el("h2", "Hitters");
             h.className = "stats-section-title";
             hsLike.appendChild(h);
-            hsLike.appendChild(buildStatTable(lnHitters, "last_night", "watch-jf-ln-hit", HITTER_COLS, "watch-jf"));
+            hsLike.appendChild(buildStatTable(hittersLn, "last_night", "watch-jf-ln-hit", HITTER_COLS, "watch-jf"));
           }
-          if (lnPitchers.length) {
+          if (pitchers.length) {
             const p = el("h2", "Pitchers");
             p.className = "stats-section-title";
             hsLike.appendChild(p);
-            hsLike.appendChild(buildStatTable(lnPitchers, "last_night", "watch-jf-ln-pit", PITCHER_COLS, "watch-jf"));
+            hsLike.appendChild(buildStatTable(pitchersLn, "last_night", "watch-jf-ln-pit", PITCHER_COLS, "watch-jf"));
           }
         }
         const seasonHdr = el("h2", "Season Stats");
