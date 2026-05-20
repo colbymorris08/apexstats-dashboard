@@ -32,6 +32,11 @@ def dashboard_date() -> date:
     return datetime.now(PACIFIC_TZ).date()
 
 
+def last_night_date() -> date:
+    """Report anchor day: yesterday in Pacific (never today's games)."""
+    return dashboard_date() - timedelta(days=1)
+
+
 SEASON = dashboard_date().year
 API = "https://statsapi.mlb.com/api/v1"
 NCAA_GQL_BASE = "https://sdataprod.ncaa.com"
@@ -44,6 +49,15 @@ NCAA_CONTESTS_HASH = "6b26e5cda954c1302873c52835bfd223e169e2068b12511e92b3ef29fa
 NCAA_CONTESTS_BY_DATE: dict[str, list[dict[str, Any]]] = {}
 NCAA_BOX_BASEBALL_HASH = "5e92118b2f424040aa96067aba6d34e882165aaf02e9e73cb9d69317066c6ae8"
 NCAA_BOX_BY_CONTEST_ID: dict[int, dict[str, Any] | None] = {}
+# TASBS boxes (data.{school}.com linked from athletics schedules) carry correct fractional IP;
+# NCAA GraphQL often truncates (e.g. 1.2 -> 1.0).
+TASBS_SCHEDULE_GAME_PATHS: dict[tuple[str, int], list[str]] = {}
+TASBS_BOX_HTML_BY_URL: dict[str, str] = {}
+# Norm school -> athletics baseball schedule when AmateurList Link column is empty.
+COLLEGE_ATHLETICS_SCHEDULE_BY_SCHOOL: dict[str, str] = {
+    "clemson": "https://clemsontigers.com/sports/baseball/schedule",
+    "oregon": "https://goducks.com/sports/baseball/schedule",
+}
 D1_PLAYERS_SEARCH_JSON = "https://d1baseball.com/wp-content/themes/d1-staxx/data/2026-players.json"
 D1_PLAYERS_INDEX: list[dict[str, Any]] | None = None
 D1_PLAYER_STATS_CACHE: dict[str, dict[str, Any] | None] = {}
@@ -103,9 +117,13 @@ PRO_MLB_PEOPLE_SEARCH_ALIASES: dict[str, str] = {
 }
 # Sheet quirks: treat as hitter for college stat tables / D1 scrape.
 COLLEGE_FORCE_HITTER_NAMES: frozenset[str] = frozenset({"ethan surowiec"})
-COLLEGE_TWO_WAY_NAMES: frozenset[str] = frozenset({"evan dempsey"})
+COLLEGE_TWO_WAY_NAMES: frozenset[str] = frozenset({"evan dempsey", "talan bell"})
+# HS sheet may list only RHP/LHP while the athlete also hits (MaxPreps has both game logs).
+HS_TWO_WAY_NAMES: frozenset[str] = frozenset({"jensen hirschkorn"})
 AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
 TEAM_CATALOG: list[dict[str, Any]] | None = None
+# (team_id, season) -> [(person_id, fullName), ...] for org roster scans when people/search fails.
+ROSTER_CACHE: dict[tuple[int, int], list[tuple[int, str]]] = {}
 # MLB + affiliated minors; used so call-ups and reassignments resolve from real game logs.
 SPORT_IDS_PRO: tuple[int, ...] = (1, 11, 12, 13, 14, 15, 16, 17)
 NCAA_SCHOOL_ALIASES: dict[str, tuple[str, ...]] = {
@@ -171,12 +189,24 @@ MANUAL_PRO_CLIENTS: list[dict[str, str]] = [
     {
         "name": "Aaron Shortridge",
         "position": "RHP",
-        "level": "Double-A",
-        "league": "Eastern League",
-        "minor_affiliate": "Harrisburg Senators",
+        "level": "Rk",
+        "league": "Florida Complex League",
+        "minor_affiliate": "FCL Nationals",
         "major_affiliate": "Washington Nationals",
         "agent": "",
     }
+]
+
+# Rows missing from AmateurList.xlsx but tracked on the dashboard (Oregon, etc.).
+MANUAL_AMATEUR_CLIENTS: list[dict[str, str]] = [
+    {
+        "name": "Jake Gregor",
+        "position": "RHP",
+        "school": "Oregon",
+        "league": "Amateur",
+        "agent": "",
+        "schedule_link": "https://goducks.com/sports/baseball/schedule",
+    },
 ]
 
 
@@ -1270,7 +1300,14 @@ def _is_valid_hitter_last_night_line(line: dict[str, Any]) -> bool:
     # aggregate stat lines (e.g., 19 AB).
     if ab > 12:
         return False
-    return True
+    if ab > 0:
+        return True
+    # Walk-only / DH lines can be 0 AB with runs, RBI, or walks.
+    if _to_int(line.get("runs")) > 0 or _to_int(line.get("rbi")) > 0:
+        return True
+    if _to_int(line.get("baseOnBalls")) > 0:
+        return True
+    return False
 
 
 def _to_float_or_none(v: Any) -> float | None:
@@ -1391,6 +1428,49 @@ def _ncaa_batter_extra_counts(bs: dict[str, Any]) -> dict[str, int]:
     return out
 
 
+def _ncaa_pitcher_ip_baseball_string(ps: dict[str, Any]) -> str:
+    """
+    NCAA IP in baseball form (1.2 = 1⅔ IP). Never ``round(float(...), 1)`` on inningsPitched.
+    """
+    if not isinstance(ps, dict):
+        return "0.0"
+    for outs_key in (
+        "outsRecorded",
+        "outs",
+        "outsPitched",
+        "pitcherOuts",
+        "totalOuts",
+        "ipOuts",
+    ):
+        v = _ncaa_dict_get_ci(ps, outs_key)
+        if v is not None and str(v).strip() != "":
+            o = _to_int(v)
+            if o > 0:
+                w, r = divmod(max(0, o), 3)
+                return f"{w}.{r}"
+    raw = _ncaa_dict_get_ci(ps, "inningsPitched", "ip", "innings", "inningsPitchedDisplay")
+    if raw is None or raw == "":
+        return "0.0"
+    s = str(raw).strip()
+    if re.fullmatch(r"\d+\.[012]", s):
+        return s
+    if re.fullmatch(r"\d+", s):
+        return f"{int(s)}.0"
+    try:
+        x = float(s)
+    except ValueError:
+        return "0.0"
+    if x <= 0:
+        return "0.0"
+    outs = int(round(x * 3))
+    w, r = divmod(max(0, outs), 3)
+    if abs(x * 3 - outs) < 0.051:
+        return f"{w}.{r}"
+    o2 = _ip_to_outs(s)
+    w2, r2 = divmod(max(0, o2), 3)
+    return f"{w2}.{r2}"
+
+
 def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) -> dict[str, Any]:
     if is_pitcher_role:
         ps = player_row.get("pitcherStats") or {}
@@ -1405,7 +1485,7 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
             "so",
         )
         return {
-            "ip": round(_to_float(_ncaa_dict_get_ci(ps, "inningsPitched", "ip", "innings")), 1),
+            "ip": _ncaa_pitcher_ip_baseball_string(ps),
             "h": _ncaa_stat_int(ps, "hitsAllowed", "hits", "h"),
             "r": _ncaa_stat_int(ps, "runsAllowed", "runs", "r"),
             "er": _ncaa_stat_int(ps, "earnedRunsAllowed", "earnedRuns", "er"),
@@ -1699,6 +1779,7 @@ def _amateur_line_to_pro_keys(raw: dict[str, Any], is_p: bool) -> dict[str, Any]
         "avg": to_number(raw.get("avg")),
         "ops": to_number(raw.get("ops")),
         "homeRuns": to_number(raw.get("hr")),
+        "triples": to_number(raw.get("triples")),
         "doubles": to_number(raw.get("doubles")),
         "stolenBases": to_number(raw.get("sb")),
         "outfieldAssists": to_number(raw.get("ofa")),
@@ -1781,6 +1862,244 @@ def ncaa_player_last_night_and_month(
     return last_keys, month_keys
 
 
+def _college_athletics_schedule_urls(c: Client, school: str) -> list[str]:
+    """School athletics schedule pages (Sidearm / TASBS links), in priority order."""
+    out: list[str] = []
+    sl = (c.schedule_link or "").strip()
+    if sl:
+        out.append(sl)
+    override = COLLEGE_ATHLETICS_SCHEDULE_BY_SCHOOL.get(_norm_school(school), "")
+    if override and override not in out:
+        out.append(override)
+    return out
+
+
+def _college_tasbs_team_labels(school: str) -> list[str]:
+    """Header tokens for TASBS <pre> pitching tables (e.g. 'Clemson IP H R...')."""
+    ns = _norm_school(school)
+    if not ns:
+        return []
+    labels: list[str] = []
+    for cand in (ns.title(), " ".join(w.title() for w in ns.split())):
+        if cand and cand not in labels:
+            labels.append(cand)
+    parts = ns.split()
+    if parts:
+        last = parts[-1].title()
+        if last and last not in labels:
+            labels.append(last)
+    return labels
+
+
+def _tasbs_data_title_game_date(html: str) -> date | None:
+    m = re.search(r"<title>\s*.*?\(([^)]+)\)\s*</title>", html, flags=re.I | re.S)
+    if not m:
+        return None
+    inner = m.group(1).strip()
+    for fmt in ("%B %d, %Y", "%b %d, %Y"):
+        try:
+            return datetime.strptime(inner, fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+def _tasbs_pitching_header_for_team(line: str, team_labels: list[str]) -> bool:
+    if not team_labels:
+        return False
+    for lab in team_labels:
+        if re.search(
+            rf"{re.escape(lab)}\s+IP\s+H\s+R\s+ER\s+BB\s+SO(?:\s+AB\s+BF)?",
+            line,
+            re.I,
+        ):
+            return True
+    return False
+
+
+def _tasbs_raw_pitching_line(
+    html: str, client_name: str, team_labels: list[str]
+) -> dict[str, Any] | None:
+    first, last = _name_parts(client_name)
+    last_n = _norm_token(last)
+    first_i = _norm_token(first[:1]) if first else ""
+    if not last_n or not team_labels:
+        return None
+    in_section = False
+    for line in html.splitlines():
+        if _tasbs_pitching_header_for_team(line, team_labels):
+            in_section = True
+            continue
+        if not in_section:
+            continue
+        st = line.rstrip()
+        if not st.strip() or set(st.replace(" ", "")) <= {"-", "_"}:
+            continue
+        if re.search(r"\bIP\b.*\bH\b.*\bR\b.*\bER\b.*\bBB\b.*\bSO\b", st) and not any(
+            re.search(re.escape(lab), st, re.I) for lab in team_labels
+        ):
+            break
+        m = re.match(
+            r"^\s*([A-Za-z][A-Za-z '\-]+?)\s*\.+\s+(\d+\.\d)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)",
+            st,
+        )
+        if not m:
+            continue
+        pitch_name = m.group(1).strip()
+        parts = pitch_name.split()
+        if not parts or _norm_token(parts[-1]) != last_n:
+            continue
+        if first_i and _norm_token(parts[0][:1]) != first_i:
+            continue
+        return {
+            "ip": m.group(2),
+            "h": int(m.group(3)),
+            "r": int(m.group(4)),
+            "er": int(m.group(5)),
+            "bb": int(m.group(6)),
+            "k": int(m.group(7)),
+            "hr": 0,
+        }
+    return None
+
+
+def _tasbs_data_hosts_from_html(html: str) -> list[str]:
+    hosts: list[str] = []
+    seen: set[str] = set()
+    for mm in re.finditer(r"(https?://data\.[a-z0-9.-]+)", html, flags=re.I):
+        host = mm.group(1).rstrip("/")
+        key = host.lower()
+        if key not in seen:
+            seen.add(key)
+            hosts.append(host)
+    return hosts
+
+
+def _tasbs_game_paths_from_schedule(html: str, data_host: str, year: int) -> list[str]:
+    cache_key = (data_host.lower(), year)
+    cached = TASBS_SCHEDULE_GAME_PATHS.get(cache_key)
+    if cached is not None:
+        return cached
+    paths: list[str] = []
+    seen: set[str] = set()
+    for mm in re.finditer(rf"Stats/Baseball/{year}/([a-z0-9]+\.htm)", html, flags=re.I):
+        fn = mm.group(1)
+        if "teamstat" in fn.lower():
+            continue
+        if fn not in seen:
+            seen.add(fn)
+            paths.append(fn)
+
+    def _path_num(fn: str) -> int:
+        m2 = re.search(r"(\d+)", fn)
+        return int(m2.group(1)) if m2 else 0
+
+    paths.sort(key=_path_num, reverse=True)
+    TASBS_SCHEDULE_GAME_PATHS[cache_key] = paths
+    return paths
+
+
+def _tasbs_box_html(full_url: str) -> str:
+    if full_url in TASBS_BOX_HTML_BY_URL:
+        return TASBS_BOX_HTML_BY_URL[full_url]
+    try:
+        txt = requests.get(full_url, timeout=20, headers=_HTTP_HEADERS).text
+    except Exception:
+        txt = ""
+    TASBS_BOX_HTML_BY_URL[full_url] = txt
+    return txt
+
+
+def _tasbs_amateur_pitching_last_night(
+    schedule_urls: list[str],
+    team_labels: list[str],
+    client_name: str,
+    target_day: date,
+) -> tuple[dict[str, Any] | None, str]:
+    year = target_day.year
+    for sched_url in schedule_urls:
+        try:
+            sched_html = requests.get(sched_url, timeout=25, headers=_HTTP_HEADERS).text
+        except Exception:
+            continue
+        for data_host in _tasbs_data_hosts_from_html(sched_html):
+            prefix = f"{data_host}/Stats/Baseball/{year}/"
+            for fn in _tasbs_game_paths_from_schedule(sched_html, data_host, year)[:70]:
+                full = prefix + fn
+                html = _tasbs_box_html(full)
+                if not html:
+                    continue
+                if _tasbs_data_title_game_date(html) != target_day:
+                    continue
+                raw = _tasbs_raw_pitching_line(html, client_name, team_labels)
+                if raw and _to_float(raw.get("ip")) > 0:
+                    return raw, full
+    return None, ""
+
+
+def _college_pitcher_last_night_pro_keys(
+    c: Client,
+    school: str,
+    yday: date,
+    ncaa_ln_keys: dict[str, Any],
+) -> tuple[dict[str, Any], str]:
+    """
+    Prefer school athletics box scores (TASBS data.* hosts, Sidearm) over NCAA GraphQL when
+    fractional IP or strikeouts differ (e.g. Talan Bell 1.2 IP, Oregon K totals).
+    """
+    sched_urls = _college_athletics_schedule_urls(c, school)
+    team_labels = _college_tasbs_team_labels(school)
+
+    if sched_urls and team_labels:
+        raw_tasbs, tasbs_url = _tasbs_amateur_pitching_last_night(
+            sched_urls, team_labels, c.name, yday
+        )
+        if raw_tasbs:
+            keys = _amateur_line_to_pro_keys(raw_tasbs, True)
+            return (
+                {k: json_stat_value(k, v) for k, v in keys.items() if v is not None},
+                tasbs_url,
+            )
+
+    for su in sched_urls:
+        side = _sidearm_player_last_night_from_schedule_link(su, c.name, True, yday)
+        if side and _to_float(side.get("inningsPitched")) > 0:
+            cu = str(side.pop("contest_url", "") or "")
+            side.pop("game_date", None)
+            keys = {k: json_stat_value(k, v) for k, v in side.items() if v is not None}
+            if keys:
+                return keys, cu if cu.startswith("http") else ""
+
+    if ncaa_ln_keys:
+        return dict(ncaa_ln_keys), ""
+
+    return {}, ""
+
+
+def _merge_manual_amateur_clients(clients: list[Client]) -> list[Client]:
+    merged: dict[str, Client] = {_norm_player_name(c.name): c for c in clients}
+    for m in MANUAL_AMATEUR_CLIENTS:
+        name = (m.get("name") or "").strip()
+        if not name:
+            continue
+        nn = _norm_player_name(name)
+        school = (m.get("school") or "").strip()
+        merged[nn] = Client(
+            name=name,
+            position=(m.get("position") or "RHP").upper(),
+            level="NCAA",
+            league=m.get("league") or "Amateur",
+            minor_affiliate=school,
+            major_affiliate="",
+            agent=(m.get("agent") or "").strip(),
+            agent_last=_agent_last(m.get("agent") or ""),
+            is_amateur=True,
+            school_or_team=school,
+            schedule_link=(m.get("schedule_link") or "").strip(),
+        )
+    return list(merged.values())
+
+
 def _sidearm_player_last_night_from_schedule_link(
     schedule_url: str, player_name: str, is_p: bool, target_day: date
 ) -> dict[str, Any]:
@@ -1808,86 +2127,89 @@ def _sidearm_player_last_night_from_schedule_link(
     first, last = _name_parts(player_name)
     first_i = _norm_token(first[:1])
     last_n = _norm_token(last)
-    # Backup date matching priority:
-    # 1) target+1 day (requested behavior for some school sites)
-    # 2) exact target day (common Sidearm behavior)
-    lookup_days = [target_day + timedelta(days=1), target_day]
-    accepted_days = set(lookup_days)
-    target_tokens = set()
-    for d in lookup_days:
-        target_tokens.update(
-            {
-                d.isoformat(),
-                d.strftime("%m/%d/%Y"),
-                d.strftime("%-m/%-d/%Y"),
-                d.strftime("%b %-d, %Y"),
-            }
-        )
-    # Sidearm schedule pages are usually oldest -> newest; prioritize most recent
-    # games and scan a larger window so late-season dates are reachable.
-    recent_urls = list(reversed(cand_urls))[:60]
-    for bu in recent_urls:
-        try:
-            bhtml = requests.get(bu, timeout=20, headers=_HTTP_HEADERS).text
-        except Exception:
-            continue
-        # Sidearm pages can contain unrelated date tokens in scripts. Require the
-        # explicit game date from title/meta/url text when available.
-        actual_game_day: date | None = None
-        for m in re.finditer(r"\bon\s+(\d{1,2}/\d{1,2}/\d{4})\b", bhtml, flags=re.I):
+
+    def _day_tokens(d: date) -> set[str]:
+        return {
+            d.isoformat(),
+            d.strftime("%m/%d/%Y"),
+            d.strftime("%-m/%-d/%Y"),
+            d.strftime("%b %-d, %Y"),
+        }
+
+    def _scan_boxscores(accept_days: set[date]) -> dict[str, Any]:
+        tokens: set[str] = set()
+        for d in accept_days:
+            tokens |= _day_tokens(d)
+        recent_urls = list(reversed(cand_urls))[:60]
+        for bu in recent_urls:
             try:
-                actual_game_day = datetime.strptime(m.group(1), "%m/%d/%Y").date()
-                break
+                bhtml = requests.get(bu, timeout=20, headers=_HTTP_HEADERS).text
             except Exception:
                 continue
-        if actual_game_day is not None and actual_game_day not in accepted_days:
-            continue
-        if actual_game_day is None and not any(tok in bhtml for tok in target_tokens):
-            continue
-        try:
-            tables = pd.read_html(StringIO(bhtml))
-        except Exception:
-            continue
-        for t in tables:
-            df = _flatten_columns(t.copy())
-            cols_l = [str(c).strip().lower() for c in df.columns]
-            # For pitchers, require an innings column so we don't accidentally
-            # parse batter tables where SO means hitter strikeouts.
-            if is_p and "ip" not in cols_l:
-                continue
-            if (not is_p) and not any(c in cols_l for c in ("ab", "h", "rbi")):
-                continue
-            for _, row in df.iterrows():
-                row_vals = [str(v) for v in row.tolist()]
-                row_text = " ".join(row_vals).lower()
-                if last_n and last_n not in _norm_token(row_text):
+            actual_game_day: date | None = None
+            for m in re.finditer(r"\bon\s+(\d{1,2}/\d{1,2}/\d{4})\b", bhtml, flags=re.I):
+                try:
+                    actual_game_day = datetime.strptime(m.group(1), "%m/%d/%Y").date()
+                    break
+                except Exception:
                     continue
-                if is_p:
-                    return _amateur_line_to_pro_keys(
+            if actual_game_day is not None and actual_game_day not in accept_days:
+                continue
+            if actual_game_day is None and not any(tok in bhtml for tok in tokens):
+                continue
+            try:
+                tables = pd.read_html(StringIO(bhtml))
+            except Exception:
+                continue
+            for t in tables:
+                df = _flatten_columns(t.copy())
+                cols_l = [str(c).strip().lower() for c in df.columns]
+                if is_p and "ip" not in cols_l:
+                    continue
+                if (not is_p) and not any(c in cols_l for c in ("ab", "h", "rbi")):
+                    continue
+                for _, row in df.iterrows():
+                    row_vals = [str(v) for v in row.tolist()]
+                    row_text = " ".join(row_vals).lower()
+                    if last_n and last_n not in _norm_token(row_text):
+                        continue
+                    if is_p:
+                        out = _amateur_line_to_pro_keys(
+                            {
+                                "ip": row.get(_find_col(list(df.columns), ("IP", "Innings"))),
+                                "h": row.get(_find_col(list(df.columns), ("H", "Hits"))),
+                                "r": row.get(_find_col(list(df.columns), ("R", "Runs"))),
+                                "er": row.get(_find_col(list(df.columns), ("ER", "Earned"))),
+                                "bb": row.get(_find_col(list(df.columns), ("BB", "Walks"))),
+                                "k": row.get(_find_col(list(df.columns), ("SO", "K", "Strikeouts"))),
+                                "hr": row.get(_find_col(list(df.columns), ("HR", "Home Runs"))),
+                            },
+                            True,
+                        )
+                        out["contest_url"] = bu
+                        if actual_game_day:
+                            out["game_date"] = actual_game_day.isoformat()
+                        return out
+                    out = _amateur_line_to_pro_keys(
                         {
-                            "ip": row.get(_find_col(list(df.columns), ("IP", "Innings"))),
-                            "h": row.get(_find_col(list(df.columns), ("H", "Hits"))),
+                            "ab": row.get(_find_col(list(df.columns), ("AB", "At Bats"))),
                             "r": row.get(_find_col(list(df.columns), ("R", "Runs"))),
-                            "er": row.get(_find_col(list(df.columns), ("ER", "Earned"))),
+                            "h": row.get(_find_col(list(df.columns), ("H", "Hits"))),
+                            "rbi": row.get(_find_col(list(df.columns), ("RBI",))),
                             "bb": row.get(_find_col(list(df.columns), ("BB", "Walks"))),
                             "k": row.get(_find_col(list(df.columns), ("SO", "K", "Strikeouts"))),
                             "hr": row.get(_find_col(list(df.columns), ("HR", "Home Runs"))),
                         },
-                        True,
+                        False,
                     )
-                return _amateur_line_to_pro_keys(
-                    {
-                        "ab": row.get(_find_col(list(df.columns), ("AB", "At Bats"))),
-                        "r": row.get(_find_col(list(df.columns), ("R", "Runs"))),
-                        "h": row.get(_find_col(list(df.columns), ("H", "Hits"))),
-                        "rbi": row.get(_find_col(list(df.columns), ("RBI",))),
-                        "bb": row.get(_find_col(list(df.columns), ("BB", "Walks"))),
-                        "k": row.get(_find_col(list(df.columns), ("SO", "K", "Strikeouts"))),
-                        "hr": row.get(_find_col(list(df.columns), ("HR", "Home Runs"))),
-                    },
-                    False,
-                )
-    return {}
+                    out["contest_url"] = bu
+                    if actual_game_day:
+                        out["game_date"] = actual_game_day.isoformat()
+                    return out
+        return {}
+
+    # Strict: calendar yesterday only (never prefer today's box scores).
+    return _scan_boxscores({target_day})
 
 
 def get_team_catalog() -> list[dict[str, Any]]:
@@ -2117,6 +2439,96 @@ def search_people(name: str) -> list[dict[str, Any]]:
     return js.get("people") or []
 
 
+def _person_matches_client_name(api_name: str, client_name: str) -> bool:
+    """Last name + first initial (Stats API fullName vs spreadsheet)."""
+    if not api_name or not client_name:
+        return False
+    if _norm_player_name(api_name) == _norm_player_name(client_name):
+        return True
+    t_first, t_last = _name_parts(client_name)
+    a_first, a_last = _name_parts(api_name)
+    if not t_last or not a_last or _norm_token(t_last) != _norm_token(a_last):
+        return False
+    if t_first and a_first:
+        return _norm_token(t_first[:1]) == _norm_token(a_first[:1])
+    return True
+
+
+def _roster_name_rows(team_id: int) -> list[tuple[int, str]]:
+    key = (team_id, SEASON)
+    cached = ROSTER_CACHE.get(key)
+    if cached is not None:
+        return cached
+    rows: list[tuple[int, str]] = []
+    try:
+        rjs = _req_json(f"{API}/teams/{team_id}/roster?" + urllib.parse.urlencode({"season": SEASON}))
+    except Exception:
+        ROSTER_CACHE[key] = rows
+        return rows
+    for row in rjs.get("roster") or []:
+        person = row.get("person") or {}
+        pid = _safe_int(person.get("id"))
+        fn = str(person.get("fullName", "") or "").strip()
+        if pid and fn:
+            rows.append((pid, fn))
+    ROSTER_CACHE[key] = rows
+    return rows
+
+
+def _find_player_id_on_team_roster(client_name: str, team_id: int) -> int | None:
+    for pid, fn in _roster_name_rows(team_id):
+        if _person_matches_client_name(fn, client_name):
+            return pid
+    return None
+
+
+def _teams_for_client_org(c: Client) -> list[int]:
+    """All affiliate team ids for the client's MLB org (parentOrg), for roster scans."""
+    maj = (c.major_affiliate or "").strip()
+    if not maj or maj.lower() == "nan":
+        return []
+    teams = get_team_catalog()
+    ranked: list[tuple[int, int, int]] = []
+    for t in teams:
+        tid = _safe_int(t.get("id"))
+        if not tid:
+            continue
+        parent_score = _org_match_score(maj, t)
+        if parent_score < 4:
+            continue
+        sport_id = _safe_int((t.get("sport") or {}).get("id")) or 99
+        ranked.append((-parent_score, sport_id, tid))
+    ranked.sort()
+    return [tid for _, _, tid in ranked]
+
+
+def _find_player_id_via_org_rosters(c: Client) -> int | None:
+    """
+    people/search often misses active MiLB/rehab players; scan affiliate rosters
+    (sheet affiliate first, then every club under major_affiliate).
+    """
+    seen: set[int] = set()
+    for label in (c.minor_affiliate, c.major_affiliate):
+        lab = (label or "").strip()
+        if not lab or lab.lower() == "nan":
+            continue
+        team_obj = lookup_team_by_name(lab, c.level)
+        tid = _safe_int((team_obj or {}).get("id"))
+        if tid and tid not in seen:
+            seen.add(tid)
+            pid = _find_player_id_on_team_roster(c.name, tid)
+            if pid:
+                return pid
+    for tid in _teams_for_client_org(c):
+        if tid in seen:
+            continue
+        seen.add(tid)
+        pid = _find_player_id_on_team_roster(c.name, tid)
+        if pid:
+            return pid
+    return None
+
+
 def _name_search_variants(name: str) -> list[str]:
     """Try alternate strings so roster lookup works for every row (e.g. Jr. on MLB.com but not in sheet)."""
     n = (name or "").strip()
@@ -2155,27 +2567,17 @@ def resolve_player_id(c: Client) -> int | None:
             variants = [alias_q] + [v for v in variants if v.casefold() != alias_q.casefold()]
     people: list[dict[str, Any]] = []
     for variant in variants:
-        people = search_people(variant)
-        if people:
-            break
+        hits = search_people(variant)
+        if hits:
+            people = [
+                p
+                for p in hits
+                if _person_matches_client_name(str(p.get("fullName", "")), c.name)
+            ]
+            if people:
+                break
     if not people:
-        team_guess = pick_current_team_name(c)
-        if team_guess:
-            team_obj = lookup_team_by_name(team_guess, c.level)
-            tid = _safe_int((team_obj or {}).get("id"))
-            if tid:
-                try:
-                    rjs = _req_json(f"{API}/teams/{tid}/roster?" + urllib.parse.urlencode({"season": SEASON}))
-                    target = _norm_player_name(c.name)
-                    for row in rjs.get("roster") or []:
-                        person = row.get("person") or {}
-                        pid = _safe_int(person.get("id"))
-                        nm = _norm_player_name(str(person.get("fullName", "")))
-                        if pid and nm == target:
-                            return pid
-                except Exception:
-                    pass
-        return None
+        return _find_player_id_via_org_rosters(c)
     if len(people) == 1:
         return _safe_int(people[0].get("id"))
 
@@ -2455,6 +2857,34 @@ def _strip_pitch_count_fields(st: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
+def fetch_team_from_gamelog_on_date(player_id: int, group: str, target_day: date) -> dict[str, Any]:
+    """Club from the most recent game on a calendar day (any pro sportId)."""
+    day = target_day.isoformat()
+    best_game_pk: int | None = None
+    best: dict[str, Any] = {}
+    for sport_id in SPORT_IDS_PRO:
+        try:
+            splits = _gamelog_splits_for_sport(player_id, group, sport_id)
+        except Exception:
+            continue
+        for sp in splits:
+            if sp.get("date") != day:
+                continue
+            game = sp.get("game") or {}
+            game_pk = _safe_int(game.get("gamePk") or sp.get("gamePk"))
+            if game_pk is None:
+                continue
+            if best_game_pk is None or game_pk > best_game_pk:
+                best_game_pk = game_pk
+                team = sp.get("team") or {}
+                best = {
+                    "team_id": _safe_int(team.get("id")),
+                    "team_name": team.get("name", ""),
+                    "sport_id": sport_id,
+                }
+    return best
+
+
 def fetch_latest_team_from_gamelog_all_sports(player_id: int, group: str) -> dict[str, Any]:
     """Most recent regular-season appearance across MLB and MiLB sport IDs."""
     best_date = ""
@@ -2475,8 +2905,57 @@ def fetch_latest_team_from_gamelog_all_sports(player_id: int, group: str) -> dic
                     "team_id": _safe_int(team.get("id")),
                     "team_name": team.get("name", ""),
                     "last_game_date": d,
+                    "sport_id": sport_id,
                 }
     return best
+
+
+def _resolve_pro_client_team(
+    pid: int | None,
+    group: str,
+    yday: date,
+    roster_team: dict[str, Any],
+    latest_team: dict[str, Any],
+    team_name_guess: str,
+    level_hint: str,
+) -> tuple[int | None, dict[str, Any], int | None]:
+    """
+  Pick team context for display, schedule, and stat sportId.
+
+  Roster currentTeam can lag rehab/reassignment; game logs reflect where the player
+  actually appeared (e.g. High-A roster, Low-A rehab start -> Tampa Tarpons stats).
+    """
+    tid = _safe_int(roster_team.get("team_id"))
+    latest_tid = _safe_int(latest_team.get("team_id"))
+    if not tid:
+        tid = latest_tid
+    if not tid:
+        team_obj = lookup_team_by_name(team_name_guess, level_hint)
+        tid = _safe_int((team_obj or {}).get("id"))
+    team_ctx = get_team_context(tid)
+    stat_sport_id = team_ctx.get("sport_id")
+
+    yday_team = fetch_team_from_gamelog_on_date(pid, group, yday) if pid else {}
+    yday_tid = _safe_int(yday_team.get("team_id"))
+    if yday_tid:
+        tid = yday_tid
+        team_ctx = get_team_context(tid)
+        stat_sport_id = yday_team.get("sport_id") or team_ctx.get("sport_id")
+        return tid, team_ctx, stat_sport_id
+
+    roster_tid = _safe_int(roster_team.get("team_id"))
+    if latest_tid and roster_tid and latest_tid != roster_tid:
+        latest_ctx = get_team_context(latest_tid)
+        tid = latest_tid
+        team_ctx = latest_ctx
+        stat_sport_id = latest_team.get("sport_id") or latest_ctx.get("sport_id")
+    elif latest_tid and not roster_tid:
+        latest_ctx = get_team_context(latest_tid)
+        tid = latest_tid
+        team_ctx = latest_ctx
+        stat_sport_id = latest_team.get("sport_id") or latest_ctx.get("sport_id")
+
+    return tid, team_ctx, stat_sport_id
 
 
 def fetch_last_night_from_gamelog_all_sports(player_id: int, group: str, target_day: date) -> dict[str, Any]:
@@ -2751,7 +3230,10 @@ def get_team_context(team_id: int | None) -> dict[str, Any]:
 
 
 def build_client_payload(c: Client) -> dict[str, Any]:
-    """One code path for every pro client: Stats API roster (currentTeam) drives team, level, org, and stat sportId."""
+    """
+    Pro client: resolve player id (search + org roster scan), then team/stats from game logs
+    when assignments change (rehab, call-up, new affiliate).
+    """
     base = {
         "name": c.name,
         "position": c.position,
@@ -2768,7 +3250,7 @@ def build_client_payload(c: Client) -> dict[str, Any]:
         "team_level": "",
         "team_schedule_url": "",
         "last_night_boxscore_url": "",
-        "last_night_date": (dashboard_date() - timedelta(days=1)).isoformat(),
+        "last_night_date": last_night_date().isoformat(),
         "last_night": {},
         "month_to_date": {},
         "season": {},
@@ -2783,34 +3265,26 @@ def build_client_payload(c: Client) -> dict[str, Any]:
     fallback_sport_id = sport_id_for_level(c.level)
     roster_team = fetch_current_team_from_person(pid) if pid else {}
     latest_team = fetch_latest_team_from_gamelog_all_sports(pid, group) if pid else {}
-    tid = _safe_int(roster_team.get("team_id"))
-    latest_tid = _safe_int(latest_team.get("team_id"))
     team_name_guess = roster_team.get("team_name") or latest_team.get("team_name") or pick_current_team_name(c)
-    if not tid:
-        tid = latest_tid
-    if not tid:
-        team_obj = lookup_team_by_name(team_name_guess, c.level)
-        tid = _safe_int((team_obj or {}).get("id"))
-    team_ctx = get_team_context(tid)
-    # Promotion handling: if latest game log shows MLB but roster still points to MiLB,
-    # trust latest appearance so player auto-moves to MLB tab/schedule.
-    if latest_tid:
-        latest_ctx = get_team_context(latest_tid)
-        if latest_ctx.get("sport_id") == 1 and team_ctx.get("sport_id") != 1:
-            tid = latest_tid
-            team_ctx = latest_ctx
-            team_name_guess = latest_team.get("team_name") or team_name_guess
-    stat_sport_id = team_ctx.get("sport_id")
+    yday = last_night_date()
+    tid, team_ctx, stat_sport_id = _resolve_pro_client_team(
+        pid, group, yday, roster_team, latest_team, team_name_guess, c.level
+    )
     if stat_sport_id is None:
         stat_sport_id = fallback_sport_id
     base["organization"] = team_ctx.get("organization") or (c.major_affiliate if (c.major_affiliate or "").lower() != "nan" else "")
-    base["current_team"] = team_ctx["team_name"] or team_name_guess
+    resolved_team = team_ctx["team_name"] or team_name_guess
+    base["current_team"] = resolved_team
     base["current_team_location"] = team_ctx["team_location"]
     base["team_level"] = team_ctx["team_level"] or c.level
+    if team_ctx.get("team_level"):
+        base["level"] = team_ctx["team_level"]
+    # Sheet affiliate can lag rehab/reassignment; show and bucket stats by actual club.
+    if resolved_team and _normalize_org_token(c.minor_affiliate) != _normalize_org_token(resolved_team):
+        base["minor_affiliate"] = resolved_team
     base["team_schedule_url"] = team_ctx["schedule_url"] or fallback_schedule_url(
         base["current_team"], base["team_level"]
     )
-    yday = dashboard_date() - timedelta(days=1)
     mstart = dashboard_date().replace(day=1)
     if pid:
         try:
@@ -2846,16 +3320,24 @@ def build_client_payload(c: Client) -> dict[str, Any]:
         except Exception:
             base["last_night"] = {}
         try:
-            mtd_raw = fetch_player_stats_preferred_then_all_sports(
+            mtd_raw = fetch_player_stats(
                 pid, group, "byDateRange", stat_sport_id, mstart, dashboard_date()
             )
+            if not _stats_non_empty(mtd_raw):
+                mtd_raw = fetch_player_stats_preferred_then_all_sports(
+                    pid, group, "byDateRange", stat_sport_id, mstart, dashboard_date()
+                )
             base["month_to_date"] = _strip_pitch_count_fields(
                 {k: json_stat_value(k, v) for k, v in mtd_raw.items()}
             )
         except Exception:
             base["month_to_date"] = {}
         try:
-            st_season = fetch_player_stats_preferred_then_all_sports(pid, group, "season", stat_sport_id)
+            st_season = fetch_player_stats(pid, group, "season", stat_sport_id)
+            if not _stats_non_empty(st_season):
+                st_season = fetch_player_stats_preferred_then_all_sports(
+                    pid, group, "season", stat_sport_id
+                )
             base["season"] = _strip_pitch_count_fields(
                 {k: json_stat_value(k, v) for k, v in st_season.items()}
             )
@@ -2912,9 +3394,13 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
         "current_team": c.school_or_team,
         "current_team_location": "",
         "team_level": c.level or "NCAA",
-        "team_schedule_url": c.schedule_link or school_schedule_url(c.school_or_team),
+        "team_schedule_url": (
+            c.schedule_link
+            or COLLEGE_ATHLETICS_SCHEDULE_BY_SCHOOL.get(_norm_school(school), "")
+            or school_schedule_url(c.school_or_team)
+        ),
         "last_night_boxscore_url": "",
-            "last_night_date": (dashboard_date() - timedelta(days=1)).isoformat(),
+            "last_night_date": last_night_date().isoformat(),
             "last_night": {},
             "month_to_date": {},
             "season": {},
@@ -2937,29 +3423,29 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
             base["upcoming_series"] = ncaa_payload.get("upcoming_series") or []
 
             ln_ind, mtd_ind = ncaa_player_last_night_and_month(c, school, is_p, ncaa_payload)
-            yday = dashboard_date() - timedelta(days=1)
+            yday = last_night_date()
+            ncaa_box_url = ""
             for g in list(ncaa_payload.get("_games") or []):
                 if g.get("date") == yday and (g.get("status") == "final" or g.get("state") in {"C", "F", "3"}):
                     cid = _safe_int(g.get("contest_id"))
                     if cid:
-                        base["last_night_boxscore_url"] = f"https://www.ncaa.com/game/{cid}/boxscore"
+                        ncaa_box_url = f"https://www.ncaa.com/game/{cid}/boxscore"
                     break
+            ncaa_ln_fmt: dict[str, Any] = {}
             if ln_ind:
-                base["last_night"] = {
-                    k: json_stat_value(k, v) for k, v in ln_ind.items() if v is not None
-                }
-            # Backup source: explicit Sidearm schedule link from AmateurList.
-            # For pitchers, prefer a valid Sidearm player line whenever present;
-            # NCAA GraphQL occasionally reports zero/incorrect pitcher strikeouts.
-            ln_backup = {}
-            if is_p and c.schedule_link:
-                ln_backup = _sidearm_player_last_night_from_schedule_link(
-                    c.schedule_link, c.name, is_p, yday
-                )
-            if ln_backup and _to_float(ln_backup.get("inningsPitched")) > 0:
-                base["last_night"] = {
-                    k: json_stat_value(k, v) for k, v in ln_backup.items() if v is not None
-                }
+                ncaa_ln_fmt = {k: json_stat_value(k, v) for k, v in ln_ind.items() if v is not None}
+            if is_p:
+                ln_best, box_best = _college_pitcher_last_night_pro_keys(c, school, yday, ncaa_ln_fmt)
+                if ln_best:
+                    base["last_night"] = ln_best
+                if box_best:
+                    base["last_night_boxscore_url"] = box_best
+                elif ncaa_box_url:
+                    base["last_night_boxscore_url"] = ncaa_box_url
+            elif ncaa_ln_fmt:
+                base["last_night"] = ncaa_ln_fmt
+                if ncaa_box_url:
+                    base["last_night_boxscore_url"] = ncaa_box_url
             if (not is_p) and base["last_night"] and not _is_valid_hitter_last_night_line(base["last_night"]):
                 base["last_night"] = {}
             if mtd_ind:
@@ -2967,8 +3453,8 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
                     k: json_stat_value(k, v) for k, v in mtd_ind.items() if v is not None
                 }
 
-            # Team-level fallbacks (W/L, runs) if boxscore did not resolve the player row.
-            if not base["last_night"]:
+            # Team-level fallbacks for hitters only (W/L + runs). Never attach that stub to pitchers.
+            if not base["last_night"] and not is_p:
                 base["last_night"] = ncaa_payload.get("last_night") or {}
             if not base["month_to_date"]:
                 base["month_to_date"] = ncaa_payload.get("month_to_date") or {}
@@ -3078,6 +3564,136 @@ def _maxpreps_pitching_rows(next_data: dict[str, Any] | None) -> tuple[list[dict
     return rows, season
 
 
+def _maxpreps_md_to_date(ds: Any, year: int) -> date | None:
+    s = str(ds).strip()
+    if not s:
+        return None
+    try:
+        mm_s, dd_s = s.split("/", 1)
+        return date(year, int(mm_s), int(dd_s))
+    except Exception:
+        return None
+
+
+def _maxpreps_career_game_log_groups(next_data: dict[str, Any] | None) -> list[dict[str, Any]]:
+    if not next_data:
+        return []
+    try:
+        return list(next_data["props"]["pageProps"]["statsCardProps"]["careerGameLogs"]["groups"] or [])
+    except Exception:
+        return []
+
+
+def _maxpreps_next_has_batting_season(next_data: dict[str, Any] | None) -> bool:
+    for g in _maxpreps_career_game_log_groups(next_data):
+        if str(g.get("name", "")).strip().lower() != "batting":
+            continue
+        sg0 = (g.get("subgroups") or [{}])[0]
+        t0 = _maxpreps_stat_map((sg0.get("totalStats") or {}).get("stats") or [])
+        if _to_int(t0.get("AtBats")) > 0 or _to_int(t0.get("PlateAppearances")) > 0:
+            return True
+    return False
+
+
+def _maxpreps_next_has_pitching_season(next_data: dict[str, Any] | None) -> bool:
+    _, season = _maxpreps_pitching_rows(next_data)
+    if not season:
+        return False
+    return _to_float(season.get("ip")) > 0
+
+
+def _maxpreps_hs_hitter_stats_from_next(
+    next_data: dict[str, Any] | None,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Batting game logs from MaxPreps ``__NEXT_DATA__`` (BB/K live on a second batting subgroup)."""
+    groups = _maxpreps_career_game_log_groups(next_data)
+    if not groups:
+        return [], {}
+    by_lower = {str(g.get("name", "")).strip().lower(): g for g in groups}
+    bg = by_lower.get("batting")
+    if not bg:
+        return [], {}
+    subgroups = list(bg.get("subgroups") or [])
+    if len(subgroups) < 2:
+        return [], {}
+    sg0, sg1 = subgroups[0], subgroups[1]
+
+    sb_by_key: dict[tuple[str, str], int] = {}
+    br_g = by_lower.get("baserunning")
+    if br_g:
+        sg_br = (br_g.get("subgroups") or [{}])[0]
+        for r in sg_br.get("stats") or []:
+            key = (str(r.get("date") or ""), str(r.get("contestUrl") or ""))
+            sm = _maxpreps_stat_map(r.get("stats") or [])
+            sb_by_key[key] = _to_int(sm.get("StolenBase"))
+
+    by_key: dict[tuple[str, str], dict[str, Any]] = {}
+    for r in sg0.get("stats") or []:
+        key = (str(r.get("date") or ""), str(r.get("contestUrl") or ""))
+        sm = _maxpreps_stat_map(r.get("stats") or [])
+        by_key[key] = {
+            "date": key[0],
+            "contest_url": key[1],
+            "ab": sm.get("AtBats"),
+            "r": sm.get("Runs"),
+            "h": sm.get("Hits"),
+            "rbi": sm.get("RunsBattedIn"),
+            "doubles": sm.get("Doubles"),
+            "triples": sm.get("Triples"),
+            "hr": sm.get("HomeRuns"),
+            "avg": sm.get("BattingAverage"),
+            "sb": sb_by_key.get(key, 0),
+        }
+    for r in sg1.get("stats") or []:
+        key = (str(r.get("date") or ""), str(r.get("contestUrl") or ""))
+        sm = _maxpreps_stat_map(r.get("stats") or [])
+        row = by_key.get(key)
+        if row is None:
+            row = {"date": key[0], "contest_url": key[1], "sb": sb_by_key.get(key, 0)}
+            by_key[key] = row
+        row["bb"] = sm.get("BaseOnBalls")
+        row["k"] = sm.get("StruckOut")
+        row["ops"] = sm.get("OnBasePlusSluggingPercentage")
+
+    rows = list(by_key.values())
+    t0 = _maxpreps_stat_map((sg0.get("totalStats") or {}).get("stats") or [])
+    t1 = _maxpreps_stat_map((sg1.get("totalStats") or {}).get("stats") or [])
+    sb_season = 0
+    if br_g:
+        sg_br = (br_g.get("subgroups") or [{}])[0]
+        tbr = _maxpreps_stat_map((sg_br.get("totalStats") or {}).get("stats") or [])
+        sb_season = _to_int(tbr.get("StolenBase"))
+    season = {
+        "ab": t0.get("AtBats"),
+        "r": t0.get("Runs"),
+        "h": t0.get("Hits"),
+        "rbi": t0.get("RunsBattedIn"),
+        "doubles": t0.get("Doubles"),
+        "triples": t0.get("Triples"),
+        "hr": t0.get("HomeRuns"),
+        "bb": t1.get("BaseOnBalls"),
+        "k": t1.get("StruckOut"),
+        "avg": t0.get("BattingAverage"),
+        "ops": t1.get("OnBasePlusSluggingPercentage"),
+        "sb": sb_season,
+    }
+    return rows, season
+
+
+def _hs_apply_two_way_roles(
+    entry: dict[str, str], next_data: dict[str, Any] | None, wants_pitcher: bool, wants_hitter: bool
+) -> tuple[bool, bool]:
+    """Ensure two-way HS athletes get separate hitter + pitcher dashboard/PDF rows."""
+    nn = _norm_player_name(entry.get("name", ""))
+    if nn in HS_TWO_WAY_NAMES:
+        return True, True
+    if _maxpreps_next_has_batting_season(next_data):
+        wants_hitter = True
+    if _maxpreps_next_has_pitching_season(next_data):
+        wants_pitcher = True
+    return wants_pitcher, wants_hitter
+
+
 def _pick_maxpreps_tables(tables: list[pd.DataFrame]) -> tuple[pd.DataFrame | None, pd.DataFrame | None]:
     batting: pd.DataFrame | None = None
     pitching: pd.DataFrame | None = None
@@ -3167,9 +3783,73 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
             base_pitcher["stats_unavailable_reason"] = "MaxPreps statistics not available"
             out_err.append(base_pitcher)
         return out_err
+    next_data = _maxpreps_next_data(html)
+    wants_pitcher, wants_hitter = _hs_apply_two_way_roles(entry, next_data, wants_pitcher, wants_hitter)
     batting, pitching = _pick_maxpreps_tables(tables)
-    if wants_hitter and batting is not None:
+    mp_b_rows, mp_b_season = _maxpreps_hs_hitter_stats_from_next(next_data)
+    if wants_hitter and mp_b_rows:
+        last_bd: dict[str, Any] | None = None
+        month_bds: list[dict[str, Any]] = []
+        for row in mp_b_rows:
+            gd = _maxpreps_md_to_date(row.get("date"), today.year)
+            if gd is None:
+                continue
+            if gd == yday:
+                last_bd = row
+            if gd.month == today.month and gd <= today:
+                month_bds.append(row)
+        if last_bd is not None:
+            base_hitter["last_night"] = _amateur_line_to_pro_keys(
+                {
+                    "ab": last_bd.get("ab"),
+                    "r": last_bd.get("r"),
+                    "h": last_bd.get("h"),
+                    "rbi": last_bd.get("rbi"),
+                    "bb": last_bd.get("bb"),
+                    "k": last_bd.get("k"),
+                    "hr": last_bd.get("hr"),
+                    "triples": last_bd.get("triples"),
+                    "doubles": last_bd.get("doubles"),
+                    "sb": last_bd.get("sb"),
+                    "avg": last_bd.get("avg"),
+                    "ops": last_bd.get("ops"),
+                },
+                False,
+            )
+            if not _is_valid_hitter_last_night_line(base_hitter["last_night"]):
+                base_hitter["last_night"] = {}
+        if month_bds:
+            agg = {"ab": 0, "r": 0, "h": 0, "rbi": 0, "bb": 0, "k": 0, "hr": 0, "triples": 0, "doubles": 0, "sb": 0}
+            for r in month_bds:
+                agg["ab"] += int(to_number(r.get("ab")) or 0)
+                agg["r"] += int(to_number(r.get("r")) or 0)
+                agg["h"] += int(to_number(r.get("h")) or 0)
+                agg["rbi"] += int(to_number(r.get("rbi")) or 0)
+                agg["bb"] += int(to_number(r.get("bb")) or 0)
+                agg["k"] += int(to_number(r.get("k")) or 0)
+                agg["hr"] += int(to_number(r.get("hr")) or 0)
+                agg["triples"] += int(to_number(r.get("triples")) or 0)
+                agg["doubles"] += int(to_number(r.get("doubles")) or 0)
+                agg["sb"] += int(to_number(r.get("sb")) or 0)
+            agg["avg"] = round((agg["h"] / agg["ab"]), 3) if agg["ab"] else 0.0
+            base_hitter["month_to_date"] = _amateur_line_to_pro_keys(agg, False)
+        if mp_b_season:
+            base_hitter["season"] = _amateur_line_to_pro_keys(mp_b_season, False)
+    elif wants_hitter and batting is not None:
         batting.columns = [str(c).strip() for c in batting.columns]
+        col_l = {str(c).strip().lower(): c for c in batting.columns}
+
+        def _bat_col(*names: str) -> str | None:
+            for n in names:
+                c = col_l.get(n.lower())
+                if c:
+                    return c
+            return None
+
+        c_bb = _bat_col("bb", "walks", "base on balls")
+        c_k = _bat_col("k", "so", "strikeouts", "strike outs")
+        c_sb = _bat_col("sb", "stolen bases", "stolen base")
+        c_3b = _bat_col("3b", "triples", "triple")
         if "Date" in batting.columns:
             last_row = None
             month_rows: list[pd.Series] = []
@@ -3184,10 +3864,12 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
                             "r": row.get("R"),
                             "h": row.get("H"),
                             "rbi": row.get("RBI"),
-                            "bb": row.get("BB"),
-                            "k": row.get("K"),
+                            "bb": row.get(c_bb) if c_bb else row.get("BB"),
+                            "k": row.get(c_k) if c_k else row.get("K"),
                             "hr": row.get("HR"),
+                            "triples": row.get(c_3b) if c_3b else row.get("3B"),
                             "doubles": row.get("2B"),
+                            "sb": row.get(c_sb) if c_sb else row.get("SB"),
                             "avg": row.get("Avg"),
                             "ops": row.get("OPS"),
                         },
@@ -3210,10 +3892,12 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
                         "r": last_row.get("R"),
                         "h": last_row.get("H"),
                         "rbi": last_row.get("RBI"),
-                        "bb": last_row.get("BB"),
-                        "k": last_row.get("K"),
+                        "bb": last_row.get(c_bb) if c_bb else last_row.get("BB"),
+                        "k": last_row.get(c_k) if c_k else last_row.get("K"),
                         "hr": last_row.get("HR"),
+                        "triples": last_row.get(c_3b) if c_3b else last_row.get("3B"),
                         "doubles": last_row.get("2B"),
+                        "sb": last_row.get(c_sb) if c_sb else last_row.get("SB"),
                         "avg": last_row.get("Avg"),
                         "ops": last_row.get("OPS"),
                     },
@@ -3222,17 +3906,19 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
                 if not _is_valid_hitter_last_night_line(base_hitter["last_night"]):
                     base_hitter["last_night"] = {}
             if month_rows:
-                agg = {"ab": 0, "r": 0, "h": 0, "rbi": 0, "bb": 0, "k": 0, "hr": 0, "doubles": 0}
+                agg = {"ab": 0, "r": 0, "h": 0, "rbi": 0, "bb": 0, "k": 0, "hr": 0, "triples": 0, "doubles": 0, "sb": 0}
                 for r in month_rows:
                     for k, c in (
                         ("ab", "AB"),
                         ("r", "R"),
                         ("h", "H"),
                         ("rbi", "RBI"),
-                        ("bb", "BB"),
-                        ("k", "K"),
+                        ("bb", c_bb or "BB"),
+                        ("k", c_k or "K"),
                         ("hr", "HR"),
+                        ("triples", c_3b or "3B"),
                         ("doubles", "2B"),
+                        ("sb", c_sb or "SB"),
                     ):
                         agg[k] += int(to_number(r.get(c)) or 0)
                 agg["avg"] = round((agg["h"] / agg["ab"]), 3) if agg["ab"] else 0.0
@@ -3243,7 +3929,6 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     if wants_hitter:
         out.append(base_hitter)
-    next_data = _maxpreps_next_data(html)
     p_rows, p_season = _maxpreps_pitching_rows(next_data)
     if wants_pitcher and p_season:
         base_pitcher["season"] = _amateur_line_to_pro_keys(p_season, True)
@@ -3286,7 +3971,7 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
         p_month = _with_rate_stats(p_month, True)
         base_pitcher["month_to_date"] = _amateur_line_to_pro_keys(p_month, True)
     base_pitcher["last_night_boxscore_url"] = box_link
-    if wants_pitcher and (base_pitcher["season"] or base_pitcher["month_to_date"] or base_pitcher["last_night"] or not wants_hitter):
+    if wants_pitcher:
         out.append(base_pitcher)
     # Flag rows with only empty/zero numeric output so UI can show explicit unavailability text.
     for row in out:
@@ -3412,17 +4097,16 @@ def build_jf_follow_rows(path: Path) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     for p in load_jf_follow_clients(path):
         built_rows = build_high_school_payloads(p)
-        # Fallback: if a pitcher-only row has no stat line but the MaxPreps page
-        # has hitter tables, try hitter parse too so the follow tab still shows data.
-        has_any_stats = any(
-            bool((br.get("season") or {}) or (br.get("month_to_date") or {}) or (br.get("last_night") or {}))
-            for br in built_rows
-        )
-        if (not has_any_stats) and p.get("hs_is_pitcher") and (not p.get("hs_is_hitter")):
+        has_hitter_row = any(not br.get("is_pitcher") for br in built_rows)
+        has_pitcher_row = any(br.get("is_pitcher") for br in built_rows)
+        if p.get("hs_is_pitcher") and not has_hitter_row:
             p2 = dict(p)
             p2["hs_is_hitter"] = True
-            p2["hs_is_pitcher"] = False
-            built_rows.extend(build_high_school_payloads(p2))
+            built_rows.extend([br for br in build_high_school_payloads(p2) if not br.get("is_pitcher")])
+        if p.get("hs_is_hitter") and not has_pitcher_row:
+            p3 = dict(p)
+            p3["hs_is_pitcher"] = True
+            built_rows.extend([br for br in build_high_school_payloads(p3) if br.get("is_pitcher")])
         for br in built_rows:
             season = _ensure_ops_from_obp_slg(br.get("season", {}) or {})
             month_to_date = _ensure_ops_from_obp_slg(br.get("month_to_date", {}) or {})
@@ -3445,23 +4129,86 @@ def build_jf_follow_rows(path: Path) -> list[dict[str, Any]]:
     return out
 
 
-def build_dashboard_data() -> dict[str, Any]:
+def _reset_dashboard_build_caches() -> None:
+    """Fresh MLB/MiLB team catalog and scraper caches each sync (rehab teams, schedules)."""
+    global TEAM_CATALOG, D1_PLAYERS_INDEX
+    TEAM_CATALOG = None
+    D1_PLAYERS_INDEX = None
     NCAA_SCHOOL_PAYLOAD_CACHE.clear()
     FOREIGN_BR_SEASON_CACHE.clear()
-    # D1Baseball: always refresh player index + per-player season tables on each sync.
-    global D1_PLAYERS_INDEX
-    D1_PLAYERS_INDEX = None
     D1_PLAYER_STATS_CACHE.clear()
+    TASBS_SCHEDULE_GAME_PATHS.clear()
+    TASBS_BOX_HTML_BY_URL.clear()
+    NCAA_CONTESTS_BY_DATE.clear()
+    NCAA_BOX_BY_CONTEST_ID.clear()
+    ROSTER_CACHE.clear()
+
+
+def _load_pro_clients_for_dashboard() -> list[Client]:
     clients = load_clients(SOURCE_XLSX)
     pro = [c for c in clients if not c.is_amateur]
     pro = [c for c in pro if _norm_player_name(c.name) not in PRO_CLIENT_EXCLUDE_NAMES]
-    # Exclude Mexico-based MiLB/international rows from dashboard.
-    pro = [
+    return [
         c
         for c in pro
         if "MEXIC"
         not in f"{c.league} {c.level} {c.minor_affiliate} {c.major_affiliate}".upper()
     ]
+
+
+def _parallel_map(items: list[Any], fn, max_workers: int = 12) -> list[Any]:
+    if not items:
+        return []
+    out: list[Any] = [None] * len(items)
+    with ThreadPoolExecutor(max_workers=max_workers) as ex:
+        fut_map = {ex.submit(fn, item): i for i, item in enumerate(items)}
+        for fut in as_completed(fut_map):
+            idx = fut_map[fut]
+            try:
+                out[idx] = fut.result()
+            except Exception:
+                out[idx] = None
+    return out
+
+
+def refresh_pro_teams_in_dashboard(out: Path = OUT_JSON) -> Path:
+    """
+    Re-resolve pro team assignment from game logs (rehab, call-up, reassignment) and
+    refresh pro last night / MTD / season without rebuilding amateur, HS, or trackers.
+    """
+    _reset_dashboard_build_caches()
+    get_team_catalog()
+    existing: dict[str, Any] = {}
+    if out.is_file():
+        existing = json.loads(out.read_text())
+    pro_rows = [
+        r
+        for r in _parallel_map(_load_pro_clients_for_dashboard(), build_client_payload, max_workers=10)
+        if isinstance(r, dict)
+    ]
+    existing["pro_clients"] = pro_rows
+    existing["generated_at"] = datetime.now(UTC).isoformat()
+    existing["last_night_date"] = last_night_date().isoformat()
+    existing["season"] = existing.get("season") or SEASON
+
+    def _json_safe(v: Any) -> Any:
+        if isinstance(v, float):
+            return v if math.isfinite(v) else None
+        if isinstance(v, dict):
+            return {k: _json_safe(x) for k, x in v.items()}
+        if isinstance(v, list):
+            return [_json_safe(x) for x in v]
+        return v
+
+    out.write_text(json.dumps(_json_safe(existing), separators=(",", ":"), allow_nan=False))
+    return out
+
+
+def build_dashboard_data() -> dict[str, Any]:
+    _reset_dashboard_build_caches()
+    get_team_catalog()
+    clients = load_clients(SOURCE_XLSX)
+    pro = _load_pro_clients_for_dashboard()
     amateur = [c for c in clients if c.is_amateur]
     # Primary amateur source now comes from the dedicated Desktop list.
     # Merge with legacy workbook rows so dedicated list doesn't drop anyone.
@@ -3473,25 +4220,12 @@ def build_dashboard_data() -> dict[str, Any]:
         for c in dedicated_amateur:
             merged[_norm_player_name(c.name)] = c
         amateur = list(merged.values())
+    amateur = _merge_manual_amateur_clients(amateur)
     # Expand configured two-way amateurs into separate hitter/pitcher rows.
     amateur_expanded: list[Client] = []
     for c in amateur:
         amateur_expanded.extend(_split_two_way_amateur(c))
     amateur = amateur_expanded
-
-    def _parallel_map(items: list[Any], fn, max_workers: int = 12) -> list[Any]:
-        if not items:
-            return []
-        out: list[Any] = [None] * len(items)
-        with ThreadPoolExecutor(max_workers=max_workers) as ex:
-            fut_map = {ex.submit(fn, item): i for i, item in enumerate(items)}
-            for fut in as_completed(fut_map):
-                idx = fut_map[fut]
-                try:
-                    out[idx] = fut.result()
-                except Exception:
-                    out[idx] = None
-        return out
 
     # Same roster + stats resolution for every pro row (no per-player exceptions).
     pro_rows = [r for r in _parallel_map(pro, build_client_payload, max_workers=10) if isinstance(r, dict)]
@@ -3507,7 +4241,7 @@ def build_dashboard_data() -> dict[str, Any]:
     data = {
         "generated_at": datetime.now(UTC).isoformat(),
         "season": SEASON,
-        "last_night_date": (dashboard_date() - timedelta(days=1)).isoformat(),
+        "last_night_date": last_night_date().isoformat(),
         "pro_clients": pro_rows,
         "amateur_clients": amateur_rows,
         "high_school_clients": high_school_rows,
@@ -3539,5 +4273,10 @@ def write_dashboard_data(out: Path = OUT_JSON) -> Path:
 
 
 if __name__ == "__main__":
-    path = write_dashboard_data()
+    import sys
+
+    if "--pro-teams-only" in sys.argv:
+        path = refresh_pro_teams_in_dashboard()
+    else:
+        path = write_dashboard_data()
     print(f"Wrote: {path}")
