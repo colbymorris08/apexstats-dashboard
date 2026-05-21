@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 120
     env:
       TZ: America/Los_Angeles
+      # Silence Node 20 deprecation notice on checkout/setup-python (harmless).
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,8 +53,25 @@ jobs:
             git push
           fi
 
+      - name: Verify email secrets
+        env:
+          APEX_SMTP_HOST: ${{ secrets.APEX_SMTP_HOST }}
+          APEX_SMTP_PORT: ${{ secrets.APEX_SMTP_PORT }}
+          APEX_SMTP_USER: ${{ secrets.APEX_SMTP_USER }}
+          APEX_SMTP_PASSWORD: ${{ secrets.APEX_SMTP_PASSWORD }}
+          APEX_PDF_EMAIL_FROM: ${{ secrets.APEX_PDF_EMAIL_FROM }}
+          APEX_PDF_EMAIL_TO: ${{ secrets.APEX_PDF_EMAIL_TO }}
+        run: |
+          missing=0
+          for name in APEX_SMTP_HOST APEX_SMTP_PORT APEX_SMTP_USER APEX_SMTP_PASSWORD APEX_PDF_EMAIL_FROM APEX_PDF_EMAIL_TO; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing repository secret: $name — add under Settings → Secrets and variables → Actions (not Dependabot or Codespaces)."
+              missing=1
+            fi
+          done
+          [[ "$missing" -eq 0 ]]
+
       - name: Build PDF and send email
-        continue-on-error: true
         env:
           APEX_SMTP_HOST: ${{ secrets.APEX_SMTP_HOST }}
           APEX_SMTP_PORT: ${{ secrets.APEX_SMTP_PORT }}

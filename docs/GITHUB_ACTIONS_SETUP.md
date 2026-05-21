@@ -20,9 +20,12 @@ The builder reads:
 
 Optional Desktop tracker workbooks are skipped in CI if missing.
 
-### 2. Add repository secrets
+### 2. Add **repository** secrets (required for email)
 
-**Settings → Secrets and variables → Actions → New repository secret**
+**Settings → Secrets and variables → Actions → Repository secrets → New repository secret**
+
+Use **Actions** tab secrets on `colbymorris08/apexstats-dashboard`, not Dependabot or Codespaces.  
+Your Mac file `~/.apexstats_morning_email.env` is **not** read by GitHub — copy the same values into secrets below.
 
 | Secret | Example |
 |--------|---------|
