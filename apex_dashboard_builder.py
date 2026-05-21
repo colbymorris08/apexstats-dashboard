@@ -17,13 +17,15 @@ from zoneinfo import ZoneInfo
 import pandas as pd
 import requests
 
-SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/Client List - 04-15-26.xlsx")
-AMATEUR_SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/AmateurList.xlsx")
-HS_SOURCE_XLSX = Path("/Users/colbymorris/apexstats/client_lists/HSList.xlsx")
-JF_FOLLOW_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/Apex/FurmaniakFollow.xlsx")
-ARB_TRACKER_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/DashboardArb.xlsx")
-FA_TRACKER_SOURCE_XLSX = Path("/Users/colbymorris/Desktop/DashboardFA.xlsx")
-OUT_JSON = Path("/Users/colbymorris/apexstats/apex_dashboard_data.json")
+APEX_ROOT = Path(__file__).resolve().parent
+SOURCE_XLSX = APEX_ROOT / "client_lists" / "Client List - 04-15-26.xlsx"
+AMATEUR_SOURCE_XLSX = APEX_ROOT / "client_lists" / "AmateurList.xlsx"
+HS_SOURCE_XLSX = APEX_ROOT / "client_lists" / "HSList.xlsx"
+# Optional local-only workbooks (skipped in CI when missing).
+JF_FOLLOW_SOURCE_XLSX = Path.home() / "Desktop" / "Apex" / "FurmaniakFollow.xlsx"
+ARB_TRACKER_SOURCE_XLSX = Path.home() / "Desktop" / "DashboardArb.xlsx"
+FA_TRACKER_SOURCE_XLSX = Path.home() / "Desktop" / "DashboardFA.xlsx"
+OUT_JSON = APEX_ROOT / "apex_dashboard_data.json"
 PACIFIC_TZ = ZoneInfo("America/Los_Angeles")
 
 
