@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.colbymorris.apexdashboard.morning</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>/Users/colbymorris/apexstats/apex_daily_manual.sh</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/colbymorris/apexstats</string>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <key>TZ</key>
+    <string>America/Los_Angeles</string>
+  </dict>
+
+  <!-- 6:00 in the Mac's local timezone. Set the Mac to "Los Angeles" for 6 AM Pacific. -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>6</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/colbymorris/apexstats/apex_morning.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/colbymorris/apexstats/apex_morning.err.log</string>
+</dict>
+</plist>

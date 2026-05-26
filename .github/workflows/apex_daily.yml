@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: "0 6 * * *"
       timezone: America/Los_Angeles
+    # Backup if GitHub delays the 6 AM run (common).
+    - cron: "30 7 * * *"
+      timezone: America/Los_Angeles
   workflow_dispatch:
 
 permissions:
@@ -41,6 +44,7 @@ jobs:
         run: python3 apex_dashboard_builder.py
 
       - name: Commit and push dashboard data
+        continue-on-error: true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -49,9 +53,9 @@ jobs:
             echo "No JSON changes to commit."
           else
             git commit -m "Auto-refresh Apex dashboard data (GitHub Actions)"
-            git pull --rebase origin main
-            git push
           fi
+          git pull --rebase --autostash origin main || true
+          git push || echo "::warning::git push failed; PDF/email will still run."
 
       - name: Verify email secrets
         env:

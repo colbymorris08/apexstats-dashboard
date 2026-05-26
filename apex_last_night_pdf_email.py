@@ -478,11 +478,11 @@ def fetch_probable_starters_by_level(
 
 
 def _draw_header_row(pdf: Any, headers: list[str], col_widths: list[float]) -> None:
-    pdf.set_font("Helvetica", "B", 8)
+    pdf.set_font("Helvetica", "B", 6.5)
     pdf.set_fill_color(*HDR_FILL)
     pdf.set_text_color(*HDR_TEXT)
     for h, w in zip(headers, col_widths):
-        pdf.cell(w, 6, str(h)[:22], border=1, align="C", fill=True)
+        pdf.cell(w, 5.5, _cell_fit(h, w, 6.5), border=1, align="C", fill=True)
     pdf.ln()
     pdf.set_text_color(0, 0, 0)
 
@@ -494,14 +494,47 @@ def _draw_level_bar(pdf: Any, title: str, width: float) -> None:
     pdf.cell(width, 6, title, border=0, fill=True, new_x="LMARGIN", new_y="NEXT")
 
 
+def _name_sort_key(row: dict[str, Any]) -> tuple[str, str]:
+    """Last name, then first name (stable alphabetical within each level)."""
+    name = str(row.get("name") or "").strip().lower()
+    name = re.sub(r"[^a-z0-9 '\-]", " ", name)
+    parts = [p for p in name.split() if p and p not in {"jr", "sr", "ii", "iii", "iv"}]
+    if len(parts) >= 2:
+        return (parts[-1], " ".join(parts[:-1]))
+    return (name, "")
+
+
+def _sort_rows_by_name(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return sorted(rows, key=_name_sort_key)
+
+
+def _scale_cols(base: list[float], total: float = 277.0) -> list[float]:
+    s = sum(base)
+    return [w * total / s for w in base] if s else base
+
+
+def _cell_fit(text: str, width_mm: float, font_size: float = 6.0) -> str:
+    t = str(text or "")
+    max_chars = max(2, int(width_mm / (font_size * 0.38)))
+    return t if len(t) <= max_chars else t[: max_chars - 1]
+
+
+def _stat_val(d: dict[str, Any], *keys: str) -> Any:
+    for k in keys:
+        if k in d and d[k] not in (None, ""):
+            return d[k]
+    return None
+
+
 def _draw_data_row(
     pdf: Any,
     cells: list[str],
     col_widths: list[float],
     zebra: bool,
     aligns: list[str] | None = None,
+    font_size: float = 6.0,
 ) -> None:
-    pdf.set_font("Helvetica", "", 7)
+    pdf.set_font("Helvetica", "", font_size)
     if zebra:
         pdf.set_fill_color(*ROW_ALT)
     else:
@@ -511,7 +544,7 @@ def _draw_data_row(
     if len(al) < len(cells):
         al = al + ["C"] * (len(cells) - len(al))
     for c, w, a in zip(cells, col_widths, al):
-        pdf.cell(w, 5.5, str(c)[:40], border=1, align=a, fill=True)
+        pdf.cell(w, 5.2, _cell_fit(c, w, font_size), border=1, align=a, fill=True)
     pdf.ln()
 
 
@@ -570,17 +603,63 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
     )
     pdf.ln(2)
 
-    b_headers = ["Player", "Org", "Pos", "AB", "R", "H", "RBI", "BB", "K", "HR", "3B", "2B", "SB", "AVG", "OPS"]
-    b_base = [31, 38, 10, 9, 7, 7, 9, 7, 7, 7, 6, 6, 6, 9, 10]
-    b_scale = usable_w / sum(b_base)
-    b_w = [w * b_scale for w in b_base]
-    b_align = ["L", "L", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C"]
+    # Game cols then season cols; scaled to full page width so OPS is not clipped.
+    b_headers = [
+        "Player",
+        "Org",
+        "Pos",
+        "AB",
+        "R",
+        "H",
+        "RBI",
+        "BB",
+        "K",
+        "HR",
+        "3B",
+        "2B",
+        "SB",
+        "HBP",
+        "AVG",
+        "OPS",
+        "sHBP",
+    ]
+    b_base = [24, 28, 8, 7, 6, 6, 7, 6, 6, 6, 6, 6, 6, 7, 8, 8, 7]
+    b_w = _scale_cols(b_base, usable_w)
+    b_align = ["L", "L", "C"] + ["C"] * (len(b_headers) - 3)
 
-    p_headers = ["Player", "Org", "Pos", "IP", "H", "R", "ER", "BB", "SO", "HR", "Pitches", "ERA"]
-    p_base = [32, 40, 13, 12, 9, 8, 8, 8, 8, 8, 9, 14]
-    p_scale = usable_w / sum(p_base)
-    p_w = [w * p_scale for w in p_base]
-    p_align = ["L", "L", "C", "C", "C", "C", "C", "C", "C", "C", "C", "C"]
+    p_headers = [
+        "Player",
+        "Org",
+        "Pos",
+        "IP",
+        "H",
+        "R",
+        "ER",
+        "BB",
+        "SO",
+        "HR",
+        "Pit",
+        "WP",
+        "HB",
+        "BK",
+        "W",
+        "L",
+        "SV",
+        "BS",
+        "Hld",
+        "ERA",
+        "sW",
+        "sL",
+        "sSV",
+        "sBS",
+        "sH",
+        "sWP",
+        "sHB",
+        "sBK",
+    ]
+    p_base = [24, 28, 8] + [6] * 16 + [7] * 9
+    p_w = _scale_cols(p_base, usable_w)
+    p_align = ["L", "L", "C"] + ["C"] * (len(p_headers) - 3)
 
     def season_ops(se: dict[str, Any]) -> Any:
         obp, slg, ops = se.get("obp"), se.get("slg"), se.get("ops")
@@ -592,26 +671,60 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
         return ops
 
     def batter_pdf_cells(r: dict[str, Any]) -> list[str]:
-        """Last-night hitting line + season AVG/OPS (no pitch count — that is pitcher-only)."""
         ln = r.get("last_night") or {}
         se = r.get("season") or {}
-        ops = season_ops(se)
         return [
-            _player_cell(r)[:31],
-            _org_cell(r)[:38],
+            _player_cell(r),
+            _org_cell(r),
             _pos_short(str(r.get("position") or "")),
-            _fmt_num(ln.get("atBats")),
-            _fmt_num(ln.get("runs")),
-            _fmt_num(ln.get("hits")),
-            _fmt_num(ln.get("rbi")),
-            _fmt_num(ln.get("baseOnBalls")),
-            _fmt_num(ln.get("strikeOuts")),
-            _fmt_num(ln.get("homeRuns")),
-            _fmt_num(ln.get("triples")),
-            _fmt_num(ln.get("doubles")),
-            _fmt_num(ln.get("stolenBases")),
+            _fmt_num(_stat_val(ln, "atBats")),
+            _fmt_num(_stat_val(ln, "runs")),
+            _fmt_num(_stat_val(ln, "hits")),
+            _fmt_num(_stat_val(ln, "rbi")),
+            _fmt_num(_stat_val(ln, "baseOnBalls")),
+            _fmt_num(_stat_val(ln, "strikeOuts")),
+            _fmt_num(_stat_val(ln, "homeRuns")),
+            _fmt_num(_stat_val(ln, "triples")),
+            _fmt_num(_stat_val(ln, "doubles")),
+            _fmt_num(_stat_val(ln, "stolenBases")),
+            _fmt_num(_stat_val(ln, "hitByPitch")),
             _fmt_avg(se.get("avg")),
-            _fmt_ops(ops),
+            _fmt_ops(season_ops(se)),
+            _fmt_num(_stat_val(se, "hitByPitch")),
+        ]
+
+    def pitcher_pdf_cells(r: dict[str, Any]) -> list[str]:
+        ln = r.get("last_night") or {}
+        se = r.get("season") or {}
+        return [
+            _player_cell(r),
+            _org_cell(r),
+            _pos_short(str(r.get("position") or "")),
+            _fmt_num(_stat_val(ln, "inningsPitched")),
+            _fmt_num(_stat_val(ln, "hits")),
+            _fmt_num(_stat_val(ln, "runs")),
+            _fmt_num(_stat_val(ln, "earnedRuns")),
+            _fmt_num(_stat_val(ln, "baseOnBalls")),
+            _fmt_num(_stat_val(ln, "strikeOuts")),
+            _fmt_num(_stat_val(ln, "homeRuns")),
+            _pitcher_last_game_pitch_count(ln),
+            _fmt_num(_stat_val(ln, "wildPitches")),
+            _fmt_num(_stat_val(ln, "hitBatsmen", "hitByPitch")),
+            _fmt_num(_stat_val(ln, "balks")),
+            _fmt_num(_stat_val(ln, "wins")),
+            _fmt_num(_stat_val(ln, "losses")),
+            _fmt_num(_stat_val(ln, "saves")),
+            _fmt_num(_stat_val(ln, "blownSaves")),
+            _fmt_num(_stat_val(ln, "holds")),
+            _fmt_era(se.get("era")),
+            _fmt_num(_stat_val(se, "wins")),
+            _fmt_num(_stat_val(se, "losses")),
+            _fmt_num(_stat_val(se, "saves")),
+            _fmt_num(_stat_val(se, "blownSaves")),
+            _fmt_num(_stat_val(se, "holds")),
+            _fmt_num(_stat_val(se, "wildPitches")),
+            _fmt_num(_stat_val(se, "hitBatsmen", "hitByPitch")),
+            _fmt_num(_stat_val(se, "balks")),
         ]
 
     row_zebra = 0
@@ -629,7 +742,7 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             if not rows:
                 continue
             _draw_level_bar(pdf, f"{lvl}:", usable_w)
-            for r in sorted(rows, key=lambda x: str(x.get("name") or "").lower()):
+            for r in _sort_rows_by_name(rows):
                 _draw_data_row(pdf, batter_pdf_cells(r), b_w, bool(row_zebra % 2), b_align)
                 row_zebra += 1
         pdf.ln(3)
@@ -647,24 +760,8 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             if not rows:
                 continue
             _draw_level_bar(pdf, f"{lvl}:", usable_w)
-            for r in sorted(rows, key=lambda x: str(x.get("name") or "").lower()):
-                ln = r.get("last_night") or {}
-                se = r.get("season") or {}
-                cells = [
-                    _player_cell(r)[:32],
-                    _org_cell(r)[:38],
-                    _pos_short(str(r.get("position") or "")),
-                    _fmt_num(ln.get("inningsPitched")),
-                    _fmt_num(ln.get("hits")),
-                    _fmt_num(ln.get("runs")),
-                    _fmt_num(ln.get("earnedRuns")),
-                    _fmt_num(ln.get("baseOnBalls")),
-                    _fmt_num(ln.get("strikeOuts")),
-                    _fmt_num(ln.get("homeRuns")),
-                    _pitcher_last_game_pitch_count(ln),
-                    _fmt_era(se.get("era")),
-                ]
-                _draw_data_row(pdf, cells, p_w, bool(row_zebra % 2), p_align)
+            for r in _sort_rows_by_name(rows):
+                _draw_data_row(pdf, pitcher_pdf_cells(r), p_w, bool(row_zebra % 2), p_align)
                 row_zebra += 1
         pdf.ln(3)
 
@@ -675,7 +772,7 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             pdf.set_font("Helvetica", "B", 11)
             pdf.cell(0, 7, "NCAA - Batting", new_x="LMARGIN", new_y="NEXT")
             _draw_header_row(pdf, b_headers, b_w)
-            for r in sorted(am_h, key=lambda x: str(x.get("name") or "").lower()):
+            for r in _sort_rows_by_name(am_h):
                 _draw_data_row(pdf, batter_pdf_cells(r), b_w, bool(row_zebra % 2), b_align)
                 row_zebra += 1
             pdf.ln(2)
@@ -683,24 +780,8 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             pdf.set_font("Helvetica", "B", 11)
             pdf.cell(0, 7, "NCAA - Pitching", new_x="LMARGIN", new_y="NEXT")
             _draw_header_row(pdf, p_headers, p_w)
-            for r in sorted(am_p, key=lambda x: str(x.get("name") or "").lower()):
-                ln = r.get("last_night") or {}
-                se = r.get("season") or {}
-                cells = [
-                    _player_cell(r)[:32],
-                    _org_cell(r)[:38],
-                    _pos_short(str(r.get("position") or "")),
-                    _fmt_num(ln.get("inningsPitched")),
-                    _fmt_num(ln.get("hits")),
-                    _fmt_num(ln.get("runs")),
-                    _fmt_num(ln.get("earnedRuns")),
-                    _fmt_num(ln.get("baseOnBalls")),
-                    _fmt_num(ln.get("strikeOuts")),
-                    _fmt_num(ln.get("homeRuns")),
-                    _pitcher_last_game_pitch_count(ln),
-                    _fmt_era(se.get("era")),
-                ]
-                _draw_data_row(pdf, cells, p_w, bool(row_zebra % 2), p_align)
+            for r in _sort_rows_by_name(am_p):
+                _draw_data_row(pdf, pitcher_pdf_cells(r), p_w, bool(row_zebra % 2), p_align)
                 row_zebra += 1
             pdf.ln(2)
 
@@ -711,7 +792,7 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             pdf.set_font("Helvetica", "B", 11)
             pdf.cell(0, 7, "High School - Batting", new_x="LMARGIN", new_y="NEXT")
             _draw_header_row(pdf, b_headers, b_w)
-            for r in sorted(hs_h, key=lambda x: str(x.get("name") or "").lower()):
+            for r in _sort_rows_by_name(hs_h):
                 _draw_data_row(pdf, batter_pdf_cells(r), b_w, bool(row_zebra % 2), b_align)
                 row_zebra += 1
             pdf.ln(2)
@@ -719,24 +800,8 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             pdf.set_font("Helvetica", "B", 11)
             pdf.cell(0, 7, "High School - Pitching", new_x="LMARGIN", new_y="NEXT")
             _draw_header_row(pdf, p_headers, p_w)
-            for r in sorted(hs_p, key=lambda x: str(x.get("name") or "").lower()):
-                ln = r.get("last_night") or {}
-                se = r.get("season") or {}
-                cells = [
-                    _player_cell(r)[:32],
-                    _org_cell(r)[:38],
-                    _pos_short(str(r.get("position") or "")),
-                    _fmt_num(ln.get("inningsPitched")),
-                    _fmt_num(ln.get("hits")),
-                    _fmt_num(ln.get("runs")),
-                    _fmt_num(ln.get("earnedRuns")),
-                    _fmt_num(ln.get("baseOnBalls")),
-                    _fmt_num(ln.get("strikeOuts")),
-                    _fmt_num(ln.get("homeRuns")),
-                    _pitcher_last_game_pitch_count(ln),
-                    _fmt_era(se.get("era")),
-                ]
-                _draw_data_row(pdf, cells, p_w, bool(row_zebra % 2), p_align)
+            for r in _sort_rows_by_name(hs_p):
+                _draw_data_row(pdf, pitcher_pdf_cells(r), p_w, bool(row_zebra % 2), p_align)
                 row_zebra += 1
             pdf.ln(2)
 

@@ -1486,6 +1486,19 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
             "k",
             "so",
         )
+        # NCAA sometimes files pitcher K under batterStats (e.g. Gaeckle 9 K with 0 AB).
+        if k_val == 0:
+            bs = player_row.get("batterStats") or {}
+            if _to_int(bs.get("atBats")) == 0:
+                k_val = _ncaa_stat_int(
+                    bs,
+                    "strikeouts",
+                    "strikeOuts",
+                    "battersStruckOut",
+                    "struckOut",
+                    "k",
+                    "so",
+                )
         return {
             "ip": _ncaa_pitcher_ip_baseball_string(ps),
             "h": _ncaa_stat_int(ps, "hitsAllowed", "hits", "h"),
@@ -1819,26 +1832,49 @@ def _player_row_from_ncaa_contest(
     return _apply_ncaa_pitcher_k_fallback(selected, player_stats, opp_stats)
 
 
+def _college_ncaa_last_night_accept_dates(
+    yday: date, games: list[dict[str, Any]]
+) -> set[date]:
+    """Calendar days to treat as last night on NCAA team schedules.
+
+    When there is no final game on ``yday``, also allow ``yday + 1`` (common for
+  late West Coast games filed on the next NCAA calendar day, e.g. Oregon).
+    """
+    def is_final(g: dict[str, Any]) -> bool:
+        return g.get("status") == "final" or g.get("state") in {"C", "F", "3"}
+
+    out = {yday}
+    if not any(g.get("date") == yday and is_final(g) for g in games):
+        out.add(yday + timedelta(days=1))
+    return out
+
+
 def ncaa_player_last_night_and_month(
     c: Client, school: str, is_p: bool, ncaa_payload: dict[str, Any]
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Per-player lines from NCAA.com team schedule + boxscores (same source as team search)."""
     games: list[dict[str, Any]] = list(ncaa_payload.get("_games") or [])
     today = dashboard_date()
-    yday = today - timedelta(days=1)
+    yday = last_night_date()
+    accept_days = _college_ncaa_last_night_accept_dates(yday, games)
     mstart = today.replace(day=1)
 
     def is_final(g: dict[str, Any]) -> bool:
         return g.get("status") == "final" or g.get("state") in {"C", "F", "3"}
 
     last_keys: dict[str, Any] = {}
-    for g in games:
-        if g.get("date") == yday and is_final(g):
-            prow = _player_row_from_ncaa_contest(g, school, c.name, is_pitcher_role=is_p)
-            if prow:
-                last_raw = _with_rate_stats(_extract_individual_line(prow, is_p), is_p)
-                last_keys = _amateur_line_to_pro_keys(last_raw, is_p)
-                break
+    for day in (yday, yday + timedelta(days=1)):
+        if day not in accept_days:
+            continue
+        for g in games:
+            if g.get("date") == day and is_final(g):
+                prow = _player_row_from_ncaa_contest(g, school, c.name, is_pitcher_role=is_p)
+                if prow:
+                    last_raw = _with_rate_stats(_extract_individual_line(prow, is_p), is_p)
+                    last_keys = _amateur_line_to_pro_keys(last_raw, is_p)
+                    break
+        if last_keys:
+            break
 
     month_raw = _blank_individual_line(is_p)
     month_games = [
@@ -2063,8 +2099,13 @@ def _college_pitcher_last_night_pro_keys(
                 tasbs_url,
             )
 
+    accept_days = _college_ncaa_last_night_accept_dates(
+        yday, list(get_cached_ncaa_school_payload(school, weeks=4).get("_games") or [])
+    )
     for su in sched_urls:
-        side = _sidearm_player_last_night_from_schedule_link(su, c.name, True, yday)
+        side = _sidearm_player_last_night_from_schedule_link(
+            su, c.name, True, yday, accept_days=accept_days
+        )
         if side and _to_float(side.get("inningsPitched")) > 0:
             cu = str(side.pop("contest_url", "") or "")
             side.pop("game_date", None)
@@ -2103,7 +2144,11 @@ def _merge_manual_amateur_clients(clients: list[Client]) -> list[Client]:
 
 
 def _sidearm_player_last_night_from_schedule_link(
-    schedule_url: str, player_name: str, is_p: bool, target_day: date
+    schedule_url: str,
+    player_name: str,
+    is_p: bool,
+    target_day: date,
+    accept_days: set[date] | None = None,
 ) -> dict[str, Any]:
     """Best-effort fallback from Sidearm schedule link -> boxscore tables."""
     url = (schedule_url or "").strip()
@@ -2113,11 +2158,11 @@ def _sidearm_player_last_night_from_schedule_link(
         html = requests.get(url, timeout=25, headers=_HTTP_HEADERS).text
     except Exception:
         return {}
-    hrefs = re.findall(r'href="([^"]*boxscore[^"]*)"', html, flags=re.I)
     cand_urls: list[str] = []
     seen: set[str] = set()
-    for h in hrefs:
-        if "sidearm-icons.svg" in h:
+    for h in re.findall(r'href="([^"]+)"', html, flags=re.I):
+        hl = h.lower()
+        if "boxscore" not in hl or "sidearm-icons" in hl:
             continue
         full = urllib.parse.urljoin(url, h)
         if full in seen:
@@ -2210,8 +2255,8 @@ def _sidearm_player_last_night_from_schedule_link(
                     return out
         return {}
 
-    # Strict: calendar yesterday only (never prefer today's box scores).
-    return _scan_boxscores({target_day})
+    days = accept_days if accept_days else {target_day}
+    return _scan_boxscores(days)
 
 
 def get_team_catalog() -> list[dict[str, Any]]:
@@ -3426,12 +3471,22 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
 
             ln_ind, mtd_ind = ncaa_player_last_night_and_month(c, school, is_p, ncaa_payload)
             yday = last_night_date()
+            accept_days = _college_ncaa_last_night_accept_dates(
+                yday, list(ncaa_payload.get("_games") or [])
+            )
             ncaa_box_url = ""
-            for g in list(ncaa_payload.get("_games") or []):
-                if g.get("date") == yday and (g.get("status") == "final" or g.get("state") in {"C", "F", "3"}):
-                    cid = _safe_int(g.get("contest_id"))
-                    if cid:
-                        ncaa_box_url = f"https://www.ncaa.com/game/{cid}/boxscore"
+            for day in (yday, yday + timedelta(days=1)):
+                if day not in accept_days:
+                    continue
+                for g in list(ncaa_payload.get("_games") or []):
+                    if g.get("date") == day and (
+                        g.get("status") == "final" or g.get("state") in {"C", "F", "3"}
+                    ):
+                        cid = _safe_int(g.get("contest_id"))
+                        if cid:
+                            ncaa_box_url = f"https://www.ncaa.com/game/{cid}/boxscore"
+                        break
+                if ncaa_box_url:
                     break
             ncaa_ln_fmt: dict[str, Any] = {}
             if ln_ind:
