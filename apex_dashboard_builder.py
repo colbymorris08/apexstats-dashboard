@@ -21,10 +21,28 @@ APEX_ROOT = Path(__file__).resolve().parent
 SOURCE_XLSX = APEX_ROOT / "client_lists" / "Client List - 04-15-26.xlsx"
 AMATEUR_SOURCE_XLSX = APEX_ROOT / "client_lists" / "AmateurList.xlsx"
 HS_SOURCE_XLSX = APEX_ROOT / "client_lists" / "HSList.xlsx"
-# Optional local-only workbooks (skipped in CI when missing).
-JF_FOLLOW_SOURCE_XLSX = Path.home() / "Desktop" / "Apex" / "FurmaniakFollow.xlsx"
-ARB_TRACKER_SOURCE_XLSX = Path.home() / "Desktop" / "DashboardArb.xlsx"
-FA_TRACKER_SOURCE_XLSX = Path.home() / "Desktop" / "DashboardFA.xlsx"
+
+
+def _resolve_workbook(*candidates: Path) -> Path:
+    """First existing path wins (repo copies for CI; Desktop fallbacks for local edits)."""
+    for p in candidates:
+        if p.is_file():
+            return p
+    return candidates[0]
+
+
+JF_FOLLOW_SOURCE_XLSX = _resolve_workbook(
+    APEX_ROOT / "client_lists" / "FurmaniakFollow.xlsx",
+    Path.home() / "Desktop" / "Apex" / "FurmaniakFollow.xlsx",
+)
+ARB_TRACKER_SOURCE_XLSX = _resolve_workbook(
+    APEX_ROOT / "client_lists" / "DashboardArb.xlsx",
+    Path.home() / "Desktop" / "DashboardArb.xlsx",
+)
+FA_TRACKER_SOURCE_XLSX = _resolve_workbook(
+    APEX_ROOT / "client_lists" / "DashboardFA.xlsx",
+    Path.home() / "Desktop" / "DashboardFA.xlsx",
+)
 OUT_JSON = APEX_ROOT / "apex_dashboard_data.json"
 PACIFIC_TZ = ZoneInfo("America/Los_Angeles")
 
@@ -4337,6 +4355,28 @@ def build_dashboard_data() -> dict[str, Any]:
     return data
 
 
+def _watch_list_nonempty(watch: Any) -> bool:
+    if not isinstance(watch, dict):
+        return False
+    return any(isinstance(v, list) and len(v) > 0 for v in watch.values())
+
+
+def _preserve_tracker_sections(new_data: dict[str, Any], existing: dict[str, Any]) -> dict[str, Any]:
+    """Keep prior tracker/watch data when a build cannot read the Excel sources (e.g. CI)."""
+    if not existing:
+        return new_data
+    wl_new = new_data.get("watch_list")
+    wl_old = existing.get("watch_list")
+    if not _watch_list_nonempty(wl_new) and _watch_list_nonempty(wl_old):
+        new_data["watch_list"] = wl_old
+    for key in ("arbitration_tracker", "free_agency_tracker"):
+        sec_new = new_data.get(key) if isinstance(new_data.get(key), dict) else {}
+        sec_old = existing.get(key) if isinstance(existing.get(key), dict) else {}
+        if not (sec_new.get("rows") or []) and (sec_old.get("rows") or []):
+            new_data[key] = sec_old
+    return new_data
+
+
 def write_dashboard_data(out: Path = OUT_JSON) -> Path:
     def _json_safe(v: Any) -> Any:
         if isinstance(v, float):
@@ -4347,7 +4387,13 @@ def write_dashboard_data(out: Path = OUT_JSON) -> Path:
             return [_json_safe(x) for x in v]
         return v
 
-    data = build_dashboard_data()
+    existing: dict[str, Any] = {}
+    if out.is_file():
+        try:
+            existing = json.loads(out.read_text())
+        except Exception:
+            existing = {}
+    data = _preserve_tracker_sections(build_dashboard_data(), existing)
     # Strict JSON for browser parsing: prevent NaN/Infinity tokens.
     out.write_text(json.dumps(_json_safe(data), separators=(",", ":"), allow_nan=False))
     return out
