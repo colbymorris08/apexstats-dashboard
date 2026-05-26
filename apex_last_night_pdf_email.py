@@ -642,7 +642,7 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
     )
     pdf.ln(2)
 
-    # Last-night box score; season AVG/OPS and ERA only (no other season counting stats).
+    # Last-night box score; season AVG/OPS/HR and ERA only (no other season counting stats).
     b_headers = [
         "Player",
         "Org",
@@ -660,8 +660,9 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
         "HBP",
         "AVG",
         "OPS",
+        "sHR",
     ]
-    b_base = [34, 40, 9, 8, 7, 7, 8, 7, 7, 7, 7, 7, 7, 8, 9, 9]
+    b_base = [34, 40, 9, 8, 7, 7, 8, 7, 7, 7, 7, 7, 7, 8, 9, 9, 7]
     b_w = _scale_cols(b_base, usable_w)
     b_align = ["L", "L", "C"] + ["C"] * (len(b_headers) - 3)
 
@@ -720,6 +721,7 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             _fmt_game_only(ln, "hitByPitch"),
             _fmt_avg(se.get("avg")),
             _fmt_ops(season_ops(se)),
+            _fmt_num(_stat_val(se, "homeRuns")),
         ]
 
     def pitcher_pdf_cells(r: dict[str, Any]) -> list[str]:
