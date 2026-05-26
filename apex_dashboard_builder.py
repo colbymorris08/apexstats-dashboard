@@ -23,26 +23,10 @@ AMATEUR_SOURCE_XLSX = APEX_ROOT / "client_lists" / "AmateurList.xlsx"
 HS_SOURCE_XLSX = APEX_ROOT / "client_lists" / "HSList.xlsx"
 
 
-def _resolve_workbook(*candidates: Path) -> Path:
-    """First existing path wins (repo copies for CI; Desktop fallbacks for local edits)."""
-    for p in candidates:
-        if p.is_file():
-            return p
-    return candidates[0]
-
-
-JF_FOLLOW_SOURCE_XLSX = _resolve_workbook(
-    APEX_ROOT / "client_lists" / "FurmaniakFollow.xlsx",
-    Path.home() / "Desktop" / "Apex" / "FurmaniakFollow.xlsx",
-)
-ARB_TRACKER_SOURCE_XLSX = _resolve_workbook(
-    APEX_ROOT / "client_lists" / "DashboardArb.xlsx",
-    Path.home() / "Desktop" / "DashboardArb.xlsx",
-)
-FA_TRACKER_SOURCE_XLSX = _resolve_workbook(
-    APEX_ROOT / "client_lists" / "DashboardFA.xlsx",
-    Path.home() / "Desktop" / "DashboardFA.xlsx",
-)
+# Arb / FA / JF watch lists — edit these in client_lists/ (used by site + GitHub Actions).
+JF_FOLLOW_SOURCE_XLSX = APEX_ROOT / "client_lists" / "FurmaniakFollow.xlsx"
+ARB_TRACKER_SOURCE_XLSX = APEX_ROOT / "client_lists" / "DashboardArb.xlsx"
+FA_TRACKER_SOURCE_XLSX = APEX_ROOT / "client_lists" / "DashboardFA.xlsx"
 OUT_JSON = APEX_ROOT / "apex_dashboard_data.json"
 PACIFIC_TZ = ZoneInfo("America/Los_Angeles")
 
@@ -101,6 +85,13 @@ PRO_CLIENT_EXCLUDE_NAMES: frozenset[str] = frozenset(
         "adam wolf",
         "scott alexander",
         "colin barber",
+    }
+)
+# Hidden from dashboard, PDF email, and site (all levels).
+DASHBOARD_EXCLUDE_NAMES: frozenset[str] = frozenset(
+    {
+        "parker clubb",
+        *PRO_CLIENT_EXCLUDE_NAMES,
     }
 )
 # Normalized client name -> Stats API person id when search is ambiguous or returns no hits.
@@ -838,6 +829,8 @@ def build_tracker_data(path: Path, pinned_names: tuple[str, ...], enrich_all_row
     # Remove players with negative career bWAR from tracker lists.
     filtered_rows: list[dict[str, Any]] = []
     for r in rows:
+        if r.get("name_norm") in DASHBOARD_EXCLUDE_NAMES:
+            continue
         cbwar = r.get("career_bwar")
         if cbwar is not None and float(cbwar) < 0:
             continue
@@ -2381,6 +2374,8 @@ def load_clients(path: Path) -> list[Client]:
         raw_name = _cell_str(r.get("Name", ""))
         if not raw_name or raw_name.lower() == "nan":
             continue
+        if _norm_player_name(_parse_name(raw_name)) in DASHBOARD_EXCLUDE_NAMES:
+            continue
         level = _cell_str(r.get("Level", ""))
         league = _cell_str(r.get("League", ""))
         position = _cell_str(r.get("Position", "")).upper()
@@ -2473,6 +2468,8 @@ def load_amateur_clients(path: Path) -> list[Client]:
     for _, r in df.iterrows():
         raw_name = _cell_str(r.get(name_col, ""))
         if not raw_name:
+            continue
+        if _norm_player_name(_parse_name(raw_name)) in DASHBOARD_EXCLUDE_NAMES:
             continue
         position = _cell_str(r.get(pos_col, "")).upper() if pos_col else ""
         school = _cell_str(r.get(school_col, "")) if school_col else ""
@@ -4121,6 +4118,8 @@ def load_high_school_clients(path: Path) -> list[dict[str, str]]:
             continue
         name = _parse_name(raw_name)
         norm = _norm_player_name(name)
+        if norm in DASHBOARD_EXCLUDE_NAMES:
+            continue
         stats_url = _cell_str(r.get(url_col, "")) if url_col else ""
         # Force known overrides when sheet links are stale/wrong sport pages.
         override_url = HS_MAXPREPS_URL_OVERRIDES.get(norm, "")
@@ -4246,7 +4245,7 @@ def _reset_dashboard_build_caches() -> None:
 def _load_pro_clients_for_dashboard() -> list[Client]:
     clients = load_clients(SOURCE_XLSX)
     pro = [c for c in clients if not c.is_amateur]
-    pro = [c for c in pro if _norm_player_name(c.name) not in PRO_CLIENT_EXCLUDE_NAMES]
+    pro = [c for c in pro if _norm_player_name(c.name) not in DASHBOARD_EXCLUDE_NAMES]
     return [
         c
         for c in pro

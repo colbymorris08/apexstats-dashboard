@@ -135,12 +135,22 @@ def _pdf_hitter_line_is_individual(ln: Any) -> bool:
     return True
 
 
+_PDF_EXCLUDE_NAMES = frozenset({"parker clubb"})
+
+
 def pdf_row_for_last_night_email(row: dict[str, Any], report_last_night_iso: str) -> bool:
     """
     PDF-only: row appears only if stats are for the same calendar day as the
     dashboard last_night_date and look like an individual line, not a team stub.
     """
-    if not isinstance(row, dict) or not last_night_nonempty(row):
+    if not isinstance(row, dict):
+        return False
+    nm = re.sub(r"[^a-z0-9 '\-]", " ", str(row.get("name") or "").strip().lower())
+    parts = [p for p in nm.split() if p and p not in {"jr", "sr", "ii", "iii", "iv"}]
+    norm = f"{parts[0]} {parts[-1]}" if len(parts) >= 2 else nm.strip()
+    if norm in _PDF_EXCLUDE_NAMES:
+        return False
+    if not last_night_nonempty(row):
         return False
     rd = _norm_report_date(report_last_night_iso)
     if not rd:
