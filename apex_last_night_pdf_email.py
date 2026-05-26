@@ -478,11 +478,11 @@ def fetch_probable_starters_by_level(
 
 
 def _draw_header_row(pdf: Any, headers: list[str], col_widths: list[float]) -> None:
-    pdf.set_font("Helvetica", "B", 6.5)
+    pdf.set_font("Helvetica", "B", 6.0)
     pdf.set_fill_color(*HDR_FILL)
     pdf.set_text_color(*HDR_TEXT)
     for h, w in zip(headers, col_widths):
-        pdf.cell(w, 5.5, _cell_fit(h, w, 6.5), border=1, align="C", fill=True)
+        pdf.cell(w, 5.5, _cell_fit(h, w, 6.0, pdf=pdf), border=1, align="C", fill=True)
     pdf.ln()
     pdf.set_text_color(0, 0, 0)
 
@@ -508,15 +508,39 @@ def _sort_rows_by_name(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return sorted(rows, key=_name_sort_key)
 
 
-def _scale_cols(base: list[float], total: float = 277.0) -> list[float]:
+def _pdf_usable_width(pdf: Any) -> float:
+    return float(pdf.w - pdf.l_margin - pdf.r_margin)
+
+
+def _scale_cols(base: list[float], total: float) -> list[float]:
     s = sum(base)
     return [w * total / s for w in base] if s else base
 
 
-def _cell_fit(text: str, width_mm: float, font_size: float = 6.0) -> str:
+def _cell_fit(text: str, width_mm: float, font_size: float = 6.0, pdf: Any = None) -> str:
     t = str(text or "")
-    max_chars = max(2, int(width_mm / (font_size * 0.38)))
-    return t if len(t) <= max_chars else t[: max_chars - 1]
+    if not t:
+        return ""
+    avail = max(2.0, width_mm - 1.2)
+    if pdf is not None:
+        style = getattr(pdf, "font_style", "") or ""
+        family = getattr(pdf, "font_family", "Helvetica") or "Helvetica"
+        pdf.set_font(family, style, font_size)
+        try:
+            if pdf.get_string_width(t) <= avail:
+                return t
+            lo, hi = 0, len(t)
+            while lo < hi:
+                mid = (lo + hi + 1) // 2
+                if pdf.get_string_width(t[:mid]) <= avail:
+                    lo = mid
+                else:
+                    hi = mid - 1
+            return t[:lo] if lo else ""
+        except Exception:
+            pass
+    max_chars = max(2, int(avail / (font_size * 0.32)))
+    return t if len(t) <= max_chars else t[:max_chars]
 
 
 def _stat_val(d: dict[str, Any], *keys: str) -> Any:
@@ -544,7 +568,7 @@ def _draw_data_row(
     if len(al) < len(cells):
         al = al + ["C"] * (len(cells) - len(al))
     for c, w, a in zip(cells, col_widths, al):
-        pdf.cell(w, 5.2, _cell_fit(c, w, font_size), border=1, align=a, fill=True)
+        pdf.cell(w, 5.2, _cell_fit(c, w, font_size, pdf=pdf), border=1, align=a, fill=True)
     pdf.ln()
 
 
@@ -586,10 +610,12 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
         if isinstance(r, dict) and pdf_row_for_last_night_email(r, report_anchor)
     ]
 
-    pdf = FPDF(orientation="L", unit="mm", format="Letter")
-    pdf.set_auto_page_break(auto=True, margin=10)
+    # Legal landscape (~356mm wide) so wide pitching tables are not clipped.
+    pdf = FPDF(orientation="L", unit="mm", format="Legal")
+    pdf.set_margins(4, 8, 4)
+    pdf.set_auto_page_break(auto=True, margin=8)
     pdf.add_page()
-    usable_w = 277.0
+    usable_w = _pdf_usable_width(pdf)
 
     pdf.set_font("Helvetica", "B", 13)
     pdf.cell(0, 8, f"Apex last night / season ({last_date})", new_x="LMARGIN", new_y="NEXT")
@@ -657,7 +683,8 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
         "sHB",
         "sBK",
     ]
-    p_base = [24, 28, 8] + [6] * 16 + [7] * 9
+    # Extra weight on Player/Org; many game + season pitching columns.
+    p_base = [34, 40, 9] + [7] * 16 + [8] * 9
     p_w = _scale_cols(p_base, usable_w)
     p_align = ["L", "L", "C"] + ["C"] * (len(p_headers) - 3)
 
