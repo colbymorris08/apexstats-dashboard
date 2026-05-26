@@ -1509,6 +1509,14 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
             "hr": _ncaa_stat_int(ps, "homeRunsAllowed", "homeRuns", "hr"),
             "bf": _ncaa_stat_int(ps, "battersFaced", "bf"),
             "pitches": pitches,
+            "w": _ncaa_stat_int(ps, "win", "wins"),
+            "l": _ncaa_stat_int(ps, "loss", "losses"),
+            "sv": _ncaa_stat_int(ps, "save", "saves"),
+            "bs": _ncaa_stat_int(ps, "blownSave", "blownSaves"),
+            "hld": _ncaa_stat_int(ps, "hold", "holds"),
+            "wp": _ncaa_stat_int(ps, "wildPitches", "wildPitch"),
+            "hb": _ncaa_stat_int(ps, "hitBatsmen", "hitByPitch"),
+            "bk": _ncaa_stat_int(ps, "balks", "balk"),
         }
     bs = player_row.get("batterStats") or {}
     # NCAA GraphQL often omits XBH / HR in `batterStats` while still exposing them
@@ -1539,6 +1547,7 @@ def _extract_individual_line(player_row: dict[str, Any], is_pitcher_role: bool) 
         "doubles": max(doubles_bs, doubles_hs, triples_hs),
         "hr": max(hr_bs, hr_hs),
         "sb": max(extra["sb"], _ncaa_stat_int(bs, "stolenBases", "stolenBase", "sb")),
+        "hbp": _ncaa_stat_int(bs, "hitByPitch", "hitByPitch"),
         "ofa": ofa,
     }
 
@@ -1783,6 +1792,20 @@ def _amateur_line_to_pro_keys(raw: dict[str, Any], is_p: bool) -> dict[str, Any]
                 out["numberOfPitches"] = int(fv) if fv == int(fv) else int(round(fv))
             except (TypeError, ValueError):
                 out["numberOfPitches"] = pt
+        for rk, ok in (
+            ("w", "wins"),
+            ("l", "losses"),
+            ("sv", "saves"),
+            ("bs", "blownSaves"),
+            ("hld", "holds"),
+            ("wp", "wildPitches"),
+            ("hb", "hitBatsmen"),
+            ("bk", "balks"),
+            ("hbp", "hitByPitch"),
+        ):
+            n = to_number(raw.get(rk))
+            if n:
+                out[ok] = n
         return out
     return {
         "atBats": to_number(raw.get("ab")),
@@ -1797,6 +1820,7 @@ def _amateur_line_to_pro_keys(raw: dict[str, Any], is_p: bool) -> dict[str, Any]
         "triples": to_number(raw.get("triples")),
         "doubles": to_number(raw.get("doubles")),
         "stolenBases": to_number(raw.get("sb")),
+        "hitByPitch": to_number(raw.get("hbp")),
         "outfieldAssists": to_number(raw.get("ofa")),
     }
 

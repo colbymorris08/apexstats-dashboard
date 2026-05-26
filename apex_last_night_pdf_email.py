@@ -245,6 +245,19 @@ def _fmt_era(v: Any) -> str:
         return str(v)
 
 
+def _fmt_game_only(ln: dict[str, Any], *keys: str) -> str:
+    """Last-night only: blank when the player did not record that stat in the game."""
+    v = _stat_val(ln, *keys)
+    if v is None or v == "":
+        return ""
+    try:
+        if float(v) == 0:
+            return ""
+    except (TypeError, ValueError):
+        pass
+    return _fmt_num(v)
+
+
 def _pitcher_last_game_pitch_count(ln: dict[str, Any]) -> str:
     """Pitchers only: total pitches from the last outing line (never used for hitting rows)."""
     for k in ("numberOfPitches", "pitchesThrown", "pitchCount", "pitches", "npc"):
@@ -618,7 +631,7 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
     usable_w = _pdf_usable_width(pdf)
 
     pdf.set_font("Helvetica", "B", 13)
-    pdf.cell(0, 8, f"Apex last night / season ({last_date})", new_x="LMARGIN", new_y="NEXT")
+    pdf.cell(0, 8, f"Apex last night ({last_date})", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", "", 8)
     pdf.cell(
         0,
@@ -629,7 +642,7 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
     )
     pdf.ln(2)
 
-    # Game cols then season cols; scaled to full page width so OPS is not clipped.
+    # Last-night box score only (no season totals).
     b_headers = [
         "Player",
         "Org",
@@ -645,11 +658,8 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
         "2B",
         "SB",
         "HBP",
-        "AVG",
-        "OPS",
-        "sHBP",
     ]
-    b_base = [24, 28, 8, 7, 6, 6, 7, 6, 6, 6, 6, 6, 6, 7, 8, 8, 7]
+    b_base = [34, 40, 9, 8, 7, 7, 8, 7, 7, 7, 7, 7, 7, 8]
     b_w = _scale_cols(b_base, usable_w)
     b_align = ["L", "L", "C"] + ["C"] * (len(b_headers) - 3)
 
@@ -673,33 +683,13 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
         "SV",
         "BS",
         "Hld",
-        "ERA",
-        "sW",
-        "sL",
-        "sSV",
-        "sBS",
-        "sH",
-        "sWP",
-        "sHB",
-        "sBK",
     ]
-    # Extra weight on Player/Org; many game + season pitching columns.
-    p_base = [34, 40, 9] + [7] * 16 + [8] * 9
+    p_base = [34, 40, 9] + [7] * 10 + [8] * 6
     p_w = _scale_cols(p_base, usable_w)
     p_align = ["L", "L", "C"] + ["C"] * (len(p_headers) - 3)
 
-    def season_ops(se: dict[str, Any]) -> Any:
-        obp, slg, ops = se.get("obp"), se.get("slg"), se.get("ops")
-        if (ops in (None, "", 0)) and obp not in (None, "") and slg not in (None, ""):
-            try:
-                return float(obp) + float(slg)
-            except Exception:
-                return ops
-        return ops
-
     def batter_pdf_cells(r: dict[str, Any]) -> list[str]:
         ln = r.get("last_night") or {}
-        se = r.get("season") or {}
         return [
             _player_cell(r),
             _org_cell(r),
@@ -714,15 +704,11 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             _fmt_num(_stat_val(ln, "triples")),
             _fmt_num(_stat_val(ln, "doubles")),
             _fmt_num(_stat_val(ln, "stolenBases")),
-            _fmt_num(_stat_val(ln, "hitByPitch")),
-            _fmt_avg(se.get("avg")),
-            _fmt_ops(season_ops(se)),
-            _fmt_num(_stat_val(se, "hitByPitch")),
+            _fmt_game_only(ln, "hitByPitch"),
         ]
 
     def pitcher_pdf_cells(r: dict[str, Any]) -> list[str]:
         ln = r.get("last_night") or {}
-        se = r.get("season") or {}
         return [
             _player_cell(r),
             _org_cell(r),
@@ -735,23 +721,14 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             _fmt_num(_stat_val(ln, "strikeOuts")),
             _fmt_num(_stat_val(ln, "homeRuns")),
             _pitcher_last_game_pitch_count(ln),
-            _fmt_num(_stat_val(ln, "wildPitches")),
-            _fmt_num(_stat_val(ln, "hitBatsmen", "hitByPitch")),
-            _fmt_num(_stat_val(ln, "balks")),
-            _fmt_num(_stat_val(ln, "wins")),
-            _fmt_num(_stat_val(ln, "losses")),
-            _fmt_num(_stat_val(ln, "saves")),
-            _fmt_num(_stat_val(ln, "blownSaves")),
-            _fmt_num(_stat_val(ln, "holds")),
-            _fmt_era(se.get("era")),
-            _fmt_num(_stat_val(se, "wins")),
-            _fmt_num(_stat_val(se, "losses")),
-            _fmt_num(_stat_val(se, "saves")),
-            _fmt_num(_stat_val(se, "blownSaves")),
-            _fmt_num(_stat_val(se, "holds")),
-            _fmt_num(_stat_val(se, "wildPitches")),
-            _fmt_num(_stat_val(se, "hitBatsmen", "hitByPitch")),
-            _fmt_num(_stat_val(se, "balks")),
+            _fmt_game_only(ln, "wildPitches"),
+            _fmt_game_only(ln, "hitBatsmen", "hitByPitch"),
+            _fmt_game_only(ln, "balks"),
+            _fmt_game_only(ln, "wins", "win"),
+            _fmt_game_only(ln, "losses", "loss"),
+            _fmt_game_only(ln, "saves", "save"),
+            _fmt_game_only(ln, "blownSaves", "blownSave"),
+            _fmt_game_only(ln, "holds", "hold"),
         ]
 
     row_zebra = 0
