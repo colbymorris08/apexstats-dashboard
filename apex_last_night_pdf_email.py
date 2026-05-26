@@ -642,7 +642,7 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
     )
     pdf.ln(2)
 
-    # Last-night box score only (no season totals).
+    # Last-night box score; season AVG/OPS and ERA only (no other season counting stats).
     b_headers = [
         "Player",
         "Org",
@@ -658,8 +658,10 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
         "2B",
         "SB",
         "HBP",
+        "AVG",
+        "OPS",
     ]
-    b_base = [34, 40, 9, 8, 7, 7, 8, 7, 7, 7, 7, 7, 7, 8]
+    b_base = [34, 40, 9, 8, 7, 7, 8, 7, 7, 7, 7, 7, 7, 8, 9, 9]
     b_w = _scale_cols(b_base, usable_w)
     b_align = ["L", "L", "C"] + ["C"] * (len(b_headers) - 3)
 
@@ -683,13 +685,24 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
         "SV",
         "BS",
         "Hld",
+        "ERA",
     ]
-    p_base = [34, 40, 9] + [7] * 10 + [8] * 6
+    p_base = [34, 40, 9] + [7] * 10 + [8] * 6 + [9]
     p_w = _scale_cols(p_base, usable_w)
     p_align = ["L", "L", "C"] + ["C"] * (len(p_headers) - 3)
 
+    def season_ops(se: dict[str, Any]) -> Any:
+        obp, slg, ops = se.get("obp"), se.get("slg"), se.get("ops")
+        if (ops in (None, "", 0)) and obp not in (None, "") and slg not in (None, ""):
+            try:
+                return float(obp) + float(slg)
+            except Exception:
+                return ops
+        return ops
+
     def batter_pdf_cells(r: dict[str, Any]) -> list[str]:
         ln = r.get("last_night") or {}
+        se = r.get("season") or {}
         return [
             _player_cell(r),
             _org_cell(r),
@@ -705,10 +718,13 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             _fmt_num(_stat_val(ln, "doubles")),
             _fmt_num(_stat_val(ln, "stolenBases")),
             _fmt_game_only(ln, "hitByPitch"),
+            _fmt_avg(se.get("avg")),
+            _fmt_ops(season_ops(se)),
         ]
 
     def pitcher_pdf_cells(r: dict[str, Any]) -> list[str]:
         ln = r.get("last_night") or {}
+        se = r.get("season") or {}
         return [
             _player_cell(r),
             _org_cell(r),
@@ -729,6 +745,7 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             _fmt_game_only(ln, "saves", "save"),
             _fmt_game_only(ln, "blownSaves", "blownSave"),
             _fmt_game_only(ln, "holds", "hold"),
+            _fmt_era(se.get("era")),
         ]
 
     row_zebra = 0
