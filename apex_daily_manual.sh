@@ -53,7 +53,10 @@ if [[ -n "${APEX_GIT_SSH_KEY:-}" && -f "${APEX_GIT_SSH_KEY}" ]]; then
 fi
 
 # Full sync (includes pro team refresh from game logs, then amateur/HS/trackers).
-"${PYTHON3}" apex_dashboard_builder.py
+if ! perl -e 'alarm shift; exec @ARGV' 3600 "${PYTHON3}" apex_dashboard_builder.py; then
+  echo "Warning: builder timed out or failed after 60m; aborting this run." >&2
+  exit 1
+fi
 git add apex_dashboard_data.json
 if git diff --cached --quiet; then
   echo "No JSON changes to commit."
@@ -69,7 +72,9 @@ fi
 
 # Exit 2 = PDF OK but SMTP/email failed; do not abort the whole manual run (set -e).
 pdf_stat=0
-"${PYTHON3}" apex_last_night_pdf_email.py || pdf_stat=$?
+if ! perl -e 'alarm shift; exec @ARGV' 1200 "${PYTHON3}" apex_last_night_pdf_email.py; then
+  pdf_stat=$?
+fi
 if [[ "${pdf_stat:-0}" -eq 2 ]]; then
   echo "Note: PDF was written, but email failed (check ~/.apexstats_morning_email.env SMTP / App Password)." >&2
 elif [[ "${pdf_stat:-0}" -ne 0 ]]; then
