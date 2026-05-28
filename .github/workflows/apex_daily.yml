@@ -47,6 +47,8 @@ jobs:
         run: pip install -r apex_dashboard_requirements.txt
 
       - name: Build dashboard JSON
+        env:
+          APEX_DAILY_FAST: "1"
         run: python3 apex_dashboard_builder.py
 
       - name: Commit and push dashboard data

@@ -5,6 +5,7 @@
 # Intended to match this working one-liner (same order, same git pattern, same SSH):
 #   cd /Users/colbymorris/apexstats && source ~/.apexstats_morning_email.env 2>/dev/null; \
 #     export TZ=America/Los_Angeles GIT_SSH_COMMAND="ssh -i ${HOME}/.ssh/id_ed25519 -o IdentitiesOnly=yes" && \
+export APEX_DAILY_FAST="${APEX_DAILY_FAST:-1}"
 #     python3 apex_dashboard_builder.py && \
 #     git add apex_dashboard_data.json && (git diff --cached --quiet || (git commit -m "Auto-refresh Apex dashboard data" && git pull --rebase origin main)) && git push && \
 #     python3 apex_last_night_pdf_email.py
@@ -37,6 +38,7 @@ fi
 
 cd /Users/colbymorris/apexstats
 export TZ=America/Los_Angeles
+export APEX_DAILY_FAST="${APEX_DAILY_FAST:-1}"
 # LaunchAgent has a minimal PATH; prefer Homebrew Python 3.11+ (needs datetime.UTC).
 if [[ -x /opt/homebrew/bin/python3 ]]; then
   export PATH="/opt/homebrew/bin:${PATH}"

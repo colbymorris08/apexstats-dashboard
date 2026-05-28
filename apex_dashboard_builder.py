@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
@@ -4336,6 +4337,9 @@ def build_dashboard_data() -> dict[str, Any]:
             high_school_rows.extend(rows)
     jf_watch_rows: list[dict[str, Any]] = build_jf_follow_rows(JF_FOLLOW_SOURCE_XLSX)
 
+    fast_daily = os.environ.get("APEX_DAILY_FAST", "").strip().lower() in ("1", "true", "yes")
+    enrich_trackers = not fast_daily
+
     data = {
         "generated_at": datetime.now(UTC).isoformat(),
         "season": SEASON,
@@ -4345,10 +4349,10 @@ def build_dashboard_data() -> dict[str, Any]:
         "high_school_clients": high_school_rows,
         "watch_list": {"JF": jf_watch_rows},
         "arbitration_tracker": build_tracker_data(
-            ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB, enrich_all_rows=True
+            ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB, enrich_all_rows=enrich_trackers
         ),
         "free_agency_tracker": build_tracker_data(
-            FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA, enrich_all_rows=True
+            FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA, enrich_all_rows=enrich_trackers
         ),
     }
     return data
