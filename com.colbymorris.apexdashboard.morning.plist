@@ -24,25 +24,18 @@
     <string>1</string>
   </dict>
 
-  <!-- 6:00 local + 7:30 backup in case the first run hangs/fails. -->
+  <!-- Optional Mac backup (disabled by default — daily email uses GitHub Actions at 6 AM PT).
+       To enable: cp this plist to ~/Library/LaunchAgents/ and launchctl bootstrap … -->
   <key>StartCalendarInterval</key>
-  <array>
-    <dict>
-      <key>Hour</key>
-      <integer>6</integer>
-      <key>Minute</key>
-      <integer>0</integer>
-    </dict>
-    <dict>
-      <key>Hour</key>
-      <integer>7</integer>
-      <key>Minute</key>
-      <integer>30</integer>
-    </dict>
-  </array>
+  <dict>
+    <key>Hour</key>
+    <integer>6</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
 
   <key>RunAtLoad</key>
-  <true/>
+  <false/>
 
   <key>StandardOutPath</key>
   <string>/Users/colbymorris/apexstats/apex_morning.log</string>

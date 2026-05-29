@@ -1,19 +1,11 @@
-# Daily 6:00 AM Pacific: rebuild JSON, push to GitHub Pages repo, PDF + email.
-# Mirrors: zsh apex_daily_manual.sh (Mac can keep LaunchAgent as backup).
+# Daily 6:00 AM Pacific: rebuild JSON, push site data, PDF + email.
+# Runs on GitHub's servers — your Mac can be off. Manual re-run: workflow_dispatch.
 name: Apex daily
 
 on:
   schedule:
+    # Once per day, 6:00 AM Pacific (manual re-run: Actions → Apex daily → Run workflow).
     - cron: "0 6 * * *"
-      timezone: America/Los_Angeles
-    # Backups if GitHub delays scheduled runs (common).
-    - cron: "30 6 * * *"
-      timezone: America/Los_Angeles
-    - cron: "0 7 * * *"
-      timezone: America/Los_Angeles
-    - cron: "30 7 * * *"
-      timezone: America/Los_Angeles
-    - cron: "0 8 * * *"
       timezone: America/Los_Angeles
   workflow_dispatch:
 
@@ -30,6 +22,7 @@ jobs:
     timeout-minutes: 120
     env:
       TZ: America/Los_Angeles
+      APEX_DAILY_FAST: "1"
       # Silence Node 20 deprecation notice on checkout/setup-python (harmless).
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
@@ -47,8 +40,9 @@ jobs:
         run: pip install -r apex_dashboard_requirements.txt
 
       - name: Build dashboard JSON
-        env:
-          APEX_DAILY_FAST: "1"
+        id: build
+        continue-on-error: true
+        timeout-minutes: 90
         run: python3 apex_dashboard_builder.py
 
       - name: Commit and push dashboard data
@@ -84,6 +78,7 @@ jobs:
           [[ "$missing" -eq 0 ]]
 
       - name: Build PDF and send email
+        if: ${{ always() && steps.build.outcome != 'cancelled' }}
         env:
           APEX_SMTP_HOST: ${{ secrets.APEX_SMTP_HOST }}
           APEX_SMTP_PORT: ${{ secrets.APEX_SMTP_PORT }}

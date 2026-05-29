@@ -1,6 +1,7 @@
 #!/bin/zsh
 # Daily manual cadence (run once when you want): rebuild JSON -> commit/push (site) -> PDF + optional email.
-# Same pipeline runs in GitHub Actions at 6 AM Pacific when the Mac is off — see docs/GITHUB_ACTIONS_SETUP.md.
+# Scheduled send: GitHub Actions once at 6:00 AM Pacific only (see .github/workflows/apex_daily.yml).
+# Run this script yourself when you want a manual refresh; Mac LaunchAgent is off by default.
 #
 # Intended to match this working one-liner (same order, same git pattern, same SSH):
 #   cd /Users/colbymorris/apexstats && source ~/.apexstats_morning_email.env 2>/dev/null; \
