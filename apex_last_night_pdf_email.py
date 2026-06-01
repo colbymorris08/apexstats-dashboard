@@ -909,6 +909,23 @@ def _send_pdf_smtp(pdf_path: Path, subject: str, body_text: str) -> None:
     print(f"Emailed {pdf_path.name} to {len(recipients)} recipient(s): {', '.join(recipients)}")
 
 
+def _email_sent_marker_path() -> Path:
+    return Path(os.environ.get("APEX_EMAIL_SENT_FILE", str(OUT_JSON.parent / ".apex_email_sent_date")))
+
+
+def _already_sent_for_report_date(report_date: str) -> bool:
+    if os.environ.get("APEX_FORCE_EMAIL", "").strip().lower() in ("1", "true", "yes"):
+        return False
+    try:
+        return _email_sent_marker_path().read_text(encoding="utf-8").strip() == report_date
+    except OSError:
+        return False
+
+
+def _mark_sent_for_report_date(report_date: str) -> None:
+    _email_sent_marker_path().write_text(report_date, encoding="utf-8")
+
+
 def main() -> int:
     if not OUT_JSON.is_file():
         print(f"Missing {OUT_JSON}", file=sys.stderr)
@@ -924,6 +941,13 @@ def main() -> int:
     write_last_night_pdf(data, pdf_path)
     print(f"Wrote {pdf_path}")
 
+    if _already_sent_for_report_date(last_date):
+        print(
+            f"Already emailed for last_night_date={last_date}; skipping send "
+            f"(set APEX_FORCE_EMAIL=1 to send again)."
+        )
+        return 0
+
     subject = f"Apex last-night stats ({last_date})"
     body = (
         f"Last night date in JSON: {data.get('last_night_date')}\n"
@@ -935,6 +959,7 @@ def main() -> int:
     except Exception as e:
         print(f"Email failed: {e}", file=sys.stderr)
         return 2
+    _mark_sent_for_report_date(last_date)
     return 0
 
 

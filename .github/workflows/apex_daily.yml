@@ -1,11 +1,13 @@
-# Daily 6:00 AM Pacific: rebuild JSON, push site data, PDF + email.
-# Runs on GitHub's servers — your Mac can be off. Manual re-run: workflow_dispatch.
+# Daily 6:00 AM Pacific (+ 7:00 backup): rebuild JSON, push site, PDF + email.
+# Runs on GitHub — Mac can be off. Email dedup = one message per last_night_date.
 name: Apex daily
 
 on:
   schedule:
-    # Once per day, 6:00 AM Pacific (manual re-run: Actions → Apex daily → Run workflow).
     - cron: "0 6 * * *"
+      timezone: America/Los_Angeles
+    # GitHub often skips a single cron; backup run dedupes email if 6 AM already sent.
+    - cron: "0 7 * * *"
       timezone: America/Los_Angeles
   workflow_dispatch:
 
@@ -14,7 +16,7 @@ permissions:
 
 concurrency:
   group: apex-daily
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   daily:
@@ -23,7 +25,6 @@ jobs:
     env:
       TZ: America/Los_Angeles
       APEX_DAILY_FAST: "1"
-      # Silence Node 20 deprecation notice on checkout/setup-python (harmless).
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
@@ -59,6 +60,19 @@ jobs:
           git pull --rebase --autostash origin main || true
           git push || echo "::warning::git push failed; PDF/email will still run."
 
+      - name: Restore JSON if build failed
+        if: steps.build.outcome == 'failure'
+        run: git checkout HEAD -- apex_dashboard_data.json
+
+      - name: Validate dashboard JSON
+        id: json_ok
+        continue-on-error: true
+        run: python3 -c "import json; json.load(open('apex_dashboard_data.json'))"
+
+      - name: Restore JSON if invalid
+        if: steps.json_ok.outcome == 'failure'
+        run: git checkout HEAD -- apex_dashboard_data.json
+
       - name: Verify email secrets
         env:
           APEX_SMTP_HOST: ${{ secrets.APEX_SMTP_HOST }}
@@ -71,11 +85,17 @@ jobs:
           missing=0
           for name in APEX_SMTP_HOST APEX_SMTP_PORT APEX_SMTP_USER APEX_SMTP_PASSWORD APEX_PDF_EMAIL_FROM APEX_PDF_EMAIL_TO; do
             if [[ -z "${!name}" ]]; then
-              echo "::error::Missing repository secret: $name — add under Settings → Secrets and variables → Actions (not Dependabot or Codespaces)."
+              echo "::error::Missing repository secret: $name"
               missing=1
             fi
           done
           [[ "$missing" -eq 0 ]]
+
+      - name: Email sent cache
+        uses: actions/cache@v4
+        with:
+          path: .apex_email_sent_date
+          key: apex-daily-email-v1
 
       - name: Build PDF and send email
         if: ${{ always() && steps.build.outcome != 'cancelled' }}
