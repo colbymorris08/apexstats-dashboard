@@ -1,13 +1,14 @@
-# Daily 6:00 AM Pacific (+ 7:00 backup): rebuild JSON, push site, PDF + email.
-# Runs on GitHub — Mac can be off. Email dedup = one message per last_night_date.
+# Daily ~2 AM Pacific (+ ~3 AM backup): rebuild JSON, push site, PDF + email.
+# Scheduled early so typical GitHub queue delays still land by morning (not 11 AM).
+# :17 past the hour avoids peak cron load at :00. Email dedup = one message per report date.
 name: Apex daily
 
 on:
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "17 2 * * *"
       timezone: America/Los_Angeles
-    # GitHub often skips a single cron; backup run dedupes email if 6 AM already sent.
-    - cron: "0 7 * * *"
+    # Backup if 2 AM slot is skipped or still queued; dedupes email if primary already sent.
+    - cron: "17 3 * * *"
       timezone: America/Los_Angeles
   workflow_dispatch:
 
