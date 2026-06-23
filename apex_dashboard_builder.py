@@ -11,6 +11,7 @@ from io import StringIO
 from pathlib import Path
 from typing import Any
 import time
+import unicodedata
 import urllib.parse
 import re
 from zoneinfo import ZoneInfo
@@ -126,6 +127,14 @@ PRO_MLB_PEOPLE_SEARCH_ALIASES: dict[str, str] = {
     # MLB lists "Matt Fraizer" (670208); sheet often uses "Frazier"; Texas Rangers org per client.
     "matthew frazier": "Matt Fraizer",
     "matt frazier": "Matt Fraizer",
+    # Tracker sheets often omit accents; Stats API search requires them.
+    "huascar brazoban": "Huascar Brazobán",
+    "adolis garcia": "Adolis García",
+    "ramon urias": "Ramón Urías",
+    "mauricio dubon": "Mauricio Dubón",
+    "jose azocar": "José Azócar",
+    "wenceel perez": "Wenceel Pérez",
+    "dedniel nunez": "Dedniel Núñez",
 }
 # Sheet quirks: treat as hitter for college stat tables / D1 scrape.
 COLLEGE_FORCE_HITTER_NAMES: frozenset[str] = frozenset({"ethan surowiec"})
@@ -219,7 +228,65 @@ MANUAL_AMATEUR_CLIENTS: list[dict[str, str]] = [
         "agent": "",
         "schedule_link": "https://goducks.com/sports/baseball/schedule",
     },
+    {
+        "name": "LJ Edwards",
+        "position": "OF",
+        "school": "",
+        "league": "Amateur",
+        "agent": "",
+        "schedule_link": "",
+    },
 ]
+
+# College summer assignments tracked on the amateur tab (Stats API sportId 22).
+SUMMER_AMATEUR_OVERRIDES: dict[str, dict[str, Any]] = {
+    "elai iwanaga": {
+        "summer_team": "Orleans Firebirds",
+        "summer_league": "Cape Cod Baseball League",
+        "team_level": "CCL",
+        "team_id": 6102,
+        "league_id": 565,
+        "schedule_url": "https://www.capecodleague.com/scores",
+        "player_id": 828233,
+    },
+    "rowan kelly": {
+        "summer_team": "Orleans Firebirds",
+        "summer_league": "Cape Cod Baseball League",
+        "team_level": "CCL",
+        "team_id": 6102,
+        "league_id": 565,
+        "schedule_url": "https://www.capecodleague.com/scores",
+    },
+    "ray olivas": {
+        "summer_team": "Hyannis Harbor Hawks",
+        "summer_league": "Cape Cod Baseball League",
+        "team_level": "CCL",
+        "team_id": 6101,
+        "league_id": 565,
+        "schedule_url": "https://www.capecodleague.com/scores",
+        "player_id": 842080,
+        "name_aliases": ["Raymond Olivas"],
+    },
+    "raymond olivas": {
+        "summer_team": "Hyannis Harbor Hawks",
+        "summer_league": "Cape Cod Baseball League",
+        "team_level": "CCL",
+        "team_id": 6101,
+        "league_id": 565,
+        "schedule_url": "https://www.capecodleague.com/scores",
+        "player_id": 842080,
+    },
+    "lj edwards": {
+        "summer_team": "Burlington Sock Puppets",
+        "summer_league": "MLB Draft League",
+        "team_level": "MBDL",
+        "team_id": 483,
+        "league_id": 120,
+        "schedule_url": "https://www.mlbdraftleague.com/scores",
+        "player_id": 815817,
+    },
+}
+SPORT_ID_COLLEGE = 22
 
 
 @dataclass
@@ -336,12 +403,16 @@ def _norm_school(s: str) -> str:
 
 def _norm_token(s: str) -> str:
     x = (s or "").lower().strip()
+    x = unicodedata.normalize("NFD", x)
+    x = "".join(ch for ch in x if unicodedata.category(ch) != "Mn")
     x = re.sub(r"[^a-z0-9]+", "", x)
     return x
 
 
 def _norm_player_name(s: str) -> str:
     x = (s or "").strip().lower()
+    x = unicodedata.normalize("NFD", x)
+    x = "".join(ch for ch in x if unicodedata.category(ch) != "Mn")
     x = x.replace(".", " ").replace(",", " ").replace("-", " ")
     parts = [p for p in x.split() if p not in {"jr", "sr", "ii", "iii", "iv"}]
     return " ".join(parts)
@@ -802,7 +873,7 @@ def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
     return row
 
 
-def build_tracker_data(path: Path, pinned_names: tuple[str, ...], enrich_all_rows: bool = False) -> dict[str, Any]:
+def build_tracker_data(path: Path, pinned_names: tuple[str, ...]) -> dict[str, Any]:
     rows = _load_tracker_sheet(path)
     if not rows:
         return {"rows": [], "pinned": [], "year_options": [str(SEASON), str(SEASON - 1), str(SEASON - 2), "career"]}
@@ -824,9 +895,11 @@ def build_tracker_data(path: Path, pinned_names: tuple[str, ...], enrich_all_row
         r["stats_career"] = {"war": row_career_war}
         r["broken_service"] = r.get("broken_service", "No")
         rows[i] = r
-    for i, r in enumerate(rows):
-        if enrich_all_rows or r.get("name_norm") in pinned_norm:
-            rows[i] = _enrich_tracker_player(r)
+    rows = [
+        r
+        for r in _parallel_map(rows, _enrich_tracker_player, max_workers=8)
+        if isinstance(r, dict)
+    ]
     # Remove players with negative career bWAR from tracker lists.
     filtered_rows: list[dict[str, Any]] = []
     for r in rows:
@@ -959,27 +1032,39 @@ def _pick_d1_table(dfs: list[pd.DataFrame], is_pitcher_role: bool) -> pd.DataFra
     return None
 
 
+def _individual_college_season_nonempty(season: dict[str, Any]) -> bool:
+    if not season or _is_ncaa_team_season_stub(season):
+        return False
+    return any(
+        v not in (None, "", 0, 0.0) for k, v in season.items() if k not in ("wins", "losses", "runs_for", "runs_against")
+    )
+
+
 def fetch_d1_player_stats(player_url: str, is_pitcher_role: bool) -> dict[str, Any]:
     if not player_url:
         return {}
     key = f"{player_url}|{'P' if is_pitcher_role else 'H'}|{dashboard_date().isoformat()}"
-    if key in D1_PLAYER_STATS_CACHE:
-        return D1_PLAYER_STATS_CACHE[key] or {}
-    try:
-        html = requests.get(
-            _cache_bust_url(player_url), timeout=30, headers={"User-Agent": "Mozilla/5.0"}
-        ).text
-        dfs = pd.read_html(StringIO(html))
-    except Exception:
-        D1_PLAYER_STATS_CACHE[key] = None
-        return {}
-    table = _pick_d1_table(dfs, is_pitcher_role)
+    cached = D1_PLAYER_STATS_CACHE.get(key)
+    if cached is not None:
+        return cached
+    table = None
+    for attempt in range(4):
+        try:
+            html = requests.get(
+                _cache_bust_url(player_url), timeout=30, headers={"User-Agent": "Mozilla/5.0"}
+            ).text
+            dfs = pd.read_html(StringIO(html))
+            table = _pick_d1_table(dfs, is_pitcher_role)
+            if table is not None and not table.empty:
+                break
+        except Exception:
+            table = None
+        if attempt + 1 < 4:
+            time.sleep(0.6 * (attempt + 1))
     if table is None or table.empty:
-        D1_PLAYER_STATS_CACHE[key] = None
         return {}
     year_col = next((c for c in table.columns if str(c).strip().upper() == "YEAR"), None)
     if not year_col:
-        D1_PLAYER_STATS_CACHE[key] = None
         return {}
     row = None
     for _, r in table.iterrows():
@@ -996,7 +1081,6 @@ def fetch_d1_player_stats(player_url: str, is_pitcher_role: bool) -> dict[str, A
                 best_y = y
                 row = r
     if row is None:
-        D1_PLAYER_STATS_CACHE[key] = None
         return {}
 
     if is_pitcher_role:
@@ -1338,6 +1422,22 @@ def _blank_individual_line(is_pitcher_role: bool) -> dict[str, Any]:
     if is_pitcher_role:
         return {"ip": 0.0, "h": 0, "r": 0, "er": 0, "bb": 0, "k": 0, "hr": 0, "bf": 0, "era": 0.0}
     return {"ab": 0, "h": 0, "r": 0, "rbi": 0, "bb": 0, "k": 0, "doubles": 0, "hr": 0, "sb": 0, "ofa": 0}
+
+
+def _is_ncaa_team_season_stub(season: dict[str, Any]) -> bool:
+    """NCAA school payload season is team W/L when individual lines are unavailable."""
+    if not season:
+        return False
+    keys = {str(k) for k in season.keys()}
+    return keys.issubset({"wins", "losses", "runs_for", "runs_against"})
+
+
+def _fetch_college_amateur_season(c: Client, school: str, is_p: bool) -> dict[str, Any]:
+    """D1Baseball (or Big West JSON for conference pitchers) college season line."""
+    d1_url = resolve_d1_player_url(c.name, school)
+    d1_season = fetch_d1_player_stats(d1_url, is_p) if d1_url else {}
+    bw_season = fetch_big_west_pitching_season_line(school, c.name) if is_p else {}
+    return bw_season or d1_season or {}
 
 
 def _ncaa_stat_int(container: dict[str, Any], *keys: str) -> int:
@@ -2661,8 +2761,8 @@ def resolve_player_id(c: Client) -> int | None:
                 for p in hits
                 if _person_matches_client_name(str(p.get("fullName", "")), c.name)
             ]
-            if people:
-                break
+        if people:
+            break
     if not people:
         return _find_player_id_via_org_rosters(c)
     if len(people) == 1:
@@ -3459,11 +3559,269 @@ def build_client_payload(c: Client) -> dict[str, Any]:
     return base
 
 
+def _summer_amateur_config(c: Client) -> dict[str, Any] | None:
+    return SUMMER_AMATEUR_OVERRIDES.get(_norm_player_name(c.name or ""))
+
+
+def _resolve_summer_amateur_player_id(c: Client, cfg: dict[str, Any]) -> int | None:
+    pid = _safe_int(cfg.get("player_id"))
+    if pid:
+        return pid
+    team_id = _safe_int(cfg.get("team_id"))
+    if not team_id:
+        return None
+    pid = _find_player_id_on_team_roster(c.name, team_id)
+    if pid:
+        return pid
+    for alias in cfg.get("name_aliases") or []:
+        pid = _find_player_id_on_team_roster(str(alias), team_id)
+        if pid:
+            return pid
+    return None
+
+
+def _college_gamelog_splits(player_id: int, group: str) -> list[dict[str, Any]]:
+    params: dict[str, Any] = {
+        "stats": "gameLog",
+        "group": group,
+        "season": SEASON,
+        "sportId": SPORT_ID_COLLEGE,
+    }
+    url = f"{API}/people/{player_id}/stats?" + urllib.parse.urlencode(params)
+    js = _req_json(url)
+    return (js.get("stats") or [{}])[0].get("splits") or []
+
+
+def _fetch_summer_league_stats(
+    player_id: int,
+    group: str,
+    league_id: int,
+    stat_type: str,
+    start: date | None = None,
+    end: date | None = None,
+) -> dict[str, Any]:
+    params: dict[str, Any] = {
+        "stats": stat_type,
+        "group": group,
+        "season": SEASON,
+        "leagueId": league_id,
+    }
+    if start and end:
+        params["startDate"] = start.isoformat()
+        params["endDate"] = end.isoformat()
+    url = f"{API}/people/{player_id}/stats?" + urllib.parse.urlencode(params)
+    js = _req_json(url)
+    splits = (js.get("stats") or [{}])[0].get("splits") or []
+    return splits[0].get("stat", {}) if splits else {}
+
+
+def _summer_team_gamelog_splits(
+    player_id: int, group: str, team_id: int
+) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for sp in _college_gamelog_splits(player_id, group):
+        tid = _safe_int((sp.get("team") or {}).get("id"))
+        if tid == team_id:
+            out.append(sp)
+    return out
+
+
+def _summer_last_night_line(
+    player_id: int, group: str, team_id: int, target_day: date
+) -> dict[str, Any]:
+    day = target_day.isoformat()
+    merged: dict[str, Any] = {}
+    for sp in _summer_team_gamelog_splits(player_id, group, team_id):
+        if sp.get("date") != day:
+            continue
+        st = sp.get("stat") or {}
+        for k, v in st.items():
+            try:
+                fv = float(v)
+            except Exception:
+                if k not in merged:
+                    merged[k] = v
+                continue
+            merged[k] = float(merged.get(k, 0)) + fv
+    return merged
+
+
+def _summer_last_night_boxscore_url(
+    player_id: int, group: str, team_id: int, target_day: date
+) -> str:
+    day = target_day.isoformat()
+    best_game_pk: int | None = None
+    for sp in _summer_team_gamelog_splits(player_id, group, team_id):
+        if sp.get("date") != day:
+            continue
+        game = sp.get("game") or {}
+        game_pk = _safe_int(game.get("gamePk") or sp.get("gamePk"))
+        if game_pk is not None and (best_game_pk is None or game_pk > best_game_pk):
+            best_game_pk = game_pk
+    if best_game_pk is None:
+        return ""
+    return f"https://www.mlb.com/gameday/{best_game_pk}/final/box"
+
+
+def _summer_month_to_date_stats(
+    player_id: int, group: str, team_id: int, month_start: date, month_end: date
+) -> dict[str, Any]:
+    params: dict[str, Any] = {
+        "stats": "byDateRange",
+        "group": group,
+        "season": SEASON,
+        "sportId": SPORT_ID_COLLEGE,
+        "startDate": month_start.isoformat(),
+        "endDate": month_end.isoformat(),
+    }
+    url = f"{API}/people/{player_id}/stats?" + urllib.parse.urlencode(params)
+    js = _req_json(url)
+    splits = (js.get("stats") or [{}])[0].get("splits") or []
+    for sp in splits:
+        if _safe_int((sp.get("team") or {}).get("id")) == team_id:
+            return sp.get("stat") or {}
+    return {}
+
+
+def _fetch_summer_team_schedule(team_id: int, weeks: int = 4) -> list[dict[str, Any]]:
+    start = dashboard_date()
+    end = start + timedelta(days=7 * weeks)
+    params = {
+        "sportId": SPORT_ID_COLLEGE,
+        "teamId": team_id,
+        "startDate": start.isoformat(),
+        "endDate": end.isoformat(),
+        "hydrate": "venue(location),team",
+    }
+    url = f"{API}/schedule?" + urllib.parse.urlencode(params)
+    try:
+        js = _req_json(url)
+    except Exception:
+        return []
+    games: list[dict[str, Any]] = []
+    for d in js.get("dates", []):
+        for g in d.get("games", []):
+            games.append(g)
+    series: list[dict[str, Any]] = []
+    curr: dict[str, Any] | None = None
+    for g in sorted(games, key=lambda x: x.get("gameDate", "")):
+        teams = g.get("teams", {})
+        home = teams.get("home", {}).get("team", {})
+        away = teams.get("away", {}).get("team", {})
+        is_home = _safe_int(home.get("id")) == team_id
+        opp = away if is_home else home
+        venue = g.get("venue", {})
+        game_dt = g.get("gameDate", "")
+        key = f"{opp.get('id')}|{'H' if is_home else 'A'}|{venue.get('id')}"
+        if curr is None or curr["key"] != key:
+            if curr is not None:
+                series.append(curr)
+            curr = {
+                "key": key,
+                "opponent": opp.get("name", ""),
+                "home_away": "Home" if is_home else "Away",
+                "venue": venue.get("name", ""),
+                "location": (venue.get("location", {}) or {}).get("city", ""),
+                "start_date": game_dt[:10],
+                "end_date": game_dt[:10],
+            }
+        else:
+            curr["end_date"] = game_dt[:10]
+    if curr is not None:
+        series.append(curr)
+    for s in series:
+        s.pop("key", None)
+    return series[:4]
+
+
+def build_summer_amateur_payload(c: Client, cfg: dict[str, Any]) -> dict[str, Any]:
+    """Summer-ball amateur row: college org + summer team stats via MLB Stats API (sportId 22)."""
+    school = (c.school_or_team or c.minor_affiliate or "").strip()
+    is_p = college_is_pitcher(c)
+    group = stat_group(c.position)
+    team_id = _safe_int(cfg.get("team_id")) or 0
+    league_id = _safe_int(cfg.get("league_id")) or 0
+    summer_team = str(cfg.get("summer_team") or "").strip()
+    summer_league = str(cfg.get("summer_league") or "").strip()
+    team_level = str(cfg.get("team_level") or summer_league).strip()
+    schedule_url = str(cfg.get("schedule_url") or "").strip()
+    base: dict[str, Any] = {
+        "name": c.name,
+        "position": c.position,
+        "level": team_level,
+        "league": summer_league or "Summer",
+        "minor_affiliate": school,
+        "major_affiliate": "",
+        "agent": c.agent,
+        "agent_last": c.agent_last,
+        "is_pitcher": is_p,
+        "organization": school,
+        "school_or_team": school,
+        "current_team": summer_team,
+        "current_team_location": "",
+        "team_level": team_level,
+        "team_schedule_url": schedule_url,
+        "stats_context": "summer",
+        "last_night_boxscore_url": "",
+        "last_night_date": last_night_date().isoformat(),
+        "last_night": {},
+        "month_to_date": {},
+        "season": {},
+        "summer_season": {},
+        "upcoming_series": [],
+    }
+    college_season = _fetch_college_amateur_season(c, school, is_p)
+    if college_season:
+        base["season"] = college_season
+    if team_id:
+        try:
+            base["upcoming_series"] = _fetch_summer_team_schedule(team_id)
+        except Exception:
+            pass
+    pid = _resolve_summer_amateur_player_id(c, cfg)
+    if not pid or not league_id or not team_id:
+        return base
+    yday = last_night_date()
+    mstart = dashboard_date().replace(day=1)
+    try:
+        ln = {
+            k: json_stat_value(k, v)
+            for k, v in _summer_last_night_line(pid, group, team_id, yday).items()
+        }
+        if ln:
+            base["last_night"] = ln
+            base["last_night_boxscore_url"] = _summer_last_night_boxscore_url(
+                pid, group, team_id, yday
+            )
+        if (not is_p) and ln and not _is_valid_hitter_last_night_line(ln):
+            base["last_night"] = {}
+    except Exception:
+        pass
+    try:
+        mtd_raw = _summer_month_to_date_stats(pid, group, team_id, mstart, dashboard_date())
+        base["month_to_date"] = _strip_pitch_count_fields(
+            {k: json_stat_value(k, v) for k, v in mtd_raw.items()}
+        )
+    except Exception:
+        pass
+    try:
+        st_season = _fetch_summer_league_stats(pid, group, league_id, "season")
+        base["summer_season"] = _strip_pitch_count_fields(
+            {k: json_stat_value(k, v) for k, v in st_season.items()}
+        )
+    except Exception:
+        pass
+    return base
+
+
 def build_amateur_payload(c: Client) -> dict[str, Any]:
     """
     College clients: D1Baseball season table + NCAA.com team schedule/boxscores for last night & MTD.
-    (No MLB Stats API for school-based amateurs — avoids wrong-player matches and bad P/pos splits.)
+    Summer assignments (Cape Cod, MBDL, etc.) use MLB Stats API on sportId 22 when configured.
     """
+    summer_cfg = _summer_amateur_config(c)
+    if summer_cfg:
+        return build_summer_amateur_payload(c, summer_cfg)
     school = (c.school_or_team or c.minor_affiliate or "").strip()
     is_p = college_is_pitcher(c)
     base = {
@@ -3496,11 +3854,9 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
 
     # Season totals: Big West conference JSON (NCAA-aligned) when available; else D1Baseball scrape.
     d1_url = resolve_d1_player_url(c.name, school)
-    d1_season = fetch_d1_player_stats(d1_url, is_p) if d1_url else {}
-    bw_season = fetch_big_west_pitching_season_line(school, c.name) if is_p else {}
     if d1_url and not c.schedule_link:
         base["team_schedule_url"] = d1_url
-    season_preferred = bw_season or d1_season
+    season_preferred = _fetch_college_amateur_season(c, school, is_p)
     if season_preferred:
         base["season"] = season_preferred
 
@@ -3556,7 +3912,9 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
             if not base["month_to_date"]:
                 base["month_to_date"] = ncaa_payload.get("month_to_date") or {}
             if not base["season"]:
-                base["season"] = ncaa_payload.get("season") or {}
+                ncaa_season = ncaa_payload.get("season") or {}
+                if not _is_ncaa_team_season_stub(ncaa_season):
+                    base["season"] = ncaa_season
         except Exception:
             pass
     return base
@@ -4303,14 +4661,34 @@ def refresh_pro_teams_in_dashboard(out: Path = OUT_JSON) -> Path:
     return out
 
 
-def build_dashboard_data() -> dict[str, Any]:
+def refresh_trackers_in_dashboard(out: Path = OUT_JSON) -> Path:
+    """Refresh arbitration + free agency tracker stats without rebuilding pro/amateur tabs."""
     _reset_dashboard_build_caches()
     get_team_catalog()
+    existing: dict[str, Any] = {}
+    if out.is_file():
+        existing = json.loads(out.read_text())
+    existing["arbitration_tracker"] = build_tracker_data(ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB)
+    existing["free_agency_tracker"] = build_tracker_data(FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA)
+    existing["generated_at"] = datetime.now(UTC).isoformat()
+    existing["season"] = existing.get("season") or SEASON
+
+    def _json_safe(v: Any) -> Any:
+        if isinstance(v, float):
+            return v if math.isfinite(v) else None
+        if isinstance(v, dict):
+            return {k: _json_safe(x) for k, x in v.items()}
+        if isinstance(v, list):
+            return [_json_safe(x) for x in v]
+        return v
+
+    out.write_text(json.dumps(_json_safe(existing), separators=(",", ":"), allow_nan=False))
+    return out
+
+
+def _load_amateur_clients_for_dashboard() -> list[Client]:
     clients = load_clients(SOURCE_XLSX)
-    pro = _load_pro_clients_for_dashboard()
     amateur = [c for c in clients if c.is_amateur]
-    # Primary amateur source now comes from the dedicated Desktop list.
-    # Merge with legacy workbook rows so dedicated list doesn't drop anyone.
     dedicated_amateur = load_amateur_clients(AMATEUR_SOURCE_XLSX)
     if dedicated_amateur:
         merged: dict[str, Client] = {}
@@ -4320,15 +4698,67 @@ def build_dashboard_data() -> dict[str, Any]:
             merged[_norm_player_name(c.name)] = c
         amateur = list(merged.values())
     amateur = _merge_manual_amateur_clients(amateur)
-    # Expand configured two-way amateurs into separate hitter/pitcher rows.
     amateur_expanded: list[Client] = []
     for c in amateur:
         amateur_expanded.extend(_split_two_way_amateur(c))
-    amateur = amateur_expanded
+    return amateur_expanded
+
+
+def _build_amateur_rows(clients: list[Client]) -> list[dict[str, Any]]:
+    built = _parallel_map(clients, build_amateur_payload, max_workers=4)
+    rows: list[dict[str, Any]] = []
+    for i, item in enumerate(built):
+        if isinstance(item, dict):
+            rows.append(item)
+        else:
+            rows.append(build_amateur_payload(clients[i]))
+    for i, row in enumerate(rows):
+        if _individual_college_season_nonempty(row.get("season") or {}):
+            continue
+        time.sleep(0.35)
+        rebuilt = build_amateur_payload(clients[i])
+        if isinstance(rebuilt, dict):
+            rows[i] = rebuilt
+    return rows
+
+
+def refresh_amateur_in_dashboard(out: Path = OUT_JSON) -> Path:
+    """Refresh amateur tab (college + summer-ball) without rebuilding pro or trackers."""
+    _reset_dashboard_build_caches()
+    get_team_catalog()
+    existing: dict[str, Any] = {}
+    if out.is_file():
+        existing = json.loads(out.read_text())
+    amateur = _load_amateur_clients_for_dashboard()
+    amateur_rows = _build_amateur_rows(amateur)
+    existing["amateur_clients"] = amateur_rows
+    existing["generated_at"] = datetime.now(UTC).isoformat()
+    existing["last_night_date"] = last_night_date().isoformat()
+    existing["season"] = existing.get("season") or SEASON
+
+    def _json_safe(v: Any) -> Any:
+        if isinstance(v, float):
+            return v if math.isfinite(v) else None
+        if isinstance(v, dict):
+            return {k: _json_safe(x) for k, x in v.items()}
+        if isinstance(v, list):
+            return [_json_safe(x) for x in v]
+        return v
+
+    out.write_text(json.dumps(_json_safe(existing), separators=(",", ":"), allow_nan=False))
+    return out
+
+
+def build_dashboard_data() -> dict[str, Any]:
+    _reset_dashboard_build_caches()
+    get_team_catalog()
+    clients = load_clients(SOURCE_XLSX)
+    pro = _load_pro_clients_for_dashboard()
+    amateur = _load_amateur_clients_for_dashboard()
 
     # Same roster + stats resolution for every pro row (no per-player exceptions).
     pro_rows = [r for r in _parallel_map(pro, build_client_payload, max_workers=10) if isinstance(r, dict)]
-    amateur_rows = [r for r in _parallel_map(amateur, build_amateur_payload, max_workers=10) if isinstance(r, dict)]
+    amateur_rows = _build_amateur_rows(amateur)
     high_school_rows: list[dict[str, Any]] = []
     hs_clients = load_high_school_clients(HS_SOURCE_XLSX)
     hs_built = _parallel_map(hs_clients, build_high_school_payloads, max_workers=8)
@@ -4336,9 +4766,6 @@ def build_dashboard_data() -> dict[str, Any]:
         if isinstance(rows, list):
             high_school_rows.extend(rows)
     jf_watch_rows: list[dict[str, Any]] = build_jf_follow_rows(JF_FOLLOW_SOURCE_XLSX)
-
-    fast_daily = os.environ.get("APEX_DAILY_FAST", "").strip().lower() in ("1", "true", "yes")
-    enrich_trackers = not fast_daily
 
     data = {
         "generated_at": datetime.now(UTC).isoformat(),
@@ -4348,12 +4775,8 @@ def build_dashboard_data() -> dict[str, Any]:
         "amateur_clients": amateur_rows,
         "high_school_clients": high_school_rows,
         "watch_list": {"JF": jf_watch_rows},
-        "arbitration_tracker": build_tracker_data(
-            ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB, enrich_all_rows=enrich_trackers
-        ),
-        "free_agency_tracker": build_tracker_data(
-            FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA, enrich_all_rows=enrich_trackers
-        ),
+        "arbitration_tracker": build_tracker_data(ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB),
+        "free_agency_tracker": build_tracker_data(FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA),
     }
     return data
 
@@ -4407,6 +4830,10 @@ if __name__ == "__main__":
 
     if "--pro-teams-only" in sys.argv:
         path = refresh_pro_teams_in_dashboard()
+    elif "--trackers-only" in sys.argv:
+        path = refresh_trackers_in_dashboard()
+    elif "--amateur-only" in sys.argv:
+        path = refresh_amateur_in_dashboard()
     else:
         path = write_dashboard_data()
     print(f"Wrote: {path}")

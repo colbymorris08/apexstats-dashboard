@@ -353,6 +353,7 @@
 
     /** Baseball-style .xxx for AVG */
     function fmtAvg(v) {
+      if (v === "" || v === undefined || v === null) return "";
       const n = Number(v);
       if (!Number.isFinite(n)) return "";
       const x = n > 1.5 ? n / 1000 : n;
@@ -361,6 +362,7 @@
     }
 
     function fmtOps(v) {
+      if (v === "" || v === undefined || v === null) return "";
       const n = Number(v);
       if (!Number.isFinite(n)) return "";
       const x = n > 4 ? n / 1000 : n;
@@ -377,6 +379,7 @@
     }
 
     function fmtEra(v) {
+      if (v === "" || v === undefined || v === null) return "";
       const n = Number(v);
       if (!Number.isFinite(n)) return "";
       return n.toFixed(2);
@@ -557,6 +560,7 @@
       const level = String(row.team_level || "").toUpperCase();
       const team = row.current_team || row.school_or_team || "";
       if (activeTab === "amateur") {
+        if (row.team_schedule_url) return row.team_schedule_url;
         const schoolSlug = d1TeamSlug(row.school_or_team || row.current_team || "");
         if (schoolSlug) return `https://d1baseball.com/team/${schoolSlug}/schedule/?date=${dateQ}`;
         return "";
@@ -748,6 +752,51 @@
       trs.forEach((r) => tbody.appendChild(r));
     }
 
+    function appendSummerSeasonSection(rows, statKey, target, panelKey, hitterCols, pitcherCols) {
+      if (activeTab !== "amateur" || statKey !== "season") return;
+      const summerRows = rows
+        .filter((r) => r.stats_context === "summer" && r.summer_season && Object.keys(r.summer_season).length)
+        .map((r) => ({ ...r, season: r.summer_season }));
+      if (!summerRows.length) return;
+      const summerHitters = summerRows.filter((r) => !r.is_pitcher);
+      const summerPitchers = summerRows.filter((r) => r.is_pitcher);
+      const summerWrap = el("div");
+      summerWrap.className = "stats-wrap";
+      summerWrap.style.marginTop = "1.5rem";
+      const summerTitle = el("h2", "Summer Ball Season");
+      summerTitle.className = "stats-section-title";
+      summerWrap.appendChild(summerTitle);
+      if (activeRole === "hitters" || activeRole === "all") {
+        if (summerHitters.length) {
+          if (activeRole === "all") {
+            const h2h = el("h2", "Hitters");
+            h2h.className = "stats-section-title";
+            summerWrap.appendChild(h2h);
+          }
+          summerWrap.appendChild(buildStatTable(summerHitters, "season", "sum-hit", hitterCols, panelKey));
+        }
+      }
+      if (activeRole === "pitchers" || activeRole === "all") {
+        if (summerPitchers.length) {
+          if (activeRole === "all") {
+            const h2p = el("h2", "Pitchers");
+            h2p.className = "stats-section-title";
+            summerWrap.appendChild(h2p);
+          }
+          summerWrap.appendChild(buildStatTable(summerPitchers, "season", "sum-pit", pitcherCols, panelKey));
+        }
+      }
+      target.appendChild(summerWrap);
+    }
+
+    function statColsForTab(isPitcher, statKey) {
+      if (statKey === "season" || statKey === "month_to_date" || statKey === "last_night") {
+        const map = isPitcher ? MOBILE_PITCHER_COLS_BY_TAB : MOBILE_HITTER_COLS_BY_TAB;
+        return map[statKey] || map.season;
+      }
+      return isPitcher ? PITCHER_COLS : HITTER_COLS;
+    }
+
     function renderStatsTable(rows, statKey, target, panelKey) {
       target.innerHTML = "";
       const report = DATA && DATA.last_night_date ? String(DATA.last_night_date) : "";
@@ -761,9 +810,13 @@
       wrap.className = "stats-wrap";
 
       const hitterCols =
-        activeView === "mobile" ? MOBILE_HITTER_COLS_BY_TAB[statKey] || MOBILE_HITTER_COLS_BY_TAB.season : HITTER_COLS;
+        activeView === "mobile"
+          ? MOBILE_HITTER_COLS_BY_TAB[statKey] || MOBILE_HITTER_COLS_BY_TAB.season
+          : statColsForTab(false, statKey);
       const pitcherCols =
-        activeView === "mobile" ? MOBILE_PITCHER_COLS_BY_TAB[statKey] || MOBILE_PITCHER_COLS_BY_TAB.season : PITCHER_COLS;
+        activeView === "mobile"
+          ? MOBILE_PITCHER_COLS_BY_TAB[statKey] || MOBILE_PITCHER_COLS_BY_TAB.season
+          : statColsForTab(true, statKey);
 
       if (activeRole === "hitters") {
         if (!hitters.length) {
@@ -771,6 +824,7 @@
           return;
         }
         target.appendChild(buildStatTable(hitters, statKey, "hit", hitterCols, panelKey));
+        appendSummerSeasonSection(rows, statKey, target, panelKey, hitterCols, pitcherCols);
         return;
       }
       if (activeRole === "pitchers") {
@@ -779,6 +833,7 @@
           return;
         }
         target.appendChild(buildStatTable(pitchers, statKey, "pit", pitcherCols, panelKey));
+        appendSummerSeasonSection(rows, statKey, target, panelKey, hitterCols, pitcherCols);
         return;
       }
 
@@ -799,6 +854,7 @@
         wrap.appendChild(el("p", "No clients in this view."));
       }
       target.appendChild(wrap);
+      appendSummerSeasonSection(rows, statKey, target, panelKey, hitterCols, pitcherCols);
     }
 
     function renderScheduleTable(rows, target, panelKey) {
@@ -1530,7 +1586,7 @@
         if (!r.ok) throw new Error(`api ${r.status}`);
         DATA = await r.json();
       } catch (_) {
-        const r2 = await fetch("./apex_dashboard_data.json");
+        const r2 = await fetch(`./apex_dashboard_data.json?ts=${Date.now()}`);
         if (!r2.ok) throw new Error(`json ${r2.status}`);
         DATA = await r2.json();
       }
