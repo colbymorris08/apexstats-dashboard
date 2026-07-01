@@ -596,6 +596,31 @@
       return `https://www.yelp.com/search?find_desc=restaurants&find_loc=${encodeURIComponent(q)}`;
     }
 
+    function appendSeasonContextControls(container) {
+      const row = el("div");
+      row.className = "row";
+      row.style.margin = "12px 0";
+      [
+        { key: "regular", label: "High School Season" },
+        { key: "summer", label: "Summer Ball" },
+      ].forEach(({ key, label }) => {
+        const btn = el("button", label);
+        if (activeSeasonContext === key) btn.classList.add("active");
+        btn.onclick = () => {
+          activeSeasonContext = key;
+          render();
+        };
+        row.appendChild(btn);
+      });
+      container.appendChild(row);
+    }
+
+    function defaultSeasonContextForWatchAgent(agent) {
+      if (agent === "AR") return "summer";
+      if (agent === "JF") return "regular";
+      return activeSeasonContext;
+    }
+
     function watchListIsStatsMode() {
       const dynamic = (DATA && DATA.watch_list && DATA.watch_list[activeWatchAgent]) || null;
       return (activeWatchAgent === "JF" || activeWatchAgent === "AR") && dynamic && dynamic.length;
@@ -1041,7 +1066,8 @@
       });
       select.onchange = () => {
         activeWatchAgent = select.value;
-        renderWatchList(target);
+        activeSeasonContext = defaultSeasonContextForWatchAgent(activeWatchAgent);
+        render();
       };
       controls.appendChild(label);
       controls.appendChild(select);
@@ -1051,6 +1077,7 @@
       const rows = dynamic && dynamic.length ? dynamic : (WATCH_LIST_DATA[activeWatchAgent] || []);
       const isStatsMode = watchListIsStatsMode();
       if (isStatsMode) {
+        appendSeasonContextControls(wrap);
         // Match High School tab structure/format (same season + last-night hitter/pitcher tables).
         const hsRows = applySeasonContext(rows).map((r) => {
           const pos = String(r.position || "");
@@ -1463,6 +1490,9 @@
       document.querySelectorAll("#mainTabs button").forEach((b) => {
         b.onclick = () => {
           activeTab = b.dataset.tab;
+          if (activeTab === "watch_list") {
+            activeSeasonContext = defaultSeasonContextForWatchAgent(activeWatchAgent);
+          }
           document.querySelectorAll("#mainTabs button").forEach((x) => x.classList.remove("active"));
           b.classList.add("active");
           render();

@@ -5030,12 +5030,12 @@ def build_ar_follow_rows(
             season_hit, season_pitch, last_hit, last_pitch, gc_url = _gc_summer_lines_for_player(
                 entry, client, index
             )
-        stats_url = (entry.get("stats_url") or "").strip() or gc_url
+        maxpreps_url = (entry.get("stats_url") or "").strip()
         wants_pitcher = bool(entry.get("hs_is_pitcher"))
         wants_hitter = bool(entry.get("hs_is_hitter"))
         if not wants_pitcher and not wants_hitter:
             wants_hitter = True
-        built_rows = build_high_school_payloads({**entry, "agent": "AR"})
+        built_rows = build_high_school_payloads({**entry, "agent": "AR", "stats_url": maxpreps_url})
         hs_hitter = next((br for br in built_rows if not br.get("is_pitcher")), None)
         hs_pitcher = next((br for br in built_rows if br.get("is_pitcher")), None)
         summer_hit = _ensure_ops_from_obp_slg(season_hit or {})
@@ -5043,14 +5043,15 @@ def build_ar_follow_rows(
         summer_ln_hit = _ensure_ops_from_obp_slg(last_hit or {})
         summer_ln_pitch = _ensure_ops_from_obp_slg(last_pitch or {})
         has_summer = bool(season_hit or season_pitch or last_hit or last_pitch)
+        display_url = maxpreps_url or gc_url or ""
         if wants_hitter:
             hs = hs_hitter or {}
             hs_season = hs.get("season", {}) or {}
             hs_ln = hs.get("last_night", {}) or {}
             hs_mtd = hs.get("month_to_date", {}) or {}
-            hs_reason = hs.get("stats_unavailable_reason", "")
-            if not hs_season and not hs_ln and not stats_url:
-                hs_reason = hs_reason or "High school statistics not available"
+            hs_reason = ""
+            if maxpreps_url and not hs_season and not hs_ln:
+                hs_reason = str(hs.get("stats_unavailable_reason") or "").strip()
             summer_reason = ""
             if not has_summer and not (summer_hit or summer_ln_hit):
                 summer_reason = "Summer statistics not available"
@@ -5063,7 +5064,7 @@ def build_ar_follow_rows(
                 last_night=hs_ln,
                 summer_season=summer_hit,
                 summer_last_night=summer_ln_hit,
-                stats_url=stats_url or hs.get("team_schedule_url", ""),
+                stats_url=display_url,
                 stats_unavailable_reason=hs_reason,
                 summer_stats_unavailable_reason=summer_reason,
             )
@@ -5072,9 +5073,9 @@ def build_ar_follow_rows(
             hs_season = hs.get("season", {}) or {}
             hs_ln = hs.get("last_night", {}) or {}
             hs_mtd = hs.get("month_to_date", {}) or {}
-            hs_reason = hs.get("stats_unavailable_reason", "")
-            if not hs_season and not hs_ln and not stats_url:
-                hs_reason = hs_reason or "High school statistics not available"
+            hs_reason = ""
+            if maxpreps_url and not hs_season and not hs_ln:
+                hs_reason = str(hs.get("stats_unavailable_reason") or "").strip()
             summer_reason = ""
             if not has_summer and not (summer_pitch or summer_ln_pitch):
                 summer_reason = "Summer statistics not available"
@@ -5087,7 +5088,7 @@ def build_ar_follow_rows(
                 last_night=hs_ln,
                 summer_season=summer_pitch,
                 summer_last_night=summer_ln_pitch,
-                stats_url=stats_url or hs.get("team_schedule_url", ""),
+                stats_url=display_url,
                 stats_unavailable_reason=hs_reason,
                 summer_stats_unavailable_reason=summer_reason,
             )
