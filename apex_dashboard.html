@@ -744,6 +744,19 @@
       return row;
     }
 
+    function rowHasStatsForKey(r, statKey) {
+      if (statKey === "season") {
+        const st = r.season || {};
+        return Object.keys(st).some((k) => truthyStatVal(st[k]));
+      }
+      if (statKey === "last_night") return lastNightNonempty(r);
+      if (statKey === "month_to_date") {
+        const st = r.month_to_date || {};
+        return Object.keys(st).some((k) => truthyStatVal(st[k]));
+      }
+      return false;
+    }
+
     function buildStatTable(rows, statKey, tbodyId, cols, panelKeyPrefix) {
       const table = el("table");
       table.className = "stats-table";
@@ -775,8 +788,9 @@
         const statVals = cols.map((c) => formatStatCell(statForCol(r, statKey, c), c));
         const hsUnavailable =
           (activeTab === "high_school" || (activeTab === "watch_list" && watchListIsStatsMode())) &&
-          (statKey === "season" || statKey === "last_night" || statKey === "month_to_date") &&
-          String(r.stats_unavailable_reason || "").trim();
+          statKey === "season" &&
+          String(r.stats_unavailable_reason || "").trim() &&
+          !rowHasStatsForKey(r, statKey);
         if (hsUnavailable) {
           const nameTd = tdWithValue(baseVals[0] || r.name || "");
           nameTd.classList.add("text-left");
@@ -1492,6 +1506,8 @@
           activeTab = b.dataset.tab;
           if (activeTab === "watch_list") {
             activeSeasonContext = defaultSeasonContextForWatchAgent(activeWatchAgent);
+          } else if (activeTab === "high_school") {
+            activeSeasonContext = "regular";
           }
           document.querySelectorAll("#mainTabs button").forEach((x) => x.classList.remove("active"));
           b.classList.add("active");
