@@ -1007,7 +1007,7 @@
 
       const dynamic = (DATA && DATA.watch_list && DATA.watch_list[activeWatchAgent]) || null;
       const rows = dynamic && dynamic.length ? dynamic : (WATCH_LIST_DATA[activeWatchAgent] || []);
-      const isStatsMode = activeWatchAgent === "JF" && dynamic && dynamic.length;
+      const isStatsMode = (activeWatchAgent === "JF" || activeWatchAgent === "AR") && dynamic && dynamic.length;
       if (isStatsMode) {
         // Match High School tab structure/format (same season + last-night hitter/pitcher tables).
         const hsRows = rows.map((r) => {

@@ -98,4 +98,13 @@ if [[ "${pdf_stat:-0}" -eq 2 ]]; then
 elif [[ "${pdf_stat:-0}" -ne 0 ]]; then
   exit "${pdf_stat}"
 fi
+ar_stat=0
+if ! perl -e 'alarm shift; exec @ARGV' 600 "${PYTHON3}" apex_ar_follow_pdf_email.py; then
+  ar_stat=$?
+fi
+if [[ "${ar_stat:-0}" -eq 2 ]]; then
+  echo "Note: AR follow PDF was written, but email to Alec failed." >&2
+elif [[ "${ar_stat:-0}" -ne 0 ]]; then
+  exit "${ar_stat}"
+fi
 echo "Done: builder + push finished; PDF written (and emailed if APEX_PDF_EMAIL_TO is set)."

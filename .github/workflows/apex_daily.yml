@@ -109,3 +109,15 @@ jobs:
           APEX_PDF_EMAIL_FROM: ${{ secrets.APEX_PDF_EMAIL_FROM }}
           APEX_PDF_EMAIL_TO: ${{ secrets.APEX_PDF_EMAIL_TO }}
         run: python3 apex_last_night_pdf_email.py
+
+      - name: Build AR follow PDF and email Alec
+        if: ${{ always() && steps.build.outcome != 'cancelled' }}
+        env:
+          APEX_SMTP_HOST: ${{ secrets.APEX_SMTP_HOST }}
+          APEX_SMTP_PORT: ${{ secrets.APEX_SMTP_PORT }}
+          APEX_SMTP_USER: ${{ secrets.APEX_SMTP_USER }}
+          APEX_SMTP_PASSWORD: ${{ secrets.APEX_SMTP_PASSWORD }}
+          APEX_SMTP_USE_SSL: ${{ secrets.APEX_SMTP_USE_SSL }}
+          APEX_PDF_EMAIL_FROM: ${{ secrets.APEX_PDF_EMAIL_FROM }}
+          APEX_AR_EMAIL_TO: alecr@apexbaseball.com
+        run: python3 apex_ar_follow_pdf_email.py
