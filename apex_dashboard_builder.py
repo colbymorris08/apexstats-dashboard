@@ -30,6 +30,7 @@ from gamechanger_api import (
     get_gamechanger_client,
     match_gc_roster_player,
     public_player_season_lines,
+    search_gc_teams,
 )
 
 APEX_ROOT = Path(__file__).resolve().parent
@@ -46,9 +47,16 @@ AR_FOLLOW_SOURCE_XLSX = APEX_ROOT / "client_lists" / "ARFollow.xlsx"
 # Each program may list multiple teams; the first roster match wins.
 GC_SUMMER_TEAMS: dict[str, list[dict[str, str]]] = {
     "2027 alpha prime": [{"public_id": "VpbE6SBAdU1f", "grad_year": "2027"}],
-    "2027 usa prime/detroit tigers scout": [{"public_id": "C9sGCQlZudsm"}],
+    "2027 usa prime/detroit tigers scout": [
+        {"public_id": "6tCCUYwkmmmN", "grad_year": "2027"},
+        {"public_id": "C9sGCQlZudsm"},
+    ],
     "2027 canes national": [{"public_id": "loGFljSxDTEQ"}],
-    "2027 norcal": [{"public_id": "2YBxQncoeiot"}],
+    "2027 norcal": [
+        {"public_id": "YoqTPc30UqAO", "grad_year": "2027"},
+        {"public_id": "2YBxQncoeiot"},
+    ],
+    "2027 top tier": [{"public_id": "TQfPUw2mqDvg", "grad_year": "2027"}],
     "2028 alpha prime": [
         {
             "public_id": "oT4InPq8VLP9",
@@ -56,14 +64,55 @@ GC_SUMMER_TEAMS: dict[str, list[dict[str, str]]] = {
             "grad_year": "2028",
         },
     ],
+    "2028 norcal": [
+        {"public_id": "7DXVnYPadY77", "grad_year": "2028"},
+    ],
+    "2028 canes national": [
+        {"public_id": "pbcVpMwOqaDB", "grad_year": "2028"},
+    ],
+    "2028 franklin scout": [
+        {"public_id": "99GjKMKbVHGq", "grad_year": "2028"},
+    ],
     "2029 alpha prime": [
         {
             "public_id": "KdR6FtG9xzKl",
             "grad_year": "2029",
         },
     ],
-    # Still need GC public IDs: 2028 norcal, 2028 canes national, 2028 mlb breakthrough,
-    # 2027 top tier, 2029 norcal, 2028 franklin scout, 2029/2030 usa prime national.
+    "2029 norcal": [
+        {"public_id": "id7ybiSJagA9", "grad_year": "2029"},
+    ],
+    "2029 usa prime national": [
+        {"public_id": "OidOhT3aGNFh", "grad_year": "2029"},
+    ],
+    "2030 usa prime national": [
+        {"public_id": "bMc0qGma2n7C", "grad_year": "2030"},
+    ],
+}
+GC_PROGRAM_SEARCH_QUERIES: dict[str, list[str]] = {
+    "2027 alpha prime": ["Alpha Prime 2027", "2027 Alpha Prime"],
+    "2027 usa prime/detroit tigers scout": ["USA Prime Detroit Tigers", "Detroit Tigers Scout 2027"],
+    "2027 canes national": ["Canes National 2027", "2027 Canes National"],
+    "2027 norcal": ["NorCal 2027", "2027 NorCal"],
+    "2027 top tier": ["Top Tier 2027", "2027 Top Tier"],
+    "2028 alpha prime": ["Alpha Prime 2028", "2028 Alpha Prime"],
+    "2028 norcal": ["NorCal 2028", "2028 NorCal"],
+    "2028 canes national": ["Canes National 2028", "2028 Canes National"],
+    "2028 franklin scout": ["Franklin Scout 2028", "2028 Franklin Scout"],
+    "2028 mlb breakthrough": ["MLB Breakthrough 2028", "2028 MLB Breakthrough"],
+    "2029 alpha prime": ["Alpha Prime 2029", "2029 Alpha Prime"],
+    "2029 norcal": ["NorCal 2029", "2029 NorCal"],
+    "2029 usa prime national": ["USA Prime National 2029", "USA Prime 2029 National"],
+    "2030 usa prime national": ["USA Prime National 2030", "USA Prime 2030 National"],
+}
+_GC_DISCOVERED_TEAMS_CACHE: dict[str, list[dict[str, str]]] = {}
+# HS clients without a Program column: map to AR-style summer program labels.
+HS_SUMMER_PROGRAM_OVERRIDES: dict[str, str] = {
+    "cooper vais": "2027 USA Prime/Detroit Tigers Scout",
+    "enzi otieku": "2029 NorCal",
+    "gavin mcmillan": "2027 Canes National",
+    "jack leeper": "2027 Alpha Prime",
+    "jaxxon tweedt": "2028 Alpha Prime",
 }
 ARB_TRACKER_SOURCE_XLSX = APEX_ROOT / "client_lists" / "DashboardArb.xlsx"
 FA_TRACKER_SOURCE_XLSX = APEX_ROOT / "client_lists" / "DashboardFA.xlsx"
@@ -4642,6 +4691,7 @@ def load_high_school_clients(path: Path) -> list[dict[str, str]]:
     agent_col = pick_col(["Agent", "Agent Initials", "Agt"])
     year_col = pick_col(["Year", "Grad Year", "Graduation Year"])
     url_col = pick_col(["MaxPreps URL", "Stats URL", "URL", "Profile URL", "Link"])
+    program_col = pick_col(["Program", "Summer Program", "Travel Team", "Club"])
     if not name_col:
         return []
 
@@ -4661,6 +4711,9 @@ def load_high_school_clients(path: Path) -> list[dict[str, str]]:
             stats_url = override_url
         elif not stats_url:
             stats_url = ""
+        program = _cell_str(r.get(program_col, "")) if program_col else ""
+        if not program:
+            program = HS_SUMMER_PROGRAM_OVERRIDES.get(norm, "")
         out.append(
             {
                 "name": name,
@@ -4669,6 +4722,7 @@ def load_high_school_clients(path: Path) -> list[dict[str, str]]:
                 "agent": _normalize_agent_initials(_cell_str(r.get(agent_col, "")) if agent_col else ""),
                 "grad_year": _cell_str(r.get(year_col, "")) if year_col else "",
                 "stats_url": stats_url,
+                "program": program,
                 "hs_is_pitcher": _hs_position_flags(_cell_str(r.get(pos_col, "")) if pos_col else "")[0],
                 "hs_is_hitter": _hs_position_flags(_cell_str(r.get(pos_col, "")) if pos_col else "")[1],
             }
@@ -4728,6 +4782,62 @@ def load_jf_follow_clients(path: Path) -> list[dict[str, str]]:
 
 def _norm_program_key(program: str) -> str:
     return re.sub(r"\s+", " ", (program or "").strip().lower())
+
+
+def _gc_discover_program_team_configs(program: str) -> list[dict[str, str]]:
+    """Search GameChanger for teams matching a travel program label (cached)."""
+    key = _norm_program_key(program)
+    if not key:
+        return []
+    if key in _GC_DISCOVERED_TEAMS_CACHE:
+        return _GC_DISCOVERED_TEAMS_CACHE[key]
+    client = get_gamechanger_client()
+    if not client:
+        _GC_DISCOVERED_TEAMS_CACHE[key] = []
+        return []
+    queries = GC_PROGRAM_SEARCH_QUERIES.get(key) or [program.strip(), key.title()]
+    teams: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for q in queries:
+        if not q:
+            continue
+        try:
+            hits = search_gc_teams(client, q)
+        except Exception:
+            continue
+        for t in hits:
+            public_id = str(t.get("public_id") or "").strip()
+            if not public_id or public_id in seen:
+                continue
+            seen.add(public_id)
+            team_year = _grad_year_from_text(str(t.get("name") or "")) or ""
+            cfg: dict[str, str] = {"public_id": public_id}
+            internal_id = str(t.get("id") or "").strip()
+            if internal_id:
+                cfg["internal_id"] = internal_id
+            if team_year:
+                cfg["grad_year"] = team_year
+            teams.append(cfg)
+    _GC_DISCOVERED_TEAMS_CACHE[key] = teams
+    return teams
+
+
+def _gc_summer_team_configs(program: str, *, discover: bool = True) -> list[dict[str, str]]:
+    key = _norm_program_key(program)
+    static: list[dict[str, str]] = []
+    cfg = GC_SUMMER_TEAMS.get(key)
+    if cfg:
+        static = list(cfg) if isinstance(cfg, list) else [cfg]
+    discovered = _gc_discover_program_team_configs(program) if discover else []
+    out: list[dict[str, str]] = []
+    seen: set[str] = set()
+    for item in static + discovered:
+        public_id = str(item.get("public_id") or "").strip()
+        if not public_id or public_id in seen:
+            continue
+        seen.add(public_id)
+        out.append(item)
+    return out
 
 
 def _truthy_private_flag(v: Any) -> bool:
@@ -4815,15 +4925,6 @@ def _gc_summer_grad_year_ok(entry: dict[str, str], team_name: str, team_cfg: dic
     return player_year == team_year
 
 
-def _gc_summer_team_configs(program: str) -> list[dict[str, str]]:
-    cfg = GC_SUMMER_TEAMS.get(_norm_program_key(program))
-    if not cfg:
-        return []
-    if isinstance(cfg, list):
-        return cfg
-    return [cfg]
-
-
 def _gc_summer_lines_for_team(
     entry: dict[str, str],
     gc_client: GameChangerClient,
@@ -4896,9 +4997,11 @@ def _gc_summer_lines_for_player(
     entry: dict[str, str],
     gc_client: GameChangerClient,
     gc_index: GameChangerIndex | None,
+    *,
+    discover: bool = True,
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, str]:
     """Return season_hit, season_pitch, last_hit, last_pitch, schedule_url."""
-    for team_cfg in _gc_summer_team_configs(entry.get("program", "")):
+    for team_cfg in _gc_summer_team_configs(entry.get("program", ""), discover=discover):
         season_hit, season_pitch, last_hit, last_pitch, schedule_url = _gc_summer_lines_for_team(
             entry, gc_client, gc_index, team_cfg
         )
@@ -4917,11 +5020,11 @@ def _gc_summer_lines_any_program(
         return None, None, None, None, ""
     program = str(entry.get("program") or "").strip()
     if program:
-        return _gc_summer_lines_for_player(entry, gc_client, gc_index)
+        return _gc_summer_lines_for_player(entry, gc_client, gc_index, discover=True)
     for program_key in GC_SUMMER_TEAMS:
         probe = {**entry, "program": program_key}
         season_hit, season_pitch, last_hit, last_pitch, schedule_url = _gc_summer_lines_for_player(
-            probe, gc_client, gc_index
+            probe, gc_client, gc_index, discover=False
         )
         if season_hit or season_pitch or last_hit or last_pitch:
             return season_hit, season_pitch, last_hit, last_pitch, schedule_url
@@ -5199,6 +5302,7 @@ def _reset_dashboard_build_caches() -> None:
     NCAA_CONTESTS_BY_DATE.clear()
     NCAA_BOX_BY_CONTEST_ID.clear()
     ROSTER_CACHE.clear()
+    _GC_DISCOVERED_TEAMS_CACHE.clear()
 
 
 def _load_pro_clients_for_dashboard() -> list[Client]:

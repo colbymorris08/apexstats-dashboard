@@ -656,6 +656,29 @@ def match_gc_roster_player(
     return best
 
 
+def search_gc_teams(client: GameChangerClient, name: str, *, limit: int = 25) -> list[dict[str, Any]]:
+    """Search GameChanger for public baseball teams by name."""
+    r = requests.post(
+        f"{GC_API_BASE}/search",
+        headers=client._api_headers(),
+        json={"name": name, "types": ["team"]},
+        timeout=30,
+    )
+    r.raise_for_status()
+    hits = r.json().get("hits") or []
+    out: list[dict[str, Any]] = []
+    for h in hits:
+        if h.get("type") != "team":
+            continue
+        t = h.get("result") or {}
+        if str(t.get("sport") or "").lower() != "baseball":
+            continue
+        out.append(t)
+        if len(out) >= limit:
+            break
+    return out
+
+
 def public_player_season_lines(
     client: GameChangerClient, public_id: str, player_id: str
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
