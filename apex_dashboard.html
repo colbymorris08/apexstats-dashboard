@@ -627,7 +627,12 @@
     }
 
     function showSeasonContextTabs() {
-      return activeTab === "high_school" || (activeTab === "watch_list" && watchListIsStatsMode());
+      return activeTab === "watch_list" && watchListIsStatsMode();
+    }
+
+    function applySeasonContextForTab(rows, tab) {
+      if (tab === "high_school") return rows;
+      return applySeasonContext(rows);
     }
 
     function applySeasonContext(rows) {
@@ -1451,6 +1456,7 @@
       document.getElementById("roleTabs").style.display = (activeView === "mobile" || isCustomTab) ? "none" : "";
       document.querySelectorAll("#subTabs button").forEach((b) => {
         if (b.dataset.subtab === "schedule") b.style.display = showSchedule ? "" : "none";
+        b.classList.toggle("active", b.dataset.subtab === activeSubtab);
       });
       document.querySelectorAll("#seasonContextTabs button").forEach((b) => {
         b.classList.toggle("active", b.dataset.seasonContext === activeSeasonContext);
@@ -1483,7 +1489,7 @@
           return;
         }
         const baseRows = rowsForTab(t);
-        const rows = roleFilter(applySeasonContext(baseRows));
+        const rows = roleFilter(applySeasonContextForTab(baseRows, t));
         const panelKey = `${t}-${activeSubtab}-${activeRole}`;
         if (activeSubtab === "schedule") renderScheduleTable(rows, panel, panelKey);
         else renderStatsTable(rows, activeSubtab, panel, panelKey);
@@ -1506,8 +1512,6 @@
           activeTab = b.dataset.tab;
           if (activeTab === "watch_list") {
             activeSeasonContext = defaultSeasonContextForWatchAgent(activeWatchAgent);
-          } else if (activeTab === "high_school") {
-            activeSeasonContext = "regular";
           }
           document.querySelectorAll("#mainTabs button").forEach((x) => x.classList.remove("active"));
           b.classList.add("active");
