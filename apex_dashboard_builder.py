@@ -4349,6 +4349,9 @@ def build_high_school_payloads(entry: dict[str, str]) -> list[dict[str, Any]]:
         "last_night": {},
         "month_to_date": {},
         "season": {},
+        "summer_season": {},
+        "summer_last_night": {},
+        "summer_month_to_date": {},
         "upcoming_series": [],
         "stats_unavailable_reason": "",
     }
@@ -4609,6 +4612,7 @@ def load_high_school_clients(path: Path) -> list[dict[str, str]]:
     pos_col = pick_col(["Position", "Pos"])
     school_col = pick_col(["School", "Team", "High School"])
     agent_col = pick_col(["Agent", "Agent Initials", "Agt"])
+    year_col = pick_col(["Year", "Grad Year", "Graduation Year"])
     url_col = pick_col(["MaxPreps URL", "Stats URL", "URL", "Profile URL", "Link"])
     if not name_col:
         return []
@@ -4635,6 +4639,7 @@ def load_high_school_clients(path: Path) -> list[dict[str, str]]:
                 "position": _cell_str(r.get(pos_col, "")) if pos_col else "",
                 "school": _cell_str(r.get(school_col, "")) if school_col else "",
                 "agent": _normalize_agent_initials(_cell_str(r.get(agent_col, "")) if agent_col else ""),
+                "grad_year": _cell_str(r.get(year_col, "")) if year_col else "",
                 "stats_url": stats_url,
                 "hs_is_pitcher": _hs_position_flags(_cell_str(r.get(pos_col, "")) if pos_col else "")[0],
                 "hs_is_hitter": _hs_position_flags(_cell_str(r.get(pos_col, "")) if pos_col else "")[1],
@@ -4874,6 +4879,102 @@ def _gc_summer_lines_for_player(
     return None, None, None, None, ""
 
 
+def _gc_summer_lines_any_program(
+    entry: dict[str, str],
+    gc_client: GameChangerClient | None,
+    gc_index: GameChangerIndex | None,
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, str]:
+    """Match a player on any mapped summer travel team when program is unknown."""
+    if not gc_client:
+        return None, None, None, None, ""
+    program = str(entry.get("program") or "").strip()
+    if program:
+        return _gc_summer_lines_for_player(entry, gc_client, gc_index)
+    for program_key in GC_SUMMER_TEAMS:
+        probe = {**entry, "program": program_key}
+        season_hit, season_pitch, last_hit, last_pitch, schedule_url = _gc_summer_lines_for_player(
+            probe, gc_client, gc_index
+        )
+        if season_hit or season_pitch or last_hit or last_pitch:
+            return season_hit, season_pitch, last_hit, last_pitch, schedule_url
+    return None, None, None, None, ""
+
+
+def _apply_gc_lines_to_summer_row(
+    row: dict[str, Any],
+    *,
+    season_line: dict[str, Any] | None,
+    last_line: dict[str, Any] | None,
+    month_line: dict[str, Any] | None,
+    schedule_url: str,
+    is_pitcher: bool,
+) -> None:
+    if schedule_url and not row.get("team_schedule_url"):
+        row["team_schedule_url"] = schedule_url
+    if season_line:
+        row["summer_season"] = _ensure_ops_from_obp_slg(
+            _amateur_line_to_pro_keys(season_line, is_pitcher)
+        )
+    if last_line:
+        mapped = _amateur_line_to_pro_keys(last_line, is_pitcher)
+        if is_pitcher or _is_valid_hitter_last_night_line(mapped):
+            row["summer_last_night"] = _ensure_ops_from_obp_slg(mapped)
+    if month_line:
+        if is_pitcher:
+            month_merged = _with_rate_stats(month_line, True)
+            row["summer_month_to_date"] = _ensure_ops_from_obp_slg(
+                _amateur_line_to_pro_keys(month_merged, True)
+            )
+        else:
+            row["summer_month_to_date"] = _ensure_ops_from_obp_slg(
+                _amateur_line_to_pro_keys(month_line, False)
+            )
+
+
+def attach_summer_travel_stats(
+    rows: list[dict[str, Any]],
+    entry: dict[str, str],
+    gc_client: GameChangerClient | None,
+    gc_index: GameChangerIndex | None,
+) -> None:
+    """Fill summer_* fields from mapped GameChanger travel teams."""
+    if not rows or not gc_client:
+        return
+    season_hit, season_pitch, last_hit, last_pitch, schedule_url = _gc_summer_lines_any_program(
+        entry, gc_client, gc_index
+    )
+    if not (season_hit or season_pitch or last_hit or last_pitch):
+        return
+    wants_pitcher = bool(entry.get("hs_is_pitcher"))
+    wants_hitter = bool(entry.get("hs_is_hitter"))
+    if not wants_pitcher and not wants_hitter:
+        wants_hitter = True
+    for row in rows:
+        is_pitcher = bool(row.get("is_pitcher"))
+        if is_pitcher and not wants_pitcher:
+            continue
+        if not is_pitcher and not wants_hitter:
+            continue
+        if is_pitcher:
+            _apply_gc_lines_to_summer_row(
+                row,
+                season_line=season_pitch,
+                last_line=last_pitch,
+                month_line=None,
+                schedule_url=schedule_url,
+                is_pitcher=True,
+            )
+        else:
+            _apply_gc_lines_to_summer_row(
+                row,
+                season_line=season_hit,
+                last_line=last_hit,
+                month_line=None,
+                schedule_url=schedule_url,
+                is_pitcher=False,
+            )
+
+
 def _append_ar_watch_row(
     out: list[dict[str, Any]],
     entry: dict[str, str],
@@ -4882,8 +4983,12 @@ def _append_ar_watch_row(
     season: dict[str, Any],
     month_to_date: dict[str, Any],
     last_night: dict[str, Any],
+    summer_season: dict[str, Any] | None = None,
+    summer_month_to_date: dict[str, Any] | None = None,
+    summer_last_night: dict[str, Any] | None = None,
     stats_url: str,
     stats_unavailable_reason: str,
+    summer_stats_unavailable_reason: str = "",
 ) -> None:
     pos = entry.get("position", "") or ("P" if is_pitcher else "")
     out.append(
@@ -4900,7 +5005,11 @@ def _append_ar_watch_row(
             "season": _ensure_ops_from_obp_slg(season or {}),
             "month_to_date": _ensure_ops_from_obp_slg(month_to_date or {}),
             "last_night": _ensure_ops_from_obp_slg(last_night or {}),
+            "summer_season": _ensure_ops_from_obp_slg(summer_season or {}),
+            "summer_month_to_date": _ensure_ops_from_obp_slg(summer_month_to_date or {}),
+            "summer_last_night": _ensure_ops_from_obp_slg(summer_last_night or {}),
             "stats_unavailable_reason": stats_unavailable_reason,
+            "summer_stats_unavailable_reason": summer_stats_unavailable_reason,
         }
     )
 
@@ -4926,91 +5035,102 @@ def build_ar_follow_rows(
         wants_hitter = bool(entry.get("hs_is_hitter"))
         if not wants_pitcher and not wants_hitter:
             wants_hitter = True
-        has_gc = bool(season_hit or season_pitch or last_hit or last_pitch)
-        if has_gc:
-            if season_hit or last_hit or (wants_hitter and not season_pitch):
-                _append_ar_watch_row(
-                    out,
-                    entry,
-                    is_pitcher=False,
-                    season=season_hit or {},
-                    month_to_date={},
-                    last_night=last_hit or {},
-                    stats_url=stats_url,
-                    stats_unavailable_reason="" if season_hit or last_hit else "Summer hitting stats not available",
-                )
-            if season_pitch or last_pitch or wants_pitcher:
-                _append_ar_watch_row(
-                    out,
-                    entry,
-                    is_pitcher=True,
-                    season=season_pitch or {},
-                    month_to_date={},
-                    last_night=last_pitch or {},
-                    stats_url=stats_url,
-                    stats_unavailable_reason="" if season_pitch or last_pitch else "Summer pitching stats not available",
-                )
-            continue
         built_rows = build_high_school_payloads({**entry, "agent": "AR"})
-        if not built_rows:
-            if wants_hitter or not wants_pitcher:
-                _append_ar_watch_row(
-                    out,
-                    entry,
-                    is_pitcher=False,
-                    season={},
-                    month_to_date={},
-                    last_night={},
-                    stats_url=stats_url,
-                    stats_unavailable_reason="Statistics not available",
-                )
-            if wants_pitcher:
-                _append_ar_watch_row(
-                    out,
-                    entry,
-                    is_pitcher=True,
-                    season={},
-                    month_to_date={},
-                    last_night={},
-                    stats_url=stats_url,
-                    stats_unavailable_reason="Statistics not available",
-                )
-            continue
-        for br in built_rows:
-            season = _ensure_ops_from_obp_slg(br.get("season", {}) or {})
-            month_to_date = _ensure_ops_from_obp_slg(br.get("month_to_date", {}) or {})
-            last_night = _ensure_ops_from_obp_slg(br.get("last_night", {}) or {})
+        hs_hitter = next((br for br in built_rows if not br.get("is_pitcher")), None)
+        hs_pitcher = next((br for br in built_rows if br.get("is_pitcher")), None)
+        summer_hit = _ensure_ops_from_obp_slg(season_hit or {})
+        summer_pitch = _ensure_ops_from_obp_slg(season_pitch or {})
+        summer_ln_hit = _ensure_ops_from_obp_slg(last_hit or {})
+        summer_ln_pitch = _ensure_ops_from_obp_slg(last_pitch or {})
+        has_summer = bool(season_hit or season_pitch or last_hit or last_pitch)
+        if wants_hitter:
+            hs = hs_hitter or {}
+            hs_season = hs.get("season", {}) or {}
+            hs_ln = hs.get("last_night", {}) or {}
+            hs_mtd = hs.get("month_to_date", {}) or {}
+            hs_reason = hs.get("stats_unavailable_reason", "")
+            if not hs_season and not hs_ln and not stats_url:
+                hs_reason = hs_reason or "High school statistics not available"
+            summer_reason = ""
+            if not has_summer and not (summer_hit or summer_ln_hit):
+                summer_reason = "Summer statistics not available"
             _append_ar_watch_row(
                 out,
                 entry,
-                is_pitcher=bool(br.get("is_pitcher")),
-                season=season,
-                month_to_date=month_to_date,
-                last_night=last_night,
-                stats_url=stats_url or br.get("team_schedule_url", ""),
-                stats_unavailable_reason=br.get("stats_unavailable_reason", ""),
+                is_pitcher=False,
+                season=hs_season,
+                month_to_date=hs_mtd,
+                last_night=hs_ln,
+                summer_season=summer_hit,
+                summer_last_night=summer_ln_hit,
+                stats_url=stats_url or hs.get("team_schedule_url", ""),
+                stats_unavailable_reason=hs_reason,
+                summer_stats_unavailable_reason=summer_reason,
+            )
+        if wants_pitcher:
+            hs = hs_pitcher or {}
+            hs_season = hs.get("season", {}) or {}
+            hs_ln = hs.get("last_night", {}) or {}
+            hs_mtd = hs.get("month_to_date", {}) or {}
+            hs_reason = hs.get("stats_unavailable_reason", "")
+            if not hs_season and not hs_ln and not stats_url:
+                hs_reason = hs_reason or "High school statistics not available"
+            summer_reason = ""
+            if not has_summer and not (summer_pitch or summer_ln_pitch):
+                summer_reason = "Summer statistics not available"
+            _append_ar_watch_row(
+                out,
+                entry,
+                is_pitcher=True,
+                season=hs_season,
+                month_to_date=hs_mtd,
+                last_night=hs_ln,
+                summer_season=summer_pitch,
+                summer_last_night=summer_ln_pitch,
+                stats_url=stats_url or hs.get("team_schedule_url", ""),
+                stats_unavailable_reason=hs_reason,
+                summer_stats_unavailable_reason=summer_reason,
             )
     return out
 
 
-def build_jf_follow_rows(path: Path) -> list[dict[str, Any]]:
+def build_jf_follow_rows(
+    path: Path,
+    gc_client: GameChangerClient | None = None,
+    gc_index: GameChangerIndex | None = None,
+) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
+    client = gc_client or get_gamechanger_client()
+    index = gc_index
+    if client and index is None:
+        index = GameChangerIndex.build(client, _norm_player_name, _norm_token)
     for p in load_jf_follow_clients(path):
         built_rows = build_high_school_payloads(p)
+        attach_summer_travel_stats(built_rows, p, client, index)
         has_hitter_row = any(not br.get("is_pitcher") for br in built_rows)
         has_pitcher_row = any(br.get("is_pitcher") for br in built_rows)
         if p.get("hs_is_pitcher") and not has_hitter_row:
             p2 = dict(p)
             p2["hs_is_hitter"] = True
-            built_rows.extend([br for br in build_high_school_payloads(p2) if not br.get("is_pitcher")])
+            extra = [br for br in build_high_school_payloads(p2) if not br.get("is_pitcher")]
+            attach_summer_travel_stats(extra, p2, client, index)
+            built_rows.extend(extra)
         if p.get("hs_is_hitter") and not has_pitcher_row:
             p3 = dict(p)
             p3["hs_is_pitcher"] = True
-            built_rows.extend([br for br in build_high_school_payloads(p3) if br.get("is_pitcher")])
+            extra = [br for br in build_high_school_payloads(p3) if br.get("is_pitcher")]
+            attach_summer_travel_stats(extra, p3, client, index)
+            built_rows.extend(extra)
         for br in built_rows:
             season = _ensure_ops_from_obp_slg(br.get("season", {}) or {})
             month_to_date = _ensure_ops_from_obp_slg(br.get("month_to_date", {}) or {})
             last_night = _ensure_ops_from_obp_slg(br.get("last_night", {}) or {})
+            summer_season = _ensure_ops_from_obp_slg(br.get("summer_season", {}) or {})
+            summer_month_to_date = _ensure_ops_from_obp_slg(br.get("summer_month_to_date", {}) or {})
+            summer_last_night = _ensure_ops_from_obp_slg(br.get("summer_last_night", {}) or {})
+            summer_reason = ""
+            if not summer_season and not summer_last_night:
+                summer_reason = "Summer statistics not available"
             out.append(
                 {
                     "agent": "JF",
@@ -5023,7 +5143,11 @@ def build_jf_follow_rows(path: Path) -> list[dict[str, Any]]:
                     "season": season,
                     "month_to_date": month_to_date,
                     "last_night": last_night,
+                    "summer_season": summer_season,
+                    "summer_month_to_date": summer_month_to_date,
+                    "summer_last_night": summer_last_night,
                     "stats_unavailable_reason": br.get("stats_unavailable_reason", ""),
+                    "summer_stats_unavailable_reason": summer_reason,
                 }
             )
     return out
@@ -5116,7 +5240,7 @@ def refresh_trackers_in_dashboard(out: Path = OUT_JSON) -> Path:
     gc_client = get_gamechanger_client()
     gc_index = GameChangerIndex.build(gc_client, _norm_player_name, _norm_token) if gc_client else None
     existing["watch_list"] = {
-        "JF": build_jf_follow_rows(JF_FOLLOW_SOURCE_XLSX),
+        "JF": build_jf_follow_rows(JF_FOLLOW_SOURCE_XLSX, gc_client=gc_client, gc_index=gc_index),
         "AR": build_ar_follow_rows(AR_FOLLOW_SOURCE_XLSX, gc_client=gc_client, gc_index=gc_index),
     }
     existing["generated_at"] = datetime.now(UTC).isoformat()
@@ -5217,8 +5341,11 @@ def build_dashboard_data() -> dict[str, Any]:
         if isinstance(rows, list):
             if gc_index is not None:
                 enrich_high_school_from_gamechanger(rows, entry, gc_index)
+            attach_summer_travel_stats(rows, entry, gc_client, gc_index)
             high_school_rows.extend(rows)
-    jf_watch_rows: list[dict[str, Any]] = build_jf_follow_rows(JF_FOLLOW_SOURCE_XLSX)
+    jf_watch_rows: list[dict[str, Any]] = build_jf_follow_rows(
+        JF_FOLLOW_SOURCE_XLSX, gc_client=gc_client, gc_index=gc_index
+    )
     ar_watch_rows: list[dict[str, Any]] = build_ar_follow_rows(
         AR_FOLLOW_SOURCE_XLSX, gc_client=gc_client, gc_index=gc_index
     )

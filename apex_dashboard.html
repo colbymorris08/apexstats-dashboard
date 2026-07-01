@@ -134,6 +134,10 @@
     <button data-subtab="season">Season Stats</button>
     <button data-subtab="schedule">Upcoming Series Locations</button>
   </div>
+  <div class="row" id="seasonContextTabs" style="display:none">
+    <button data-season-context="regular" class="active">High School Season</button>
+    <button data-season-context="summer">Summer Ball</button>
+  </div>
   <div class="row" id="roleTabs">
     <button data-role="all" class="active">All</button>
     <button data-role="pitchers">Pitchers</button>
@@ -153,6 +157,7 @@
     let activeView = "desktop";
     let activeTab = "mlb";
     let activeSubtab = "last_night";
+    let activeSeasonContext = "regular";
     let activeRole = "all";
     let activeWatchAgent = "AK";
     let activeArbPlayer = "Bryan Woo";
@@ -591,6 +596,43 @@
       return `https://www.yelp.com/search?find_desc=restaurants&find_loc=${encodeURIComponent(q)}`;
     }
 
+    function watchListIsStatsMode() {
+      const dynamic = (DATA && DATA.watch_list && DATA.watch_list[activeWatchAgent]) || null;
+      return (activeWatchAgent === "JF" || activeWatchAgent === "AR") && dynamic && dynamic.length;
+    }
+
+    function showSeasonContextTabs() {
+      return activeTab === "high_school" || (activeTab === "watch_list" && watchListIsStatsMode());
+    }
+
+    function applySeasonContext(rows) {
+      if (activeSeasonContext === "regular") return rows;
+      return rows.map((r) => {
+        const summerSeason = r.summer_season || {};
+        const summerLn = r.summer_last_night || {};
+        const hasSummerSeason = summerSeason && Object.keys(summerSeason).length;
+        const hasSummerLn = lastNightNonempty({ last_night: summerLn });
+        return {
+          ...r,
+          season: summerSeason,
+          last_night: summerLn,
+          month_to_date: r.summer_month_to_date || {},
+          stats_unavailable_reason:
+            !hasSummerSeason && !hasSummerLn
+              ? (r.summer_stats_unavailable_reason || "Summer statistics not available")
+              : "",
+        };
+      });
+    }
+
+    function seasonSectionLabel(base) {
+      if (activeSeasonContext === "summer") {
+        if (base === "Last Night Stats") return "Summer Last Night";
+        if (base === "Season Stats") return "Summer Season Stats";
+      }
+      return base;
+    }
+
     function baseCols(row, mobileMode = false) {
       if (mobileMode) return [row.name || "", row.position || "", row.last_night_boxscore_url || ""];
       const cols = [
@@ -707,8 +749,8 @@
         ];
         const statVals = cols.map((c) => formatStatCell(statForCol(r, statKey, c), c));
         const hsUnavailable =
-          activeTab === "high_school" &&
-          statKey === "season" &&
+          (activeTab === "high_school" || (activeTab === "watch_list" && watchListIsStatsMode())) &&
+          (statKey === "season" || statKey === "last_night" || statKey === "month_to_date") &&
           String(r.stats_unavailable_reason || "").trim();
         if (hsUnavailable) {
           const nameTd = tdWithValue(baseVals[0] || r.name || "");
@@ -1007,10 +1049,10 @@
 
       const dynamic = (DATA && DATA.watch_list && DATA.watch_list[activeWatchAgent]) || null;
       const rows = dynamic && dynamic.length ? dynamic : (WATCH_LIST_DATA[activeWatchAgent] || []);
-      const isStatsMode = (activeWatchAgent === "JF" || activeWatchAgent === "AR") && dynamic && dynamic.length;
+      const isStatsMode = watchListIsStatsMode();
       if (isStatsMode) {
         // Match High School tab structure/format (same season + last-night hitter/pitcher tables).
-        const hsRows = rows.map((r) => {
+        const hsRows = applySeasonContext(rows).map((r) => {
           const pos = String(r.position || "");
           const isPitcher = /\b(RHP|LHP|SP|RP|P)\b/i.test(pos);
           return {
@@ -1038,7 +1080,7 @@
         const hittersLn = reportLn ? hitters.map((r) => rowForLastNightSiteDisplay(r, reportLn)) : hitters;
         const pitchersLn = reportLn ? pitchers.map((r) => rowForLastNightSiteDisplay(r, reportLn)) : pitchers;
         if (hitters.length || pitchers.length) {
-          const ln = el("h2", "Last Night Stats");
+          const ln = el("h2", seasonSectionLabel("Last Night Stats"));
           ln.className = "stats-section-title";
           hsLike.appendChild(ln);
           if (hitters.length) {
@@ -1054,7 +1096,7 @@
             hsLike.appendChild(buildStatTable(pitchersLn, "last_night", "watch-jf-ln-pit", PITCHER_COLS, "watch-jf"));
           }
         }
-        const seasonHdr = el("h2", "Season Stats");
+        const seasonHdr = el("h2", seasonSectionLabel("Season Stats"));
         seasonHdr.className = "stats-section-title";
         hsLike.appendChild(seasonHdr);
         if (hitters.length) {
@@ -1364,9 +1406,13 @@
       const showSchedule = !(activeView === "mobile");
       const isCustomTab = ["watch_list", "arbitration_tracker", "free_agency_tracker"].includes(activeTab);
       document.getElementById("subTabs").style.display = isCustomTab ? "none" : "";
+      document.getElementById("seasonContextTabs").style.display = showSeasonContextTabs() ? "" : "none";
       document.getElementById("roleTabs").style.display = (activeView === "mobile" || isCustomTab) ? "none" : "";
       document.querySelectorAll("#subTabs button").forEach((b) => {
         if (b.dataset.subtab === "schedule") b.style.display = showSchedule ? "" : "none";
+      });
+      document.querySelectorAll("#seasonContextTabs button").forEach((b) => {
+        b.classList.toggle("active", b.dataset.seasonContext === activeSeasonContext);
       });
       if (!showSchedule && activeSubtab === "schedule") activeSubtab = "last_night";
 
@@ -1396,7 +1442,7 @@
           return;
         }
         const baseRows = rowsForTab(t);
-        const rows = roleFilter(baseRows);
+        const rows = roleFilter(applySeasonContext(baseRows));
         const panelKey = `${t}-${activeSubtab}-${activeRole}`;
         if (activeSubtab === "schedule") renderScheduleTable(rows, panel, panelKey);
         else renderStatsTable(rows, activeSubtab, panel, panelKey);
@@ -1426,6 +1472,14 @@
         b.onclick = () => {
           activeSubtab = b.dataset.subtab;
           document.querySelectorAll("#subTabs button").forEach((x) => x.classList.remove("active"));
+          b.classList.add("active");
+          render();
+        };
+      });
+      document.querySelectorAll("#seasonContextTabs button").forEach((b) => {
+        b.onclick = () => {
+          activeSeasonContext = b.dataset.seasonContext;
+          document.querySelectorAll("#seasonContextTabs button").forEach((x) => x.classList.remove("active"));
           b.classList.add("active");
           render();
         };
