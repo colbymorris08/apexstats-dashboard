@@ -178,7 +178,19 @@ PRO_MLB_PEOPLE_SEARCH_ALIASES: dict[str, str] = {
 COLLEGE_FORCE_HITTER_NAMES: frozenset[str] = frozenset({"ethan surowiec"})
 COLLEGE_TWO_WAY_NAMES: frozenset[str] = frozenset({"evan dempsey", "talan bell"})
 # HS sheet may list only RHP/LHP while the athlete also hits (MaxPreps has both game logs).
-HS_TWO_WAY_NAMES: frozenset[str] = frozenset({"jensen hirschkorn"})
+HS_TWO_WAY_NAMES: frozenset[str] = frozenset(
+    {"jensen hirschkorn", "cooper vais", "enzi otieku"}
+)
+# Pitcher-only: do not add a hitter row when MaxPreps also has batting logs.
+HS_PITCHER_ONLY_NAMES: frozenset[str] = frozenset(
+    {
+        "gavin mcmillan",
+        "miles cornell",
+        "austin rider",
+        "chase cotton",
+        "luke shoemaker",
+    }
+)
 AMATEUR_TOKENS = ("NCAA", "COLLEGE", "JUCO", "HS", "HIGH SCHOOL")
 TEAM_CATALOG: list[dict[str, Any]] | None = None
 # (team_id, season) -> [(person_id, fullName), ...] for org roster scans when people/search fails.
@@ -3982,7 +3994,7 @@ def _maxpreps_link_for_day(html: str, day: date) -> str:
 
 
 def _maxpreps_next_data(html: str) -> dict[str, Any] | None:
-    m = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', html, re.S)
+    m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', html, re.S)
     if not m:
         return None
     try:
@@ -4000,6 +4012,14 @@ def _maxpreps_stat_map(stats: list[dict[str, Any]]) -> dict[str, Any]:
     return out
 
 
+def _maxpreps_pitching_subgroup(subgroups: list[dict[str, Any]], *stat_names: str) -> dict[str, Any] | None:
+    for sg in subgroups:
+        sm = _maxpreps_stat_map((sg.get("totalStats") or {}).get("stats") or [])
+        if any(sm.get(name) not in (None, "", "0", 0) for name in stat_names):
+            return sg
+    return None
+
+
 def _maxpreps_pitching_rows(next_data: dict[str, Any] | None) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     if not next_data:
         return [], {}
@@ -4015,10 +4035,12 @@ def _maxpreps_pitching_rows(next_data: dict[str, Any] | None) -> tuple[list[dict
     if not pitching_group:
         return [], {}
     subgroups = list(pitching_group.get("subgroups") or [])
-    if len(subgroups) < 2:
+    if not subgroups:
         return [], {}
-    sg0 = subgroups[0]  # includes ERA
-    sg1 = subgroups[1]  # includes IP/H/R/ER/BB/K/HR
+    sg0 = _maxpreps_pitching_subgroup(subgroups, "EarnedRunAverage", "Win", "Appearances") or subgroups[0]
+    sg1 = _maxpreps_pitching_subgroup(
+        subgroups, "InningsPitchedDecimal", "HitsAgainst", "BattersStruckOut"
+    ) or (subgroups[1] if len(subgroups) > 1 else subgroups[0])
     era_by_key: dict[tuple[str, str], Any] = {}
     for r in sg0.get("stats") or []:
         sm = _maxpreps_stat_map(r.get("stats") or [])
@@ -4178,6 +4200,8 @@ def _hs_apply_two_way_roles(
 ) -> tuple[bool, bool]:
     """Ensure two-way HS athletes get separate hitter + pitcher dashboard/PDF rows."""
     nn = _norm_player_name(entry.get("name", ""))
+    if nn in HS_PITCHER_ONLY_NAMES:
+        return True, False
     if nn in HS_TWO_WAY_NAMES:
         return True, True
     if _maxpreps_next_has_batting_season(next_data):
@@ -4185,6 +4209,10 @@ def _hs_apply_two_way_roles(
     if _maxpreps_next_has_pitching_season(next_data):
         wants_pitcher = True
     return wants_pitcher, wants_hitter
+
+
+def _apex_hs_client_name_set() -> frozenset[str]:
+    return frozenset(_norm_player_name(c.get("name", "")) for c in load_high_school_clients(HS_SOURCE_XLSX))
 
 
 def _pick_maxpreps_tables(tables: list[pd.DataFrame]) -> tuple[pd.DataFrame | None, pd.DataFrame | None]:
@@ -4996,6 +5024,7 @@ def _append_ar_watch_row(
             "agent": "AR",
             "name": entry.get("name", ""),
             "position": pos,
+            "is_pitcher": is_pitcher,
             "grad_year": entry.get("grad_year", ""),
             "school": _ar_display_school(entry.get("program", ""), entry.get("school", "")),
             "program": entry.get("program", ""),
@@ -5024,7 +5053,10 @@ def build_ar_follow_rows(
     index = gc_index
     if client and index is None:
         index = GameChangerIndex.build(client, _norm_player_name, _norm_token)
+    hs_client_names = _apex_hs_client_name_set()
     for entry in load_ar_follow_clients(path):
+        if _norm_player_name(entry.get("name", "")) in hs_client_names:
+            continue
         season_hit, season_pitch, last_hit, last_pitch, gc_url = (None, None, None, None, "")
         if client:
             season_hit, season_pitch, last_hit, last_pitch, gc_url = _gc_summer_lines_for_player(

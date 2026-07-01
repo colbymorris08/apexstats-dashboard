@@ -14,6 +14,25 @@
     }
     h1 { margin: 0 0 12px; font-size: 22px; font-weight: 700; }
     .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .season-context-bar {
+      align-items: center;
+      background: #dce6f2;
+      border: 2px solid #1e3a5f;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin: 10px 0 14px;
+    }
+    .season-context-label {
+      font-weight: 800;
+      color: #1e3a5f;
+      font-size: 14px;
+      margin-right: 6px;
+      white-space: nowrap;
+    }
+    #seasonContextTabs button {
+      min-width: 150px;
+      font-size: 14px;
+    }
     button {
       background: #fff;
       color: #1a1a1a;
@@ -134,9 +153,10 @@
     <button data-subtab="season">Season Stats</button>
     <button data-subtab="schedule">Upcoming Series Locations</button>
   </div>
-  <div class="row" id="seasonContextTabs" style="display:none">
-    <button data-season-context="regular" class="active">High School Season</button>
-    <button data-season-context="summer">Summer Ball</button>
+  <div class="row season-context-bar" id="seasonContextTabs" style="display:none">
+    <span class="season-context-label">Stats view:</span>
+    <button data-season-context="regular" class="active" id="seasonContextRegularBtn">School Season</button>
+    <button data-season-context="summer" id="seasonContextSummerBtn">Summer Ball</button>
   </div>
   <div class="row" id="roleTabs">
     <button data-role="all" class="active">All</button>
@@ -596,29 +616,76 @@
       return `https://www.yelp.com/search?find_desc=restaurants&find_loc=${encodeURIComponent(q)}`;
     }
 
-    function appendSeasonContextControls(container) {
-      const row = el("div");
-      row.className = "row";
-      row.style.margin = "12px 0";
-      [
-        { key: "regular", label: "High School Season" },
-        { key: "summer", label: "Summer Ball" },
-      ].forEach(({ key, label }) => {
-        const btn = el("button", label);
-        if (activeSeasonContext === key) btn.classList.add("active");
-        btn.onclick = () => {
-          activeSeasonContext = key;
-          render();
-        };
-        row.appendChild(btn);
-      });
-      container.appendChild(row);
-    }
-
     function defaultSeasonContextForWatchAgent(agent) {
       if (agent === "AR") return "summer";
       if (agent === "JF") return "regular";
       return activeSeasonContext;
+    }
+
+    function defaultSeasonContextForTab(tab) {
+      if (tab === "watch_list") return defaultSeasonContextForWatchAgent(activeWatchAgent);
+      return "regular";
+    }
+
+    function seasonContextButtonLabels() {
+      if (activeTab === "amateur") {
+        return { regular: "College Season", summer: "Summer Ball" };
+      }
+      return { regular: "High School Season", summer: "Summer Ball" };
+    }
+
+    function updateSeasonContextTabLabels() {
+      const labels = seasonContextButtonLabels();
+      const regularBtn = document.getElementById("seasonContextRegularBtn");
+      const summerBtn = document.getElementById("seasonContextSummerBtn");
+      if (regularBtn) regularBtn.textContent = labels.regular;
+      if (summerBtn) summerBtn.textContent = labels.summer;
+    }
+
+    function setSeasonContext(key) {
+      activeSeasonContext = key;
+      render();
+    }
+
+    function appendSeasonContextBar(container) {
+      if (!showSeasonContextTabs()) return;
+      const bar = el("div");
+      bar.className = "season-context-bar row";
+      const label = el("span", "Stats view:");
+      label.className = "season-context-label";
+      bar.appendChild(label);
+      const labels = seasonContextButtonLabels();
+      [
+        { key: "regular", label: labels.regular },
+        { key: "summer", label: labels.summer },
+      ].forEach(({ key, label: text }) => {
+        const btn = el("button", text);
+        if (activeSeasonContext === key) btn.classList.add("active");
+        btn.onclick = () => setSeasonContext(key);
+        bar.appendChild(btn);
+      });
+      container.appendChild(bar);
+    }
+
+    function rowHasSummerStats(r) {
+      const summerSeason = r.summer_season || {};
+      if (summerSeason && Object.keys(summerSeason).length) return true;
+      const summerLn = r.summer_last_night || {};
+      if (lastNightNonempty({ last_night: summerLn })) return true;
+      if (r.stats_context === "summer" && r.last_night && Object.keys(r.last_night).length) return true;
+      return false;
+    }
+
+    function summerSeasonForRow(r) {
+      const summerSeason = r.summer_season || {};
+      return summerSeason && Object.keys(summerSeason).length ? summerSeason : {};
+    }
+
+    function summerLastNightForRow(r) {
+      const summerLn = r.summer_last_night || {};
+      if (summerLn && Object.keys(summerLn).length) return summerLn;
+      if (r.stats_context === "summer") return r.last_night || {};
+      return {};
     }
 
     function watchListIsStatsMode() {
@@ -627,32 +694,54 @@
     }
 
     function showSeasonContextTabs() {
+      if (activeTab === "amateur" || activeTab === "high_school") return true;
       return activeTab === "watch_list" && watchListIsStatsMode();
     }
 
     function applySeasonContextForTab(rows, tab) {
-      if (tab === "high_school") return rows;
-      return applySeasonContext(rows);
+      if (!showSeasonContextTabs() || tab !== activeTab) return rows;
+      return applySeasonContext(rows, tab);
     }
 
-    function applySeasonContext(rows) {
-      if (activeSeasonContext === "regular") return rows;
-      return rows.map((r) => {
-        const summerSeason = r.summer_season || {};
-        const summerLn = r.summer_last_night || {};
-        const hasSummerSeason = summerSeason && Object.keys(summerSeason).length;
-        const hasSummerLn = lastNightNonempty({ last_night: summerLn });
-        return {
-          ...r,
-          season: summerSeason,
-          last_night: summerLn,
-          month_to_date: r.summer_month_to_date || {},
-          stats_unavailable_reason:
-            !hasSummerSeason && !hasSummerLn
-              ? (r.summer_stats_unavailable_reason || "Summer statistics not available")
-              : "",
-        };
-      });
+    function applySeasonContext(rows, tab) {
+      if (activeSeasonContext === "summer") {
+        return rows.map((r) => {
+          const summerSeason = summerSeasonForRow(r);
+          const summerLn = summerLastNightForRow(r);
+          const hasSummerSeason = summerSeason && Object.keys(summerSeason).length;
+          const hasSummerLn = lastNightNonempty({ last_night: summerLn });
+          const summerMtd =
+            r.summer_month_to_date && Object.keys(r.summer_month_to_date).length
+              ? r.summer_month_to_date
+              : r.stats_context === "summer"
+                ? r.month_to_date || {}
+                : {};
+          return {
+            ...r,
+            season: summerSeason,
+            last_night: summerLn,
+            month_to_date: summerMtd,
+            stats_unavailable_reason:
+              !hasSummerSeason && !hasSummerLn
+                ? (r.summer_stats_unavailable_reason || "Summer statistics not available")
+                : "",
+          };
+        });
+      }
+      if (tab === "amateur") {
+        return rows.map((r) => {
+          if (r.stats_context !== "summer") return r;
+          return {
+            ...r,
+            current_team: r.organization || r.school_or_team || r.current_team,
+            team_level: "NCAA",
+            last_night: {},
+            month_to_date: {},
+            last_night_boxscore_url: "",
+          };
+        });
+      }
+      return rows;
     }
 
     function seasonSectionLabel(base) {
@@ -792,7 +881,8 @@
         ];
         const statVals = cols.map((c) => formatStatCell(statForCol(r, statKey, c), c));
         const hsUnavailable =
-          (activeTab === "high_school" || (activeTab === "watch_list" && watchListIsStatsMode())) &&
+          (["high_school", "amateur"].includes(activeTab) ||
+            (activeTab === "watch_list" && watchListIsStatsMode())) &&
           statKey === "season" &&
           String(r.stats_unavailable_reason || "").trim() &&
           !rowHasStatsForKey(r, statKey);
@@ -839,7 +929,7 @@
     }
 
     function appendSummerSeasonSection(rows, statKey, target, panelKey, hitterCols, pitcherCols) {
-      if (activeTab !== "amateur" || statKey !== "season") return;
+      if (showSeasonContextTabs() || activeTab !== "amateur" || statKey !== "season") return;
       const summerRows = rows
         .filter((r) => r.stats_context === "summer" && r.summer_season && Object.keys(r.summer_season).length)
         .map((r) => ({ ...r, season: r.summer_season }));
@@ -885,6 +975,11 @@
 
     function renderStatsTable(rows, statKey, target, panelKey) {
       target.innerHTML = "";
+      const shell = el("div");
+      appendSeasonContextBar(shell);
+      const content = el("div");
+      shell.appendChild(content);
+      target.appendChild(shell);
       const report = DATA && DATA.last_night_date ? String(DATA.last_night_date) : "";
       const useRows =
         statKey === "last_night" && report
@@ -906,20 +1001,20 @@
 
       if (activeRole === "hitters") {
         if (!hitters.length) {
-          target.appendChild(el("p", "No hitters in this view."));
+          content.appendChild(el("p", "No hitters in this view."));
           return;
         }
-        target.appendChild(buildStatTable(hitters, statKey, "hit", hitterCols, panelKey));
-        appendSummerSeasonSection(rows, statKey, target, panelKey, hitterCols, pitcherCols);
+        content.appendChild(buildStatTable(hitters, statKey, "hit", hitterCols, panelKey));
+        appendSummerSeasonSection(rows, statKey, content, panelKey, hitterCols, pitcherCols);
         return;
       }
       if (activeRole === "pitchers") {
         if (!pitchers.length) {
-          target.appendChild(el("p", "No pitchers in this view."));
+          content.appendChild(el("p", "No pitchers in this view."));
           return;
         }
-        target.appendChild(buildStatTable(pitchers, statKey, "pit", pitcherCols, panelKey));
-        appendSummerSeasonSection(rows, statKey, target, panelKey, hitterCols, pitcherCols);
+        content.appendChild(buildStatTable(pitchers, statKey, "pit", pitcherCols, panelKey));
+        appendSummerSeasonSection(rows, statKey, content, panelKey, hitterCols, pitcherCols);
         return;
       }
 
@@ -939,8 +1034,8 @@
       if (!hitters.length && !pitchers.length) {
         wrap.appendChild(el("p", "No clients in this view."));
       }
-      target.appendChild(wrap);
-      appendSummerSeasonSection(rows, statKey, target, panelKey, hitterCols, pitcherCols);
+      content.appendChild(wrap);
+      appendSummerSeasonSection(rows, statKey, content, panelKey, hitterCols, pitcherCols);
     }
 
     function renderScheduleTable(rows, target, panelKey) {
@@ -1091,16 +1186,19 @@
       controls.appendChild(label);
       controls.appendChild(select);
       wrap.appendChild(controls);
+      appendSeasonContextBar(wrap);
 
       const dynamic = (DATA && DATA.watch_list && DATA.watch_list[activeWatchAgent]) || null;
       const rows = dynamic && dynamic.length ? dynamic : (WATCH_LIST_DATA[activeWatchAgent] || []);
       const isStatsMode = watchListIsStatsMode();
       if (isStatsMode) {
-        appendSeasonContextControls(wrap);
         // Match High School tab structure/format (same season + last-night hitter/pitcher tables).
-        const hsRows = applySeasonContext(rows).map((r) => {
+        const hsRows = applySeasonContext(rows, "watch_list").map((r) => {
           const pos = String(r.position || "");
-          const isPitcher = /\b(RHP|LHP|SP|RP|P)\b/i.test(pos);
+          const isPitcher =
+            typeof r.is_pitcher === "boolean"
+              ? r.is_pitcher
+              : /\b(RHP|LHP|SP|RP|P)\b/i.test(pos);
           return {
             name: r.name || "",
             agent: r.agent || activeWatchAgent,
@@ -1453,6 +1551,7 @@
       const isCustomTab = ["watch_list", "arbitration_tracker", "free_agency_tracker"].includes(activeTab);
       document.getElementById("subTabs").style.display = isCustomTab ? "none" : "";
       document.getElementById("seasonContextTabs").style.display = showSeasonContextTabs() ? "" : "none";
+      updateSeasonContextTabLabels();
       document.getElementById("roleTabs").style.display = (activeView === "mobile" || isCustomTab) ? "none" : "";
       document.querySelectorAll("#subTabs button").forEach((b) => {
         if (b.dataset.subtab === "schedule") b.style.display = showSchedule ? "" : "none";
@@ -1510,9 +1609,7 @@
       document.querySelectorAll("#mainTabs button").forEach((b) => {
         b.onclick = () => {
           activeTab = b.dataset.tab;
-          if (activeTab === "watch_list") {
-            activeSeasonContext = defaultSeasonContextForWatchAgent(activeWatchAgent);
-          }
+          activeSeasonContext = defaultSeasonContextForTab(activeTab);
           document.querySelectorAll("#mainTabs button").forEach((x) => x.classList.remove("active"));
           b.classList.add("active");
           render();
