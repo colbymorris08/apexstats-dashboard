@@ -71,7 +71,9 @@ GC_SUMMER_TEAMS: dict[str, list[dict[str, str]]] = {
         {"public_id": "pbcVpMwOqaDB", "grad_year": "2028"},
     ],
     "2028 franklin scout": [
-        {"public_id": "99GjKMKbVHGq", "grad_year": "2028"},
+        {"public_id": "99GjKMKbVHGq", "internal_id": "8419b177-b119-416f-8a31-40df6872989c", "grad_year": "2028"},
+        {"public_id": "XLBwEZq31n1w", "internal_id": "4ce74011-6388-480c-98a0-d561ba9c2a6e"},
+        {"public_id": "hKiMjlr2Fy1v", "internal_id": "ab6ea9bf-2606-4986-aeb3-43d3805ffbc1"},
     ],
     "2029 alpha prime": [
         {
@@ -83,10 +85,13 @@ GC_SUMMER_TEAMS: dict[str, list[dict[str, str]]] = {
         {"public_id": "id7ybiSJagA9", "grad_year": "2029"},
     ],
     "2029 usa prime national": [
-        {"public_id": "OidOhT3aGNFh", "grad_year": "2029"},
+        {"public_id": "5XqWs7hjR3mI", "internal_id": "6266b2b2-99fc-4e60-9930-61ec51500bd8", "grad_year": "2029"},
+        {"public_id": "OidOhT3aGNFh", "internal_id": "5a005da8-ca7e-4e3c-93f5-44d2323390f4", "grad_year": "2029"},
+        {"public_id": "0FBXtZpQyaGl", "internal_id": "95696c70-d710-4efa-af23-9981a1835668", "grad_year": "2029"},
     ],
     "2030 usa prime national": [
-        {"public_id": "bMc0qGma2n7C", "grad_year": "2030"},
+        {"public_id": "qmGs6H3kV0XX", "internal_id": "aee5c3e3-76b0-4fe1-800f-35c0160a5528"},
+        {"public_id": "bMc0qGma2n7C", "internal_id": "f82c9972-3bc5-4845-a0f2-725940f1225b", "grad_year": "2030"},
     ],
 }
 GC_PROGRAM_SEARCH_QUERIES: dict[str, list[str]] = {
@@ -4990,6 +4995,12 @@ def _gc_summer_lines_for_team(
             season_hit, season_pitch = None, None
     if season_hit is None and season_pitch is None:
         season_hit, season_pitch = public_player_season_lines(gc_client, public_id, player_id)
+    if season_hit is None and season_pitch is None and gc_index and internal_id:
+        try:
+            season_payload = gc_index.season_stats(internal_id)
+            season_hit, season_pitch = _player_season_lines(season_payload, player_id)
+        except Exception:
+            pass
     return season_hit, season_pitch, last_hit, last_pitch, schedule_url
 
 
