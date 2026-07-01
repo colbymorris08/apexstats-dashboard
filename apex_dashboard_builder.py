@@ -57,7 +57,10 @@ GC_SUMMER_TEAMS: dict[str, list[dict[str, str]]] = {
         },
     ],
     "2029 alpha prime": [
-        # Add the 2029 Alpha Prime GC public_id here when available (separate roster from 2027/2028).
+        {
+            "public_id": "KdR6FtG9xzKl",
+            "grad_year": "2029",
+        },
     ],
     # Still need GC public IDs: 2028 norcal, 2028 canes national, 2028 mlb breakthrough,
     # 2027 top tier, 2029 norcal, 2028 franklin scout, 2029/2030 usa prime national.
