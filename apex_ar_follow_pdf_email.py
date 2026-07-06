@@ -3,7 +3,7 @@
 Build and email a separate PDF for AR follow players flagged Private in ARFollow.xlsx.
 
 Uses the same SMTP settings as apex_last_night_pdf_email.py but sends only to
-APEX_AR_EMAIL_TO (default: alecr@apexbaseball.com).
+APEX_AR_EMAIL_TO (default: colbym@apexbaseball.com,alecr@apexbaseball.com).
 
 Input: apex_dashboard_data.json (run apex_dashboard_builder.py first).
 """
@@ -25,6 +25,7 @@ from apex_last_night_pdf_email import (
     _fmt_num,
     _fmt_ops,
     _org_cell,
+    _pdf_row_view,
     _pdf_usable_width,
     _player_cell,
     _pos_short,
@@ -35,7 +36,7 @@ from apex_last_night_pdf_email import (
     pdf_row_for_last_night_email,
 )
 
-DEFAULT_AR_TO = "alecr@apexbaseball.com"
+DEFAULT_AR_TO = "colbym@apexbaseball.com,alecr@apexbaseball.com"
 
 
 def _watch_row_to_pdf_row(row: dict[str, Any], report_date: str) -> dict[str, Any]:
@@ -43,15 +44,23 @@ def _watch_row_to_pdf_row(row: dict[str, Any], report_date: str) -> dict[str, An
     is_pitcher = bool(row.get("is_pitcher")) or bool(
         __import__("re").search(r"\b(RHP|LHP|SP|RP|P)\b", pos, __import__("re").I)
     )
+    summer_ln = row.get("summer_last_night") or {}
+    school_ln = row.get("last_night") or {}
+    summer_se = row.get("summer_season") or {}
+    school_se = row.get("season") or {}
+    team = str(row.get("summer_team") or row.get("program") or row.get("school") or "").strip()
     return {
         "name": row.get("name", ""),
         "position": pos or ("P" if is_pitcher else "H"),
-        "organization": row.get("school", ""),
-        "current_team": row.get("school", ""),
+        "organization": team,
+        "current_team": team,
         "is_pitcher": is_pitcher,
-        "season": row.get("season") or {},
+        "stats_context": "summer" if summer_se or summer_ln else "",
+        "season": summer_se if summer_se else school_se,
         "month_to_date": row.get("month_to_date") or {},
-        "last_night": row.get("last_night") or {},
+        "last_night": summer_ln if summer_ln else school_ln,
+        "summer_season": summer_se,
+        "summer_last_night": summer_ln,
         "last_night_date": report_date,
     }
 
@@ -77,7 +86,7 @@ def write_ar_follow_pdf(rows: list[dict[str, Any]], data: dict[str, Any], out_pa
 
     report_date = str(data.get("last_night_date") or "").strip()
     generated = str(data.get("generated_at") or "")[:19]
-    pdf_rows = [_watch_row_to_pdf_row(r, report_date) for r in rows]
+    pdf_rows = [_pdf_row_view(_watch_row_to_pdf_row(r, report_date)) for r in rows]
     ln_rows = [r for r in pdf_rows if pdf_row_for_last_night_email(r, report_date)]
     has_season = [r for r in pdf_rows if (r.get("season") or {})]
 

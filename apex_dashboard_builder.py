@@ -46,14 +46,14 @@ AR_FOLLOW_SOURCE_XLSX = APEX_ROOT / "client_lists" / "ARFollow.xlsx"
 # GameChanger public/internal IDs for summer travel teams (program key = lowercased Program column).
 # Each program may list multiple teams; the first roster match wins.
 GC_SUMMER_TEAMS: dict[str, list[dict[str, str]]] = {
-    "2027 alpha prime": [{"public_id": "VpbE6SBAdU1f", "grad_year": "2027"}],
+    "2027 alpha prime": [{"public_id": "VpbE6SBAdU1f", "internal_id": "f888a449-3ccc-4e0a-91d5-343c6d68056e", "grad_year": "2027"}],
     "2027 usa prime/detroit tigers scout": [
-        {"public_id": "6tCCUYwkmmmN", "grad_year": "2027"},
+        {"public_id": "6tCCUYwkmmmN", "internal_id": "b814ce2f-a465-4d3d-b5da-7424ba1e48df", "grad_year": "2027"},
         {"public_id": "C9sGCQlZudsm"},
     ],
-    "2027 canes national": [{"public_id": "loGFljSxDTEQ"}],
+    "2027 canes national": [{"public_id": "loGFljSxDTEQ", "internal_id": "587e7568-49db-4906-8e59-6cf8788009c2"}],
     "2027 norcal": [
-        {"public_id": "YoqTPc30UqAO", "grad_year": "2027"},
+        {"public_id": "YoqTPc30UqAO", "internal_id": "133975fa-5df3-4c86-82b8-9786a5a1c147", "grad_year": "2027"},
         {"public_id": "2YBxQncoeiot"},
     ],
     "2027 top tier": [{"public_id": "TQfPUw2mqDvg", "grad_year": "2027"}],
@@ -65,28 +65,29 @@ GC_SUMMER_TEAMS: dict[str, list[dict[str, str]]] = {
         },
     ],
     "2028 norcal": [
-        {"public_id": "7DXVnYPadY77", "grad_year": "2028"},
+        {"public_id": "7DXVnYPadY77", "internal_id": "b261b87f-2a7a-45b9-a213-fbb918af0b41", "grad_year": "2028"},
     ],
     "2028 canes national": [
-        {"public_id": "pbcVpMwOqaDB", "grad_year": "2028"},
+        {"public_id": "pbcVpMwOqaDB", "internal_id": "7910c0e1-f5c7-4d78-bb22-deab3a0cc761", "grad_year": "2028"},
     ],
     "2028 franklin scout": [
+        {"public_id": "hKiMjlr2Fy1v", "internal_id": "ab6ea9bf-2606-4986-aeb3-43d3805ffbc1", "grad_year": "2028"},
         {"public_id": "99GjKMKbVHGq", "internal_id": "8419b177-b119-416f-8a31-40df6872989c", "grad_year": "2028"},
         {"public_id": "XLBwEZq31n1w", "internal_id": "4ce74011-6388-480c-98a0-d561ba9c2a6e"},
-        {"public_id": "hKiMjlr2Fy1v", "internal_id": "ab6ea9bf-2606-4986-aeb3-43d3805ffbc1"},
     ],
     "2029 alpha prime": [
         {
             "public_id": "KdR6FtG9xzKl",
+            "internal_id": "695b3946-d84e-4213-9ad8-82017509bf09",
             "grad_year": "2029",
         },
     ],
     "2029 norcal": [
-        {"public_id": "id7ybiSJagA9", "grad_year": "2029"},
+        {"public_id": "id7ybiSJagA9", "internal_id": "cf85520d-ee97-4b8c-8704-f785971eaafc", "grad_year": "2029"},
     ],
     "2029 usa prime national": [
-        {"public_id": "5XqWs7hjR3mI", "internal_id": "6266b2b2-99fc-4e60-9930-61ec51500bd8", "grad_year": "2029"},
         {"public_id": "OidOhT3aGNFh", "internal_id": "5a005da8-ca7e-4e3c-93f5-44d2323390f4", "grad_year": "2029"},
+        {"public_id": "5XqWs7hjR3mI", "internal_id": "6266b2b2-99fc-4e60-9930-61ec51500bd8", "grad_year": "2029"},
         {"public_id": "0FBXtZpQyaGl", "internal_id": "95696c70-d710-4efa-af23-9981a1835668", "grad_year": "2029"},
     ],
     "2030 usa prime national": [
@@ -133,6 +134,22 @@ def dashboard_date() -> date:
 def last_night_date() -> date:
     """Report anchor day: yesterday in Pacific (never today's games)."""
     return dashboard_date() - timedelta(days=1)
+
+
+def report_anchor_date() -> date:
+    """Dashboard/PDF report day; override with APEX_REPORT_DATE=YYYY-MM-DD for backfills/previews."""
+    raw = os.environ.get("APEX_REPORT_DATE", "").strip()
+    if raw:
+        try:
+            return date.fromisoformat(raw[:10])
+        except ValueError:
+            pass
+    return last_night_date()
+
+
+def gc_report_anchor_date() -> date:
+    """Last-night anchor for GameChanger summer line pulls."""
+    return report_anchor_date()
 
 
 SEASON = dashboard_date().year
@@ -3541,7 +3558,7 @@ def build_client_payload(c: Client) -> dict[str, Any]:
         "team_level": "",
         "team_schedule_url": "",
         "last_night_boxscore_url": "",
-        "last_night_date": last_night_date().isoformat(),
+        "last_night_date": report_anchor_date().isoformat(),
         "last_night": {},
         "month_to_date": {},
         "season": {},
@@ -3862,12 +3879,13 @@ def build_summer_amateur_payload(c: Client, cfg: dict[str, Any]) -> dict[str, An
         "organization": school,
         "school_or_team": school,
         "current_team": summer_team,
+        "summer_team": summer_team,
         "current_team_location": "",
         "team_level": team_level,
         "team_schedule_url": schedule_url,
         "stats_context": "summer",
         "last_night_boxscore_url": "",
-        "last_night_date": last_night_date().isoformat(),
+        "last_night_date": report_anchor_date().isoformat(),
         "last_night": {},
         "month_to_date": {},
         "season": {},
@@ -3949,7 +3967,7 @@ def build_amateur_payload(c: Client) -> dict[str, Any]:
             or school_schedule_url(c.school_or_team)
         ),
         "last_night_boxscore_url": "",
-            "last_night_date": last_night_date().isoformat(),
+            "last_night_date": report_anchor_date().isoformat(),
             "last_night": {},
             "month_to_date": {},
             "season": {},
@@ -4935,13 +4953,13 @@ def _gc_summer_lines_for_team(
     gc_client: GameChangerClient,
     gc_index: GameChangerIndex | None,
     team_cfg: dict[str, str],
-) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, str]:
-    """Return season_hit, season_pitch, last_hit, last_pitch, schedule_url for one GC team."""
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, str, str]:
+    """Return season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name."""
     program = entry.get("program", "")
     public_id = str(team_cfg.get("public_id") or "").strip()
     internal_id = str(team_cfg.get("internal_id") or "").strip()
     if not public_id:
-        return None, None, None, None, ""
+        return None, None, None, None, "", ""
     team_name = ""
     try:
         team_meta = gc_client.get(f"/public/teams/{public_id}")
@@ -4950,19 +4968,19 @@ def _gc_summer_lines_for_team(
     except Exception:
         pass
     if not _gc_summer_grad_year_ok(entry, team_name, team_cfg):
-        return None, None, None, None, ""
+        return None, None, None, None, "", team_name
     try:
         roster = fetch_public_roster(gc_client, public_id)
     except Exception:
-        return None, None, None, None, ""
+        return None, None, None, None, "", team_name
     player = match_gc_roster_player(
         roster, entry.get("name", ""), _norm_player_name, _norm_token, _name_parts
     )
     if not player:
-        return None, None, None, None, ""
+        return None, None, None, None, "", team_name
     player_id = str(player.get("id") or "")
     if not player_id:
-        return None, None, None, None, ""
+        return None, None, None, None, "", team_name
     schedule_url = ""
     if gc_index and internal_id:
         team_meta = gc_index._team_meta.get(internal_id) or {}
@@ -4986,8 +5004,8 @@ def _gc_summer_lines_for_team(
                 schedule_url=schedule_url,
             )
             today = dashboard_date()
-            yday = today - timedelta(days=1)
-            month_start = today.replace(day=1)
+            yday = gc_report_anchor_date()
+            month_start = yday.replace(day=1)
             last_hit, _, last_pitch, _ = gc_player_game_lines(
                 gc_index, ref, yday, month_start, today
             )
@@ -5001,7 +5019,7 @@ def _gc_summer_lines_for_team(
             season_hit, season_pitch = _player_season_lines(season_payload, player_id)
         except Exception:
             pass
-    return season_hit, season_pitch, last_hit, last_pitch, schedule_url
+    return season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name
 
 
 def _gc_summer_lines_for_player(
@@ -5010,36 +5028,49 @@ def _gc_summer_lines_for_player(
     gc_index: GameChangerIndex | None,
     *,
     discover: bool = True,
-) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, str]:
-    """Return season_hit, season_pitch, last_hit, last_pitch, schedule_url."""
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, str, str]:
+    """Return season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name."""
+    best: tuple[
+        dict[str, Any] | None,
+        dict[str, Any] | None,
+        dict[str, Any] | None,
+        dict[str, Any] | None,
+        str,
+        str,
+    ] | None = None
     for team_cfg in _gc_summer_team_configs(entry.get("program", ""), discover=discover):
-        season_hit, season_pitch, last_hit, last_pitch, schedule_url = _gc_summer_lines_for_team(
+        season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name = _gc_summer_lines_for_team(
             entry, gc_client, gc_index, team_cfg
         )
-        if season_hit or season_pitch or last_hit or last_pitch:
-            return season_hit, season_pitch, last_hit, last_pitch, schedule_url
-    return None, None, None, None, ""
+        if not (season_hit or season_pitch or last_hit or last_pitch):
+            continue
+        candidate = (season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name)
+        if last_hit or last_pitch:
+            return candidate
+        if best is None:
+            best = candidate
+    return best if best else (None, None, None, None, "", "")
 
 
 def _gc_summer_lines_any_program(
     entry: dict[str, str],
     gc_client: GameChangerClient | None,
     gc_index: GameChangerIndex | None,
-) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, str]:
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, str, str]:
     """Match a player on any mapped summer travel team when program is unknown."""
     if not gc_client:
-        return None, None, None, None, ""
+        return None, None, None, None, "", ""
     program = str(entry.get("program") or "").strip()
     if program:
         return _gc_summer_lines_for_player(entry, gc_client, gc_index, discover=True)
     for program_key in GC_SUMMER_TEAMS:
         probe = {**entry, "program": program_key}
-        season_hit, season_pitch, last_hit, last_pitch, schedule_url = _gc_summer_lines_for_player(
+        season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name = _gc_summer_lines_for_player(
             probe, gc_client, gc_index, discover=False
         )
         if season_hit or season_pitch or last_hit or last_pitch:
-            return season_hit, season_pitch, last_hit, last_pitch, schedule_url
-    return None, None, None, None, ""
+            return season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name
+    return None, None, None, None, "", ""
 
 
 def _apply_gc_lines_to_summer_row(
@@ -5082,7 +5113,7 @@ def attach_summer_travel_stats(
     """Fill summer_* fields from mapped GameChanger travel teams."""
     if not rows or not gc_client:
         return
-    season_hit, season_pitch, last_hit, last_pitch, schedule_url = _gc_summer_lines_any_program(
+    season_hit, season_pitch, last_hit, last_pitch, schedule_url, summer_team = _gc_summer_lines_any_program(
         entry, gc_client, gc_index
     )
     if not (season_hit or season_pitch or last_hit or last_pitch):
@@ -5115,6 +5146,8 @@ def attach_summer_travel_stats(
                 schedule_url=schedule_url,
                 is_pitcher=False,
             )
+        if summer_team:
+            row["summer_team"] = summer_team
 
 
 def _append_ar_watch_row(
@@ -5128,6 +5161,7 @@ def _append_ar_watch_row(
     summer_season: dict[str, Any] | None = None,
     summer_month_to_date: dict[str, Any] | None = None,
     summer_last_night: dict[str, Any] | None = None,
+    summer_team: str = "",
     stats_url: str,
     stats_unavailable_reason: str,
     summer_stats_unavailable_reason: str = "",
@@ -5151,6 +5185,7 @@ def _append_ar_watch_row(
             "summer_season": _ensure_ops_from_obp_slg(summer_season or {}),
             "summer_month_to_date": _ensure_ops_from_obp_slg(summer_month_to_date or {}),
             "summer_last_night": _ensure_ops_from_obp_slg(summer_last_night or {}),
+            "summer_team": str(summer_team or "").strip(),
             "stats_unavailable_reason": stats_unavailable_reason,
             "summer_stats_unavailable_reason": summer_stats_unavailable_reason,
         }
@@ -5171,9 +5206,9 @@ def build_ar_follow_rows(
     for entry in load_ar_follow_clients(path):
         if _norm_player_name(entry.get("name", "")) in hs_client_names:
             continue
-        season_hit, season_pitch, last_hit, last_pitch, gc_url = (None, None, None, None, "")
+        season_hit, season_pitch, last_hit, last_pitch, gc_url, gc_team = (None, None, None, None, "", "")
         if client:
-            season_hit, season_pitch, last_hit, last_pitch, gc_url = _gc_summer_lines_for_player(
+            season_hit, season_pitch, last_hit, last_pitch, gc_url, gc_team = _gc_summer_lines_for_player(
                 entry, client, index
             )
         maxpreps_url = (entry.get("stats_url") or "").strip()
@@ -5184,10 +5219,10 @@ def build_ar_follow_rows(
         built_rows = build_high_school_payloads({**entry, "agent": "AR", "stats_url": maxpreps_url})
         hs_hitter = next((br for br in built_rows if not br.get("is_pitcher")), None)
         hs_pitcher = next((br for br in built_rows if br.get("is_pitcher")), None)
-        summer_hit = _ensure_ops_from_obp_slg(season_hit or {})
-        summer_pitch = _ensure_ops_from_obp_slg(season_pitch or {})
-        summer_ln_hit = _ensure_ops_from_obp_slg(last_hit or {})
-        summer_ln_pitch = _ensure_ops_from_obp_slg(last_pitch or {})
+        summer_hit = _ensure_ops_from_obp_slg(_amateur_line_to_pro_keys(season_hit or {}, False))
+        summer_pitch = _ensure_ops_from_obp_slg(_amateur_line_to_pro_keys(season_pitch or {}, True))
+        summer_ln_hit = _ensure_ops_from_obp_slg(_amateur_line_to_pro_keys(last_hit or {}, False))
+        summer_ln_pitch = _ensure_ops_from_obp_slg(_amateur_line_to_pro_keys(last_pitch or {}, True))
         has_summer = bool(season_hit or season_pitch or last_hit or last_pitch)
         display_url = maxpreps_url or gc_url or ""
         if wants_hitter:
@@ -5210,6 +5245,7 @@ def build_ar_follow_rows(
                 last_night=hs_ln,
                 summer_season=summer_hit,
                 summer_last_night=summer_ln_hit,
+                summer_team=gc_team,
                 stats_url=display_url,
                 stats_unavailable_reason=hs_reason,
                 summer_stats_unavailable_reason=summer_reason,
@@ -5234,6 +5270,7 @@ def build_ar_follow_rows(
                 last_night=hs_ln,
                 summer_season=summer_pitch,
                 summer_last_night=summer_ln_pitch,
+                summer_team=gc_team,
                 stats_url=display_url,
                 stats_unavailable_reason=hs_reason,
                 summer_stats_unavailable_reason=summer_reason,
@@ -5360,7 +5397,7 @@ def refresh_pro_teams_in_dashboard(out: Path = OUT_JSON) -> Path:
     ]
     existing["pro_clients"] = pro_rows
     existing["generated_at"] = datetime.now(UTC).isoformat()
-    existing["last_night_date"] = last_night_date().isoformat()
+    existing["last_night_date"] = report_anchor_date().isoformat()
     existing["season"] = existing.get("season") or SEASON
 
     def _json_safe(v: Any) -> Any:
@@ -5454,7 +5491,7 @@ def refresh_amateur_in_dashboard(out: Path = OUT_JSON) -> Path:
     amateur_rows = _build_amateur_rows(amateur)
     existing["amateur_clients"] = amateur_rows
     existing["generated_at"] = datetime.now(UTC).isoformat()
-    existing["last_night_date"] = last_night_date().isoformat()
+    existing["last_night_date"] = report_anchor_date().isoformat()
     existing["season"] = existing.get("season") or SEASON
 
     def _json_safe(v: Any) -> Any:
@@ -5501,7 +5538,7 @@ def build_dashboard_data() -> dict[str, Any]:
     data = {
         "generated_at": datetime.now(UTC).isoformat(),
         "season": SEASON,
-        "last_night_date": last_night_date().isoformat(),
+        "last_night_date": report_anchor_date().isoformat(),
         "pro_clients": pro_rows,
         "amateur_clients": amateur_rows,
         "high_school_clients": high_school_rows,

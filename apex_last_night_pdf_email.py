@@ -6,8 +6,11 @@ Batting tables never show pitch count. Pitching tables include a **Pitches** col
 pitch total (``numberOfPitches`` / ``pitchesThrown`` / similar from the pitcher line only).
 
 PDF rows (pro, NCAA, HS): only if the row's last_night_date matches the JSON
-last_night_date (the report anchor day) AND last_night has real counting stats.
-Pitchers/hitters with only a team game stub (W/L + runs, no IP / no AB) are omitted.
+last_night_date (the report anchor day) AND last night has real counting stats.
+Summer ball: Cape Cod / travel rows use summer_last_night when present (HS) or
+last_night (college summer assignments); Org and season AVG/OPS/ERA columns use
+the summer team name and summer_season totals. Pitchers/hitters with only a team
+game stub (W/L + runs, no IP / no AB) are omitted.
 
 Probable starters: schedule for the day after last_night_date (override with
 APEX_PROBABLE_DATE). Pulled from the MLB Stats API ``/api/v1/schedule`` with
@@ -138,6 +141,46 @@ def _pdf_hitter_line_is_individual(ln: Any) -> bool:
 _PDF_EXCLUDE_NAMES = frozenset({"parker clubb"})
 
 
+def _row_uses_summer_ball(row: dict[str, Any]) -> bool:
+    """True when PDF should show summer team + summer season totals."""
+    if str(row.get("stats_context") or "").strip().lower() == "summer":
+        return True
+    sln = row.get("summer_last_night")
+    if isinstance(sln, dict) and sln:
+        probe = dict(row)
+        probe["last_night"] = sln
+        return last_night_nonempty(probe)
+    return False
+
+
+def _pdf_last_night_line(row: dict[str, Any]) -> dict[str, Any]:
+    """Last-night box score line used for PDF inclusion and game columns."""
+    if str(row.get("stats_context") or "").strip().lower() == "summer":
+        return row.get("last_night") or {}
+    sln = row.get("summer_last_night")
+    if _row_uses_summer_ball(row) and isinstance(sln, dict) and sln:
+        return sln
+    return row.get("last_night") or {}
+
+
+def _pdf_row_view(row: dict[str, Any]) -> dict[str, Any]:
+    """Map summer travel / Cape Cod fields for PDF Org + season columns."""
+    if not _row_uses_summer_ball(row):
+        return row
+    r = dict(row)
+    ss = row.get("summer_season")
+    if isinstance(ss, dict) and ss:
+        r["season"] = ss
+    team = str(row.get("summer_team") or row.get("current_team") or "").strip()
+    if team:
+        r["organization"] = team
+    if str(row.get("stats_context") or "").strip().lower() != "summer":
+        sln = row.get("summer_last_night")
+        if isinstance(sln, dict) and sln:
+            r["last_night"] = sln
+    return r
+
+
 def pdf_row_for_last_night_email(row: dict[str, Any], report_last_night_iso: str) -> bool:
     """
     PDF-only: row appears only if stats are for the same calendar day as the
@@ -150,7 +193,8 @@ def pdf_row_for_last_night_email(row: dict[str, Any], report_last_night_iso: str
     norm = f"{parts[0]} {parts[-1]}" if len(parts) >= 2 else nm.strip()
     if norm in _PDF_EXCLUDE_NAMES:
         return False
-    if not last_night_nonempty(row):
+    ln = _pdf_last_night_line(row)
+    if not last_night_nonempty({**row, "last_night": ln}):
         return False
     rd = _norm_report_date(report_last_night_iso)
     if not rd:
@@ -160,7 +204,6 @@ def pdf_row_for_last_night_email(row: dict[str, Any], report_last_night_iso: str
         return False
     if not row_d:
         return False
-    ln = row.get("last_night") or {}
     if row.get("is_pitcher"):
         return _pdf_pitcher_line_is_individual(ln)
     return _pdf_hitter_line_is_individual(ln)
@@ -711,7 +754,8 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
                 return ops
         return ops
 
-    def batter_pdf_cells(r: dict[str, Any]) -> list[str]:
+    def batter_pdf_cells(row: dict[str, Any]) -> list[str]:
+        r = _pdf_row_view(row)
         ln = r.get("last_night") or {}
         se = r.get("season") or {}
         return [
@@ -734,7 +778,8 @@ def write_last_night_pdf(data: dict[str, Any], out_path: Path) -> None:
             _fmt_num(_stat_val(se, "homeRuns")),
         ]
 
-    def pitcher_pdf_cells(r: dict[str, Any]) -> list[str]:
+    def pitcher_pdf_cells(row: dict[str, Any]) -> list[str]:
+        r = _pdf_row_view(row)
         ln = r.get("last_night") or {}
         se = r.get("season") or {}
         return [
