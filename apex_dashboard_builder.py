@@ -65,6 +65,8 @@ GC_SUMMER_TEAMS: dict[str, list[dict[str, str]]] = {
         },
     ],
     "2028 norcal": [
+        {"public_id": "LSOi1bVQrjUn", "internal_id": "22fb6d25-beba-4663-9db9-90f88ae49dae", "grad_year": "2028"},
+        {"public_id": "4mQOcP6qSVUV", "internal_id": "576fc145-296f-41dd-bad4-0874c7f485af", "grad_year": "2028"},
         {"public_id": "7DXVnYPadY77", "internal_id": "b261b87f-2a7a-45b9-a213-fbb918af0b41", "grad_year": "2028"},
     ],
     "2028 canes national": [
@@ -5022,6 +5024,43 @@ def _gc_summer_lines_for_team(
     return season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name
 
 
+def _gc_summer_candidate_score(
+    season_hit: dict[str, Any] | None,
+    season_pitch: dict[str, Any] | None,
+    last_hit: dict[str, Any] | None,
+    last_pitch: dict[str, Any] | None,
+    *,
+    wants_pitcher: bool,
+    wants_hitter: bool,
+) -> float:
+    """Prefer last-night lines, then the squad with the most season volume."""
+    if last_hit or last_pitch:
+        return 100_000.0
+    score = 0.0
+    if wants_pitcher and season_pitch:
+        try:
+            score += float(season_pitch.get("ip") or 0) * 100.0
+        except (TypeError, ValueError):
+            pass
+    if wants_hitter and season_hit:
+        try:
+            score += float(season_hit.get("ab") or 0)
+        except (TypeError, ValueError):
+            pass
+    if not wants_pitcher and not wants_hitter:
+        if season_pitch:
+            try:
+                score += float(season_pitch.get("ip") or 0) * 100.0
+            except (TypeError, ValueError):
+                pass
+        if season_hit:
+            try:
+                score += float(season_hit.get("ab") or 0)
+            except (TypeError, ValueError):
+                pass
+    return score
+
+
 def _gc_summer_lines_for_player(
     entry: dict[str, str],
     gc_client: GameChangerClient,
@@ -5038,17 +5077,32 @@ def _gc_summer_lines_for_player(
         str,
         str,
     ] | None = None
-    for team_cfg in _gc_summer_team_configs(entry.get("program", ""), discover=discover):
+    best_score = -1.0
+    wants_pitcher = bool(entry.get("hs_is_pitcher"))
+    wants_hitter = bool(entry.get("hs_is_hitter"))
+    if not wants_pitcher and not wants_hitter:
+        wants_hitter = True
+    program_key = _norm_program_key(entry.get("program", ""))
+    use_discover = discover and program_key not in GC_SUMMER_TEAMS
+    for team_cfg in _gc_summer_team_configs(entry.get("program", ""), discover=use_discover):
         season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name = _gc_summer_lines_for_team(
             entry, gc_client, gc_index, team_cfg
         )
         if not (season_hit or season_pitch or last_hit or last_pitch):
             continue
-        candidate = (season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name)
-        if last_hit or last_pitch:
-            return candidate
-        if best is None:
-            best = candidate
+        score = _gc_summer_candidate_score(
+            season_hit,
+            season_pitch,
+            last_hit,
+            last_pitch,
+            wants_pitcher=wants_pitcher,
+            wants_hitter=wants_hitter,
+        )
+        if score >= 100_000.0:
+            return season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name
+        if score > best_score:
+            best_score = score
+            best = (season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name)
     return best if best else (None, None, None, None, "", "")
 
 
