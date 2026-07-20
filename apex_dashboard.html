@@ -683,8 +683,10 @@
 
     function summerLastNightForRow(r) {
       const summerLn = r.summer_last_night || {};
-      if (summerLn && Object.keys(summerLn).length) return summerLn;
-      if (r.stats_context === "summer") return r.last_night || {};
+      if (lastNightNonempty({ last_night: summerLn })) return summerLn;
+      if (r.stats_context === "summer" && lastNightNonempty({ last_night: r.last_night || {} })) {
+        return r.last_night || {};
+      }
       return {};
     }
 
@@ -693,9 +695,37 @@
       return (activeWatchAgent === "JF" || activeWatchAgent === "AR") && dynamic && dynamic.length;
     }
 
+    function watchListUsesSummerOnly() {
+      return activeWatchAgent === "AR";
+    }
+
     function showSeasonContextTabs() {
       if (activeTab === "amateur" || activeTab === "high_school") return true;
+      if (activeTab === "watch_list" && watchListUsesSummerOnly()) return false;
       return activeTab === "watch_list" && watchListIsStatsMode();
+    }
+
+    function mapWatchRowSummerStats(r) {
+      const summerSeason = summerSeasonForRow(r);
+      const summerLn = summerLastNightForRow(r);
+      const hasSummerSeason = summerSeason && Object.keys(summerSeason).length;
+      const hasSummerLn = lastNightNonempty({ last_night: summerLn });
+      const summerMtd =
+        r.summer_month_to_date && Object.keys(r.summer_month_to_date).length
+          ? r.summer_month_to_date
+          : r.stats_context === "summer"
+            ? r.month_to_date || {}
+            : {};
+      return {
+        ...r,
+        season: summerSeason,
+        last_night: summerLn,
+        month_to_date: summerMtd,
+        stats_unavailable_reason:
+          !hasSummerSeason && !hasSummerLn
+            ? (r.summer_stats_unavailable_reason || "Summer statistics not available")
+            : "",
+      };
     }
 
     function applySeasonContextForTab(rows, tab) {
@@ -704,6 +734,9 @@
     }
 
     function applySeasonContext(rows, tab) {
+      if (tab === "watch_list" && watchListUsesSummerOnly()) {
+        return rows.map(mapWatchRowSummerStats);
+      }
       if (activeSeasonContext === "summer") {
         return rows.map((r) => {
           const summerSeason = summerSeasonForRow(r);
@@ -745,7 +778,8 @@
     }
 
     function seasonSectionLabel(base) {
-      if (activeSeasonContext === "summer") {
+      const summerView = activeSeasonContext === "summer" || watchListUsesSummerOnly();
+      if (summerView) {
         if (base === "Last Night Stats") return "Summer Last Night";
         if (base === "Season Stats") return "Summer Season Stats";
       }
@@ -1199,14 +1233,15 @@
             typeof r.is_pitcher === "boolean"
               ? r.is_pitcher
               : /\b(RHP|LHP|SP|RP|P)\b/i.test(pos);
+          const teamLabel = r.summer_team || r.school || r.program || "";
           return {
             name: r.name || "",
             agent: r.agent || activeWatchAgent,
             position: pos || (isPitcher ? "P" : "H"),
             team_level: "HS",
             organization: "",
-            current_team: r.school || "",
-            school_or_team: r.school || "",
+            current_team: teamLabel,
+            school_or_team: teamLabel,
             last_night_boxscore_url: r.stats_url || "",
             is_pitcher: isPitcher,
             season: r.season || {},
@@ -1284,8 +1319,54 @@
     function trackerPositionFilterForPlayer(nameNorm) {
       if (nameNorm === "bryan woo" || nameNorm === "kris bubic") return new Set(["SP"]);
       if (nameNorm === "lucas erceg" || nameNorm === "brock burke") return new Set(["RP"]);
-      if (nameNorm === "james outman") return new Set(["LF", "RF", "CF", "OF"]);
+      if (
+        nameNorm === "james outman" ||
+        nameNorm === "riley greene" ||
+        nameNorm === "matt vierling" ||
+        nameNorm === "kyle tucker" ||
+        nameNorm === "franmil reyes"
+      ) {
+        return new Set(["LF", "RF", "CF", "OF"]);
+      }
+      if (nameNorm === "ryan mountcastle") return new Set(["1B"]);
       return new Set();
+    }
+
+    function trackerMlsYear(mls) {
+      const n = Number(mls);
+      return Number.isNaN(n) ? null : Math.floor(n);
+    }
+
+    function trackerMlsFilterYear(nameNorm, selectedRow) {
+      if (
+        nameNorm === "riley greene" ||
+        nameNorm === "matt vierling" ||
+        nameNorm === "james outman" ||
+        nameNorm === "kyle tucker" ||
+        nameNorm === "franmil reyes" ||
+        nameNorm === "ryan mountcastle"
+      ) {
+        return trackerMlsYear(selectedRow?.mls);
+      }
+      return null;
+    }
+
+    function trackerYearOptions(compare, defaults) {
+      const years = new Set();
+      (compare || []).forEach((r) => {
+        Object.keys(r.stats_by_year || {}).forEach((y) => {
+          if (/^\d{4}$/.test(y)) years.add(y);
+        });
+      });
+      if (!years.size) return defaults;
+      const sorted = [...years].sort((a, b) => Number(b) - Number(a));
+      return [...sorted, "career"];
+    }
+
+    function trackerDisplayName(row) {
+      if (!row) return "";
+      const note = row.comp_note ? ` (${row.comp_note})` : "";
+      return `${row.name || ""}${note}`;
     }
 
     function trackerStatsForYear(row, yearSel) {
@@ -1334,7 +1415,16 @@
     }
 
     function trackerRoleFromSelected(nameNorm) {
-      if (nameNorm === "james outman") return "hitter";
+      if (
+        nameNorm === "james outman" ||
+        nameNorm === "riley greene" ||
+        nameNorm === "matt vierling" ||
+        nameNorm === "kyle tucker" ||
+        nameNorm === "franmil reyes" ||
+        nameNorm === "ryan mountcastle"
+      ) {
+        return "hitter";
+      }
       return "pitcher";
     }
 
@@ -1382,12 +1472,34 @@
       const rows = (data && data.rows) || [];
       const pinned = (data && data.pinned) || [];
       const isArb = trackerKey === "arbitration_tracker";
-      const pinnedNames = isArb ? ["Lucas Erceg", "Bryan Woo", "James Outman"] : ["Brock Burke", "Kris Bubic"];
+      const pinnedNames = isArb
+        ? ["Lucas Erceg", "Bryan Woo", "James Outman", "Riley Greene", "Matt Vierling", "Kyle Tucker", "Franmil Reyes"]
+        : ["Brock Burke", "Kris Bubic", "Ryan Mountcastle"];
       let activePlayer = isArb ? activeArbPlayer : activeFaPlayer;
       let activeYear = isArb ? activeArbYear : activeFaYear;
-      const yearOptions = (data && data.year_options) || [String(new Date().getFullYear()), String(new Date().getFullYear() - 1), String(new Date().getFullYear() - 2), "career"];
+      const defaultYearOptions = (data && data.year_options) || [String(new Date().getFullYear()), String(new Date().getFullYear() - 1), String(new Date().getFullYear() - 2), "career"];
 
       if (!pinnedNames.includes(activePlayer)) activePlayer = pinnedNames[0];
+
+      const selectedNorm = String(activePlayer || "").toLowerCase();
+      const selectedPinned = pinned.find((r) => String(r.name || "").toLowerCase() === selectedNorm);
+      const posAllow = trackerPositionFilterForPlayer(selectedNorm);
+      const mlsYear = trackerMlsFilterYear(selectedNorm, selectedPinned);
+      const compare = rows.filter((r) => {
+        if (!r || !r.name) return false;
+        if (String(r.name).toLowerCase() === selectedNorm) return true;
+        if (posAllow.size) {
+          const pos = String(r.primary_position || "").toUpperCase();
+          if (!posAllow.has(pos)) return false;
+        }
+        if (mlsYear !== null) {
+          const ry = trackerMlsYear(r.mls);
+          if (ry !== mlsYear) return false;
+        }
+        return true;
+      });
+      const yearOptions = trackerYearOptions(compare, defaultYearOptions);
+
       if (!yearOptions.includes(activeYear)) activeYear = yearOptions[0];
       if (isArb) {
         activeArbPlayer = activePlayer;
@@ -1396,16 +1508,6 @@
         activeFaPlayer = activePlayer;
         activeFaYear = activeYear;
       }
-
-      const selectedNorm = String(activePlayer || "").toLowerCase();
-      const selectedPinned = pinned.find((r) => String(r.name || "").toLowerCase() === selectedNorm);
-      const posAllow = trackerPositionFilterForPlayer(selectedNorm);
-      const compare = rows.filter((r) => {
-        if (!r || !r.name) return false;
-        if (String(r.name).toLowerCase() === selectedNorm) return true;
-        if (!posAllow.size) return true;
-        return posAllow.has(String(r.primary_position || "").toUpperCase());
-      });
 
       const controls = el("div");
       controls.className = "row";
@@ -1417,7 +1519,8 @@
       pinnedNames.forEach((nm) => {
         const opt = document.createElement("option");
         opt.value = nm;
-        opt.textContent = nm;
+        const pinRow = pinned.find((r) => String(r.name || "") === nm);
+        opt.textContent = pinRow?.comp_note ? `${nm} (${pinRow.comp_note})` : nm;
         if (nm === activePlayer) opt.selected = true;
         pSel.appendChild(opt);
       });
@@ -1519,7 +1622,7 @@
         const tr = el("tr");
         const stats = trackerStatsForYear(r, activeYear);
         [
-          r.name || "",
+          trackerDisplayName(r),
           r.primary_position || "",
           r.age || "",
           r.debut_year || "",

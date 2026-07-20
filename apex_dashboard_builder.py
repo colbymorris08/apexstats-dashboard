@@ -23,6 +23,8 @@ from gamechanger_api import (
     GCPlayerRef,
     GameChangerIndex,
     GameChangerClient,
+    _merge_hit_lines,
+    _merge_pitch_lines,
     _player_season_lines,
     _team_schedule_url,
     fetch_public_roster,
@@ -408,7 +410,46 @@ SUMMER_AMATEUR_OVERRIDES: dict[str, dict[str, Any]] = {
         "schedule_url": "https://www.mlbdraftleague.com/scores",
         "player_id": 815817,
     },
+    "sean mcgrath": {
+        "summer_team": "Wenatchee AppleSox",
+        "summer_league": "West Coast League",
+        "team_level": "WCL",
+        "schedule_url": "https://wclstats.com/sports/bsb/2026/teams/wenatcheeapplesox",
+        "stats_source": "wcl",
+        "wcl_team_id": "xjbohafz57d8cauh",
+    },
+    "jackson flora": {
+        "summer_team": "Marion Berries",
+        "summer_league": "West Coast League",
+        "team_level": "WCL",
+        "schedule_url": "https://wclstats.com/sports/bsb/2026/teams/marionberries",
+        "stats_source": "wcl",
+        "wcl_team_id": "txq616nqlxf0lsiv",
+        "name_aliases": ["Hudson Flora"],
+    },
+    "brayden jaksa": {
+        "summer_team": "Orleans Firebirds",
+        "summer_league": "Cape Cod Baseball League",
+        "team_level": "CCL",
+        "team_id": 6102,
+        "league_id": 565,
+        "schedule_url": "https://www.capecodleague.com/scores",
+        "player_id": 815984,
+    },
+    "wade walton": {
+        "summer_team": "Wareham Gatemen",
+        "summer_league": "Cape Cod Baseball League",
+        "team_level": "CCL",
+        "team_id": 6103,
+        "league_id": 565,
+        "schedule_url": "https://www.capecodleague.com/scores",
+        "player_id": 816132,
+    },
 }
+WCL_PLAYERS_DATA_URL = (
+    "https://prestosports-downloads.s3.us-west-2.amazonaws.com/playersData/oc90tg1ho5rh9ixu.json"
+)
+_WCL_PLAYERS_CACHE: list[dict[str, Any]] | None = None
 SPORT_ID_COLLEGE = 22
 
 
@@ -541,15 +582,94 @@ def _norm_player_name(s: str) -> str:
     return " ".join(parts)
 
 
-TRACKER_PINNED_ARB: tuple[str, ...] = ("Lucas Erceg", "Bryan Woo", "James Outman")
-TRACKER_PINNED_FA: tuple[str, ...] = ("Brock Burke", "Kris Bubic")
+TRACKER_PINNED_ARB: tuple[str, ...] = (
+    "Lucas Erceg",
+    "Bryan Woo",
+    "James Outman",
+    "Riley Greene",
+    "Matt Vierling",
+    "Kyle Tucker",
+    "Franmil Reyes",
+)
+TRACKER_PINNED_FA: tuple[str, ...] = ("Brock Burke", "Kris Bubic", "Ryan Mountcastle")
 TRACKER_BREF_URLS: dict[str, str] = {
     "bryan woo": "https://www.baseball-reference.com/players/w/woobr01.shtml",
     "lucas erceg": "https://www.baseball-reference.com/players/e/erceglu01.shtml",
     "james outman": "https://www.baseball-reference.com/players/o/outmaja01.shtml",
+    "riley greene": "https://www.baseball-reference.com/players/g/greenri03.shtml",
+    "matt vierling": "https://www.baseball-reference.com/players/v/vierlma01.shtml",
+    "kyle tucker": "https://www.baseball-reference.com/players/t/tuckeky01.shtml",
+    "franmil reyes": "https://www.baseball-reference.com/players/r/reyesfr01.shtml",
     "brock burke": "https://www.baseball-reference.com/players/b/burkebr01.shtml",
     "kris bubic": "https://www.baseball-reference.com/players/b/bubickr01.shtml",
+    "ryan mountcastle": "https://www.baseball-reference.com/players/m/mountry01.shtml",
 }
+
+# Extra arbitration rows (2026 OF comps by service-time tier) merged into DashboardArb.
+TRACKER_ARB_SUPPLEMENT: tuple[dict[str, Any], ...] = (
+    # ~3.1 years MLS (Riley Greene cohort)
+    {"name": "Riley Greene", "primary_position": "LF", "mls": 3.110, "age": 25, "debut_year": 2022, "year": 2026},
+    {"name": "Jarren Duran", "primary_position": "CF", "mls": 3.155, "age": 29, "debut_year": 2022, "year": 2026},
+    {"name": "Oneil Cruz", "primary_position": "CF", "mls": 3.110, "age": 27, "debut_year": 2022, "year": 2026},
+    {"name": "Kerry Carpenter", "primary_position": "RF", "mls": 3.057, "age": 28, "debut_year": 2022, "year": 2026},
+    {"name": "Josh Lowe", "primary_position": "LF", "mls": 3.093, "age": 28, "debut_year": 2022, "year": 2026},
+    {"name": "Alek Thomas", "primary_position": "CF", "mls": 3.103, "age": 26, "debut_year": 2022, "year": 2026},
+    {"name": "Jake McCarthy", "primary_position": "LF", "mls": 3.124, "age": 28, "debut_year": 2022, "year": 2026},
+    {"name": "Derek Hill", "primary_position": "CF", "mls": 3.040, "age": 30, "debut_year": 2021, "year": 2026},
+    {"name": "Eli White", "primary_position": "OF", "mls": 3.140, "age": 32, "debut_year": 2022, "year": 2026},
+    {"name": "Nolan Jones", "primary_position": "RF", "mls": 3.007, "age": 28, "debut_year": 2022, "year": 2026},
+    {"name": "Will Benson", "primary_position": "RF", "mls": 3.003, "age": 28, "debut_year": 2022, "year": 2026},
+    # Precedent comps at ~3.1 MLS (stats from their first-arb seasons)
+    {
+        "name": "Kyle Tucker",
+        "primary_position": "RF",
+        "mls": 3.079,
+        "age": 26,
+        "debut_year": 2018,
+        "year": 2023,
+        "tracker_stat_years": [2022, 2021, 2020],
+        "tracker_career_through": 2022,
+        "yearly_salary_3": 5_000_000,
+        "comp_note": "2023 1st arb",
+        "comp_kind": "precedent",
+    },
+    {
+        "name": "Franmil Reyes",
+        "primary_position": "RF",
+        "mls": 3.115,
+        "age": 26,
+        "debut_year": 2018,
+        "year": 2022,
+        "tracker_stat_years": [2021, 2020, 2019],
+        "tracker_career_through": 2021,
+        "yearly_salary_3": 4_550_000,
+        "comp_note": "2022 1st arb",
+        "comp_kind": "precedent",
+    },
+    # ~4.0 years MLS (Matt Vierling cohort)
+    {"name": "Matt Vierling", "primary_position": "OF", "mls": 4.026, "age": 29, "debut_year": 2021, "year": 2026},
+    {"name": "Steven Kwan", "primary_position": "LF", "mls": 4.000, "age": 28, "debut_year": 2021, "year": 2026},
+    {"name": "Lars Nootbaar", "primary_position": "LF", "mls": 4.076, "age": 28, "debut_year": 2021, "year": 2026},
+    {"name": "Brandon Marsh", "primary_position": "LF", "mls": 4.078, "age": 28, "debut_year": 2021, "year": 2026},
+    {"name": "Jo Adell", "primary_position": "RF", "mls": 4.085, "age": 27, "debut_year": 2020, "year": 2026},
+    {"name": "Jesus Sanchez", "primary_position": "LF", "mls": 4.118, "age": 28, "debut_year": 2020, "year": 2026},
+    {"name": "Kyle Isbel", "primary_position": "CF", "mls": 4.043, "age": 29, "debut_year": 2021, "year": 2026},
+    {"name": "Jake Meyers", "primary_position": "CF", "mls": 4.044, "age": 30, "debut_year": 2021, "year": 2026},
+)
+
+TRACKER_BASE_FIELDS = (
+    "name",
+    "age",
+    "year",
+    "debut_year",
+    "primary_position",
+    "mls",
+    "awards",
+    "award_votes",
+    "il_stints_sheet",
+    "yearly_salary_3",
+    "yearly_salary_4",
+)
 
 
 def _tracker_json_num(v: Any) -> int | float | str | None:
@@ -615,6 +735,125 @@ def _load_tracker_sheet(path: Path) -> list[dict[str, Any]]:
             }
         )
     return out
+
+
+def _tracker_base_row(row: dict[str, Any]) -> dict[str, Any]:
+    awards = row.get("awards") if isinstance(row.get("awards"), list) else []
+    votes = row.get("award_votes") if isinstance(row.get("award_votes"), list) else []
+    base = {
+        "name": row.get("name", ""),
+        "name_norm": _norm_player_name(row.get("name", "")),
+        "age": row.get("age"),
+        "year": row.get("year") or SEASON,
+        "debut_year": row.get("debut_year"),
+        "primary_position": str(row.get("primary_position", "")).upper(),
+        "mls": row.get("mls"),
+        "awards": awards,
+        "award_votes": votes,
+        "il_stints_sheet": row.get("il_stints_sheet", ""),
+        "yearly_salary_3": row.get("yearly_salary_3"),
+        "yearly_salary_4": row.get("yearly_salary_4"),
+    }
+    for extra in ("tracker_stat_years", "tracker_career_through", "comp_note", "comp_kind"):
+        if row.get(extra) not in (None, ""):
+            base[extra] = row.get(extra)
+    return base
+
+
+def _sum_tracker_hitting_lines(lines: list[dict[str, Any]]) -> dict[str, Any]:
+    if not lines:
+        return {}
+    int_keys = (
+        "atBats",
+        "runs",
+        "hits",
+        "rbi",
+        "homeRuns",
+        "doubles",
+        "stolenBases",
+        "strikeOuts",
+        "baseOnBalls",
+        "hr",
+        "sb",
+        "k",
+        "bb",
+        "gamesStarted",
+        "games_started",
+    )
+    out: dict[str, Any] = {k: 0 for k in int_keys}
+    war = 0.0
+    saw_war = False
+    for line in lines:
+        for k in int_keys:
+            out[k] = int(out[k]) + int(_safe_int(line.get(k)) or 0)
+        if line.get("war") not in (None, ""):
+            war += _to_float(line.get("war"))
+            saw_war = True
+    if saw_war:
+        out["war"] = round(war, 1)
+    ab = _to_float(out.get("atBats"))
+    h = _to_float(out.get("hits"))
+    if ab > 0:
+        out["avg"] = round(h / ab, 3)
+    return out
+
+
+def _sum_tracker_pitching_lines(lines: list[dict[str, Any]]) -> dict[str, Any]:
+    if not lines:
+        return {}
+    int_keys = (
+        "wins",
+        "saves",
+        "hits",
+        "runs",
+        "earnedRuns",
+        "baseOnBalls",
+        "strikeOuts",
+        "homeRuns",
+        "gamesStarted",
+        "battersFaced",
+        "w",
+        "k",
+        "bb",
+        "hr",
+        "qs",
+    )
+    out: dict[str, Any] = {k: 0 for k in int_keys}
+    ip_total = 0.0
+    war = 0.0
+    saw_war = False
+    for line in lines:
+        for k in int_keys:
+            out[k] = int(out[k]) + int(_safe_int(line.get(k)) or 0)
+        ip_total += _to_float(line.get("inningsPitched") or line.get("ip"))
+        if line.get("war") not in (None, ""):
+            war += _to_float(line.get("war"))
+            saw_war = True
+    if ip_total > 0:
+        out["inningsPitched"] = round(ip_total, 1)
+        out["ip"] = out["inningsPitched"]
+    if saw_war:
+        out["war"] = round(war, 1)
+    return out
+
+
+def _merge_tracker_supplements(rows: list[dict[str, Any]], supplements: tuple[dict[str, Any], ...]) -> list[dict[str, Any]]:
+    by_norm = {_norm_player_name(r.get("name", "")): r for r in rows if r.get("name")}
+    for item in supplements:
+        base = _tracker_base_row(item)
+        if not base.get("name") or not base.get("primary_position"):
+            continue
+        by_norm[base["name_norm"]] = base
+    return list(by_norm.values())
+
+
+def _load_tracker_rows(path: Path, fallback_rows: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+    rows = _load_tracker_sheet(path)
+    if rows:
+        return rows
+    if not fallback_rows:
+        return []
+    return [_tracker_base_row(r) for r in fallback_rows if r.get("name")]
 
 
 def _mlb_stat_line_for_year(player_id: int, group: str, season_year: int) -> dict[str, Any]:
@@ -947,21 +1186,56 @@ def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
         is_amateur=False,
     )
     pid = resolve_player_id(c)
-    years = [SEASON, SEASON - 1, SEASON - 2]
+    stat_years_raw = row.get("tracker_stat_years")
+    if isinstance(stat_years_raw, (list, tuple)) and stat_years_raw:
+        years = [int(y) for y in stat_years_raw]
+    else:
+        years = [SEASON, SEASON - 1, SEASON - 2]
+    group = "pitching" if is_pitcher_role else "hitting"
     by_year: dict[str, Any] = {}
     for y in years:
-        raw = _mlb_stat_line_for_year(pid, "pitching" if is_pitcher_role else "hitting", y) if pid else {}
+        raw = _mlb_stat_line_for_year(pid, group, y) if pid else {}
         by_year[str(y)] = _tracker_pitching_line(raw) if is_pitcher_role else _tracker_hitting_line(raw)
-    raw_career = _mlb_stat_line_career(pid, "pitching" if is_pitcher_role else "hitting") if pid else {}
-    career = _tracker_pitching_line(raw_career) if is_pitcher_role else _tracker_hitting_line(raw_career)
+    career_through = _safe_int(row.get("tracker_career_through"))
+    if career_through and pid:
+        debut_y = _safe_int(row.get("debut_year")) or career_through
+        career_years = list(range(debut_y, career_through + 1))
+        career_lines = []
+        for y in career_years:
+            raw = _mlb_stat_line_for_year(pid, group, y)
+            career_lines.append(
+                _tracker_pitching_line(raw) if is_pitcher_role else _tracker_hitting_line(raw)
+            )
+        career = (
+            _sum_tracker_pitching_lines(career_lines)
+            if is_pitcher_role
+            else _sum_tracker_hitting_lines(career_lines)
+        )
+    else:
+        raw_career = _mlb_stat_line_career(pid, group) if pid else {}
+        career = _tracker_pitching_line(raw_career) if is_pitcher_role else _tracker_hitting_line(raw_career)
     bref = _fetch_bref_war_by_year(name, is_pitcher_role)
     war_by_year = _fetch_war_by_year(name, is_pitcher_role)
     teams_by_year = bref.get("teams_by_year", {})
     debut_year_i = _safe_int(row.get("debut_year"))
     tx = _fetch_player_transactions_summary(pid, debut_year_i) if pid else {"il_stints_live": 0, "minor_league_moves": 0}
     for y in list(by_year.keys()):
-        by_year[y]["war"] = war_by_year.get(y)
-    career_bwar = _bwar_career_total(name, is_pitcher_role)
+        yr_key = str(y)
+        by_year[yr_key]["war"] = war_by_year.get(yr_key)
+        if by_year[yr_key]["war"] is None:
+            by_year[yr_key]["war"] = bref.get("war_by_year", {}).get(yr_key)
+    if career_through:
+        partial_war = 0.0
+        saw_partial = False
+        for yr_s, wv in (bref.get("war_by_year") or {}).items():
+            yr_i = _year_as_int(yr_s)
+            if yr_i is None or yr_i > career_through:
+                continue
+            partial_war += _to_float(wv)
+            saw_partial = True
+        career_bwar = round(partial_war, 1) if saw_partial else None
+    else:
+        career_bwar = _bwar_career_total(name, is_pitcher_role)
     if career_bwar is None:
         bref_wars = bref.get("war_by_year") or {}
         partial = 0.0
@@ -969,12 +1243,21 @@ def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
         for yr_s, wv in bref_wars.items():
             if _year_as_int(yr_s) is None:
                 continue
+            if career_through and _year_as_int(yr_s) > career_through:
+                continue
             partial += _to_float(wv)
             saw = True
         if saw:
             career_bwar = round(partial, 1)
     if career_bwar is None and war_by_year:
-        career_bwar = round(sum(_to_float(v) for v in war_by_year.values()), 1)
+        vals = []
+        for yr_s, wv in war_by_year.items():
+            yr_i = _year_as_int(yr_s)
+            if career_through and yr_i is not None and yr_i > career_through:
+                continue
+            vals.append(_to_float(wv))
+        if vals:
+            career_bwar = round(sum(vals), 1)
     career["war"] = career_bwar
     row["career_bwar"] = career_bwar
     row["stats_by_year"] = by_year
@@ -982,22 +1265,30 @@ def _enrich_tracker_player(row: dict[str, Any]) -> dict[str, Any]:
     row["teams_by_year"] = teams_by_year
     row["il_stints_live"] = tx.get("il_stints_live", 0)
     row["minor_league_moves"] = tx.get("minor_league_moves", 0)
-    # Broken service heuristic:
-    # 1) explicit MLB->minors transaction moves
-    # 2) service-time gap vs debut season count entering current season
-    #    (e.g., debut 2022 entering 2026 => max 4.000 years possible)
-    debut_date = _fetch_player_debut_date(pid) if pid else ""
-    service_days = _service_time_to_days(row.get("mls"))
-    max_days = _estimated_max_service_days_entering_season(debut_date, debut_year_i)
-    # tolerance avoids false positives from approximation / scorekeeper variance
-    service_gap_broken = bool(service_days is not None and max_days is not None and service_days + 20 < max_days)
-    row["broken_service"] = "Yes" if (tx.get("minor_league_moves", 0) > 0 or service_gap_broken) else "No"
+    if row.get("comp_kind") == "precedent":
+        row["broken_service"] = "No"
+    else:
+        debut_date = _fetch_player_debut_date(pid) if pid else ""
+        service_days = _service_time_to_days(row.get("mls"))
+        max_days = _estimated_max_service_days_entering_season(debut_date, debut_year_i)
+        service_gap_broken = bool(
+            service_days is not None and max_days is not None and service_days + 20 < max_days
+        )
+        row["broken_service"] = "Yes" if (tx.get("minor_league_moves", 0) > 0 or service_gap_broken) else "No"
     row["position_group"] = "SP" if pos == "SP" else "RP" if pos == "RP" else "OF" if pos in {"LF", "RF", "CF"} else pos
     return row
 
 
-def build_tracker_data(path: Path, pinned_names: tuple[str, ...]) -> dict[str, Any]:
-    rows = _load_tracker_sheet(path)
+def build_tracker_data(
+    path: Path,
+    pinned_names: tuple[str, ...],
+    *,
+    fallback_rows: list[dict[str, Any]] | None = None,
+    supplements: tuple[dict[str, Any], ...] = (),
+) -> dict[str, Any]:
+    rows = _load_tracker_rows(path, fallback_rows)
+    if supplements:
+        rows = _merge_tracker_supplements(rows, supplements)
     if not rows:
         return {"rows": [], "pinned": [], "year_options": [str(SEASON), str(SEASON - 1), str(SEASON - 2), "career"]}
     pinned_norm = {_norm_player_name(n) for n in pinned_names}
@@ -1029,7 +1320,7 @@ def build_tracker_data(path: Path, pinned_names: tuple[str, ...]) -> dict[str, A
         if r.get("name_norm") in DASHBOARD_EXCLUDE_NAMES:
             continue
         cbwar = r.get("career_bwar")
-        if cbwar is not None and float(cbwar) < 0:
+        if cbwar is not None and float(cbwar) < 0 and r.get("comp_kind") != "precedent":
             continue
         filtered_rows.append(r)
     rows = filtered_rows
@@ -3686,6 +3977,94 @@ def _summer_amateur_config(c: Client) -> dict[str, Any] | None:
     return SUMMER_AMATEUR_OVERRIDES.get(_norm_player_name(c.name or ""))
 
 
+def _wcl_individuals() -> list[dict[str, Any]]:
+    global _WCL_PLAYERS_CACHE
+    if _WCL_PLAYERS_CACHE is None:
+        try:
+            js = _req_json(WCL_PLAYERS_DATA_URL, timeout=30)
+            _WCL_PLAYERS_CACHE = list(js.get("individuals") or [])
+        except Exception:
+            _WCL_PLAYERS_CACHE = []
+    return _WCL_PLAYERS_CACHE
+
+
+def _wcl_player_full_name(p: dict[str, Any]) -> str:
+    fn = str(p.get("firstName") or "").strip()
+    ln = str(p.get("lastName") or "").strip()
+    return _norm_player_name(f"{fn} {ln}")
+
+
+def _parse_wcl_gpgs(gpgs: Any) -> tuple[int | None, int | None]:
+    m = re.match(r"^(\d+)-(\d+)$", str(gpgs or "").strip())
+    if not m:
+        return None, None
+    return int(m.group(1)), int(m.group(2))
+
+
+def _find_wcl_player(c: Client, cfg: dict[str, Any]) -> dict[str, Any] | None:
+    names = {_norm_player_name(c.name or "")}
+    for alias in cfg.get("name_aliases") or []:
+        names.add(_norm_player_name(str(alias)))
+    team_id = str(cfg.get("wcl_team_id") or "").strip()
+    team_filter = str(cfg.get("summer_team") or "").strip().lower()
+    for p in _wcl_individuals():
+        if _wcl_player_full_name(p) not in names:
+            continue
+        if team_id and str(p.get("teamId") or "") != team_id:
+            continue
+        if team_filter and team_filter not in str(p.get("team") or "").lower():
+            continue
+        return p
+    return None
+
+
+def _wcl_stats_to_season(p: dict[str, Any], is_pitcher: bool) -> dict[str, Any]:
+    st = p.get("stats") or p.get("statsConference") or {}
+    ip = _to_float(st.get("ip")) or 0.0
+    ab = _to_float(st.get("ab")) or 0.0
+    use_pitcher = ip > 0 if (ip > 0 or ab > 0) else is_pitcher
+    out: dict[str, Any] = {}
+    gp, gs = _parse_wcl_gpgs(st.get("gpgs"))
+    if gp is None:
+        gp = _safe_int(st.get("gp"))
+    if gs is None:
+        gs = _safe_int(st.get("gs")) or _safe_int(st.get("pgs"))
+    out["gamesPlayed"] = gp
+    if gs is not None:
+        out["gamesStarted"] = gs
+    if use_pitcher:
+        for wcl_k, dst_k in (
+            ("ip", "inningsPitched"),
+            ("era", "era"),
+            ("whip", "whip"),
+            ("pk", "strikeOuts"),
+            ("ph", "hits"),
+            ("pbb", "baseOnBalls"),
+            ("er", "earnedRuns"),
+        ):
+            if st.get(wcl_k) not in (None, ""):
+                out[dst_k] = json_stat_value(dst_k, st.get(wcl_k))
+    else:
+        for wcl_k, dst_k in (
+            ("ab", "atBats"),
+            ("avg", "avg"),
+            ("obp", "obp"),
+            ("slg", "slg"),
+            ("ops", "ops"),
+            ("h", "hits"),
+            ("r", "runs"),
+            ("rbi", "rbi"),
+            ("k", "strikeOuts"),
+            ("bb", "baseOnBalls"),
+            ("sb", "stolenBases"),
+            ("hd", "doubles"),
+            ("hr", "homeRuns"),
+        ):
+            if st.get(wcl_k) not in (None, ""):
+                out[dst_k] = json_stat_value(dst_k, st.get(wcl_k))
+    return _strip_pitch_count_fields(out)
+
+
 def _resolve_summer_amateur_player_id(c: Client, cfg: dict[str, Any]) -> int | None:
     pid = _safe_int(cfg.get("player_id"))
     if pid:
@@ -3897,6 +4276,11 @@ def build_summer_amateur_payload(c: Client, cfg: dict[str, Any]) -> dict[str, An
     college_season = _fetch_college_amateur_season(c, school, is_p)
     if college_season:
         base["season"] = college_season
+    if str(cfg.get("stats_source") or "").lower() == "wcl":
+        wcl_p = _find_wcl_player(c, cfg)
+        if wcl_p:
+            base["summer_season"] = _wcl_stats_to_season(wcl_p, is_p)
+        return base
     if team_id:
         try:
             base["upcoming_series"] = _fetch_summer_team_schedule(team_id)
@@ -5061,6 +5445,19 @@ def _gc_summer_candidate_score(
     return score
 
 
+def _gc_summer_team_display_name(team_rows: list[tuple[str, str, float, float]]) -> tuple[str, str]:
+    """Pick primary team label/schedule URL when a player appears on multiple summer squads."""
+    if not team_rows:
+        return "", ""
+    ranked = sorted(team_rows, key=lambda row: (row[2], row[3]), reverse=True)
+    primary_name, primary_url, _, _ = ranked[0]
+    extra = len(ranked) - 1
+    if extra <= 0:
+        return primary_name, primary_url
+    suffix = f" (+{extra} team{'s' if extra != 1 else ''})"
+    return f"{primary_name}{suffix}", primary_url
+
+
 def _gc_summer_lines_for_player(
     entry: dict[str, str],
     gc_client: GameChangerClient,
@@ -5069,41 +5466,56 @@ def _gc_summer_lines_for_player(
     discover: bool = True,
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None, str, str]:
     """Return season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name."""
-    best: tuple[
-        dict[str, Any] | None,
-        dict[str, Any] | None,
-        dict[str, Any] | None,
-        dict[str, Any] | None,
-        str,
-        str,
-    ] | None = None
-    best_score = -1.0
     wants_pitcher = bool(entry.get("hs_is_pitcher"))
     wants_hitter = bool(entry.get("hs_is_hitter"))
     if not wants_pitcher and not wants_hitter:
         wants_hitter = True
     program_key = _norm_program_key(entry.get("program", ""))
-    use_discover = discover and program_key not in GC_SUMMER_TEAMS
+    use_discover = discover
+
+    season_hits: list[dict[str, Any]] = []
+    season_pitches: list[dict[str, Any]] = []
+    last_hits: list[dict[str, Any]] = []
+    last_pitches: list[dict[str, Any]] = []
+    team_rows: list[tuple[str, str, float, float]] = []
+
     for team_cfg in _gc_summer_team_configs(entry.get("program", ""), discover=use_discover):
         season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name = _gc_summer_lines_for_team(
             entry, gc_client, gc_index, team_cfg
         )
         if not (season_hit or season_pitch or last_hit or last_pitch):
             continue
-        score = _gc_summer_candidate_score(
-            season_hit,
-            season_pitch,
-            last_hit,
-            last_pitch,
-            wants_pitcher=wants_pitcher,
-            wants_hitter=wants_hitter,
-        )
-        if score >= 100_000.0:
-            return season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name
-        if score > best_score:
-            best_score = score
-            best = (season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_name)
-    return best if best else (None, None, None, None, "", "")
+        if season_hit:
+            season_hits.append(season_hit)
+        if season_pitch:
+            season_pitches.append(season_pitch)
+        if last_hit:
+            last_hits.append(last_hit)
+        if last_pitch:
+            last_pitches.append(last_pitch)
+        pitch_ip = 0.0
+        hit_ab = 0.0
+        try:
+            if season_pitch:
+                pitch_ip = float(season_pitch.get("ip") or 0)
+        except (TypeError, ValueError):
+            pass
+        try:
+            if season_hit:
+                hit_ab = float(season_hit.get("ab") or 0)
+        except (TypeError, ValueError):
+            pass
+        team_rows.append((team_name or "", schedule_url or "", pitch_ip, hit_ab))
+
+    if not team_rows:
+        return None, None, None, None, "", ""
+
+    team_label, schedule_url = _gc_summer_team_display_name(team_rows)
+    season_hit = _merge_hit_lines(season_hits) if season_hits else None
+    season_pitch = _merge_pitch_lines(season_pitches) if season_pitches else None
+    last_hit = _merge_hit_lines(last_hits) if last_hits else None
+    last_pitch = _merge_pitch_lines(last_pitches) if last_pitches else None
+    return season_hit, season_pitch, last_hit, last_pitch, schedule_url, team_label
 
 
 def _gc_summer_lines_any_program(
@@ -5474,8 +5886,17 @@ def refresh_trackers_in_dashboard(out: Path = OUT_JSON) -> Path:
     existing: dict[str, Any] = {}
     if out.is_file():
         existing = json.loads(out.read_text())
-    existing["arbitration_tracker"] = build_tracker_data(ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB)
-    existing["free_agency_tracker"] = build_tracker_data(FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA)
+    existing["arbitration_tracker"] = build_tracker_data(
+        ARB_TRACKER_SOURCE_XLSX,
+        TRACKER_PINNED_ARB,
+        fallback_rows=(existing.get("arbitration_tracker") or {}).get("rows"),
+        supplements=TRACKER_ARB_SUPPLEMENT,
+    )
+    existing["free_agency_tracker"] = build_tracker_data(
+        FA_TRACKER_SOURCE_XLSX,
+        TRACKER_PINNED_FA,
+        fallback_rows=(existing.get("free_agency_tracker") or {}).get("rows"),
+    )
     gc_client = get_gamechanger_client()
     gc_index = GameChangerIndex.build(gc_client, _norm_player_name, _norm_token) if gc_client else None
     existing["watch_list"] = {
@@ -5597,7 +6018,11 @@ def build_dashboard_data() -> dict[str, Any]:
         "amateur_clients": amateur_rows,
         "high_school_clients": high_school_rows,
         "watch_list": {"JF": jf_watch_rows, "AR": ar_watch_rows},
-        "arbitration_tracker": build_tracker_data(ARB_TRACKER_SOURCE_XLSX, TRACKER_PINNED_ARB),
+        "arbitration_tracker": build_tracker_data(
+            ARB_TRACKER_SOURCE_XLSX,
+            TRACKER_PINNED_ARB,
+            supplements=TRACKER_ARB_SUPPLEMENT,
+        ),
         "free_agency_tracker": build_tracker_data(FA_TRACKER_SOURCE_XLSX, TRACKER_PINNED_FA),
     }
     return data

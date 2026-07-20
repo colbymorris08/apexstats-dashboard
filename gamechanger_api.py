@@ -537,14 +537,16 @@ def _merge_hit_lines(lines: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def _merge_pitch_lines(lines: list[dict[str, Any]]) -> dict[str, Any]:
-    agg = {"ip": 0.0, "h": 0, "r": 0, "er": 0, "bb": 0, "k": 0, "hr": 0}
+    agg = {"ip": 0.0, "h": 0, "r": 0, "er": 0, "bb": 0, "k": 0, "hr": 0, "w": 0, "l": 0, "sv": 0}
     for line in lines:
         try:
             agg["ip"] = float(agg["ip"]) + float(line.get("ip") or 0)
         except Exception:
             pass
-        for k in ("h", "r", "er", "bb", "k", "hr"):
+        for k in ("h", "r", "er", "bb", "k", "hr", "w", "l", "sv"):
             agg[k] += int(line.get(k) or 0)
+    if agg["ip"] > 0:
+        agg["era"] = round(agg["er"] * 9.0 / agg["ip"], 2)
     return agg
 
 

@@ -33,6 +33,7 @@ from apex_last_night_pdf_email import (
     _send_pdf_smtp,
     _sort_rows_by_name,
     _stat_val,
+    last_night_nonempty,
     pdf_row_for_last_night_email,
 )
 
@@ -48,6 +49,7 @@ def _watch_row_to_pdf_row(row: dict[str, Any], report_date: str) -> dict[str, An
     school_ln = row.get("last_night") or {}
     summer_se = row.get("summer_season") or {}
     school_se = row.get("season") or {}
+    has_summer_ln = last_night_nonempty({**row, "last_night": summer_ln})
     team = str(row.get("summer_team") or row.get("program") or row.get("school") or "").strip()
     return {
         "name": row.get("name", ""),
@@ -55,12 +57,12 @@ def _watch_row_to_pdf_row(row: dict[str, Any], report_date: str) -> dict[str, An
         "organization": team,
         "current_team": team,
         "is_pitcher": is_pitcher,
-        "stats_context": "summer" if summer_se or summer_ln else "",
+        "stats_context": "summer" if summer_se or has_summer_ln else "",
         "season": summer_se if summer_se else school_se,
         "month_to_date": row.get("month_to_date") or {},
-        "last_night": summer_ln if summer_ln else school_ln,
+        "last_night": summer_ln if has_summer_ln else school_ln,
         "summer_season": summer_se,
-        "summer_last_night": summer_ln,
+        "summer_last_night": summer_ln if has_summer_ln else {},
         "last_night_date": report_date,
     }
 
