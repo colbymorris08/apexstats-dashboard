@@ -428,10 +428,10 @@ SUMMER_AMATEUR_OVERRIDES: dict[str, dict[str, Any]] = {
         "name_aliases": ["Hudson Flora"],
     },
     "brayden jaksa": {
-        "summer_team": "Orleans Firebirds",
+        "summer_team": "Harwich Mariners",
         "summer_league": "Cape Cod Baseball League",
         "team_level": "CCL",
-        "team_id": 6102,
+        "team_id": 6100,
         "league_id": 565,
         "schedule_url": "https://www.capecodleague.com/scores",
         "player_id": 815984,
