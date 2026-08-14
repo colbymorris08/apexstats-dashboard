@@ -198,7 +198,6 @@ PRO_CLIENT_EXCLUDE_NAMES: frozenset[str] = frozenset(
         "jordan viars",
         "daulton jefferies",
         "adam wolf",
-        "scott alexander",
         "colin barber",
     }
 )
@@ -234,6 +233,9 @@ PRO_MLB_PLAYER_ID_OVERRIDES: dict[str, int] = {
     "matthew fraizer": 670208,
     "matt fraizer": 670208,
     "ruben ibarra": 702140,
+    # 2026 draftees; people/search often returns [] until they are indexed.
+    "devin bell": 838647,
+    "maddox molony": 814829,
 }
 # Normalized client name -> people/search query (API spelling differs from the roster sheet).
 PRO_MLB_PEOPLE_SEARCH_ALIASES: dict[str, str] = {
