@@ -273,7 +273,11 @@ class GameChangerIndex:
     @classmethod
     def build(cls, client: GameChangerClient, norm_name_fn: Any, norm_token_fn: Any) -> GameChangerIndex:
         idx = cls(client=client)
-        teams = client.get("/me/teams")
+        try:
+            teams = client.get("/me/teams")
+        except Exception:
+            # GC may 403 from CI IPs or expired sessions; dashboard still builds without HS GC lines.
+            return idx
         if not isinstance(teams, list):
             return idx
         for team in teams:
@@ -366,12 +370,19 @@ class GameChangerIndex:
 
     def season_stats(self, team_id: str) -> dict[str, Any]:
         if team_id not in self._season_stats:
-            self._season_stats[team_id] = self.client.get(f"/teams/{team_id}/season-stats")
+            try:
+                raw = self.client.get(f"/teams/{team_id}/season-stats")
+            except Exception:
+                raw = {}
+            self._season_stats[team_id] = raw if isinstance(raw, dict) else {}
         return self._season_stats[team_id]
 
     def schedule(self, team_id: str) -> list[dict[str, Any]]:
         if team_id not in self._schedules:
-            raw = self.client.get(f"/teams/{team_id}/schedule")
+            try:
+                raw = self.client.get(f"/teams/{team_id}/schedule")
+            except Exception:
+                raw = []
             self._schedules[team_id] = raw if isinstance(raw, list) else []
         return self._schedules[team_id]
 
@@ -600,7 +611,10 @@ def gc_player_game_lines(
 
 
 def fetch_public_roster(client: GameChangerClient, public_id: str) -> list[dict[str, Any]]:
-    raw = client.get(f"/teams/public/{public_id}/players")
+    try:
+        raw = client.get(f"/teams/public/{public_id}/players")
+    except Exception:
+        return []
     return raw if isinstance(raw, list) else []
 
 
@@ -660,13 +674,16 @@ def match_gc_roster_player(
 
 def search_gc_teams(client: GameChangerClient, name: str, *, limit: int = 25) -> list[dict[str, Any]]:
     """Search GameChanger for public baseball teams by name."""
-    r = requests.post(
-        f"{GC_API_BASE}/search",
-        headers=client._api_headers(),
-        json={"name": name, "types": ["team"]},
-        timeout=30,
-    )
-    r.raise_for_status()
+    try:
+        r = requests.post(
+            f"{GC_API_BASE}/search",
+            headers=client._api_headers(),
+            json={"name": name, "types": ["team"]},
+            timeout=30,
+        )
+        r.raise_for_status()
+    except Exception:
+        return []
     hits = r.json().get("hits") or []
     out: list[dict[str, Any]] = []
     for h in hits:

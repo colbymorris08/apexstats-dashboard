@@ -5899,8 +5899,7 @@ def refresh_trackers_in_dashboard(out: Path = OUT_JSON) -> Path:
         TRACKER_PINNED_FA,
         fallback_rows=(existing.get("free_agency_tracker") or {}).get("rows"),
     )
-    gc_client = get_gamechanger_client()
-    gc_index = GameChangerIndex.build(gc_client, _norm_player_name, _norm_token) if gc_client else None
+    gc_client, gc_index = _gamechanger_context()
     existing["watch_list"] = {
         "JF": build_jf_follow_rows(JF_FOLLOW_SOURCE_XLSX, gc_client=gc_client, gc_index=gc_index),
         "AR": build_ar_follow_rows(AR_FOLLOW_SOURCE_XLSX, gc_client=gc_client, gc_index=gc_index),
@@ -5984,6 +5983,18 @@ def refresh_amateur_in_dashboard(out: Path = OUT_JSON) -> Path:
     return out
 
 
+def _gamechanger_context() -> tuple[GameChangerClient | None, GameChangerIndex | None]:
+    """Best-effort GC client/index; never raises (pro/college build continues if GC is down)."""
+    try:
+        gc_client = get_gamechanger_client()
+        if not gc_client:
+            return None, None
+        gc_index = GameChangerIndex.build(gc_client, _norm_player_name, _norm_token)
+        return gc_client, gc_index
+    except Exception:
+        return None, None
+
+
 def build_dashboard_data() -> dict[str, Any]:
     _reset_dashboard_build_caches()
     get_team_catalog()
@@ -5996,14 +6007,16 @@ def build_dashboard_data() -> dict[str, Any]:
     amateur_rows = _build_amateur_rows(amateur)
     high_school_rows: list[dict[str, Any]] = []
     hs_clients = load_high_school_clients(HS_SOURCE_XLSX)
-    gc_client = get_gamechanger_client()
-    gc_index = GameChangerIndex.build(gc_client, _norm_player_name, _norm_token) if gc_client else None
+    gc_client, gc_index = _gamechanger_context()
     hs_built = _parallel_map(hs_clients, build_high_school_payloads, max_workers=8)
     for entry, rows in zip(hs_clients, hs_built):
         if isinstance(rows, list):
-            if gc_index is not None:
-                enrich_high_school_from_gamechanger(rows, entry, gc_index)
-            attach_summer_travel_stats(rows, entry, gc_client, gc_index)
+            try:
+                if gc_index is not None:
+                    enrich_high_school_from_gamechanger(rows, entry, gc_index)
+                attach_summer_travel_stats(rows, entry, gc_client, gc_index)
+            except Exception:
+                pass
             high_school_rows.extend(rows)
     jf_watch_rows: list[dict[str, Any]] = build_jf_follow_rows(
         JF_FOLLOW_SOURCE_XLSX, gc_client=gc_client, gc_index=gc_index
