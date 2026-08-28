@@ -58,6 +58,10 @@ def slug(name: str) -> str:
 
 
 def write_progress(payload: dict) -> None:
+    EXCLUDED_NAMES = {"Bryan Woo", "Drew Thorpe", "Jack Dreyer", "Merrill Kelly"}
+    for section in ["done", "failed"]:
+        if section in payload:
+            payload[section] = {k: v for k, v in payload[section].items() if v.get("name") not in EXCLUDED_NAMES}
     SITE_DATA.mkdir(parents=True, exist_ok=True)
     PROGRESS_PATH.write_text(json.dumps(payload, indent=2))
 

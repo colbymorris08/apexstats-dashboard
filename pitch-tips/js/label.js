@@ -328,10 +328,10 @@ function openPdfPacket() {
       </section>`
     )
     .join("");
-  win.document.write(`<!DOCTYPE html><html><head><title>Apex label packet</title>
+  win.document.write(`<!DOCTYPE html><html><head><title>Preflight label packet</title>
     <style>body{font-family:Manrope,sans-serif;padding:24px;color:#111} h1{font-size:18px}</style></head>
     <body>
-      <h1>Apex Preflight · part labels (CF)</h1>
+      <h1>Preflight · part labels (CF)</h1>
       <p>${data.images.length} frames · ${data.images.reduce((n, i) => n + i.boxes.length, 0)} boxes · ${data.createdAt}</p>
       <p>Print this page → Save as PDF, then send the PDF + the JSON export in chat for YOLO fine-tune.</p>
       ${rows || "<p>No boxes yet.</p>"}

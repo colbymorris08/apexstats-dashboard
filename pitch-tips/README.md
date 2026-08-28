@@ -1,4 +1,4 @@
-# Apex Preflight · Computer Vision Pitch Anticipation & Mechanical Variation Engine
+# Preflight · Computer Vision Pitch Anticipation & Mechanical Variation Engine
 
 [![MLB Advance Scouting](https://img.shields.io/badge/Domain-MLB%20Advance%20Scouting-0A192F.svg?style=flat-square)](#practical-scouting-applications)
 [![Computer Vision](https://img.shields.io/badge/Vision%20Stack-YOLOv8%20%2B%20MediaPipe-00B4D8.svg?style=flat-square)](#computer-vision-architecture--methodology)
@@ -6,7 +6,7 @@
 [![Validation](https://img.shields.io/badge/Statistical%20Gate-Youden%27s%20J%20%7C%20FDR%20q%3D0.10-F59E0B.svg?style=flat-square)](#statistical-validation-framework)
 [![Deployment](https://img.shields.io/badge/Deployment-Vercel%20%2F%20Static%20Board-6366F1.svg?style=flat-square)](#local-setup--deployment-guide)
 
-**Apex Preflight** is an automated computer vision "Spot the Difference" pitch anticipation and physical movement variation engine. Designed for Major League Baseball advance scouting and pitching development departments, Preflight ingests high-frame-rate game video, tracks 30+ anatomical and spatial landmarks across the pitcher and battery, and classifies physical mechanical discrepancies—such as glove set height, forearm exposure, torso tilt, hand depth, and delivery tempo—**strictly before the pitcher's hand break and ball release**.
+**Preflight** is an automated computer vision "Spot the Difference" pitch anticipation and physical movement variation engine. Designed for Major League Baseball advance scouting and pitching development departments, Preflight ingests high-frame-rate game video, tracks 30+ anatomical and spatial landmarks across the pitcher and battery, and classifies physical mechanical discrepancies—such as glove set height, forearm exposure, torso tilt, hand depth, and delivery tempo—**strictly before the pitcher's hand break and ball release**.
 
 ---
 
@@ -42,7 +42,7 @@ In professional baseball, a pitcher "tipping" their pitches or exhibiting system
 
 ```
 +--------------------------------------------------------------------------------------------------+
-|                                    APEX PREFLIGHT PLATFORM                                       |
+|                                      PREFLIGHT PLATFORM                                          |
 +--------------------------------------------------------------------------------------------------+
 |                                                                                                  |
 |   +-----------------------+     +--------------------------+     +---------------------------+   |
