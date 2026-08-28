@@ -94,14 +94,14 @@ function ensureEnterpriseModal() {
       <button class="enterprise-modal-close" id="enterprise-modal-close-btn" aria-label="Close modal">✕</button>
       <div class="enterprise-modal-header">
         <span class="enterprise-modal-badge">🔒 Enterprise Scouting Access</span>
-        <h2 id="modal-player-target">Unlock Full 60+ Arm League Database</h2>
+        <h2 id="modal-player-target">Unlock Full League &amp; International Database</h2>
         <p class="modal-desc">
           You are viewing a protected arm from the full Preflight Computer Vision platform. Interactive showcase access is 100% unlocked for <strong>Landen Roupp</strong>, <strong>Eduardo Rodriguez</strong>, and <strong>Logan Webb</strong>.
         </p>
       </div>
       <div class="enterprise-features-list">
         <ul>
-          <li><strong>Full 60+ Arm MLB Database:</strong> Complete rotation and bullpen CV audits across all 30 Major League organizations.</li>
+          <li><strong>Full Global Pro Database:</strong> Complete rotation and bullpen CV audits across MLB, NPB (Japan), KBO (Korea), CPBL (Taiwan), Mexican League (LMB), and Winter Leagues (LIDOM, LMP, LVBP, LBPRC).</li>
           <li><strong>Multi-Angle 4K Camera Ingest:</strong> Direct integration with Synergy, dugout high-speed cameras, 1B/3B coach angles, and 4K tight CF feeds.</li>
           <li><strong>Sub-Pixel Mechanical Tells:</strong> Glove burial depth, finger curl classification, wrist cock timing, and set-tempo anomalies before hand break.</li>
           <li><strong>Automated Series Pre-Flight Audits:</strong> Pre-game opposing pitcher discrepancy dossiers delivered to advance scouts and coaching staff.</li>
@@ -904,9 +904,9 @@ function wirePlayerPage(data) {
       lockCard.className = "locked-player-overlay-card";
       lockCard.innerHTML = `
         <span class="enterprise-modal-badge">🔒 Enterprise Scouting Dossier</span>
-        <h3>${player.name} (${team?.abbr || "MLB"}) · Access Restricted</h3>
+        <h3>${player.name} (${team?.abbr || "PRO"}) · Access Restricted</h3>
         <p>
-          This pitcher dossier is part of the full 60+ Arm MLB platform database. 
+          This pitcher dossier is part of the full Preflight professional &amp; international platform database (MLB, NPB, KBO, CPBL, LMB, and Winter Leagues). 
           Pre-release delivery compare sliders, hand-in-glove depth metrics, and high-movement variance indicators are accessible under an Enterprise Scouting Pilot.
         </p>
         <div class="btn-row">

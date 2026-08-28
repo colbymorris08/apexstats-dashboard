@@ -215,6 +215,7 @@ function ensurePilotModal() {
 
         <div class="features-list">
           <div>✓ Signed NDA executed prior to video sharing (100% confidentiality guaranteed)</div>
+          <div>✓ Global Pro &amp; NCAA Coverage: MLB, NPB, KBO, CPBL, LMB, Winter Leagues &amp; College</div>
           <div>✓ Automated opponent weekend rotation audits via Synergy or stadium video</div>
           <div>✓ Active catcher setup &amp; pitcher pre-release mechanical variance reports</div>
           <div>✓ Conference lockout protection (guaranteed single-school exclusivity)</div>
@@ -228,7 +229,7 @@ function ensurePilotModal() {
 
           <div class="form-group">
             <label for="pilot-org">Organization / School *</label>
-            <input type="text" id="pilot-org" required placeholder="e.g. Texas A&amp;M University / MLB Club" />
+            <input type="text" id="pilot-org" required placeholder="e.g. Texas A&amp;M University / MLB / NPB / KBO Club" />
           </div>
 
           <div class="form-group">
@@ -242,7 +243,11 @@ function ensurePilotModal() {
               <option value="NCAA Division I (Power Conference)">NCAA Division I (Power Conference - SEC, ACC, Big 12, Big Ten)</option>
               <option value="NCAA Division I (Mid-Major)">NCAA Division I (Mid-Major)</option>
               <option value="NCAA Division II / III / NAIA / JUCO">NCAA Division II / III / NAIA / JUCO</option>
-              <option value="MLB / MiLB Professional Organization">MLB / MiLB Professional Organization</option>
+              <option value="MLB (North America)">MLB (North America)</option>
+              <option value="NPB (Japan Nippon Professional Baseball)">NPB (Japan Nippon Professional Baseball)</option>
+              <option value="KBO (Korea Baseball Organization)">KBO (Korea Baseball Organization)</option>
+              <option value="CPBL (Chinese Professional Baseball League)">CPBL (Chinese Professional Baseball League)</option>
+              <option value="Mexican League (LMB) &amp; Winter Leagues (LIDOM / LMP / LVBP)">Mexican League (LMB) &amp; Winter Leagues (LIDOM / LMP / LVBP)</option>
               <option value="Independent / Player Development Facility">Independent / Player Development Facility</option>
             </select>
           </div>
@@ -253,7 +258,7 @@ function ensurePilotModal() {
               <option value="College Tier 1: Standard Team License">College Tier 1: Standard Team License</option>
               <option value="College Tier 2: Conference Exclusivity Premium" selected>College Tier 2: Conference Exclusivity Premium ("Monopolize Your Conference")</option>
               <option value="College Tier 3: National Monopoly Sole Contract">College Tier 3: National Monopoly Sole Contract</option>
-              <option value="Pro / MLB Enterprise (Custom Quote)">Pro / MLB Enterprise (Custom Quote)</option>
+              <option value="Pro / Enterprise Deployment (MLB / NPB / KBO / CPBL / Winter Leagues)">Pro / Enterprise Deployment (MLB / NPB / KBO / CPBL / Winter Leagues)</option>
             </select>
           </div>
 
