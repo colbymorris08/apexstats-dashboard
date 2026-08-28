@@ -31,7 +31,7 @@ from preflight.run_poc import _feature_vector
 from preflight.thresholds import TIP_CONFIDENCE_FLOOR
 from preflight.track_pitcher import MAX_TRACK_FRAMES, track_clip
 
-UA = {"User-Agent": "ApexPreflightCV/0.6"}
+UA = {"User-Agent": "PreflightCV/0.6"}
 
 
 def _catcher_game_pks(mlbam: int, season: int, n_games: int) -> list[int]:

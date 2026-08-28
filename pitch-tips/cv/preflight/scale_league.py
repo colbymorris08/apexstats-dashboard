@@ -21,7 +21,7 @@ from preflight.merge_demo import main as merge_demo_main  # noqa: E402
 from preflight.provenance import validated_counts  # noqa: E402
 from preflight.run_poc import run_poc  # noqa: E402
 
-UA = {"User-Agent": "ApexPreflightCV/0.5"}
+UA = {"User-Agent": "PreflightCV/0.5"}
 SITE_DATA = Path(__file__).resolve().parents[2] / "data"
 PROGRESS_PATH = SITE_DATA / "progress.json"
 

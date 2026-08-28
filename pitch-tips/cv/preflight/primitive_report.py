@@ -1,5 +1,5 @@
 """
-Apex Preflight — sanity report for the lift-anchored tip primitives.
+Preflight — sanity report for the lift-anchored tip primitives.
 
 This does not mine tips and does not gate anything. Its only job is to answer
 "is this primitive measuring something real, and does it separate pitch types?"

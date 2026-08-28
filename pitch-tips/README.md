@@ -437,9 +437,9 @@ Or connect the repository directly in the [Vercel Dashboard](https://vercel.com/
 ## Technical Specifications & Citation
 
 ```bibtex
-@software{apex_preflight_2026,
+@software{preflight_2026,
   author = {Morris, Colby},
-  title = {Apex Preflight: Computer Vision Pitch Anticipation and Mechanical Discrepancy Engine},
+  title = {Preflight: Computer Vision Pitch Anticipation and Mechanical Discrepancy Engine},
   year = {2026},
   publisher = {GitHub},
   url = {https://github.com/colbymorris08/PreFlightPitchTips}
@@ -447,4 +447,4 @@ Or connect the repository directly in the [Vercel Dashboard](https://vercel.com/
 ```
 
 ---
-*Apex Preflight · Confidential MLB Advance Scouting & Pitching Intelligence Engine.*
+*Colby Morris Preflight · Confidential MLB Advance Scouting & Pitching Intelligence Engine.*

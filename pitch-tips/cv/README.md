@@ -1,6 +1,6 @@
-# Apex Preflight CV
+# Preflight CV
 
-Apex-owned computer vision ingest and tracking for pitch-type anticipation.
+Proprietary computer vision ingest and tracking for pitch-type anticipation.
 
 **Savant CF = proof of concept.** Club delivery uses the same tracker schema on private X1–X4 /
 TEAM angles.

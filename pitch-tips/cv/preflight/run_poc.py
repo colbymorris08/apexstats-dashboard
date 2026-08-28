@@ -56,7 +56,7 @@ from preflight.thresholds import (  # noqa: E402
 from preflight.track_pitcher import MAX_TRACK_FRAMES, track_clip  # noqa: E402
 from preflight.window import actionable_window, preset_segment  # noqa: E402
 
-UA = {"User-Agent": "ApexPreflightCV/0.3"}
+UA = {"User-Agent": "PreflightCV/0.3"}
 MIN_STRATUM_N = 6
 
 

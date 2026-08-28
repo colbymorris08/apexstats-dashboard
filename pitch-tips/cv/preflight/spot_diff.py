@@ -1,5 +1,5 @@
 """
-Apex Preflight — unified "spot the difference" tip detection.
+Preflight — unified "spot the difference" tip detection.
 
 A scout does not evaluate one cue at a time. Watching the same arm throw a
 fastball and a slider, they take in glove height, glove flare, how far the

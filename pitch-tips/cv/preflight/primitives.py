@@ -1,5 +1,5 @@
 """
-Apex Preflight — lift-anchored tip primitives.
+Preflight — lift-anchored tip primitives.
 
 This module implements the vocabulary that professional pitch-tipping reports
 actually use (see ``docs/apex_tipping_examples.pdf`` and

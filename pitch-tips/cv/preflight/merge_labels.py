@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merge Apex label JSON exports into one training export, with validation.
+"""Merge Preflight label JSON exports into one training export, with validation.
 
 Usage:
   python cv/preflight/merge_labels.py out.json in1.json in2.json ...

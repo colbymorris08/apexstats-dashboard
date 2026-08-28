@@ -16,7 +16,7 @@ from urllib.parse import urljoin
 import requests
 
 SAVANT_PLAY = "https://baseballsavant.mlb.com/sporty-videos?playId={play_id}"
-USER_AGENT = "ApexPreflightCV/0.3 (+internal; club-eval)"
+USER_AGENT = "PreflightCV/0.3 (+internal; club-eval)"
 
 
 def resolve_mp4_url(play_id: str, session: requests.Session | None = None) -> str | None:
@@ -113,7 +113,7 @@ def download_play_clip(
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(description="Apex Preflight — Savant clip fetch")
+    p = argparse.ArgumentParser(description="Preflight — Savant clip fetch")
     p.add_argument("--play-id", required=True, help="Savant / Statcast playId UUID")
     p.add_argument("--out", type=Path, default=Path("clips"), help="Output directory")
     args = p.parse_args(argv)

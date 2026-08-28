@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert Apex part-label JSON exports into an Ultralytics YOLO dataset layout.
+"""Convert Preflight part-label JSON exports into an Ultralytics YOLO dataset layout.
 
 Usage:
   python cv/preflight/yolo_from_labels.py data/labels/apex_labels_YYYY-MM-DD.json

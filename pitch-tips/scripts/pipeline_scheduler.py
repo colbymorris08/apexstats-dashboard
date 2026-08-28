@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Pipeline Scheduler for Apex Pitch-Tips.
+Pipeline Scheduler for Preflight Pitch-Tips.
 
 Controls scheduled pause and resume:
 - 18:00 PDT (6:00 PM): Graceful pause of supervisor and scalers
@@ -75,7 +75,7 @@ def execute_script(script_path: Path, action_name: str) -> bool:
 
 
 def main() -> None:
-    log("=== Apex Pipeline Scheduler Started ===")
+    log("=== Preflight Pipeline Scheduler Started ===")
     pause_dt, resume_dt = get_target_datetimes()
     
     paused_done = False

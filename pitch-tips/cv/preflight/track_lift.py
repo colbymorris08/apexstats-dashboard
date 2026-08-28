@@ -1,5 +1,5 @@
 """
-Apex Preflight — rich landmark pass for lift-anchored tip primitives.
+Preflight — rich landmark pass for lift-anchored tip primitives.
 
 The original tracker (``track_pitcher.py``) persists only a handful of derived
 scalars (glove x/y, belt y, shoulder y). Those are enough for the set-window

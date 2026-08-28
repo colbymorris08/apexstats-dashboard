@@ -15,7 +15,7 @@ from pathlib import Path
 
 import requests
 
-UA = {"User-Agent": "ApexPreflightCV/0.6"}
+UA = {"User-Agent": "PreflightCV/0.6"}
 NL_WEST = ["ARI", "COL", "LAD", "SD", "SF"]
 NL_WEST_IDS = {"ARI": 109, "COL": 115, "LAD": 119, "SD": 135, "SF": 137}
 PITCHER_POS = {"P", "SP", "RP", "TWP"}

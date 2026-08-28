@@ -1,5 +1,5 @@
 """
-Apex Preflight — computer vision ingest & tracking (Apex-owned).
+Preflight — computer vision ingest & tracking.
 
 Scripts:
   python -m preflight.fetch_savant --play-id <uuid> --out clips/

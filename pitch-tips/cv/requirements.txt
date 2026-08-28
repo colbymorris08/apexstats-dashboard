@@ -1,4 +1,4 @@
-# Apex Preflight CV (local deps)
+# Preflight CV (local deps)
 requests>=2.31
 pandas>=2.0
 numpy>=1.24

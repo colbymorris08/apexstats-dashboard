@@ -35,7 +35,7 @@ from preflight.schema_check import (  # noqa: E402
     stale_schema_reason,
 )
 
-UA = {"User-Agent": "ApexPreflightCV/0.6"}
+UA = {"User-Agent": "PreflightCV/0.6"}
 SITE_DATA = Path(__file__).resolve().parents[2] / "data"
 PROGRESS_PATH = SITE_DATA / "progress.json"
 

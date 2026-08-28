@@ -1,4 +1,4 @@
-"""Track pitcher presentation cues on a single clip (Apex Preflight CV).
+"""Track pitcher presentation cues on a single clip (Preflight CV).
 
 Outputs frame-level tracks for pitcher glove, hands, and optional face landmarks.
 Designed so club angles (X1–X4) plug in via the same schema with a different
@@ -71,7 +71,7 @@ def track_clip(
         conf = 0.0
 
         if model is not None:
-            # Generic person/sports objects until Apex pitcher-glove weights are loaded.
+            # Generic person/sports objects until Preflight pitcher-glove weights are loaded.
             results = model.predict(frame, verbose=False)
             boxes = results[0].boxes if results else None
             if boxes is not None and len(boxes):
@@ -144,7 +144,7 @@ def track_clip(
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(description="Apex Preflight — clip tracker")
+    p = argparse.ArgumentParser(description="Preflight — clip tracker")
     p.add_argument("--clip", type=Path, required=True)
     p.add_argument("--out", type=Path, default=Path("tracks"))
     p.add_argument("--camera-id", default="CF", help="CF | X1 | X2 | X3 | X4 | TEAM")

@@ -1,5 +1,5 @@
 """
-Apex Preflight tracker — pitcher body, glove proxy, face, motion (MediaPipe Tasks).
+Preflight tracker — pitcher body, glove proxy, face, motion (MediaPipe Tasks).
 
 Savant CF is proof-of-concept; club X1–X4 use the same schema via camera_id.
 """
@@ -442,7 +442,7 @@ def track_clip(
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(description="Apex Preflight — pitcher tracker")
+    p = argparse.ArgumentParser(description="Preflight — pitcher tracker")
     p.add_argument("--clip", type=Path, required=True)
     p.add_argument("--out", type=Path, default=Path("tracks"))
     p.add_argument("--camera-id", default="CF")
