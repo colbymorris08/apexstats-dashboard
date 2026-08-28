@@ -2,7 +2,7 @@
  * Colby Morris Preflight Lite — Public Showcase & Enterprise Scouting Preview Logic
  */
 
-const SHOWCASE_IDS = ["roupp", "eduardo_rodriguez", "webb", "gabriel_moreno"];
+const SHOWCASE_IDS = ["roupp", "landen_roupp", "eduardo_rodriguez", "webb", "logan_webb", "gabriel_moreno"];
 
 async function loadDemo() {
   try {
@@ -148,14 +148,17 @@ function wireGloveCompare(still) {
   if (!root || !left || !right) return false;
 
   const compare = still?.compare;
-  if (!compare || !compare.leftImage || !compare.rightImage) {
+  const leftSrc = compare?.leftSrc || compare?.leftImage;
+  const rightSrc = compare?.rightSrc || compare?.rightImage;
+  if (!compare || !leftSrc || !rightSrc) {
     root.hidden = true;
     if (img) img.hidden = false;
     return false;
   }
 
-  left.src = compare.leftImage;
-  right.src = compare.rightImage;
+  const bust = `?v=${encodeURIComponent(still.cacheKey || "1")}`;
+  left.src = `${leftSrc}${bust}`;
+  right.src = `${rightSrc}${bust}`;
   left.alt = `${still.name || "Pitcher"} ${compare.leftLabel || "Pitch A"}`;
   right.alt = `${still.name || "Pitcher"} ${compare.rightLabel || "Pitch B"}`;
 
@@ -995,38 +998,94 @@ function wireLiteTeam(data) {
 }
 
 function wireSituationCoverage(player) {
+  const panel = document.getElementById("situation-coverage-panel") || document.getElementById("situation-coverage-body")?.closest(".panel");
+  const body = document.getElementById("situation-coverage-body");
+  const note = document.getElementById("situation-coverage-note");
   const el = document.getElementById("situation-coverage");
-  if (!el) return;
-  const sit = player.situations;
-  if (!sit) {
-    el.innerHTML = "<p class='note'>Standard delivery strata tracking active.</p>";
+
+  const rawSit = player.situationCoverage;
+  let situations = [];
+  if (Array.isArray(rawSit)) {
+    situations = rawSit;
+  } else if (rawSit && Array.isArray(rawSit.situations)) {
+    situations = rawSit.situations;
+  }
+
+  const populatedSituations = situations.filter(
+    (s) => (s.n && s.n > 0) || (s.discernable_n && s.discernable_n > 0) || (s.coverage && !s.coverage.startsWith("0 of"))
+  );
+
+  if (!rawSit || !situations.length || !populatedSituations.length) {
+    if (panel) panel.hidden = true;
     return;
   }
-  const items = [
-    { label: "Bases Empty", val: sit.bases_empty },
-    { label: "Runners on Base", val: sit.runners_on },
-    { label: "vs Lefties (LHH)", val: sit.vs_lhh },
-    { label: "vs Righties (RHH)", val: sit.vs_rhh },
-  ];
-  el.innerHTML = `
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:0.75rem; margin:0.5rem 0;">
-      ${items
-        .map(
-          (x) => `
-        <div style="background:var(--bg-elev); padding:0.6rem 0.75rem; border-radius:3px; border-left:2px solid var(--good);">
-          <div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase;">${x.label}</div>
-          <div style="font-family:var(--mono); font-size:1.1rem; font-weight:700; color:#fff;">${x.val ?? "Active"}</div>
-        </div>
-      `
-        )
-        .join("")}
-    </div>
-  `;
+
+  if (panel) panel.hidden = false;
+  if (note) {
+    const arsenal = (rawSit?.arsenal || ["FF", "SL", "CH", "SI"]).join(", ");
+    note.textContent = `Pitch arsenal: ${arsenal}. Computer vision isolates physical mechanical variance across pre-release delivery windows.`;
+  }
+
+  if (body) {
+    body.innerHTML = populatedSituations
+      .map((s) => {
+        const types = (s.discernable_types || []).join(", ") || "—";
+        const badge = (s.discernable_n > 0 || (s.coverage && !s.coverage.startsWith("0 of"))) ? "ok" : "";
+        return `<tr>
+          <td>${s.label || s.situation || "All Situations"}</td>
+          <td>${s.n ?? s.pitches ?? "—"}</td>
+          <td><span class="badge ${badge}">${s.coverage || "Tracked"}</span></td>
+          <td>${types}</td>
+        </tr>`;
+      })
+      .join("");
+  } else if (el) {
+    const sit = player.situations;
+    if (!sit) {
+      el.innerHTML = "<p class='note'>Standard delivery strata tracking active.</p>";
+      return;
+    }
+    const items = [
+      { label: "Bases Empty", val: sit.bases_empty },
+      { label: "Runners on Base", val: sit.runners_on },
+      { label: "vs Lefties (LHH)", val: sit.vs_lhh },
+      { label: "vs Righties (RHH)", val: sit.vs_rhh },
+    ];
+    el.innerHTML = `
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px,1fr)); gap:0.75rem; margin:0.5rem 0;">
+        ${items
+          .map(
+            (x) => `
+          <div style="background:var(--bg-elev); padding:0.6rem 0.75rem; border-radius:3px; border-left:2px solid var(--good);">
+            <div style="font-size:0.75rem; color:var(--muted); text-transform:uppercase;">${x.label}</div>
+            <div style="font-family:var(--mono); font-size:1.1rem; font-weight:700; color:#fff;">${x.val ?? "Active"}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    `;
+  }
 }
 
 function wireLitePlayer(data) {
   const id = qs("id") || "eduardo_rodriguez";
-  const player = data.players?.[id] || playerList(data).find((p) => p.id === id);
+  let player = data.players?.[id] || playerList(data).find((p) => p.id === id);
+  if (!player && id) {
+    const aliases = {
+      roupp: "landen_roupp",
+      landen_roupp: "roupp",
+      webb: "logan_webb",
+      logan_webb: "webb",
+      erod: "eduardo_rodriguez",
+      moreno: "gabriel_moreno",
+      canning: "griffin_canning",
+      griffin_canning: "canning",
+    };
+    if (aliases[id]) {
+      player = data.players?.[aliases[id]] || playerList(data).find((p) => p.id === aliases[id]);
+    }
+  }
   const team = player ? teamById(data, player.teamId) : null;
 
   const title = document.getElementById("player-title");
@@ -1048,7 +1107,7 @@ function wireLitePlayer(data) {
     backTeam.href = team ? `lite_team.html?id=${encodeURIComponent(team.id)}` : "lite_teams.html";
   }
 
-  const isShow = isShowcaseArm(player.id);
+  const isShow = isShowcaseArm(player.id) || isShowcaseArm(id);
   const lockSection = document.getElementById("lite-lock-section");
   const unlockedSection = document.getElementById("lite-unlocked-section");
 
@@ -1068,8 +1127,8 @@ function wireLitePlayer(data) {
         tips.map((t) => renderTip(t, angleMap)).join("") || "<p class='note'>No mechanical cues.</p>";
     }
 
-    fillSelect(document.getElementById("angle-select"), data.meta?.angles || [], { blank: "All views" });
-    fillSelect(document.getElementById("context-select"), data.meta?.contexts || [], { blank: "All game situations" });
+    fillSelect(document.getElementById("angle-select"), data.meta?.angles || [], { blank: "Future Camera Angle(s) Available" });
+    fillSelect(document.getElementById("context-select"), data.meta?.contexts || [], { blank: "All Game Filters" });
   } else {
     if (lockSection) lockSection.hidden = false;
     if (unlockedSection) unlockedSection.hidden = true;

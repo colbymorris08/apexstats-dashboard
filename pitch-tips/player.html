@@ -78,35 +78,15 @@
             <img id="detection-frame" alt="Pre-release detection still with landmark boxes" />
             <div class="detection-caption" id="detection-caption"></div>
           </div>
-          <div class="detection-ingest">
-            <div class="detection-ingest-opt">
-              <h4>Upload club angle</h4>
-              <label class="field"
-                >Local video
-                <input id="club-upload" type="file" accept="video/*" />
-              </label>
-              <p class="note" id="upload-note">Maps to X1–X4 / TEAM multi-angle pipeline; 4K60 tracking refines cue resolution.</p>
-            </div>
-            <div class="detection-ingest-opt">
-              <h4>Or link team video</h4>
-              <p class="note">
-                Connect club film from your video vault — use
-                <strong>link in team video</strong> (angle ID + play clock). High-speed side-angle views isolate grip and micro-movement.
-              </p>
-              <button type="button" class="btn ghost" id="link-team-video" disabled>
-                Link in team video
-              </button>
-            </div>
-          </div>
         </div>
 
         <div class="controls" style="margin-top: 1.5rem">
           <label class="field"
-            >Camera View
+            >Future Camera Angle(s) Available
             <select id="angle-select"></select>
           </label>
           <label class="field"
-            >Game context / Situation
+            >Game Filters
             <select id="context-select"></select>
           </label>
         </div>
@@ -119,7 +99,7 @@
           <div id="player-tips" class="tip-list"></div>
         </div>
 
-        <div class="panel" style="margin-top: 1.5rem">
+        <div class="panel" id="situation-coverage-panel" style="margin-top: 1.5rem">
           <h3>Arsenal coverage by situation</h3>
           <p class="note" id="situation-coverage-note">
             Mechanical distinction and pitch separation across distinct situational states (runners on base × batter handedness).
@@ -139,7 +119,7 @@
           </div>
         </div>
 
-        <div class="panel" style="margin-top: 1.5rem">
+        <div class="panel" id="catcher-signals-panel" style="margin-top: 1.5rem">
           <h3>Catcher setup signals</h3>
           <p class="note">Pre-pitch catcher target placement, stance width, and glove height before delivery initiation.</p>
           <div id="player-catcher-tips" class="tip-list"></div>

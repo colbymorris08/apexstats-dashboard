@@ -1,4 +1,4 @@
-const SHOWCASE_ARM_IDS = new Set(["roupp", "webb", "eduardo_rodriguez", "gabriel_moreno"]);
+const SHOWCASE_ARM_IDS = new Set(["roupp", "landen_roupp", "webb", "logan_webb", "eduardo_rodriguez", "gabriel_moreno"]);
 
 function checkIsLiteMode() {
   const url = new URL(location.href);
@@ -194,26 +194,42 @@ function renderTip(tip, angleLabels = {}) {
 }
 
 function wireSituationCoverage(player) {
+  const panel = document.getElementById("situation-coverage-panel") || document.getElementById("situation-coverage-body")?.closest(".panel");
   const body = document.getElementById("situation-coverage-body");
   const note = document.getElementById("situation-coverage-note");
   if (!body) return;
-  const situations = player.situationCoverage?.situations || [];
-  if (note) {
-    const arsenal = (player.situationCoverage?.arsenal || ["FF", "SL", "CH", "SI"]).join(", ");
-    note.textContent = `Pitch arsenal: ${arsenal}. Computer vision isolates physical mechanical variance across pre-release delivery windows.`;
+
+  const rawSit = player.situationCoverage;
+  let situations = [];
+  if (Array.isArray(rawSit)) {
+    situations = rawSit;
+  } else if (rawSit && Array.isArray(rawSit.situations)) {
+    situations = rawSit.situations;
   }
-  if (!situations.length) {
-    body.innerHTML = `<tr><td colspan="4">No situation coverage yet.</td></tr>`;
+
+  const populatedSituations = situations.filter(
+    (s) => (s.n && s.n > 0) || (s.discernable_n && s.discernable_n > 0) || (s.coverage && !s.coverage.startsWith("0 of"))
+  );
+
+  if (!rawSit || !situations.length || !populatedSituations.length) {
+    if (panel) panel.hidden = true;
     return;
   }
-  body.innerHTML = situations
+
+  if (panel) panel.hidden = false;
+  if (note) {
+    const arsenal = (rawSit?.arsenal || ["FF", "SL", "CH", "SI"]).join(", ");
+    note.textContent = `Pitch arsenal: ${arsenal}. Computer vision isolates physical mechanical variance across pre-release delivery windows.`;
+  }
+
+  body.innerHTML = populatedSituations
     .map((s) => {
       const types = (s.discernable_types || []).join(", ") || "—";
-      const badge = s.discernable_n > 0 ? "ok" : "";
+      const badge = (s.discernable_n > 0 || (s.coverage && !s.coverage.startsWith("0 of"))) ? "ok" : "";
       return `<tr>
-        <td>${s.label}</td>
-        <td>${s.n}</td>
-        <td><span class="badge ${badge}">${s.coverage}</span></td>
+        <td>${s.label || s.situation || "All Situations"}</td>
+        <td>${s.n ?? s.pitches ?? "—"}</td>
+        <td><span class="badge ${badge}">${s.coverage || "Tracked"}</span></td>
         <td>${types}</td>
       </tr>`;
     })
@@ -766,7 +782,10 @@ function wireGloveCompare(still) {
   const labelL = document.getElementById("glove-label-left");
   const labelR = document.getElementById("glove-label-right");
   const compare = still?.compare;
-  if (!root || !leftImg || !rightImg || !compare?.leftSrc || !compare?.rightSrc) {
+  const leftSrc = compare?.leftSrc || compare?.leftImage;
+  const rightSrc = compare?.rightSrc || compare?.rightImage;
+
+  if (!root || !leftImg || !rightImg || !leftSrc || !rightSrc) {
     if (root) root.hidden = true;
     if (img) img.hidden = false;
     return false;
@@ -775,8 +794,8 @@ function wireGloveCompare(still) {
   const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
   const prefix = isSubdir ? "../" : "";
   const bust = `?v=${encodeURIComponent(still.cacheKey || "1")}`;
-  leftImg.src = `${prefix}${compare.leftSrc}${bust}`;
-  rightImg.src = `${prefix}${compare.rightSrc}${bust}`;
+  leftImg.src = `${prefix}${leftSrc}${bust}`;
+  rightImg.src = `${prefix}${rightSrc}${bust}`;
   leftImg.alt = `${still.name || "Pitcher"} · ${compare.leftLabel || "Comparison A"}`;
   rightImg.alt = `${still.name || "Pitcher"} · ${compare.rightLabel || "Comparison B"}`;
   if (labelL) labelL.textContent = compare.leftLabel || "PITCH A";
@@ -793,8 +812,6 @@ function wireGloveCompare(still) {
 function wireDetectionStage(player) {
   const img = document.getElementById("detection-frame");
   const caption = document.getElementById("detection-caption");
-  const upload = document.getElementById("club-upload");
-  const uploadNote = document.getElementById("upload-note");
   if (!img) return;
 
   const still = player.detectionStill;
@@ -823,40 +840,28 @@ function wireDetectionStage(player) {
         (hasCompare ? "Pre-release delivery compare" : "Pre-release tracked frame");
     }
   }
-
-  upload?.addEventListener("change", () => {
-    const f = upload.files?.[0];
-    if (!f) return;
-    const url = URL.createObjectURL(f);
-    if (uploadNote) {
-      uploadNote.textContent = `Selected ${f.name} (${Math.round(f.size / 1024)} KB). Ingest pipeline maps this to TEAM / X1–X4 multi-angle workspace; 4K tracking refines cue resolution.`;
-    }
-    const compareRoot = document.getElementById("glove-compare");
-    if (compareRoot) compareRoot.hidden = true;
-    img.hidden = false;
-    const v = document.createElement("video");
-    v.src = url;
-    v.muted = true;
-    v.addEventListener("loadeddata", () => {
-      v.currentTime = Math.min(0.45, (v.duration || 1) * 0.35);
-    });
-    v.addEventListener("seeked", () => {
-      const c = document.createElement("canvas");
-      c.width = v.videoWidth;
-      c.height = v.videoHeight;
-      c.getContext("2d").drawImage(v, 0, 0);
-      img.src = c.toDataURL("image/jpeg", 0.85);
-      if (caption) caption.textContent = `${f.name} · Club video loaded (ready for 4K multi-angle landmark tracker)`;
-      URL.revokeObjectURL(url);
-    });
-  });
 }
 
 function wirePlayerPage(data) {
   ensureEnterpriseModal();
   ensureLiteBanner();
   const id = qs("id");
-  const player = data.players?.[id];
+  let player = data.players?.[id];
+  if (!player && id) {
+    const aliases = {
+      roupp: "landen_roupp",
+      landen_roupp: "roupp",
+      webb: "logan_webb",
+      logan_webb: "webb",
+      erod: "eduardo_rodriguez",
+      moreno: "gabriel_moreno",
+      canning: "griffin_canning",
+      griffin_canning: "canning",
+    };
+    if (aliases[id] && data.players?.[aliases[id]]) {
+      player = data.players[aliases[id]];
+    }
+  }
   const title = document.getElementById("player-title");
   const lede = document.getElementById("player-lede");
   const tipRoot = document.getElementById("player-tips");
@@ -870,7 +875,7 @@ function wirePlayerPage(data) {
     return;
   }
 
-  const isShowcase = SHOWCASE_ARM_IDS.has(id);
+  const isShowcase = SHOWCASE_ARM_IDS.has(player.id) || SHOWCASE_ARM_IDS.has(id);
   const tips = playerTips(player);
 
   if (title) {
@@ -933,12 +938,12 @@ function wirePlayerPage(data) {
   fillSelect(angleSel, data.meta?.angles || [{ id: "CF", label: "Broadcast CF PoC" }], {
     valueKey: "id",
     labelKey: "label",
-    blank: "All angles",
+    blank: "Future Camera Angle(s) Available",
   });
   fillSelect(contextSel, data.meta?.contexts || [{ id: "stretch", label: "Stretch" }], {
     valueKey: "id",
     labelKey: "label",
-    blank: "All contexts",
+    blank: "All Game Filters",
   });
 
   const angleMap = Object.fromEntries((data.meta?.angles || []).map((a) => [a.id, a.label]));
@@ -962,7 +967,15 @@ function wirePlayerPage(data) {
           `<p class="note">No mechanical indicators recorded for this filter setting.</p>`;
       }
     }
+    const catcherPanel = document.getElementById("catcher-signals-panel");
     const cTips = (player.catcherTips || []).filter((t) => tipPassesFilters(t, { angle, context }));
+    if (catcherPanel) {
+      if (player.role !== "C" && (!player.catcherTips || !player.catcherTips.length)) {
+        catcherPanel.hidden = true;
+      } else {
+        catcherPanel.hidden = false;
+      }
+    }
     if (catcherTipRoot) {
       catcherTipRoot.innerHTML =
         cTips.map((t) => renderTip(t, angleMap)).join("") ||

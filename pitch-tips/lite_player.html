@@ -105,34 +105,15 @@
               <img id="detection-frame" alt="Pre-release detection still with landmark boxes" />
               <div class="detection-caption" id="detection-caption"></div>
             </div>
-            <div class="detection-ingest">
-              <div class="detection-ingest-opt">
-                <h4>Upload club angle</h4>
-                <label class="field"
-                  >Local video
-                  <input id="club-upload" type="file" accept="video/*" disabled />
-                </label>
-                <p class="note" id="upload-note">Available via Enterprise pilot: Maps to X1–X4 / TEAM multi-angle pipeline.</p>
-              </div>
-              <div class="detection-ingest-opt">
-                <h4>Link team video</h4>
-                <p class="note">
-                  Connect club film from your video vault (Synergy, high-frame-rate dugout cameras, 1B/3B coach angles).
-                </p>
-                <button type="button" class="btn ghost trigger-pilot-modal">
-                  Connect Club Video Vault
-                </button>
-              </div>
-            </div>
           </div>
 
           <div class="controls" style="margin-top: 1.5rem">
             <label class="field"
-              >Camera View
+              >Future Camera Angle(s) Available
               <select id="angle-select"></select>
             </label>
             <label class="field"
-              >Game context / Situation
+              >Game Filters
               <select id="context-select"></select>
             </label>
           </div>
@@ -145,7 +126,7 @@
             <div id="player-tips" class="tip-list"></div>
           </div>
 
-          <div class="panel" style="margin-top: 1.5rem">
+          <div class="panel" id="situation-coverage-panel" style="margin-top: 1.5rem">
             <h3>Game Situation &amp; Pitch Arsenal Breakdown</h3>
             <p class="note" id="situation-coverage-note"></p>
             <div class="table-wrap">
