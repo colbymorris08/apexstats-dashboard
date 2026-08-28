@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 584,
   "nlwest_pitchers": 65,
-  "remaining": 546,
+  "remaining": 545,
   "sec_per_pitch": 10.0,
   "eta_hours": 325.8,
   "est_total_pitches": 117290,
   "current": {
-    "name": "Caleb Thielbar",
+    "name": "Hunter Harvey",
     "team": "CHC",
-    "message": "pitcher [104/519] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [113/519] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "518876": {
@@ -628,8 +628,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jacob_webb_poc",
       "schema": "rich_72col",
       "n_current_tracks": 125,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
+    },
+    "573204": {
+      "name": "Caleb Thielbar",
+      "team": "CHC",
+      "n_tracked": 95,
+      "holdout": 0.182,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/caleb_thielbar_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 104,
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -1372,6 +1388,46 @@
       "name": "Riley Martin",
       "team": "CHC",
       "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=702303&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "571948": {
+      "name": "Hoby Milner",
+      "team": "CHC",
+      "error": "HTTPSConnectionPool(host='statsapi.mlb.com', port=443): Max retries exceeded with url: /api/v1.1/game/823612/feed/live (Caused by NameResolutionError(\"HTTPSConnection(host='statsapi.mlb.com', port=443): Failed to resolve 'statsapi.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "663423": {
+      "name": "Trent Thornton",
+      "team": "CHC",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=663423&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "664208": {
+      "name": "Phil Maton",
+      "team": "CHC",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=664208&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "681799": {
+      "name": "Ethan Roberts",
+      "team": "CHC",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=681799&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "694037": {
+      "name": "Daniel Palencia",
+      "team": "CHC",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=694037&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "681151": {
+      "name": "Jayden Murray",
+      "team": "CHC",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=681151&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "668970": {
+      "name": "Gavin Hollowell",
+      "team": "CHC",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=668970&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "621053": {
+      "name": "Tyler Ferguson",
+      "team": "CHC",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=621053&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
     }
   },
   "catchers_done": {
@@ -1463,7 +1519,7 @@
     },
     "CHC": {
       "queued": 27,
-      "done": 2,
+      "done": 3,
       "pitcher_tips": 0,
       "catcher_tips": 0
     },
@@ -1593,17 +1649,14 @@
     },
     "mlb": {
       "total": 519,
-      "done": 2
+      "done": 3
     }
   },
   "totals": {
     "pitcher_tips": 0,
     "catcher_tips": 0
   },
-  "updated_at": "2026-08-28T12:44:53",
-  "live": {
-    "pitches_done": 80,
-    "pitches_target": null
-  },
+  "updated_at": "2026-08-28T13:25:41",
+  "live": null,
   "heartbeat": true
 }
