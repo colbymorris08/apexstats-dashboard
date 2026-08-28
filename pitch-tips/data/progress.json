@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 584,
   "nlwest_pitchers": 65,
-  "remaining": 566,
+  "remaining": 565,
   "sec_per_pitch": 10.0,
   "eta_hours": 325.8,
   "est_total_pitches": 117290,
   "current": {
-    "name": "Michael King",
+    "name": "Walker Buehler",
     "team": "SD",
-    "message": "pitcher [1/6] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [2/6] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "657277": {
@@ -302,6 +302,22 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tyler_glasnow_poc",
       "schema": "rich_72col",
       "n_current_tracks": 46,
+      "ready": true,
+      "state": "complete"
+    },
+    "650633": {
+      "name": "Michael King",
+      "team": "SD",
+      "n_tracked": 238,
+      "holdout": 0.077,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/michael_king_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 269,
       "ready": false,
       "state": "tracking"
     }
@@ -445,7 +461,7 @@
     },
     "SD": {
       "queued": 13,
-      "done": 1,
+      "done": 2,
       "pitcher_tips": 0,
       "catcher_tips": 0
     },
@@ -609,7 +625,7 @@
   "phases": {
     "nlw_rotation": {
       "total": 23,
-      "done": 16
+      "done": 17
     },
     "nlw_rest": {
       "total": 42,
@@ -624,9 +640,9 @@
     "pitcher_tips": 0,
     "catcher_tips": 0
   },
-  "updated_at": "2026-08-27T22:11:55",
+  "updated_at": "2026-08-27T23:11:44",
   "live": {
-    "pitches_done": 90,
+    "pitches_done": 80,
     "pitches_target": null
   },
   "heartbeat": true

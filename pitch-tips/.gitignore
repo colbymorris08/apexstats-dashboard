@@ -1,0 +1,43 @@
+# Python / Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+.pytest_cache/
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Vercel & Deployment & Temp
+.vercel/
+.vercel
+*.tmp
+
+# Large Model Weights and Binary Tasks
+*.pt
+*.task
+*.onnx
+*.tflite
+!cv/preflight/models/README.txt
+
+# Large Video Files & Media
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Large pipeline runs, logs, and scratch directories
+runs/
+pitch-tips/runs/
+*.log

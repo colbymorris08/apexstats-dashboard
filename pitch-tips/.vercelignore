@@ -1,0 +1,8 @@
+runs
+cv
+scripts
+*.pt
+.pytest_cache
+__pycache__
+data/yolo_*
+data/labels

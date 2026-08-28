@@ -1117,7 +1117,7 @@
                 "accuracy": 0.727,
                 "feature": "catcher_glove_speed_p90",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.273,
                 "status": "ok"
@@ -2204,7 +2204,7 @@
               "accuracy": 0.955,
               "feature": "catcher_glove_speed_p90",
               "precision": 0.0,
-              "threshold": NaN,
+              "threshold": null,
               "high_means_type": false,
               "baseline": 0.045,
               "status": "ok"
@@ -2361,7 +2361,7 @@
                 "accuracy": 0.955,
                 "feature": "catcher_glove_speed_p90",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.045,
                 "status": "ok"
@@ -5499,7 +5499,7 @@
               "accuracy": 0.667,
               "feature": "catcher_glove_x_mean",
               "precision": 0.0,
-              "threshold": NaN,
+              "threshold": null,
               "high_means_type": false,
               "baseline": 0.333,
               "status": "ok"
@@ -5523,7 +5523,7 @@
               "accuracy": 0.833,
               "feature": "catcher_glove_speed_p90",
               "precision": 0.0,
-              "threshold": NaN,
+              "threshold": null,
               "high_means_type": false,
               "baseline": 0.167,
               "status": "ok"
@@ -5608,7 +5608,7 @@
                 "accuracy": 0.667,
                 "feature": "catcher_glove_x_mean",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.333,
                 "status": "ok"
@@ -5632,7 +5632,7 @@
                 "accuracy": 0.833,
                 "feature": "catcher_glove_speed_p90",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.167,
                 "status": "ok"
@@ -7742,7 +7742,7 @@
               "accuracy": 0.754,
               "feature": "cheek_motion_std",
               "precision": 0.0,
-              "threshold": NaN,
+              "threshold": null,
               "high_means_type": false,
               "baseline": 0.246,
               "status": "ok"
@@ -7786,7 +7786,7 @@
               "accuracy": 0.877,
               "feature": "cheek_motion_std",
               "precision": 0.0,
-              "threshold": NaN,
+              "threshold": null,
               "high_means_type": false,
               "baseline": 0.123,
               "status": "ok"
@@ -7862,7 +7862,7 @@
                 "accuracy": 0.714,
                 "feature": "cheek_motion_std",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.286,
                 "status": "ok"
@@ -7874,7 +7874,7 @@
                 "accuracy": 0.762,
                 "feature": "cheek_motion_mean",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.238,
                 "status": "ok"
@@ -8022,7 +8022,7 @@
                 "accuracy": 0.754,
                 "feature": "cheek_motion_std",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.246,
                 "status": "ok"
@@ -8066,7 +8066,7 @@
                 "accuracy": 0.877,
                 "feature": "cheek_motion_std",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.123,
                 "status": "ok"
@@ -8102,7 +8102,7 @@
                 "accuracy": 0.788,
                 "feature": "cheek_motion_mean",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.212,
                 "status": "ok"
@@ -8122,7 +8122,7 @@
                 "accuracy": 0.879,
                 "feature": "cheek_motion_mean",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.121,
                 "status": "ok"
@@ -8334,7 +8334,7 @@
               "accuracy": 0.947,
               "feature": "catcher_glove_speed_p90",
               "precision": 0.0,
-              "threshold": NaN,
+              "threshold": null,
               "high_means_type": false,
               "baseline": 0.053,
               "status": "ok"
@@ -8616,7 +8616,7 @@
                 "accuracy": 0.947,
                 "feature": "catcher_glove_speed_p90",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.053,
                 "status": "ok"
@@ -8753,7 +8753,7 @@
                 "accuracy": 0.643,
                 "feature": "catcher_glove_x_mean",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.357,
                 "status": "ok"
@@ -8765,7 +8765,7 @@
                 "accuracy": 0.571,
                 "feature": "catcher_glove_speed_p90",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.429,
                 "status": "ok"
@@ -12765,7 +12765,7 @@
               "accuracy": 0.812,
               "feature": "pitchcom_mean_isi",
               "precision": 0.0,
-              "threshold": NaN,
+              "threshold": null,
               "high_means_type": false,
               "baseline": 0.188,
               "status": "ok"
@@ -12793,7 +12793,7 @@
               "accuracy": 0.812,
               "feature": "cheek_motion_std",
               "precision": 0.0,
-              "threshold": NaN,
+              "threshold": null,
               "high_means_type": false,
               "baseline": 0.188,
               "status": "ok"
@@ -13006,7 +13006,7 @@
                 "accuracy": 0.812,
                 "feature": "pitchcom_mean_isi",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.188,
                 "status": "ok"
@@ -13034,7 +13034,7 @@
                 "accuracy": 0.812,
                 "feature": "cheek_motion_std",
                 "precision": 0.0,
-                "threshold": NaN,
+                "threshold": null,
                 "high_means_type": false,
                 "baseline": 0.188,
                 "status": "ok"
@@ -13919,6 +13919,356 @@
         "sanityGate": "pass",
         "tipSplitBacksTips": true,
         "backedTips": 5,
+        "backedCatcherTips": 0
+      }
+    },
+    "glasnow": {
+      "id": "glasnow",
+      "name": "Tyler Glasnow",
+      "teamId": "lad",
+      "throws": "R",
+      "role": "SP",
+      "picked": true,
+      "pickConfidence": 0.455,
+      "tier": "watch",
+      "pitchesModeled": 21,
+      "holdoutAccuracy": 0.455,
+      "summary": "Savant CF PoC: 21 pitches / 1 games. 0 pitcher leads \u00b7 0 catcher setup leads (\u226575% detected movement separation floor).",
+      "contextCoverage": {
+        "runner_bucket": {
+          "second_any": 11,
+          "3b": 7,
+          "1b": 3
+        },
+        "batter_tag": {
+          "rhh": 12,
+          "lhh": 9
+        },
+        "delivery": {
+          "stretch": 21
+        },
+        "runner_exact": {
+          "3b": 7,
+          "2b": 5,
+          "23": 4,
+          "1b": 3,
+          "loaded": 2
+        }
+      },
+      "tips": [],
+      "topLeads": [],
+      "catcherTips": [],
+      "tipFloor": 0.75,
+      "tipsSource": "empirical_detection_75",
+      "featureWindow": null,
+      "tipValidation": "empirical_movement_discrimination",
+      "situationCoverage": {
+        "arsenal": [],
+        "arsenal_n": 0,
+        "tip_floor": 0.75,
+        "validation": "train_fit_test_games",
+        "n_tips_ge_floor": 0,
+        "candidates_train": 0,
+        "n_failed_holdout": 0,
+        "best_situation": null,
+        "situations": [
+          {
+            "id": "none|lhh",
+            "label": "bases empty, LHH up",
+            "runner_bucket": "none",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "none|rhh",
+            "label": "bases empty, RHH up",
+            "runner_bucket": "none",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|lhh",
+            "label": "first only, LHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|rhh",
+            "label": "first only, RHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "second_any|lhh",
+            "label": "any w/ runner on 2nd, LHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "second_any|rhh",
+            "label": "any w/ runner on 2nd, RHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|lhh",
+            "label": "third only, LHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|rhh",
+            "label": "third only, RHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          }
+        ]
+      },
+      "catcherCoverage": {
+        "arsenal": [],
+        "arsenal_n": 0,
+        "tip_floor": 0.75,
+        "validation": "train_fit_test_games",
+        "n_tips_ge_floor": 0,
+        "candidates_train": 0,
+        "n_failed_holdout": 0,
+        "best_situation": null,
+        "situations": [
+          {
+            "id": "none|lhh",
+            "label": "bases empty, LHH up",
+            "runner_bucket": "none",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "none|rhh",
+            "label": "bases empty, RHH up",
+            "runner_bucket": "none",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|lhh",
+            "label": "first only, LHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|rhh",
+            "label": "first only, RHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "second_any|lhh",
+            "label": "any w/ runner on 2nd, LHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "second_any|rhh",
+            "label": "any w/ runner on 2nd, RHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|lhh",
+            "label": "third only, LHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|rhh",
+            "label": "third only, RHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 0,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 0",
+            "status": "insufficient_n",
+            "types": []
+          }
+        ]
+      },
+      "discernableSummary": {
+        "none|lhh": {
+          "label": "bases empty, LHH up",
+          "coverage": "0 of 0",
+          "discernable_types": [],
+          "n": 0
+        },
+        "none|rhh": {
+          "label": "bases empty, RHH up",
+          "coverage": "0 of 0",
+          "discernable_types": [],
+          "n": 0
+        },
+        "1b|lhh": {
+          "label": "first only, LHH up",
+          "coverage": "0 of 0",
+          "discernable_types": [],
+          "n": 0
+        },
+        "1b|rhh": {
+          "label": "first only, RHH up",
+          "coverage": "0 of 0",
+          "discernable_types": [],
+          "n": 0
+        },
+        "second_any|lhh": {
+          "label": "any w/ runner on 2nd, LHH up",
+          "coverage": "0 of 0",
+          "discernable_types": [],
+          "n": 0
+        },
+        "second_any|rhh": {
+          "label": "any w/ runner on 2nd, RHH up",
+          "coverage": "0 of 0",
+          "discernable_types": [],
+          "n": 0
+        },
+        "3b|lhh": {
+          "label": "third only, LHH up",
+          "coverage": "0 of 0",
+          "discernable_types": [],
+          "n": 0
+        },
+        "3b|rhh": {
+          "label": "third only, RHH up",
+          "coverage": "0 of 0",
+          "discernable_types": [],
+          "n": 0
+        }
+      },
+      "poc": true,
+      "pocLive": true,
+      "illustrative": false,
+      "camera": "CF_savant_proof_of_concept",
+      "provenance": {
+        "runDir": "runs/tyler_glasnow_poc",
+        "sanityGate": "pass",
+        "tipSplitBacksTips": true,
+        "backedTips": 0,
         "backedCatcherTips": 0
       }
     },
