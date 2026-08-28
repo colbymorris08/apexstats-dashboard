@@ -2,7 +2,7 @@
  * Apex Preflight Lite — Public Showcase & Enterprise Scouting Preview Logic
  */
 
-const SHOWCASE_IDS = ["eduardo_rodriguez", "webb", "roupp", "woo"];
+const SHOWCASE_IDS = ["eduardo_rodriguez", "webb", "roupp"];
 
 async function loadDemo() {
   try {

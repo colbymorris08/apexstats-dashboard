@@ -1,4 +1,4 @@
-const SHOWCASE_ARM_IDS = new Set(["roupp", "woo", "webb"]);
+const SHOWCASE_ARM_IDS = new Set(["roupp", "webb", "eduardo_rodriguez"]);
 
 function checkIsLiteMode() {
   const url = new URL(location.href);
@@ -96,7 +96,7 @@ function ensureEnterpriseModal() {
         <span class="enterprise-modal-badge">🔒 Enterprise Scouting Access</span>
         <h2 id="modal-player-target">Unlock Full 60+ Arm League Database</h2>
         <p class="modal-desc">
-          You are viewing a protected arm from the full Apex Preflight Computer Vision platform. Interactive showcase access is 100% unlocked for <strong>Landen Roupp</strong>, <strong>Bryan Woo</strong>, and <strong>Logan Webb</strong>.
+          You are viewing a protected arm from the full Apex Preflight Computer Vision platform. Interactive showcase access is 100% unlocked for <strong>Eduardo Rodriguez</strong>, <strong>Logan Webb</strong>, and <strong>Landen Roupp</strong>.
         </p>
       </div>
       <div class="enterprise-features-list">
@@ -110,7 +110,6 @@ function ensureEnterpriseModal() {
       <div class="enterprise-actions">
         <a class="btn-primary" href="https://x.com/colbymorris08" target="_blank" rel="noopener noreferrer">Request Enterprise Pilot / DM @colbymorris08 →</a>
         <a class="btn-secondary" href="player.html?id=roupp${isLiteMode ? '&lite=1' : ''}">View Unlocked Showcase: Landen Roupp →</a>
-        <a class="btn-secondary" href="player.html?id=woo${isLiteMode ? '&lite=1' : ''}">View Unlocked Showcase: Bryan Woo →</a>
         <a class="btn-secondary" href="player.html?id=webb${isLiteMode ? '&lite=1' : ''}">View Unlocked Showcase: Logan Webb →</a>
       </div>
     </div>
@@ -154,7 +153,7 @@ function ensureLiteBanner() {
   banner.className = "lite-banner";
   banner.innerHTML = `
     <div>
-      <strong>✨ PREFLIGHT LITE SHOWCASE:</strong> Interactive delivery compare sliders unlocked for <strong>Landen Roupp</strong>, <strong>Bryan Woo</strong> &amp; <strong>Logan Webb</strong>. Full 60+ arm database locked for Enterprise pilots.
+      <strong>✨ PREFLIGHT LITE SHOWCASE:</strong> Interactive delivery compare sliders unlocked for <strong>Eduardo Rodriguez</strong>, <strong>Logan Webb</strong> &amp; <strong>Landen Roupp</strong>. Full 60+ arm database locked for Enterprise pilots.
     </div>
     <div style="display: flex; gap: 0.5rem; align-items: center;">
       <a class="banner-cta" href="https://x.com/colbymorris08" target="_blank" rel="noopener noreferrer">Request Enterprise Pilot / DM →</a>
@@ -915,11 +914,11 @@ function wirePlayerPage(data) {
           <button class="btn ghost" type="button" onclick="window.openEnterpriseModal('${player.name.replace(/'/g, "\\'")}')">View Enterprise Features</button>
         </div>
         <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line);">
-          <p style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">Or explore the 3 fully unlocked public showcase arms:</p>
+          <p style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">Or explore the fully unlocked public showcase arms:</p>
           <div style="display:flex; justify-content:center; gap:0.5rem; flex-wrap:wrap;">
-            <a class="btn ghost" style="font-size:0.75rem; padding:0.3rem 0.6rem;" href="player.html?id=roupp&lite=1">Landen Roupp (SF)</a>
-            <a class="btn ghost" style="font-size:0.75rem; padding:0.3rem 0.6rem;" href="player.html?id=woo&lite=1">Bryan Woo (SEA)</a>
+            <a class="btn ghost" style="font-size:0.75rem; padding:0.3rem 0.6rem;" href="player.html?id=eduardo_rodriguez&lite=1">Eduardo Rodriguez (ARI)</a>
             <a class="btn ghost" style="font-size:0.75rem; padding:0.3rem 0.6rem;" href="player.html?id=webb&lite=1">Logan Webb (SF)</a>
+            <a class="btn ghost" style="font-size:0.75rem; padding:0.3rem 0.6rem;" href="player.html?id=roupp&lite=1">Landen Roupp (SF)</a>
           </div>
         </div>
       `;
