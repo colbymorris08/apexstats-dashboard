@@ -205,8 +205,7 @@
       "players": [
         "brandon_pfaadt",
         "eduardo_rodriguez",
-        "lauer",
-        "merrill_kelly"
+        "lauer"
       ],
       "catchers": [
         "gabriel_moreno",
@@ -237,9 +236,7 @@
       "tipCount": 5,
       "avgConfidence": 0.79,
       "playersWithTips": 1,
-      "players": [
-        "drew_thorpe"
-      ],
+      "players": [],
       "catchers": []
     },
     {
@@ -262,7 +259,6 @@
       "avgConfidence": 0.86,
       "playersWithTips": 7,
       "players": [
-        "dreyer",
         "herget",
         "sasaki",
         "ohtani",
@@ -316,9 +312,7 @@
       "tipCount": 5,
       "avgConfidence": 0.83,
       "playersWithTips": 1,
-      "players": [
-        "woo"
-      ],
+      "players": [],
       "catchers": []
     },
     {
