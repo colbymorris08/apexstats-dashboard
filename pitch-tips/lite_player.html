@@ -145,7 +145,7 @@
             <div class="lite-lock-icon">🔒</div>
             <h3 class="lite-lock-title">Enterprise Scouting Access Required</h3>
             <p class="lite-lock-desc">
-              Biomechanical coordinate tracking, pre-release delivery comparison stills, and holdout-validated mechanical indicators for <strong id="locked-player-name">this pitcher</strong> (<span id="locked-player-team"></span>) are restricted to MLB club advance scouting pilots.
+              Biomechanical coordinate tracking, pre-release delivery comparison stills, and holdout-validated mechanical indicators for <strong id="locked-player-name">this pitcher</strong> (<span id="locked-player-team"></span>) are restricted to advance scouting pilots across MLB, NPB, KBO, CPBL, LMB, and Winter Leagues.
             </p>
             <ul class="lite-lock-bullets">
               <li>Full 30+ anatomical landmark coordinate tracking</li>
@@ -201,48 +201,63 @@
     <div class="lite-modal-backdrop" id="pilot-modal-backdrop">
       <div class="lite-modal" id="pilot-modal">
         <button type="button" class="lite-modal-close" id="pilot-modal-close">&times;</button>
-        <h3>Request Enterprise Pilot Access</h3>
+        <div class="eyebrow" style="margin-bottom:0.4rem; color:var(--accent);">Preflight Pilot Outreach</div>
+        <h3 id="pilot-modal-title">Request Enterprise Pilot Access</h3>
         <p class="sub">
-          Connect your club's video coordinators, advance scouts, and analytics staff to Preflight's full-roster pitch anticipation models and 4K multi-angle ingestion pipeline.
+          Connect your club's video coordinators, advance scouts, and analytics staff to Preflight's full-roster pitch anticipation models and 4K multi-angle ingestion pipeline across MLB/MiLB, NPB (Japan), KBO (Korea), CPBL (Taiwan), Mexican League (LMB), Winter Leagues (LIDOM / LMP / LVBP), and NCAA.
         </p>
 
         <div class="features-list">
-          <div>✓ Full MLB team rosters, active rotations, and high-leverage bullpens</div>
-          <div>✓ In-stadium multi-angle video integration (Synergy, high-home, dugout 4K60)</div>
+          <div>✓ Full team rosters &amp; bullpens across MLB, NPB, KBO, CPBL, LMB, and Winter Leagues</div>
+          <div>✓ In-stadium multi-angle video integration (Synergy, high-home, dugout 4K60, Hawk-Eye)</div>
           <div>✓ Rigorous FDR &alpha;=0.10 holdout validation (zero post-release leakage)</div>
-          <div>✓ Custom pre-series opponent advance scouting dossiers</div>
+          <div>✓ Custom pre-series opponent advance scouting dossiers &amp; mechanical variance briefs</div>
         </div>
 
         <form id="pilot-modal-form">
           <div class="form-group">
-            <label for="pilot-name">Full Name</label>
+            <label for="pilot-name">Full Name *</label>
             <input type="text" id="pilot-name" required placeholder="e.g. Alex Campbell" />
           </div>
 
           <div class="form-group">
-            <label for="pilot-org">Organization / Club</label>
-            <input type="text" id="pilot-org" required placeholder="e.g. San Francisco Giants / MLB Front Office" />
+            <label for="pilot-org">Organization / Club *</label>
+            <input type="text" id="pilot-org" required placeholder="e.g. SF Giants / NPB / KBO / LMB Front Office / NCAA" />
           </div>
 
           <div class="form-group">
-            <label for="pilot-email">Work / Club Email</label>
+            <label for="pilot-email">Work / Official Email *</label>
             <input type="email" id="pilot-email" required placeholder="e.g. acampbell@sfgiants.com" />
           </div>
 
           <div class="form-group">
-            <label for="pilot-role">Primary Role / Department</label>
-            <select id="pilot-role">
-              <option value="Advance Scouting">Advance Scouting &amp; Game Planning</option>
-              <option value="Pitching Development">Pitching Analytics &amp; Player Development</option>
-              <option value="Front Office">Baseball Operations / Front Office</option>
-              <option value="Video Coordination">Video Coordination &amp; Ingest</option>
-              <option value="Independent Analyst">Media / Independent Research</option>
+            <label for="pilot-level">Level / Division *</label>
+            <select id="pilot-level">
+              <option value="NCAA Division I (Power Conference)">NCAA Division I (Power Conference - SEC, ACC, Big 12, Big Ten)</option>
+              <option value="NCAA Division I (Mid-Major)">NCAA Division I (Mid-Major)</option>
+              <option value="NCAA Division II / III / NAIA / JUCO">NCAA Division II / III / NAIA / JUCO</option>
+              <option value="MLB / MiLB (North America)">MLB / MiLB (North America)</option>
+              <option value="NPB (Japan Nippon Professional Baseball)">NPB (Japan Nippon Professional Baseball)</option>
+              <option value="KBO (Korea Baseball Organization)">KBO (Korea Baseball Organization)</option>
+              <option value="CPBL (Chinese Professional Baseball League)">CPBL (Chinese Professional Baseball League)</option>
+              <option value="Mexican League (LMB) &amp; Winter Leagues (LIDOM / LMP / LVBP)">Mexican League (LMB) &amp; Winter Leagues (LIDOM / LMP / LVBP)</option>
+              <option value="Independent / Player Development Facility">Independent / Player Development Facility</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-tier">Tier of Interest *</label>
+            <select id="pilot-tier">
+              <option value="Pro / Enterprise Deployment (MLB / NPB / KBO / CPBL / Winter Leagues)">Pro / Enterprise Deployment (MLB / NPB / KBO / CPBL / Winter Leagues)</option>
+              <option value="College Tier 1: Standard Team License">College Tier 1: Standard Team License</option>
+              <option value="College Tier 2: Conference Exclusivity Premium">College Tier 2: Conference Exclusivity Premium ("Monopolize Your Conference")</option>
+              <option value="College Tier 3: National Monopoly Sole Contract">College Tier 3: National Monopoly Sole Contract</option>
             </select>
           </div>
 
           <div class="form-group">
             <label for="pilot-notes">Target Pitchers / Scope of Interest</label>
-            <textarea id="pilot-notes" rows="3" placeholder="Specify any specific arms, division focus, or multi-angle video feeds..."></textarea>
+            <textarea id="pilot-notes" rows="3" placeholder="Specify any specific arms, league/division focus, or multi-angle video feeds..."></textarea>
           </div>
 
           <div class="lite-modal-actions">
