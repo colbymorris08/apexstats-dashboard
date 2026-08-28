@@ -1,9 +1,15 @@
 runs
 cv
 scripts
+docs
+media/detection/hand_in_glove
+media/detection/hard_gloves
+media/detection/candidates
+media/detection/label_pool
 *.pt
 .pytest_cache
 __pycache__
 data/yolo_*
 data/labels
 .vercel
+.git
