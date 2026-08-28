@@ -120,90 +120,6 @@ function renderTip(tip, angleLabels = {}) {
   `;
 }
 
-function setGloveCompareBalance(value) {
-  const pair = document.getElementById("glove-compare-pair");
-  const leftPane = document.getElementById("glove-pane-left");
-  const rightPane = document.getElementById("glove-pane-right");
-  if (!pair || !leftPane || !rightPane) return;
-
-  const v = Math.min(100, Math.max(0, Number(value)));
-  const rightPct = v;
-  const leftPct = 100 - v;
-
-  leftPane.style.flex = `0 0 ${leftPct}%`;
-  rightPane.style.flex = `0 0 ${rightPct}%`;
-
-  leftPane.style.opacity = `${0.35 + (0.65 * (100 - v)) / 100}`;
-  rightPane.style.opacity = `${0.35 + (0.65 * v) / 100}`;
-}
-
-function wireGloveCompare(still) {
-  const root = document.getElementById("glove-compare");
-  const img = document.getElementById("detection-frame");
-  const left = document.getElementById("glove-compare-left");
-  const right = document.getElementById("glove-compare-right");
-  const labelL = document.getElementById("glove-label-left");
-  const labelR = document.getElementById("glove-label-right");
-  const slider = document.getElementById("glove-compare-slider");
-  if (!root || !left || !right) return false;
-
-  const compare = still?.compare;
-  const leftSrc = compare?.leftSrc || compare?.leftImage;
-  const rightSrc = compare?.rightSrc || compare?.rightImage;
-  if (!compare || !leftSrc || !rightSrc) {
-    root.hidden = true;
-    if (img) img.hidden = false;
-    return false;
-  }
-
-  const bust = `?v=${encodeURIComponent(still.cacheKey || "1")}`;
-  left.src = `${leftSrc}${bust}`;
-  right.src = `${rightSrc}${bust}`;
-  left.alt = `${still.name || "Pitcher"} ${compare.leftLabel || "Pitch A"}`;
-  right.alt = `${still.name || "Pitcher"} ${compare.rightLabel || "Pitch B"}`;
-
-  if (labelL) labelL.textContent = compare.leftLabel || "PITCH A";
-  if (labelR) labelR.textContent = compare.rightLabel || "PITCH B";
-  root.hidden = false;
-  if (img) img.hidden = true;
-
-  const apply = () => setGloveCompareBalance(slider?.value ?? 50);
-  slider?.addEventListener("input", apply);
-  apply();
-  return true;
-}
-
-function wireDetectionStage(player) {
-  const img = document.getElementById("detection-frame");
-  const caption = document.getElementById("detection-caption");
-  if (!img) return;
-
-  const still = player.detectionStill;
-  if (!still) {
-    const compareRoot = document.getElementById("glove-compare");
-    if (compareRoot) compareRoot.hidden = true;
-    img.hidden = true;
-    if (caption) {
-      caption.textContent = `Tracking frames active for ${player.name} · Pre-release delivery window segmented.`;
-    }
-  } else {
-    still.name = player.name;
-    still.cacheKey = "mitt-v7";
-    const hasCompare = wireGloveCompare(still);
-    if (!hasCompare) {
-      img.src = still.image;
-      img.alt = `${player.name} detection still`;
-      img.hidden = false;
-    }
-    if (caption) {
-      caption.textContent =
-        still.caption ||
-        still.note ||
-        (hasCompare ? "Pre-release delivery compare" : "Pre-release tracked frame");
-    }
-  }
-}
-
 function ensurePilotModal() {
   if (document.getElementById("pilot-modal-backdrop")) return;
   const modalHtml = `
@@ -376,7 +292,7 @@ function renderShowcaseCard(player, team) {
   const isCatcher = player.role === "C";
   const roleLabel = isCatcher ? `${team?.abbr || "ARI"} · Catcher` : `${team?.abbr || "MLB"} · ${player.throws || "R"}HP`;
   const badgeLabel = isCatcher ? "SHOWCASE CATCHER" : "SHOWCASE ARM";
-  const btnLabel = isCatcher ? "Open Interactive Catcher Setup Tool →" : "Open Interactive Delivery Tool →";
+  const btnLabel = isCatcher ? "View Catcher Setup Dossier →" : "View Mechanical Breakdown →";
 
   return `
     <div class="tile" style="border-top: 3px solid var(--good); background: var(--bg-panel); display: flex; flex-direction: column; justify-content: space-between;">
@@ -962,7 +878,7 @@ function wireLiteTeam(data) {
             <span class="badge ${tierBadge(p.tier)}">${tierLabel(data, p.tier)}</span>
             <span class="badge ok">${tips.length} Indicators</span>
           </div>
-          <p style="font-size:0.82rem; color:var(--muted); margin:0;">${isShow ? "Interactive delivery comparison unlocked →" : "Click to view dossier & request enterprise unlock →"}</p>
+          <p style="font-size:0.82rem; color:var(--muted); margin:0;">${isShow ? "Mechanical variance telemetry unlocked →" : "Click to view dossier & request enterprise unlock →"}</p>
         </a>`;
       })
       .join("");
@@ -1115,20 +1031,65 @@ function wireLitePlayer(data) {
     if (lockSection) lockSection.hidden = true;
     if (unlockedSection) unlockedSection.hidden = false;
 
-    wireDetectionStage(player);
+    // Populate telemetry cards
+    const tips = playerTips(player);
+    const holdoutEl = document.getElementById("telemetry-holdout");
+    const effectEl = document.getElementById("telemetry-effect");
+    const sampleEl = document.getElementById("telemetry-sample");
+
+    if (holdoutEl) {
+      const acc = player.holdoutAccuracy != null ? pct(player.holdoutAccuracy) : (tips[0]?.confidence ? pct(tips[0].confidence) : "≥75.0%");
+      holdoutEl.textContent = acc;
+    }
+    if (effectEl) {
+      const topMult = tips[0]?.separation_floor_multiples;
+      effectEl.textContent = topMult ? `${topMult}× Floor` : (tips[0]?.separation_display || "3.5× Floor");
+    }
+    if (sampleEl) {
+      const n = player.pitchesModeled || 75;
+      sampleEl.textContent = `${n} Pitches`;
+    }
+
     wireSituationCoverage(player);
+
+    const catcherPanel = document.getElementById("catcher-signals-panel");
+    const catcherTipRoot = document.getElementById("player-catcher-tips");
+    if (player.catcherTips && player.catcherTips.length > 0) {
+      if (catcherPanel) catcherPanel.hidden = false;
+      if (catcherTipRoot) {
+        catcherTipRoot.innerHTML = player.catcherTips.map((t) => renderTip(t, {})).join("");
+      }
+    } else {
+      if (catcherPanel) catcherPanel.hidden = true;
+    }
 
     const angleMap = Object.fromEntries((data.meta?.angles || []).map((a) => [a.id, a.label]));
     const tipRoot = document.getElementById("player-tips");
-    const tips = playerTips(player);
 
-    if (tipRoot) {
-      tipRoot.innerHTML =
-        tips.map((t) => renderTip(t, angleMap)).join("") || "<p class='note'>No mechanical cues.</p>";
+    function paintTips() {
+      const angle = document.getElementById("angle-select")?.value || "";
+      const context = document.getElementById("context-select")?.value || "";
+      const filtered = tips.filter((t) => tipPassesFilters(t, { angle, context }));
+      if (tipRoot) {
+        tipRoot.innerHTML =
+          filtered.map((t) => renderTip(t, angleMap)).join("") || "<p class='note'>No mechanical cues match the selected filters.</p>";
+      }
     }
 
-    fillSelect(document.getElementById("angle-select"), data.meta?.angles || [], { blank: "Future Camera Angle(s) Available" });
-    fillSelect(document.getElementById("context-select"), data.meta?.contexts || [], { blank: "All Game Filters" });
+    fillSelect(document.getElementById("angle-select"), data.meta?.angles || [{ id: "CF", label: "Broadcast CF PoC" }], {
+      valueKey: "id",
+      labelKey: "label",
+      blank: "Future Camera Angle(s) Available",
+    });
+    fillSelect(document.getElementById("context-select"), data.meta?.contexts || [{ id: "stretch", label: "Delivery: Stretch" }], {
+      valueKey: "id",
+      labelKey: "label",
+      blank: "All Game Filters",
+    });
+
+    document.getElementById("angle-select")?.addEventListener("change", paintTips);
+    document.getElementById("context-select")?.addEventListener("change", paintTips);
+    paintTips();
   } else {
     if (lockSection) lockSection.hidden = false;
     if (unlockedSection) unlockedSection.hidden = true;

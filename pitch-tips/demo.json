@@ -8197,12 +8197,12 @@
       },
       "detectionStill": {
         "image": "media/detection/roupp_diff_frame.jpg",
-        "caption": "Landen Roupp \u00b7 Delivery Compare CU (Breaking Ball) vs SI/CH (Offspeed) \u00b7 Glove Elevation Variance (+0.06 torso lengths at leg lift peak)",
+        "caption": "Landen Roupp \u00b7 Delivery Compare CH vs SI (Offspeed Separation) \u00b7 Hand depth in glove (+0.238 torso lengths at lift)",
         "compare": {
-          "leftSrc": "media/detection/roupp_cu_glove_zoom.jpg",
-          "rightSrc": "media/detection/roupp_si_glove_zoom.jpg",
-          "leftLabel": "CURVEBALL \u00b7 CU (HIGH SET)",
-          "rightLabel": "SINKER/CH \u00b7 SI (LOW SET)"
+          "leftSrc": "media/detection/roupp_ch_crop.jpg",
+          "rightSrc": "media/detection/roupp_si_crop.jpg",
+          "leftLabel": "CHANGEUP \u00b7 CH (DEEP SET)",
+          "rightLabel": "SINKER \u00b7 SI (HIGH SET)"
         }
       }
     },
@@ -32169,12 +32169,12 @@
       },
       "detectionStill": {
         "image": "media/detection/roupp_diff_frame.jpg",
-        "caption": "Landen Roupp \u00b7 Delivery Compare CU (Breaking Ball) vs SI/CH (Offspeed) \u00b7 Glove Elevation Variance (+0.06 torso lengths at leg lift peak)",
+        "caption": "Landen Roupp \u00b7 Delivery Compare CH vs SI (Offspeed Separation) \u00b7 Hand depth in glove (+0.238 torso lengths at lift)",
         "compare": {
-          "leftSrc": "media/detection/roupp_cu_glove_zoom.jpg",
-          "rightSrc": "media/detection/roupp_si_glove_zoom.jpg",
-          "leftLabel": "CURVEBALL \u00b7 CU (HIGH SET)",
-          "rightLabel": "SINKER/CH \u00b7 SI (LOW SET)"
+          "leftSrc": "media/detection/roupp_ch_crop.jpg",
+          "rightSrc": "media/detection/roupp_si_crop.jpg",
+          "leftLabel": "CHANGEUP \u00b7 CH (DEEP SET)",
+          "rightLabel": "SINKER \u00b7 SI (HIGH SET)"
         }
       }
     },

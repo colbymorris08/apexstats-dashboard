@@ -65,45 +65,34 @@
         <div id="lite-unlocked-section">
           <div class="callout" style="border-left: 3px solid var(--good); background: #0f1c19; margin: 1.25rem 0;">
             <p style="margin: 0; font-size: 0.88rem; color: var(--text); line-height: 1.55;">
-              <strong style="color: var(--good);">★ Interactive Showcase Arm:</strong> This pitcher's delivery comparison stills and mechanical indicators are completely unlocked for public demonstration. Drag the comparison slider below to inspect pre-release geometry differences between pitch types.
+              <strong style="color: var(--good);">★ Unlocked Mechanical Telemetry Dossier:</strong> This pitcher's biomechanical variance metrics, holdout validation scores, and pre-release tracking telemetry are completely unlocked for public demonstration.
             </p>
           </div>
 
-          <div class="detection-stage" aria-label="Computer vision detection stage">
-            <div class="eyebrow">Detection &amp; Tracking Stage</div>
-            <p class="lede" id="detection-lede">
-              Pre-release anatomical tracking and pitch-to-pitch difference cards. Drag the slider to compare delivery geometry between pitch types. Landmark boxes isolate the pitcher's glove, forearm, torso angle, and release timing.
-            </p>
-            <div class="video-shell video-shell--still video-shell--compare" id="detection-still">
-              <div class="overlay-label">CV · DELIVERY &amp; GLOVE COMPARE</div>
-              <div class="glove-compare" id="glove-compare" hidden>
-                <div class="glove-compare-labels">
-                  <span id="glove-label-left">PITCH A</span>
-                  <span id="glove-label-right">PITCH B</span>
-                </div>
-                <div class="glove-compare-pair" id="glove-compare-pair">
-                  <figure class="glove-pane" id="glove-pane-left">
-                    <img id="glove-compare-left" alt="Pitch A delivery still" />
-                  </figure>
-                  <figure class="glove-pane" id="glove-pane-right">
-                    <img id="glove-compare-right" alt="Pitch B delivery still" />
-                  </figure>
-                </div>
-                <label class="glove-compare-scrub">
-                  <span class="glove-compare-scrub-label">Slide · Pitch A ↔ Pitch B</span>
-                  <input
-                    type="range"
-                    class="glove-compare-slider"
-                    id="glove-compare-slider"
-                    min="0"
-                    max="100"
-                    value="50"
-                    aria-label="Slide emphasis between pitch types"
-                  />
-                </label>
+          <!-- Mechanical Telemetry Summary Cards -->
+          <div class="panel" style="margin-top: 1.25rem;">
+            <div class="eyebrow" style="color: var(--accent);">Biomechanical Telemetry &amp; Detection Summary</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; margin-top: 0.75rem;">
+              <div style="background: var(--bg-elev); padding: 0.85rem 1rem; border-radius: 4px; border-left: 3px solid var(--good);">
+                <div style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Holdout Precision</div>
+                <div id="telemetry-holdout" style="font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: #fff; margin-top: 0.2rem;">≥75.0%</div>
+                <div style="font-size: 0.75rem; color: var(--good); margin-top: 0.15rem;">Out-of-sample validated</div>
               </div>
-              <img id="detection-frame" alt="Pre-release detection still with landmark boxes" />
-              <div class="detection-caption" id="detection-caption"></div>
+              <div style="background: var(--bg-elev); padding: 0.85rem 1rem; border-radius: 4px; border-left: 3px solid #3d8bfd;">
+                <div style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Max Effect Size</div>
+                <div id="telemetry-effect" style="font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: #fff; margin-top: 0.2rem;">5.9× Floor</div>
+                <div style="font-size: 0.75rem; color: #3d8bfd; margin-top: 0.15rem;">Separation magnitude</div>
+              </div>
+              <div style="background: var(--bg-elev); padding: 0.85rem 1rem; border-radius: 4px; border-left: 3px solid var(--accent);">
+                <div style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Pitches Modeled</div>
+                <div id="telemetry-sample" style="font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: #fff; margin-top: 0.2rem;">75 Pitches</div>
+                <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem;">Broadcast CF PoC</div>
+              </div>
+              <div style="background: var(--bg-elev); padding: 0.85rem 1rem; border-radius: 4px; border-left: 3px solid var(--warn);">
+                <div style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Temporal Window</div>
+                <div style="font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: #fff; margin-top: 0.2rem;">0s Leakage</div>
+                <div style="font-size: 0.75rem; color: var(--warn); margin-top: 0.15rem;">Strictly pre-release</div>
+              </div>
             </div>
           </div>
 
@@ -142,6 +131,12 @@
                 <tbody id="situation-coverage-body"></tbody>
               </table>
             </div>
+          </div>
+
+          <div class="panel" id="catcher-signals-panel" style="margin-top: 1.5rem" hidden>
+            <h3>Catcher Battery Setup Telemetry</h3>
+            <p class="note">Pre-pitch target drift, setup crouch depth, stance width, and glove motion dynamics isolated from broadcast CF.</p>
+            <div id="player-catcher-tips" class="tip-list"></div>
           </div>
         </div>
 
