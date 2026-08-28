@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ranked Mechanical Differences &amp; Scouting Board (Lite Showcase) — Apex Preflight</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="css/lite.css" />
+    <style>
+      .tier-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+      .tier-card { border: 1px solid var(--line-strong); background: var(--bg-panel); border-radius: 4px; padding: 1.1rem 1.3rem; }
+      .tier-card .count { font-size: 2.6rem; font-weight: 700; line-height: 1; margin-bottom: 0.35rem; }
+      .tier-high .count { color: var(--good); }
+      .tier-medium .count { color: var(--accent); }
+      .tier-low .count { color: var(--muted); }
+      .callout { border-left: 3px solid var(--accent); background: var(--bg-elev); padding: .9rem 1.1rem; margin: 1.2rem 0; }
+    </style>
+  </head>
+  <body data-page="lite_board">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="lite.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision · Lite Showcase</em>
+        </a>
+        <nav class="nav">
+          <a href="lite.html">Overview</a>
+          <a href="lite_teams.html">Coverage Board</a>
+          <a href="lite_board.html" aria-current="page">Ranked Leads</a>
+          <a href="progress.html">Live Scale</a>
+          <a href="methodology.html">Architecture</a>
+          <a href="analysis.html">Evaluation</a>
+          <a href="#" class="lite-nav-cta trigger-pilot-modal">Request Pilot Access</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="eyebrow">Scouting Lead Inventory · Public Showcase</div>
+        <h1>Computer Vision "Spot the Difference" Scouting Board</h1>
+        <p>
+          Automated computer vision tracking isolates pitch-to-pitch mechanical variation—glove set height, forearm angle, torso posture, hand depth, and delivery tempo. Below are the verified mechanical leads for our showcase arms, with full roster inventory available via Enterprise Pilot.
+        </p>
+      </section>
+
+      <!-- The 4-Step Operational Path -->
+      <section class="section">
+        <div class="callout">
+          <p>
+            <strong>The 4-Step Operational Path for Ranked Leads:</strong> How clubs take ranked leads from automated computer vision to on-field execution:
+          </p>
+          <ol style="margin: 0.5rem 0 0.85rem; padding-left: 1.25rem; line-height: 1.6; font-size: 0.88rem; color: var(--text);">
+            <li><strong>The model finds the pattern:</strong> Computer vision automatically scans game video, tracking 30+ anatomical landmarks across uniform delivery strata to surface and rank physical mechanical discrepancies.</li>
+            <li><strong>Analysts confirm the tip:</strong> Advance scouts and quantitative analysts vet candidate signals against baseline pitch mixes, permutation nulls, and multi-game holdouts to confirm true statistical lift.</li>
+            <li><strong>Coaches teach how to recognize the tip:</strong> Hitting and pitching coaches translate validated biomechanical tells into actionable visual recognition cues and count-specific game plans.</li>
+            <li><strong>Players recognize the tip on the field:</strong> Hitters in the batter's box and baserunners/coaches on the basepaths spot the tell in real time before ball release to gain a decisive anticipation edge.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Showcase Leads Section -->
+      <section class="section">
+        <div class="eyebrow">Showcase Leads (Full Details Unlocked)</div>
+        <h2>Showcase Pitcher Mechanical Leads &amp; Advance Scouting Insights</h2>
+        <p class="lede">
+          Detailed biomechanical tells detected for Eduardo Rodriguez, Logan Webb, and Landen Roupp across multi-start validation holdouts.
+        </p>
+
+        <div id="lite-board-leads"></div>
+      </section>
+
+      <!-- Enterprise Lock Banner for Full Board -->
+      <section class="section">
+        <div class="lite-lock-overlay">
+          <div class="lite-lock-icon">🔒</div>
+          <h3 class="lite-lock-title">Access All 71+ Mechanical Leads &amp; Catcher Indicators</h3>
+          <p class="lite-lock-desc">
+            The full Preflight database covers entire MLB pitching staffs with holdout-validated mechanical discrepancies, Hedges' d effect sizes, Youden's J indices, and automated pre-series game-planning briefs.
+          </p>
+          <ul class="lite-lock-bullets">
+            <li>18 active starting pitchers &amp; relievers modeled</li>
+            <li>10 catchers with pre-pitch target &amp; setup drift indicators</li>
+            <li>Zero post-release data leakage (strictly clamped before hand break)</li>
+            <li>Instant integration with club-provided 4K multi-angle camera feeds</li>
+          </ul>
+          <button type="button" class="lite-btn-primary trigger-pilot-modal" style="margin: 0 auto;">
+            Request Pilot Access to Full Scouting Board →
+          </button>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight Computer Vision (Lite Showcase)</strong>
+        <span>Confidential MLB Advance Scouting &amp; Pitch Anticipation Platform.</span>
+      </footer>
+    </div>
+
+    <!-- Pilot Request Modal -->
+    <div class="lite-modal-backdrop" id="pilot-modal-backdrop">
+      <div class="lite-modal" id="pilot-modal">
+        <button type="button" class="lite-modal-close" id="pilot-modal-close">&times;</button>
+        <h3>Request Enterprise Pilot Access</h3>
+        <p class="sub">
+          Connect your club's video coordinators, advance scouts, and analytics staff to Preflight's full-roster pitch anticipation models and 4K multi-angle ingestion pipeline.
+        </p>
+
+        <div class="features-list">
+          <div>✓ Full MLB team rosters, active rotations, and high-leverage bullpens</div>
+          <div>✓ In-stadium multi-angle video integration (Synergy, high-home, dugout 4K60)</div>
+          <div>✓ Rigorous FDR &alpha;=0.10 holdout validation (zero post-release leakage)</div>
+          <div>✓ Custom pre-series opponent advance scouting dossiers</div>
+        </div>
+
+        <form id="pilot-modal-form">
+          <div class="form-group">
+            <label for="pilot-name">Full Name</label>
+            <input type="text" id="pilot-name" required placeholder="e.g. Alex Campbell" />
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-org">Organization / Club</label>
+            <input type="text" id="pilot-org" required placeholder="e.g. San Francisco Giants / MLB Front Office" />
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-email">Work / Club Email</label>
+            <input type="email" id="pilot-email" required placeholder="e.g. acampbell@sfgiants.com" />
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-role">Primary Role / Department</label>
+            <select id="pilot-role">
+              <option value="Advance Scouting">Advance Scouting &amp; Game Planning</option>
+              <option value="Pitching Development">Pitching Analytics &amp; Player Development</option>
+              <option value="Front Office">Baseball Operations / Front Office</option>
+              <option value="Video Coordination">Video Coordination &amp; Ingest</option>
+              <option value="Independent Analyst">Media / Independent Research</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-notes">Target Pitchers / Scope of Interest</label>
+            <textarea id="pilot-notes" rows="3" placeholder="Specify any specific arms, division focus, or multi-angle video feeds..."></textarea>
+          </div>
+
+          <div class="lite-modal-actions">
+            <button type="submit" class="lite-btn-primary">Submit Pilot Request →</button>
+            <a href="https://twitter.com/colbymorris08" target="_blank" rel="noopener" class="lite-btn-secondary">Direct Twitter / X DM</a>
+          </div>
+        </form>
+
+        <div class="lite-success-message" id="pilot-modal-success">
+          <strong>Thank you for your interest.</strong> Your default email client has been prepared with your pilot request details. We will reach out shortly with onboarding instructions and custom club demo access.
+        </div>
+      </div>
+    </div>
+
+    <script src="js/lite_app.js"></script>
+  </body>
+</html>

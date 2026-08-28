@@ -1,5 +1,24 @@
+const SHOWCASE_ARM_IDS = new Set(["roupp", "woo", "webb"]);
+
+function checkIsLiteMode() {
+  const url = new URL(location.href);
+  return (
+    document.body.dataset.mode === "lite" ||
+    document.body.dataset.page === "lite" ||
+    url.pathname.includes("lite") ||
+    url.searchParams.get("lite") === "1"
+  );
+}
+
+const isLiteMode = checkIsLiteMode();
+
 async function loadDemo() {
-  const res = await fetch("data/demo.json");
+  const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
+  const dataPath = isSubdir ? "../data/demo.json" : "data/demo.json";
+  let res = await fetch(dataPath);
+  if (!res.ok) {
+    res = await fetch("data/demo.json");
+  }
   if (!res.ok) throw new Error("Failed to load demo data");
   return res.json();
 }
@@ -61,8 +80,87 @@ function tierBadge(tier) {
 }
 
 function tierLabel(data, tierId) {
-  const t = (data.meta.confidenceTiers || []).find((x) => x.id === tierId);
+  const t = (data.meta?.confidenceTiers || []).find((x) => x.id === tierId);
   return t?.label || tierId || "Operational";
+}
+
+function ensureEnterpriseModal() {
+  if (document.getElementById("enterprise-modal-overlay")) return;
+  const overlay = document.createElement("div");
+  overlay.id = "enterprise-modal-overlay";
+  overlay.className = "enterprise-modal-overlay";
+  overlay.innerHTML = `
+    <div class="enterprise-modal" role="dialog" aria-modal="true" aria-labelledby="modal-player-target">
+      <button class="enterprise-modal-close" id="enterprise-modal-close-btn" aria-label="Close modal">✕</button>
+      <div class="enterprise-modal-header">
+        <span class="enterprise-modal-badge">🔒 Enterprise Scouting Access</span>
+        <h2 id="modal-player-target">Unlock Full 60+ Arm League Database</h2>
+        <p class="modal-desc">
+          You are viewing a protected arm from the full Apex Preflight Computer Vision platform. Interactive showcase access is 100% unlocked for <strong>Landen Roupp</strong>, <strong>Bryan Woo</strong>, and <strong>Logan Webb</strong>.
+        </p>
+      </div>
+      <div class="enterprise-features-list">
+        <ul>
+          <li><strong>Full 60+ Arm MLB Database:</strong> Complete rotation and bullpen CV audits across all 30 Major League organizations.</li>
+          <li><strong>Multi-Angle 4K Camera Ingest:</strong> Direct integration with Synergy, dugout high-speed cameras, 1B/3B coach angles, and 4K tight CF feeds.</li>
+          <li><strong>Sub-Pixel Mechanical Tells:</strong> Glove burial depth, finger curl classification, wrist cock timing, and set-tempo anomalies before hand break.</li>
+          <li><strong>Automated Series Pre-Flight Audits:</strong> Pre-game opposing pitcher discrepancy dossiers delivered to advance scouts and coaching staff.</li>
+        </ul>
+      </div>
+      <div class="enterprise-actions">
+        <a class="btn-primary" href="https://x.com/colbymorris08" target="_blank" rel="noopener noreferrer">Request Enterprise Pilot / DM @colbymorris08 →</a>
+        <a class="btn-secondary" href="player.html?id=roupp${isLiteMode ? '&lite=1' : ''}">View Unlocked Showcase: Landen Roupp →</a>
+        <a class="btn-secondary" href="player.html?id=woo${isLiteMode ? '&lite=1' : ''}">View Unlocked Showcase: Bryan Woo →</a>
+        <a class="btn-secondary" href="player.html?id=webb${isLiteMode ? '&lite=1' : ''}">View Unlocked Showcase: Logan Webb →</a>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeEnterpriseModal();
+  });
+  document.getElementById("enterprise-modal-close-btn")?.addEventListener("click", closeEnterpriseModal);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeEnterpriseModal();
+  });
+}
+
+function openEnterpriseModal(playerName) {
+  ensureEnterpriseModal();
+  const overlay = document.getElementById("enterprise-modal-overlay");
+  const targetTitle = document.getElementById("modal-player-target");
+  if (targetTitle && playerName) {
+    targetTitle.textContent = `${playerName} · Enterprise Access Required`;
+  }
+  if (overlay) {
+    overlay.classList.add("active");
+  }
+}
+
+function closeEnterpriseModal() {
+  const overlay = document.getElementById("enterprise-modal-overlay");
+  if (overlay) {
+    overlay.classList.remove("active");
+  }
+}
+window.openEnterpriseModal = openEnterpriseModal;
+window.closeEnterpriseModal = closeEnterpriseModal;
+
+function ensureLiteBanner() {
+  if (!isLiteMode || document.getElementById("lite-banner-bar")) return;
+  const banner = document.createElement("div");
+  banner.id = "lite-banner-bar";
+  banner.className = "lite-banner";
+  banner.innerHTML = `
+    <div>
+      <strong>✨ PREFLIGHT LITE SHOWCASE:</strong> Interactive delivery compare sliders unlocked for <strong>Landen Roupp</strong>, <strong>Bryan Woo</strong> &amp; <strong>Logan Webb</strong>. Full 60+ arm database locked for Enterprise pilots.
+    </div>
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+      <a class="banner-cta" href="https://x.com/colbymorris08" target="_blank" rel="noopener noreferrer">Request Enterprise Pilot / DM →</a>
+    </div>
+  `;
+  document.body.prepend(banner);
 }
 
 function renderTip(tip, angleLabels = {}) {
@@ -101,7 +199,6 @@ function wireSituationCoverage(player) {
   const note = document.getElementById("situation-coverage-note");
   if (!body) return;
   const situations = player.situationCoverage?.situations || [];
-  const floor = Math.round((player.tipFloor || 0.70) * 100);
   if (note) {
     const arsenal = (player.situationCoverage?.arsenal || ["FF", "SL", "CH", "SI"]).join(", ");
     note.textContent = `Pitch arsenal: ${arsenal}. Computer vision isolates physical mechanical variance across pre-release delivery windows.`;
@@ -174,14 +271,22 @@ function wirePicksTable(data) {
   const players = playerList(data)
     .filter((p) => p.picked && p.role !== "C")
     .sort((a, b) => {
+      if (isLiteMode) {
+        const aUnlocked = SHOWCASE_ARM_IDS.has(a.id) ? 1 : 0;
+        const bUnlocked = SHOWCASE_ARM_IDS.has(b.id) ? 1 : 0;
+        if (aUnlocked !== bUnlocked) return bUnlocked - aUnlocked;
+      }
       return playerTips(b).length - playerTips(a).length || (b.pickConfidence || 0) - (a.pickConfidence || 0);
     });
 
-  const live = players.filter((p) => p.pocLive || p.poc);
   const totalSignals = players.reduce((s, p) => s + playerTips(p).length, 0);
 
   if (summary) {
-    summary.textContent = `${players.length} pitchers under active CV tracking · ${totalSignals} measurable mechanical indicators isolated across broadcast CF`;
+    if (isLiteMode) {
+      summary.innerHTML = `<strong>3 Showcase Arms Unlocked</strong> (Roupp, Woo, Webb) · ${players.length} Total Arms Tracked · Request Enterprise Demo for full database`;
+    } else {
+      summary.textContent = `${players.length} pitchers under active CV tracking · ${totalSignals} measurable mechanical indicators isolated across broadcast CF`;
+    }
   }
 
   root.innerHTML = players
@@ -190,16 +295,28 @@ function wirePicksTable(data) {
       const tips = playerTips(p);
       const topLead = tips[0];
       const look = topLead ? topLead.lookFor || topLead.direction : p.summary || "—";
-      const src = `<span class="badge ok">live PoC</span>`;
-      const tipAvg =
-        tips.length > 0
-          ? pct(tips.reduce((s, t) => s + (t.confidence || 0.75), 0) / tips.length)
-          : "—";
+      const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
+      
+      let playerLinkHtml;
+      let statusBadge;
+      if (isLiteMode) {
+        if (isShowcase) {
+          playerLinkHtml = `<a href="player.html?id=${encodeURIComponent(p.id)}&lite=1"><strong>${p.name}</strong></a> <span class="unlocked-tag">✨ Unlocked Showcase</span>`;
+          statusBadge = `<span class="badge hot">100% Unlocked</span>`;
+        } else {
+          playerLinkHtml = `<a href="player.html?id=${encodeURIComponent(p.id)}&lite=1">${p.name}</a> <button type="button" class="lock-tag" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}')">🔒 Enterprise</button>`;
+          statusBadge = `<span class="badge">Locked (Pilot)</span>`;
+        }
+      } else {
+        playerLinkHtml = `<a href="player.html?id=${encodeURIComponent(p.id)}">${p.name}</a> <span class="badge ok">live PoC</span>`;
+        statusBadge = `<span class="badge ${tierBadge(p.tier)}">${tierLabel(data, p.tier)}</span>`;
+      }
+
       const sep = topLead?.separation_floor_multiples ? ` · ${topLead.separation_floor_multiples}× floor` : "";
       return `<tr>
-        <td><a href="player.html?id=${encodeURIComponent(p.id)}">${p.name}</a> ${src}</td>
+        <td>${playerLinkHtml}</td>
         <td>${team?.abbr || "—"}</td>
-        <td><span class="badge ${tierBadge(p.tier)}">${tierLabel(data, p.tier)}</span></td>
+        <td>${statusBadge}</td>
         <td>${pct(p.pickConfidence || p.holdoutAccuracy || 0.25)}</td>
         <td>${(p.pitchesModeled || 0).toLocaleString()}</td>
         <td><strong>${tips.length}</strong> indicators${sep}</td>
@@ -231,19 +348,27 @@ function wireCatcherPicksTable(data) {
     rows
       .slice(0, 40)
       .map(
-        ({ player, team, tip }) => `<tr>
-      <td><a href="player.html?id=${encodeURIComponent(player.id)}">${player.name}</a></td>
+        ({ player, team, tip }) => {
+          const isShowcase = SHOWCASE_ARM_IDS.has(player.id);
+          const link = isLiteMode 
+            ? (isShowcase ? `<a href="player.html?id=${encodeURIComponent(player.id)}&lite=1">${player.name}</a>` : `<a href="#" onclick="window.openEnterpriseModal('${player.name.replace(/'/g, "\\'")}'); return false;">${player.name} 🔒</a>`)
+            : `<a href="player.html?id=${encodeURIComponent(player.id)}">${player.name}</a>`;
+          return `<tr>
+      <td>${link}</td>
       <td>${team?.abbr || "—"}</td>
       <td>${tip.situationLabel || (tip.context || []).join(", ") || "—"}</td>
       <td>${tip.predicts}</td>
       <td>${pct(tip.confidence || 0.75)}</td>
       <td>${tip.lookFor || "—"}</td>
-    </tr>`
+    </tr>`;
+        }
       )
       .join("") || `<tr><td colspan="6">Catcher bounding & setup classification active — target height/lateral offset signals populate as multi-angle club feeds connect.</td></tr>`;
 }
 
 function wireLanding(data) {
+  ensureEnterpriseModal();
+  ensureLiteBanner();
   wirePicksTable(data);
   wireCatcherPicksTable(data);
 
@@ -253,39 +378,54 @@ function wireLanding(data) {
   const goPlayer = document.getElementById("go-player");
 
   fillSelect(teamSel, data.teams, { valueKey: "id", labelKey: "name", blank: "Choose a team" });
-  fillSelect(
-    playerSel,
-    playerList(data).filter((p) => p.role !== "C").map((p) => ({ id: p.id, label: `${p.name} (${teamById(data, p.teamId)?.abbr || ""})` })),
-    { valueKey: "id", labelKey: "label", blank: "Choose a pitcher" }
-  );
+  
+  const allPitchers = playerList(data).filter((p) => p.role !== "C");
+  const pitcherOpts = allPitchers.map((p) => {
+    const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
+    const prefix = isLiteMode ? (isShowcase ? "✨ [UNLOCKED] " : "🔒 [ENTERPRISE] ") : "";
+    return {
+      id: p.id,
+      label: `${prefix}${p.name} (${teamById(data, p.teamId)?.abbr || ""})`,
+    };
+  });
+  if (isLiteMode) {
+    pitcherOpts.sort((a, b) => {
+      const aU = a.label.includes("UNLOCKED") ? 1 : 0;
+      const bU = b.label.includes("UNLOCKED") ? 1 : 0;
+      return bU - aU;
+    });
+  }
+
+  fillSelect(playerSel, pitcherOpts, { valueKey: "id", labelKey: "label", blank: "Choose a pitcher" });
 
   teamSel?.addEventListener("change", () => {
     const tid = teamSel.value;
     if (!tid) {
-      fillSelect(
-        playerSel,
-        playerList(data).filter((p) => p.role !== "C").map((p) => ({ id: p.id, label: `${p.name} (${teamById(data, p.teamId)?.abbr || ""})` })),
-        { valueKey: "id", labelKey: "label", blank: "Choose a pitcher" }
-      );
+      fillSelect(playerSel, pitcherOpts, { valueKey: "id", labelKey: "label", blank: "Choose a pitcher" });
       return;
     }
-    fillSelect(
-      playerSel,
-      playersForTeam(data, tid).filter((p) => p.role !== "C").map((p) => ({ id: p.id, label: p.name })),
-      { valueKey: "id", labelKey: "label", blank: "Choose a pitcher" }
-    );
+    const teamPitchers = playersForTeam(data, tid).filter((p) => p.role !== "C").map((p) => {
+      const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
+      const prefix = isLiteMode ? (isShowcase ? "✨ [UNLOCKED] " : "🔒 [ENTERPRISE] ") : "";
+      return { id: p.id, label: `${prefix}${p.name}` };
+    });
+    fillSelect(playerSel, teamPitchers, { valueKey: "id", labelKey: "label", blank: "Choose a pitcher" });
   });
 
   goTeam?.addEventListener("click", (e) => {
     e.preventDefault();
     const tid = teamSel?.value;
-    location.href = tid ? `team.html?id=${encodeURIComponent(tid)}` : "teams.html";
+    const liteParam = isLiteMode ? "&lite=1" : "";
+    location.href = tid ? `team.html?id=${encodeURIComponent(tid)}${liteParam}` : (isLiteMode ? "teams.html?lite=1" : "teams.html");
   });
 
   goPlayer?.addEventListener("click", (e) => {
     e.preventDefault();
     const pid = playerSel?.value;
-    if (pid) location.href = `player.html?id=${encodeURIComponent(pid)}`;
+    if (pid) {
+      const liteParam = isLiteMode ? "&lite=1" : "";
+      location.href = `player.html?id=${encodeURIComponent(pid)}${liteParam}`;
+    }
   });
 }
 
@@ -301,11 +441,22 @@ function renderTeamCoverageCard(data, t) {
   const pitcherPills = pitchers
     .map((p) => {
       const tips = playerTips(p);
-      const badgeCls = tips.length > 0 ? "leads" : "";
-      const countLabel = tips.length > 0 ? `${tips.length} leads` : `${p.pitchesModeled || 0} p`;
+      const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
+      let badgeCls = tips.length > 0 ? "leads" : "";
+      let countLabel = tips.length > 0 ? `${tips.length} leads` : `${p.pitchesModeled || 0} p`;
+      let lockIcon = "";
+      if (isLiteMode) {
+        if (isShowcase) {
+          badgeCls = "leads";
+          countLabel = "✨ UNLOCKED";
+        } else {
+          lockIcon = "🔒 ";
+        }
+      }
+      const liteParam = isLiteMode ? "&lite=1" : "";
       return `
-      <a class="roster-pill" href="player.html?id=${encodeURIComponent(p.id)}">
-        <span>${p.name}</span>
+      <a class="roster-pill" href="player.html?id=${encodeURIComponent(p.id)}${liteParam}">
+        <span>${lockIcon}${p.name}</span>
         <span class="pill-badge ${badgeCls}">${p.throws || "R"}HP · ${countLabel}</span>
       </a>`;
     })
@@ -315,14 +466,16 @@ function renderTeamCoverageCard(data, t) {
     .map((c) => {
       const tips = playerTips(c);
       const countLabel = tips.length > 0 ? `${tips.length} setup cues` : "Setup Active";
+      const liteParam = isLiteMode ? "&lite=1" : "";
       return `
-      <a class="roster-pill" href="player.html?id=${encodeURIComponent(c.id)}">
+      <a class="roster-pill" href="player.html?id=${encodeURIComponent(c.id)}${liteParam}">
         <span>${c.name}</span>
         <span class="pill-badge leads">C · ${countLabel}</span>
       </a>`;
     })
     .join("");
 
+  const liteParam = isLiteMode ? "&lite=1" : "";
   return `
     <article class="team-coverage-card ${isNlWest ? "nlwest" : ""}" data-team-id="${t.id}" data-division="${isNlWest ? "nlwest" : "other"}">
       <div class="card-header-row">
@@ -376,7 +529,7 @@ function renderTeamCoverageCard(data, t) {
       </div>` : ""}
 
       <div class="card-footer-action">
-        <a class="btn" href="team.html?id=${encodeURIComponent(t.id)}">Open ${t.abbr} Dossier &amp; Indicators →</a>
+        <a class="btn" href="team.html?id=${encodeURIComponent(t.id)}${liteParam}">Open ${t.abbr} Dossier &amp; Indicators →</a>
       </div>
     </article>
   `;
@@ -384,6 +537,7 @@ function renderTeamCoverageCard(data, t) {
 
 function renderCoverageMatrixTable(data) {
   const nlwest = (data.teams || []).filter((t) => ["lad", "ari", "sd", "sf", "col"].includes(t.id));
+  const liteParam = isLiteMode ? "&lite=1" : "";
   return `
     <div class="matrix-table-wrap">
       <table class="matrix-table">
@@ -409,7 +563,7 @@ function renderCoverageMatrixTable(data) {
             const cTips = catchers.flatMap((c) => playerTips(c));
             return `
             <tr>
-              <td><strong><a href="team.html?id=${encodeURIComponent(t.id)}">${t.name} (${t.abbr})</a></strong></td>
+              <td><strong><a href="team.html?id=${encodeURIComponent(t.id)}${liteParam}">${t.name} (${t.abbr})</a></strong></td>
               <td><span class="badge">NL West</span></td>
               <td><strong>${pitchers.length}</strong> arms</td>
               <td><strong>${catchers.length}</strong> catchers</td>
@@ -417,7 +571,7 @@ function renderCoverageMatrixTable(data) {
               <td><span class="badge hot">${pTips.length} leads</span></td>
               <td><span class="badge ok">${cTips.length} setup cues</span></td>
               <td><span class="badge good">100% Active</span></td>
-              <td><a class="btn ghost" style="padding:0.25rem 0.6rem; font-size:0.75rem;" href="team.html?id=${encodeURIComponent(t.id)}">Dossier →</a></td>
+              <td><a class="btn ghost" style="padding:0.25rem 0.6rem; font-size:0.75rem;" href="team.html?id=${encodeURIComponent(t.id)}${liteParam}">Dossier →</a></td>
             </tr>`;
           }).join("")}
         </tbody>
@@ -427,6 +581,8 @@ function renderCoverageMatrixTable(data) {
 }
 
 function wireTeamsIndex(data) {
+  ensureEnterpriseModal();
+  ensureLiteBanner();
   const root = document.getElementById("team-grid");
   const matrixRoot = document.getElementById("matrix-container");
   if (!root) return;
@@ -458,6 +614,8 @@ function wireTeamsIndex(data) {
 }
 
 function wireBoard(data) {
+  ensureEnterpriseModal();
+  ensureLiteBanner();
   const gridRoot = document.getElementById("board-team-grid");
   const matrixRoot = document.getElementById("board-matrix-container");
   if (gridRoot) {
@@ -470,6 +628,8 @@ function wireBoard(data) {
 }
 
 function wireTeamPage(data) {
+  ensureEnterpriseModal();
+  ensureLiteBanner();
   const id = qs("id");
   const team = teamById(data, id);
   const title = document.getElementById("team-title");
@@ -487,7 +647,6 @@ function wireTeamPage(data) {
   if (title) title.textContent = team.name;
   if (lede) {
     const s = teamTipStats(data, team);
-    const avgLabel = s.avgConfidence == null ? "—" : pct(s.avgConfidence);
     lede.textContent = `${s.tipCount} mechanical & catcher indicators isolated · ${s.playersWithTips} of ${s.playerCount} athletes tracked · Computer Vision Broadcast PoC`;
   }
 
@@ -495,51 +654,67 @@ function wireTeamPage(data) {
   const pitchers = allTeamMembers.filter((p) => p.role !== "C");
   const catchers = allTeamMembers.filter((p) => p.role === "C");
 
+  const liteParam = isLiteMode ? "&lite=1" : "";
+
   if (grid) {
     grid.innerHTML = pitchers
-      .map(
-        (p) => {
-          const tips = playerTips(p);
-          return `
-      <a class="tile" href="player.html?id=${encodeURIComponent(p.id)}">
+      .map((p) => {
+        const tips = playerTips(p);
+        const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
+        let badgeHtml = `<span><strong>${tips.length}</strong> mechanical leads</span>`;
+        if (isLiteMode) {
+          badgeHtml = isShowcase
+            ? `<span class="unlocked-tag">✨ 100% Unlocked Showcase</span>`
+            : `<button type="button" class="lock-tag" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}')">🔒 Enterprise Locked</button>`;
+        }
+        return `
+      <a class="tile" href="player.html?id=${encodeURIComponent(p.id)}${liteParam}">
         <div class="kicker">${p.throws}HP · ${p.role}</div>
         <h3>${p.name}</h3>
         <p>${p.summary}</p>
-        <div class="stats"><span><strong>${tips.length}</strong> mechanical leads</span></div>
+        <div class="stats">${badgeHtml}</div>
       </a>`;
-        }
-      )
+      })
       .join("") || `<p class="note">No pitchers tracked for this club yet.</p>`;
   }
 
   if (catcherGrid) {
     catcherGrid.innerHTML = catchers
-      .map(
-        (c) => {
-          const cTips = playerTips(c);
-          const roleLabel = c.roleType === "starter" ? "Primary Starter" : "Backup Catcher";
-          return `
-      <a class="tile" href="player.html?id=${encodeURIComponent(c.id)}">
+      .map((c) => {
+        const cTips = playerTips(c);
+        const roleLabel = c.roleType === "starter" ? "Primary Starter" : "Backup Catcher";
+        return `
+      <a class="tile" href="player.html?id=${encodeURIComponent(c.id)}${liteParam}">
         <div class="kicker">Catcher · ${roleLabel}</div>
         <h3>${c.name}</h3>
         <p>${c.summary}</p>
         <div class="stats"><span><strong>${cTips.length}</strong> setup cues (≥75% signal)</span></div>
       </a>`;
-        }
-      )
+      })
       .join("") || `<p class="note">Catcher setup tracking active for ${team.abbr}.</p>`;
   }
 
-  const angleMap = Object.fromEntries((data.meta.angles || []).map((a) => [a.id, a.label]));
   const allTips = pitchers.flatMap((p) =>
     playerTips(p).map((t) => ({ ...t, playerName: p.name, playerId: p.id }))
   );
   if (tipRoot) {
     tipRoot.innerHTML = allTips
-      .map(
-        (t) => `
+      .map((t) => {
+        const isShowcase = SHOWCASE_ARM_IDS.has(t.playerId);
+        if (isLiteMode && !isShowcase) {
+          return `
+      <article class="tip" style="opacity: 0.75; border-left: 3px solid var(--warn);">
+        <h4>${t.playerName} — ${t.title || t.cue}</h4>
+        <div class="meta">
+          <span class="badge warn">Enterprise Locked</span>
+          <button type="button" class="lock-tag" onclick="window.openEnterpriseModal('${t.playerName.replace(/'/g, "\\'")}')">🔒 Request Demo to Unlock</button>
+        </div>
+        <p style="filter: blur(4px); user-select: none;">Observed variance: Physical landmark separation measured strictly pre-release.</p>
+      </article>`;
+        }
+        return `
       <article class="tip">
-        <h4><a href="player.html?id=${encodeURIComponent(t.playerId)}">${t.playerName}</a> — ${t.title || t.cue}</h4>
+        <h4><a href="player.html?id=${encodeURIComponent(t.playerId)}${liteParam}">${t.playerName}</a> — ${t.title || t.cue}</h4>
         <div class="meta">
           <span class="badge hot">${pct(t.confidence || 0.75)} signal</span>
           <span class="badge ok">${t.separation_display || `${t.separation_floor_multiples || 3.0}× floor`}</span>
@@ -548,8 +723,8 @@ function wireTeamPage(data) {
         </div>
         <p><strong>Observed variance:</strong> ${t.lookFor || t.behavior || t.direction || ""}</p>
         ${t.scouting_note ? `<p class="scout-note" style="margin-top:0.35rem; font-size:0.82rem; color:var(--text); opacity:0.85;"><strong>Advance scouting insight:</strong> ${t.scouting_note}</p>` : ""}
-      </article>`
-      )
+      </article>`;
+      })
       .join("") || `<p class="note">No mechanical indicators recorded for this club yet.</p>`;
   }
 
@@ -559,19 +734,17 @@ function wireTeamPage(data) {
     );
     catcherRoot.innerHTML =
       catcherTips
-        .map(
-          (t) => `
+        .map((t) => `
       <article class="tip">
-        <h4><a href="player.html?id=${encodeURIComponent(t.playerId)}">${t.playerName}</a> — ${t.title || "Catcher Setup"}</h4>
+        <h4><a href="player.html?id=${encodeURIComponent(t.playerId)}${liteParam}">${t.playerName}</a> — ${t.title || "Catcher Setup"}</h4>
         <div class="meta">
           <span class="badge hot">${pct(t.confidence || 0.75)} signal</span>
           <span class="badge ok">catcher setup</span>
           <span>${t.predicts || "Offspeed"}</span>
         </div>
         <p><strong>Setup variance:</strong> ${t.lookFor || ""}</p>
-      </article>`
-        )
-        .join("") || `<p class="note">Catcher setup tracking (mitt target / stance width / depth) active for ${team.abbr}. Multi-angle club feeds isolate fine setup adjustments.</p>`;
+      </article>`)
+        .join("") || `<p class="note">Catcher setup tracking active for ${team.abbr}.</p>`;
   }
 }
 
@@ -600,9 +773,11 @@ function wireGloveCompare(still) {
     return false;
   }
 
+  const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
+  const prefix = isSubdir ? "../" : "";
   const bust = `?v=${encodeURIComponent(still.cacheKey || "1")}`;
-  leftImg.src = `${compare.leftSrc}${bust}`;
-  rightImg.src = `${compare.rightSrc}${bust}`;
+  leftImg.src = `${prefix}${compare.leftSrc}${bust}`;
+  rightImg.src = `${prefix}${compare.rightSrc}${bust}`;
   leftImg.alt = `${still.name || "Pitcher"} · ${compare.leftLabel || "Comparison A"}`;
   rightImg.alt = `${still.name || "Pitcher"} · ${compare.rightLabel || "Comparison B"}`;
   if (labelL) labelL.textContent = compare.leftLabel || "PITCH A";
@@ -636,7 +811,9 @@ function wireDetectionStage(player) {
     still.cacheKey = "mitt-v7";
     const hasCompare = wireGloveCompare(still);
     if (!hasCompare) {
-      img.src = still.image;
+      const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
+      const prefix = isSubdir ? "../" : "";
+      img.src = `${prefix}${still.image}`;
       img.alt = `${player.name} detection still`;
       img.hidden = false;
     }
@@ -677,6 +854,8 @@ function wireDetectionStage(player) {
 }
 
 function wirePlayerPage(data) {
+  ensureEnterpriseModal();
+  ensureLiteBanner();
   const id = qs("id");
   const player = data.players?.[id];
   const title = document.getElementById("player-title");
@@ -692,8 +871,15 @@ function wirePlayerPage(data) {
     return;
   }
 
+  const isShowcase = SHOWCASE_ARM_IDS.has(id);
   const tips = playerTips(player);
-  if (title) title.textContent = player.name;
+
+  if (title) {
+    title.innerHTML = isLiteMode && isShowcase
+      ? `${player.name} <span class="unlocked-tag" style="font-size:0.85rem; vertical-align:middle;">✨ 100% Unlocked Showcase</span>`
+      : player.name;
+  }
+
   if (lede) {
     const topFloor = tips[0]?.separation_floor_multiples ? ` · max separation ${tips[0].separation_floor_multiples}× floor` : "";
     if (player.role === "C") {
@@ -704,36 +890,78 @@ function wirePlayerPage(data) {
     }
   }
 
-  wireDetectionStage(player);
-  wireSituationCoverage(player);
-
   const teamLink = document.getElementById("back-team");
   if (teamLink && team) {
-    teamLink.href = `team.html?id=${encodeURIComponent(team.id)}`;
+    const liteParam = isLiteMode ? "&lite=1" : "";
+    teamLink.href = `team.html?id=${encodeURIComponent(team.id)}${liteParam}`;
     teamLink.textContent = `← ${team.abbr} summary`;
   }
 
-  fillSelect(angleSel, data.meta.angles, {
+  // If in Lite mode and NOT a showcase arm, render the Enterprise Locked Overlay
+  if (isLiteMode && !isShowcase && player.role !== "C") {
+    const stage = document.querySelector(".detection-stage");
+    if (stage) {
+      const lockCard = document.createElement("div");
+      lockCard.className = "locked-player-overlay-card";
+      lockCard.innerHTML = `
+        <span class="enterprise-modal-badge">🔒 Enterprise Scouting Dossier</span>
+        <h3>${player.name} (${team?.abbr || "MLB"}) · Access Restricted</h3>
+        <p>
+          This pitcher dossier is part of the full 60+ Arm MLB platform database. 
+          Pre-release delivery compare sliders, hand-in-glove depth metrics, and high-movement variance indicators are accessible under an Enterprise Scouting Pilot.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="https://x.com/colbymorris08" target="_blank" rel="noopener noreferrer">Request Enterprise Pilot / DM @colbymorris08 →</a>
+          <button class="btn ghost" type="button" onclick="window.openEnterpriseModal('${player.name.replace(/'/g, "\\'")}')">View Enterprise Features</button>
+        </div>
+        <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line);">
+          <p style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">Or explore the 3 fully unlocked public showcase arms:</p>
+          <div style="display:flex; justify-content:center; gap:0.5rem; flex-wrap:wrap;">
+            <a class="btn ghost" style="font-size:0.75rem; padding:0.3rem 0.6rem;" href="player.html?id=roupp&lite=1">Landen Roupp (SF)</a>
+            <a class="btn ghost" style="font-size:0.75rem; padding:0.3rem 0.6rem;" href="player.html?id=woo&lite=1">Bryan Woo (SEA)</a>
+            <a class="btn ghost" style="font-size:0.75rem; padding:0.3rem 0.6rem;" href="player.html?id=webb&lite=1">Logan Webb (SF)</a>
+          </div>
+        </div>
+      `;
+      stage.innerHTML = "";
+      stage.appendChild(lockCard);
+    }
+  } else {
+    wireDetectionStage(player);
+    wireSituationCoverage(player);
+  }
+
+  fillSelect(angleSel, data.meta?.angles || [{ id: "CF", label: "Broadcast CF PoC" }], {
     valueKey: "id",
     labelKey: "label",
     blank: "All angles",
   });
-  fillSelect(contextSel, data.meta.contexts, {
+  fillSelect(contextSel, data.meta?.contexts || [{ id: "stretch", label: "Stretch" }], {
     valueKey: "id",
     labelKey: "label",
     blank: "All contexts",
   });
 
-  const angleMap = Object.fromEntries((data.meta.angles || []).map((a) => [a.id, a.label]));
+  const angleMap = Object.fromEntries((data.meta?.angles || []).map((a) => [a.id, a.label]));
 
   function paint() {
     const angle = angleSel?.value || "";
     const context = contextSel?.value || "";
     const filteredTips = tips.filter((t) => tipPassesFilters(t, { angle, context }));
     if (tipRoot) {
-      tipRoot.innerHTML =
-        filteredTips.map((t) => renderTip(t, angleMap)).join("") ||
-        `<p class="note">No mechanical indicators recorded for this filter setting.</p>`;
+      if (isLiteMode && !isShowcase && player.role !== "C") {
+        tipRoot.innerHTML = `
+          <div class="locked-preview-panel" style="background:var(--bg-elev); padding:1.25rem; border-radius:4px; border:1px solid var(--line); text-align:center;">
+            <p style="color:var(--warn); font-weight:600; margin-bottom:0.5rem;">🔒 ${tips.length} Mechanical Indicators Protected</p>
+            <p style="font-size:0.84rem; color:var(--muted); margin-bottom:1rem;">Out-of-sample verified separation, effect sizes (d), and pre-release tracking data are available for enterprise scouts.</p>
+            <button type="button" class="btn" onclick="window.openEnterpriseModal('${player.name.replace(/'/g, "\\'")}')">Request Pilot Access to Unlock ${player.name} →</button>
+          </div>
+        `;
+      } else {
+        tipRoot.innerHTML =
+          filteredTips.map((t) => renderTip(t, angleMap)).join("") ||
+          `<p class="note">No mechanical indicators recorded for this filter setting.</p>`;
+      }
     }
     const cTips = (player.catcherTips || []).filter((t) => tipPassesFilters(t, { angle, context }));
     if (catcherTipRoot) {
@@ -752,7 +980,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const data = await loadDemo();
     const page = document.body.dataset.page;
-    if (page === "home") wireLanding(data);
+    if (page === "home" || page === "lite") wireLanding(data);
     if (page === "teams") wireTeamsIndex(data);
     if (page === "team") wireTeamPage(data);
     if (page === "player") wirePlayerPage(data);

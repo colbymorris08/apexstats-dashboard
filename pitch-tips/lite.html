@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Apex Preflight Lite — Computer Vision Pitch Anticipation &amp; Mechanical Discrepancy Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="css/lite.css" />
+  </head>
+  <body data-page="lite_home">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="lite.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision · Lite Showcase</em>
+        </a>
+        <nav class="nav">
+          <a href="lite.html" aria-current="page">Overview</a>
+          <a href="lite_teams.html">Coverage Board</a>
+          <a href="lite_board.html">Ranked Leads</a>
+          <a href="progress.html">Live Scale</a>
+          <a href="methodology.html">Architecture</a>
+          <a href="analysis.html">Evaluation</a>
+          <a href="#" class="lite-nav-cta trigger-pilot-modal">Request Pilot Access</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="eyebrow">Public Showcase · MLB Advance Scouting &amp; Pitch Anticipation</div>
+        <div class="hero-grid">
+          <div>
+            <h1>Computer Vision "Spot the Difference" Engine for Pitch Tipping &amp; Movement Variation.</h1>
+            <p>
+              Apex Preflight automates high-resolution landmark and bounding-box tracking to detect pitch-to-pitch mechanical variation—glove set height, forearm exposure, torso lean, hand depth, and delivery timing—strictly before ball release.
+            </p>
+            <div class="cta-row">
+              <a class="btn" href="lite_player.html?id=eduardo_rodriguez">Explore Showcase: Eduardo Rodriguez →</a>
+              <a class="btn ghost" href="lite_player.html?id=webb">Logan Webb →</a>
+              <a class="btn ghost trigger-pilot-modal" href="#">Request Enterprise Pilot</a>
+            </div>
+          </div>
+          <aside class="hero-meta" aria-label="Product facts">
+            <div><span>Domain</span><strong>Computer Vision Showcase</strong></div>
+            <div><span>Showcase Arms</span><strong>Eduardo Rodriguez, Webb, Roupp</strong></div>
+            <div><span>Unit of Model</span><strong>One Pitcher (Per-Arm)</strong></div>
+            <div><span>Baseline Feed</span><strong>Broadcast Center-Field (CF)</strong></div>
+            <div><span>Detection Scope</span><strong>Glove, Posture, Forearm, Timing</strong></div>
+            <div><span>Enterprise Access</span><strong>Full MLB Rosters &amp; 4K Multi-Angle</strong></div>
+            <div><span>Actionable Gate</span><strong>Validated Out-of-Sample (&ge;75%)</strong></div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Showcase Arms Banner & Cards -->
+      <section class="section">
+        <div class="eyebrow">Interactive Showcase Arms</div>
+        <h2>Tested MLB Pitcher Case Studies (Full Interactive Tools Unlocked)</h2>
+        <p class="lede">
+          Experience our interactive delivery comparison slider and full pre-release mechanical cue breakdowns across these benchmark starting pitchers.
+        </p>
+
+        <div class="grid" id="lite-showcase-grid" style="grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 1.25rem; margin-top: 1.25rem;">
+          <!-- Populated by lite_app.js -->
+        </div>
+      </section>
+
+      <!-- 4-Step Operational Workflow Section -->
+      <section class="section">
+        <div class="eyebrow">Operational Workflow</div>
+        <h2>Operational Workflow: From Automated Detection to On-Field Execution</h2>
+        <p class="lede">
+          How Major League clubs transform computer vision signals into on-field competitive advantage through a four-stage execution pipeline.
+        </p>
+
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+          <div class="tile" style="border-top: 3px solid var(--accent); background: var(--bg-panel); padding: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <span style="font-family: var(--mono); font-size: 1.8rem; font-weight: 700; color: var(--accent); line-height: 1;">01</span>
+              <span class="badge" style="background: var(--accent-dim); color: var(--accent); font-size: 0.7rem; font-weight: 600;">MODEL</span>
+            </div>
+            <h3 style="margin: 0.25rem 0 0.5rem; font-size: 1.05rem;">The Model Finds the Pattern</h3>
+            <p style="font-size: 0.84rem; color: var(--muted); margin: 0; line-height: 1.55;">
+              Automated computer vision continuously scans multi-angle game video, tracking 30+ anatomical landmarks across uniform delivery strata to isolate and rank physical mechanical discrepancies before hand break.
+            </p>
+          </div>
+
+          <div class="tile" style="border-top: 3px solid var(--good); background: var(--bg-panel); padding: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <span style="font-family: var(--mono); font-size: 1.8rem; font-weight: 700; color: var(--good); line-height: 1;">02</span>
+              <span class="badge" style="background: var(--good-dim); color: var(--good); font-size: 0.7rem; font-weight: 600;">ANALYSTS</span>
+            </div>
+            <h3 style="margin: 0.25rem 0 0.5rem; font-size: 1.05rem;">Analysts Confirm the Tip</h3>
+            <p style="font-size: 0.84rem; color: var(--muted); margin: 0; line-height: 1.55;">
+              Advance scouts and quantitative analysts vet ranked leads against baseline pitch mixes, permutation null tests, and multi-game holdouts to confirm genuine statistical lift and rule out camera artifacts.
+            </p>
+          </div>
+
+          <div class="tile" style="border-top: 3px solid var(--warn); background: var(--bg-panel); padding: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <span style="font-family: var(--mono); font-size: 1.8rem; font-weight: 700; color: var(--warn); line-height: 1;">03</span>
+              <span class="badge" style="background: rgba(232,162,58,0.12); color: var(--warn); font-size: 0.7rem; font-weight: 600;">COACHES</span>
+            </div>
+            <h3 style="margin: 0.25rem 0 0.5rem; font-size: 1.05rem;">Coaches Teach the Recognition</h3>
+            <p style="font-size: 0.84rem; color: var(--muted); margin: 0; line-height: 1.55;">
+              Hitting coaches, pitching coordinators, and advance staff distill validated biomechanical differences into intuitive visual triggers, situational recognition drills, and count-specific game plans.
+            </p>
+          </div>
+
+          <div class="tile" style="border-top: 3px solid #a78bfa; background: var(--bg-panel); padding: 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+              <span style="font-family: var(--mono); font-size: 1.8rem; font-weight: 700; color: #a78bfa; line-height: 1;">04</span>
+              <span class="badge" style="background: rgba(167,139,250,0.12); color: #a78bfa; font-size: 0.7rem; font-weight: 600;">PLAYERS</span>
+            </div>
+            <h3 style="margin: 0.25rem 0 0.5rem; font-size: 1.05rem;">Players Recognize on the Field</h3>
+            <p style="font-size: 0.84rem; color: var(--muted); margin: 0; line-height: 1.55;">
+              Hitters in the batter's box, baserunners on the basepaths, and dugout staff execute live recognition before ball release—eliminating pitch options, sharpening swing decisions, and driving run production.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Enterprise Access Banner -->
+      <section class="section">
+        <div class="lite-showcase-banner">
+          <div>
+            <h3>Enterprise Front Office &amp; Advance Scouting Access</h3>
+            <p>
+              Preflight provides full-roster pitch anticipation models, in-stadium 4K multi-angle video integration (open dugout, tight CF, high-home), and pre-series opponent dossiers for MLB clubs.
+            </p>
+            <div class="lite-showcase-pills">
+              <span class="lite-showcase-pill"><span class="dot"></span>Full NL West Rotations &amp; Bullpens</span>
+              <span class="lite-showcase-pill"><span class="dot"></span>10 Modeled Catcher Batteries</span>
+              <span class="lite-showcase-pill"><span class="dot"></span>Custom Club Multi-Angle Ingestion</span>
+              <span class="lite-showcase-pill"><span class="dot"></span>Advance Scouting PDF &amp; CSV Exports</span>
+            </div>
+          </div>
+          <button type="button" class="btn trigger-pilot-modal" style="white-space: nowrap; font-size: 0.95rem; padding: 0.85rem 1.5rem;">
+            Request Pilot Access →
+          </button>
+        </div>
+      </section>
+
+      <!-- Roster Coverage Table -->
+      <section class="section">
+        <div class="eyebrow">Tracked Inventory</div>
+        <h2>MLB Roster Coverage Inventory (Public Showcase vs. Enterprise)</h2>
+        <p class="lede" id="lite-picks-summary">
+          Pitchers under active computer vision tracking. Showcase arms are fully unlocked; complete staff models available via club pilot.
+        </p>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Pitcher</th>
+                <th>Club</th>
+                <th>Validation Tier</th>
+                <th>Signal Floor</th>
+                <th>Pitches Modeled</th>
+                <th>Physical Indicators</th>
+                <th>Primary Cue Preview</th>
+              </tr>
+            </thead>
+            <tbody id="lite-picks-table-body"></tbody>
+          </table>
+        </div>
+
+        <div class="jump" style="margin-top: 1.75rem;">
+          <form class="jump-form" onsubmit="return false;">
+            <label class="field">
+              Jump to team
+              <select id="team-select"></select>
+            </label>
+            <button class="btn ghost" id="go-team" type="button">Go to team</button>
+            <label class="field">
+              Jump to pitcher
+              <select id="player-select"></select>
+            </label>
+            <button class="btn" id="go-player" type="button">Open dossier</button>
+          </form>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight Computer Vision (Lite Showcase)</strong>
+        <span>Confidential MLB Advance Scouting &amp; Pitch Anticipation Platform.</span>
+      </footer>
+    </div>
+
+    <!-- Pilot Request Modal -->
+    <div class="lite-modal-backdrop" id="pilot-modal-backdrop">
+      <div class="lite-modal" id="pilot-modal">
+        <button type="button" class="lite-modal-close" id="pilot-modal-close">&times;</button>
+        <h3>Request Enterprise Pilot Access</h3>
+        <p class="sub">
+          Connect your club's video coordinators, advance scouts, and analytics staff to Preflight's full-roster pitch anticipation models and 4K multi-angle ingestion pipeline.
+        </p>
+
+        <div class="features-list">
+          <div>✓ Full MLB team rosters, active rotations, and high-leverage bullpens</div>
+          <div>✓ In-stadium multi-angle video integration (Synergy, high-home, dugout 4K60)</div>
+          <div>✓ Rigorous FDR &alpha;=0.10 holdout validation (zero post-release leakage)</div>
+          <div>✓ Custom pre-series opponent advance scouting dossiers</div>
+        </div>
+
+        <form id="pilot-modal-form">
+          <div class="form-group">
+            <label for="pilot-name">Full Name</label>
+            <input type="text" id="pilot-name" required placeholder="e.g. Alex Campbell" />
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-org">Organization / Club</label>
+            <input type="text" id="pilot-org" required placeholder="e.g. San Francisco Giants / MLB Front Office" />
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-email">Work / Club Email</label>
+            <input type="email" id="pilot-email" required placeholder="e.g. acampbell@sfgiants.com" />
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-role">Primary Role / Department</label>
+            <select id="pilot-role">
+              <option value="Advance Scouting">Advance Scouting &amp; Game Planning</option>
+              <option value="Pitching Development">Pitching Analytics &amp; Player Development</option>
+              <option value="Front Office">Baseball Operations / Front Office</option>
+              <option value="Video Coordination">Video Coordination &amp; Ingest</option>
+              <option value="Independent Analyst">Media / Independent Research</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-notes">Target Pitchers / Scope of Interest</label>
+            <textarea id="pilot-notes" rows="3" placeholder="Specify any specific arms, division focus, or multi-angle video feeds..."></textarea>
+          </div>
+
+          <div class="lite-modal-actions">
+            <button type="submit" class="lite-btn-primary">Submit Pilot Request →</button>
+            <a href="https://twitter.com/colbymorris08" target="_blank" rel="noopener" class="lite-btn-secondary">Direct Twitter / X DM</a>
+          </div>
+        </form>
+
+        <div class="lite-success-message" id="pilot-modal-success">
+          <strong>Thank you for your interest.</strong> Your default email client has been prepared with your pilot request details. We will reach out shortly with onboarding instructions and custom club demo access.
+        </div>
+      </div>
+    </div>
+
+    <script src="js/lite_app.js"></script>
+  </body>
+</html>

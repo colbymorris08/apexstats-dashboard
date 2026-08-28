@@ -5107,6 +5107,16 @@
         "tipSplitBacksTips": true,
         "backedTips": 5,
         "backedCatcherTips": 0
+      },
+      "detectionStill": {
+        "image": "media/detection/eduardo_diff_frame.jpg",
+        "caption": "Eduardo Rodriguez \u00b7 Leg lift initiation tempo & glove height compare \u00b7 CU vs FC/SI",
+        "compare": {
+          "leftSrc": "media/detection/label_pool/eduardo_rodriguez_poc_CU_c0c7d8fc_f452.jpg",
+          "rightSrc": "media/detection/label_pool/eduardo_rodriguez_poc_FC_29faa717_f227.jpg",
+          "leftLabel": "CHANGEUP / CU \u00b7 (Knee Tempo +11.3%)",
+          "rightLabel": "CUTTER / FC \u00b7 (High Glove Variance)"
+        }
       }
     },
     "lauer": {
@@ -11361,6 +11371,16 @@
         "tipSplitBacksTips": true,
         "backedTips": 5,
         "backedCatcherTips": 0
+      },
+      "detectionStill": {
+        "image": "media/detection/roupp_diff_frame.jpg",
+        "caption": "Landen Roupp \u00b7 Delivery Compare CU (Breaking Ball) vs SI/CH (Offspeed) \u00b7 Glove Elevation Variance (+0.06 torso lengths at leg lift peak)",
+        "compare": {
+          "leftSrc": "media/detection/roupp_cu_glove_zoom.jpg",
+          "rightSrc": "media/detection/roupp_si_glove_zoom.jpg",
+          "leftLabel": "CURVEBALL \u00b7 CU (HIGH SET)",
+          "rightLabel": "SINKER/CH \u00b7 SI (LOW SET)"
+        }
       }
     },
     "webb": {
@@ -12781,7 +12801,13 @@
       },
       "detectionStill": {
         "image": "media/detection/webb_diff_frame.jpg",
-        "caption": "Logan Webb \u00b7 CF still at wrist-speed peak \u00b7 pitcher glove + catcher target"
+        "caption": "Logan Webb \u00b7 CF still at wrist-speed peak \u00b7 glove rise & leg lift compare",
+        "compare": {
+          "leftSrc": "media/detection/webb_ff_glove_zoom.jpg",
+          "rightSrc": "media/detection/webb_st_glove_zoom.jpg",
+          "leftLabel": "FLAT GLOVE \u00b7 FF",
+          "rightLabel": "HIGH RISE \u00b7 ST (+0.53)"
+        }
       }
     },
     "merrill_kelly": {

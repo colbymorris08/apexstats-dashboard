@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coverage Board (Lite Showcase) — Apex Preflight Computer Vision</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="css/lite.css" />
+  </head>
+  <body data-page="lite_teams">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="lite.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision · Lite Showcase</em>
+        </a>
+        <nav class="nav">
+          <a href="lite.html">Overview</a>
+          <a href="lite_teams.html" aria-current="page">Coverage Board</a>
+          <a href="lite_board.html">Ranked Leads</a>
+          <a href="progress.html">Live Scale</a>
+          <a href="methodology.html">Architecture</a>
+          <a href="analysis.html">Evaluation</a>
+          <a href="#" class="lite-nav-cta trigger-pilot-modal">Request Pilot Access</a>
+        </nav>
+      </header>
+
+      <section class="section">
+        <div class="eyebrow">MLB Organization Layer · Computer Vision Tracking</div>
+        <h2>NL West &amp; MLB Club Coverage Board</h2>
+        <p class="lede">
+          Aggregated mechanical indicator inventory and computer vision roster tracking across MLB clubs. Interactive showcase arms are unlocked with full delivery comparison tools; remaining club staff are accessible via Enterprise Pilot.
+        </p>
+
+        <div class="coverage-stats-ribbon">
+          <div class="coverage-stat-card">
+            <div class="val good">3</div>
+            <div class="lbl">Showcase Arms Unlocked</div>
+          </div>
+          <div class="coverage-stat-card">
+            <div class="val">5 / 5</div>
+            <div class="lbl">NL West Clubs Tracked</div>
+          </div>
+          <div class="coverage-stat-card">
+            <div class="val">18</div>
+            <div class="lbl">Pitchers Modeled</div>
+          </div>
+          <div class="coverage-stat-card">
+            <div class="val">10</div>
+            <div class="lbl">Catchers Modeled</div>
+          </div>
+          <div class="coverage-stat-card">
+            <div class="val good">71+</div>
+            <div class="lbl">Total Leads in Database</div>
+          </div>
+        </div>
+
+        <div class="coverage-filter-bar">
+          <button type="button" class="filter-btn active" data-filter="nlwest">NL West Focus (5 Clubs)</button>
+          <button type="button" class="filter-btn" data-filter="all">All MLB Tracked Clubs (10)</button>
+        </div>
+
+        <div id="lite-team-grid" class="coverage-cards-grid"></div>
+        <p id="boot-fail" class="note" hidden>Unable to load coverage data.</p>
+      </section>
+
+      <!-- Enterprise Scouting Callout -->
+      <section class="section">
+        <div class="lite-lock-overlay">
+          <div class="lite-lock-icon">🔒</div>
+          <h3 class="lite-lock-title">Unlock Full Organization Coverage &amp; 4K Multi-Angle Feeds</h3>
+          <p class="lite-lock-desc">
+            Full pitching rotation mechanical profiles, catcher setup target offsets, and custom multi-angle camera feeds are available for MLB advance scouting departments and front office analysts.
+          </p>
+          <ul class="lite-lock-bullets">
+            <li>Complete NL West &amp; MLB bullpen mechanical leads</li>
+            <li>In-stadium 4K high-home &amp; dugout angle integration</li>
+            <li>Pre-series advance scouting automated briefing cards</li>
+          </ul>
+          <button type="button" class="lite-btn-primary trigger-pilot-modal" style="margin: 0 auto;">
+            Request Organization Pilot Access →
+          </button>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight Computer Vision (Lite Showcase)</strong>
+        <span>MLB Organization Tracking Coverage.</span>
+      </footer>
+    </div>
+
+    <!-- Pilot Request Modal -->
+    <div class="lite-modal-backdrop" id="pilot-modal-backdrop">
+      <div class="lite-modal" id="pilot-modal">
+        <button type="button" class="lite-modal-close" id="pilot-modal-close">&times;</button>
+        <h3>Request Enterprise Pilot Access</h3>
+        <p class="sub">
+          Connect your club's video coordinators, advance scouts, and analytics staff to Preflight's full-roster pitch anticipation models and 4K multi-angle ingestion pipeline.
+        </p>
+
+        <div class="features-list">
+          <div>✓ Full MLB team rosters, active rotations, and high-leverage bullpens</div>
+          <div>✓ In-stadium multi-angle video integration (Synergy, high-home, dugout 4K60)</div>
+          <div>✓ Rigorous FDR &alpha;=0.10 holdout validation (zero post-release leakage)</div>
+          <div>✓ Custom pre-series opponent advance scouting dossiers</div>
+        </div>
+
+        <form id="pilot-modal-form">
+          <div class="form-group">
+            <label for="pilot-name">Full Name</label>
+            <input type="text" id="pilot-name" required placeholder="e.g. Alex Campbell" />
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-org">Organization / Club</label>
+            <input type="text" id="pilot-org" required placeholder="e.g. San Francisco Giants / MLB Front Office" />
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-email">Work / Club Email</label>
+            <input type="email" id="pilot-email" required placeholder="e.g. acampbell@sfgiants.com" />
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-role">Primary Role / Department</label>
+            <select id="pilot-role">
+              <option value="Advance Scouting">Advance Scouting &amp; Game Planning</option>
+              <option value="Pitching Development">Pitching Analytics &amp; Player Development</option>
+              <option value="Front Office">Baseball Operations / Front Office</option>
+              <option value="Video Coordination">Video Coordination &amp; Ingest</option>
+              <option value="Independent Analyst">Media / Independent Research</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-notes">Target Pitchers / Scope of Interest</label>
+            <textarea id="pilot-notes" rows="3" placeholder="Specify any specific arms, division focus, or multi-angle video feeds..."></textarea>
+          </div>
+
+          <div class="lite-modal-actions">
+            <button type="submit" class="lite-btn-primary">Submit Pilot Request →</button>
+            <a href="https://twitter.com/colbymorris08" target="_blank" rel="noopener" class="lite-btn-secondary">Direct Twitter / X DM</a>
+          </div>
+        </form>
+
+        <div class="lite-success-message" id="pilot-modal-success">
+          <strong>Thank you for your interest.</strong> Your default email client has been prepared with your pilot request details. We will reach out shortly with onboarding instructions and custom club demo access.
+        </div>
+      </div>
+    </div>
+
+    <script src="js/lite_app.js"></script>
+  </body>
+</html>
