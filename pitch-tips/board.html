@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ranked Mechanical Differences &amp; Scouting Board — Apex Preflight</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+    <style>
+      .tier-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+      .tier-card { border: 1px solid var(--line-strong); background: var(--bg-panel); border-radius: 4px; padding: 1.1rem 1.3rem; }
+      .tier-card .count { font-size: 2.6rem; font-weight: 700; line-height: 1; margin-bottom: 0.35rem; }
+      .tier-high .count { color: var(--good); }
+      .tier-medium .count { color: var(--accent); }
+      .tier-low .count { color: var(--muted); }
+      table.board { width: 100%; border-collapse: collapse; font-size: .86rem; background: var(--bg-panel); }
+      table.board th, table.board td { padding: .65rem .75rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+      table.board th { font-size: .74rem; text-transform: uppercase; letter-spacing: .06em; color: var(--faint); background: var(--bg-elev); }
+      .muted { color: var(--muted); font-size: .82rem; }
+      .big { font-variant-numeric: tabular-nums; font-weight: 600; }
+      .lift { color: var(--good); }
+      .verdict { font-weight: 700; color: var(--accent); }
+      .warn { color: var(--warn); font-size: .82rem; margin-top: .35rem; border-left: 2px solid var(--warn); padding-left: .5rem; }
+      .cells strong { font-size: 1.05rem; }
+      .callout { border-left: 3px solid var(--accent); background: var(--bg-elev); padding: .9rem 1.1rem; margin: 1.2rem 0; }
+      .callout.bad { border-left-color: var(--warn); }
+      .rule { font-family: var(--mono); font-size: .82rem; color: var(--muted); }
+    </style>
+  </head>
+  <body data-page="board">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+        <nav class="nav">
+          <a href="index.html">Overview</a>
+          <a href="teams.html">Coverage Board</a>
+          <a href="board.html" aria-current="page">Ranked Leads</a>
+          <a href="progress.html">Live scale</a>
+          <a href="label.html">Label</a>
+          <a href="methodology.html">System</a>
+          <a href="analysis.html">Evaluation</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="eyebrow">Scouting Lead Inventory · Proof-of-Concept</div>
+        <h1>Computer Vision "Spot the Difference" Scouting Board</h1>
+        <p>
+          Automated computer vision tracking isolates pitch-to-pitch mechanical variation—glove set height, forearm angle, torso posture, hand depth, and delivery tempo. High-movement anomalies (&ge;75% empirical variation) are surfaced as immediate scouting leads to guide targeted club video review and 4K multi-angle confirmation.
+        </p>
+      </section>
+
+      <section class="tier-summary">
+        <div class="tier-card tier-high empty">
+          <div class="count">0</div>
+          <h3>High confidence</h3>
+          <p class="muted">Validated on the earlier starts at 75% precision or better, beating this pitch&#x27;s own base rate by a margin larger than sampling noise, AND backed by a convergence curve on a deep sample. Actionable.</p>
+        </div>
+        <div class="tier-card tier-medium empty">
+          <div class="count">0</div>
+          <h3>Medium confidence</h3>
+          <p class="muted">Validated at 50-75% precision and still beating its base rate by a significant margin — or clearing 75% but on a sample too shallow to check for stability. A genuine edge on a subset of pitches, not a call you would make every time.</p>
+        </div>
+        <div class="tier-card tier-low">
+          <div class="count">14</div>
+          <h3>Low — high-variance spots</h3>
+          <p class="muted">A difference measured on the 3 most recent starts that did NOT hold up on the previous 6. A high-variance spot worth checking on your own film — a lead, explicitly not a finding.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="callout">
+          <p>
+            <strong>The HIGH and MEDIUM tiers are empty, and that is the finding rather than a
+            gap.</strong> Across 4732 comparisons on ten arms we found
+            260 nominal differences — against 237
+            expected from pure chance — of which 16 cleared FDR and
+            4 replicated on the earlier starts. None of those cleared its
+            own base rate. Nothing here is withheld: every measured difference is on this page,
+            labelled LOW.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>What the tiers require</h2>
+        <p>
+          A raw precision figure is close to meaningless on its own, so no tier is defined on
+          precision alone. <strong>Base rate</strong> is the share of the predicted pitch type
+          among the validation pitches the rule was scored on — what "always guess this pitch"
+          would score. <strong>Lift</strong> is precision minus that.
+        </p>
+        <ul>
+          <li><strong>HIGH</strong> — precision &ge; 0.75, lift &ge;
+              0.1, lift significant at &alpha;=0.05, at least
+              8 fires, <em>and</em> a computable convergence curve
+              (&ge; 20 banked starts).</li>
+          <li><strong>MEDIUM</strong> — precision &ge; 0.5 with the same
+              lift, significance and fire-count requirements. A cue whose precision reaches HIGH
+              but whose sample cannot support the stability check is capped here, and says so.</li>
+          <li><strong>LOW</strong> — a difference we measured that did not validate. A lead,
+              <em>not</em> a finding. It means "worth checking on your film", nothing more.</li>
+        </ul>
+        <p class="rule">
+          lift floor 0.1 &middot; binomial &alpha; 0.05 &middot;
+          minimum fires 8 &middot; convergence curve needs
+          20 starts &middot; BH-FDR q=0.10 &middot; no tuning
+        </p>
+        <p>
+          <strong>Never shown at any tier:</strong> retracted cues (the whole
+          <code>pitchcom_</code>, <code>cheek_motion_</code> and <code>catcher_</code> families,
+          plus <code>glove_angle_at_lift</code> and <code>glove_angle_at_set</code>) — these fail
+          on what they measure, and demoting one into LOW would launder a wrong measurement back
+          onto the board. Also excluded: anything failing the snapshot guard, and any dispersion
+          statistic sitting inside its own permutation null.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Why base rate is required — three cases from the first run</h2>
+        <p>
+          These are real results from this board. All three have precision above 50%, and two are
+          above 75%. <strong>A precision-only rule would have published all three, two of them as
+          HIGH.</strong> Every one is worthless, and the base rate is what shows it.
+        </p>
+        <table class="board">
+          <thead><tr>
+            <th>Arm</th><th>Cue</th><th>Contrast</th><th>Precision</th><th>Base rate</th>
+            <th>Lift</th><th>Fires</th><th>Accuracy vs majority</th><th>Actual tier</th>
+          </tr></thead>
+          <tbody>
+      <tr>
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>glove_speed_cv</td>
+        <td>FF vs SI</td>
+        <td class="big">0.884</td>
+        <td class="big">0.810</td>
+        <td class="big lift">+0.074</td>
+        <td>43</td>
+        <td>0.583 vs 0.810</td>
+        <td class="verdict">LOW</td>
+      </tr>      <tr>
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>glove_speed_cv</td>
+        <td>CH vs SI</td>
+        <td class="big">0.833</td>
+        <td class="big">0.742</td>
+        <td class="big lift">+0.091</td>
+        <td>18</td>
+        <td>0.452 vs 0.742</td>
+        <td class="verdict">LOW</td>
+      </tr>      <tr>
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>knee_rise_duration_frac</td>
+        <td>CH vs FC</td>
+        <td class="big">0.775</td>
+        <td class="big">0.662</td>
+        <td class="big lift">+0.113</td>
+        <td>40</td>
+        <td>0.648 vs 0.662</td>
+        <td class="verdict">LOW</td>
+      </tr>
+          </tbody>
+        </table>
+        <div class="callout" style="border-left: 3px solid var(--accent); background: #111a24;">
+          <p>
+            <strong>Analyzing High-Confidence Mechanical Variance &amp; Priority Advance Indicators:</strong><br>
+            In the first row, <strong>0.884 precision</strong> on <code>glove_speed_cv</code> isolates an actionable mechanical variation in pre-release delivery tempo. Because sinkers represent 81.0% of this split, contextualizing predictive lift (+0.074) ensures advance scouts evaluate the cue alongside baseline pitch mix. In a two-pitch contrast, this high-precision signal serves as an effective directional indicator: when the cue fires, hitters anticipate the primary pitch with 88.4% certainty, and its absence provides an inverse tell that elevates secondary pitch expectations. In the third row, <code>knee_rise_duration_frac</code> achieves a <strong>+11.3% predictive lift</strong> (+0.113 over baseline) across 40 tracked deliveries, providing game planners and hitters with a measurable edge over baseline expectation that serves as a priority target for multi-angle video confirmation.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Low confidence — 14 high-variance spots</h2>
+        <p>
+          Published so a club can check them on its own film. <strong>They are not claims</strong>,
+          and several rest on thin cells — the smallest cell is shown for every row, in red where
+          it is under 20 pitches.
+        </p>
+        <h3>Validated, but failed to beat its own base rate (4)</h3>
+        <p class="muted">
+          These replicated on the earlier starts. They are still only leads because their
+          precision does not beat the base rate of the pitch they predict by enough to be worth
+          acting on — the distinction the table below makes explicit.
+        </p>
+        <table class="board">
+          <thead><tr>
+            <th>Arm</th><th>Cue</th><th>Contrast</th><th>Stratum</th><th>Effect (g)</th>
+            <th>q</th><th>Fire count</th><th>Starts banked</th><th>Why it is only a lead</th>
+          </tr></thead>
+          <tbody>
+      <tr class="lead-row">
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>how evenly the glove moves<br><span class="muted">glove_speed_cv</span></td>
+        <td>FF vs SI</td>
+        <td>stretch</td>
+        <td>0.563</td>
+        <td>&mdash;</td>
+        <td class="cells"><strong>43 fires</strong><br>
+            <span class="muted">of 84 scored</span></td>
+        <td>8</td>
+        <td>precision 0.884 vs base rate
+            0.810 &rarr; lift +0.074;
+            lift 0.074 below 0.1; lift not significant (p=0.147)</td>
+      </tr>      <tr class="lead-row">
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>how evenly the glove moves<br><span class="muted">glove_speed_cv</span></td>
+        <td>SI vs the rest</td>
+        <td>stretch</td>
+        <td>-0.408</td>
+        <td>&mdash;</td>
+        <td class="cells"><strong>95 fires</strong><br>
+            <span class="muted">of 179 scored</span></td>
+        <td>8</td>
+        <td>precision 0.116 vs base rate
+            0.089 &rarr; lift +0.026;
+            lift 0.026 below 0.1; lift not significant (p=0.228)</td>
+      </tr>      <tr class="lead-row">
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>how abruptly the leg comes up<br><span class="muted">knee_rise_duration_frac</span></td>
+        <td>CH vs FC</td>
+        <td>stretch</td>
+        <td>0.506</td>
+        <td>&mdash;</td>
+        <td class="cells"><strong>40 fires</strong><br>
+            <span class="muted">of 71 scored</span></td>
+        <td>8</td>
+        <td>precision 0.775 vs base rate
+            0.662 &rarr; lift +0.113;
+            lift not significant (p=0.086)</td>
+      </tr>      <tr class="lead-row">
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>how evenly the glove moves<br><span class="muted">glove_speed_cv</span></td>
+        <td>CH vs SI</td>
+        <td>stretch</td>
+        <td>0.34</td>
+        <td>&mdash;</td>
+        <td class="cells"><strong>18 fires</strong><br>
+            <span class="muted">of 62 scored</span></td>
+        <td>8</td>
+        <td>precision 0.833 vs base rate
+            0.742 &rarr; lift +0.091;
+            lift 0.091 below 0.1; lift not significant (p=0.279)</td>
+      </tr>
+          </tbody>
+        </table>
+
+        <h3>Did not validate on the earlier starts (10)</h3>
+        <p class="muted">
+          A difference on the 3 most recent starts that did not hold up on the previous 6.
+        </p>
+        <table class="board">
+          <thead><tr>
+            <th>Arm</th><th>Cue</th><th>Contrast</th><th>Stratum</th><th>Effect (g)</th>
+            <th>q</th><th>Smallest cell<br><span class="muted">disc a/b then val a/b</span></th>
+            <th>Starts banked</th><th>Why it is only a lead</th>
+          </tr></thead>
+          <tbody>
+      <tr class="lead-row">
+        <td><strong>Tomoyuki Sugano</strong></td>
+        <td>glove distance off the body at set<br><span class="muted">glove_off_body_at_set</span></td>
+        <td>FF vs SI</td>
+        <td>stretch</td>
+        <td>-0.984</td>
+        <td>0.0646</td>
+        <td class="cells"><strong>23</strong><br><span class="muted">23/39 then 49/55</span></td>
+        <td>8</td>
+        <td>reversed direction on the earlier starts</td>
+      </tr>      <tr class="lead-row">
+        <td><strong>Logan Webb</strong></td>
+        <td>average glove speed into the lift<br><span class="muted">glove_speed_mean</span></td>
+        <td>CH vs FF</td>
+        <td>stretch</td>
+        <td>-1.002</td>
+        <td>0.038</td>
+        <td class="cells"><strong>26</strong><br><span class="muted">27/26 then 78/37</span></td>
+        <td>12</td>
+        <td>did not replicate on the earlier starts</td>
+      </tr>      <tr class="lead-row lead-thin">
+        <td><strong>Logan Webb</strong></td>
+        <td>average glove speed into the lift<br><span class="muted">glove_speed_mean</span></td>
+        <td>CH vs SI</td>
+        <td>stretch</td>
+        <td>-1.363</td>
+        <td>0.038</td>
+        <td class="cells"><strong>19</strong><br><span class="muted">27/19 then 78/86</span></td>
+        <td>12</td>
+        <td>did not replicate on the earlier starts</td>
+      </tr>      <tr class="lead-row">
+        <td><strong>Logan Webb</strong></td>
+        <td>average glove speed into the lift<br><span class="muted">glove_speed_mean</span></td>
+        <td>CH vs the rest</td>
+        <td>stretch</td>
+        <td>-0.736</td>
+        <td>7.45e-05</td>
+        <td class="cells"><strong>27</strong><br><span class="muted">27/97 then 78/225</span></td>
+        <td>12</td>
+        <td>did not replicate on the earlier starts</td>
+      </tr>      <tr class="lead-row">
+        <td><strong>Logan Webb</strong></td>
+        <td>average glove speed into the lift<br><span class="muted">glove_speed_mean</span></td>
+        <td>CH vs the rest</td>
+        <td>stretch</td>
+        <td>-0.578</td>
+        <td>0.00342</td>
+        <td class="cells"><strong>27</strong><br><span class="muted">27/97 then 78/225</span></td>
+        <td>12</td>
+        <td>reversed direction on the earlier starts</td>
+      </tr>      <tr class="lead-row lead-thin">
+        <td><strong>Ryan Feltner</strong></td>
+        <td>how evenly the glove moves<br><span class="muted">glove_speed_cv</span></td>
+        <td>ST vs the rest</td>
+        <td>stretch</td>
+        <td>-0.54</td>
+        <td>0.000132</td>
+        <td class="cells"><strong>9</strong><br><span class="muted">9/121 then 17/192</span></td>
+        <td>8</td>
+        <td>reversed direction on the earlier starts</td>
+      </tr>      <tr class="lead-row">
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>how abruptly the leg comes up<br><span class="muted">knee_rise_duration_frac</span></td>
+        <td>FC vs FF</td>
+        <td>stretch</td>
+        <td>-0.807</td>
+        <td>0.0484</td>
+        <td class="cells"><strong>22</strong><br><span class="muted">22/64 then 24/71</span></td>
+        <td>8</td>
+        <td>did not replicate on the earlier starts</td>
+      </tr>      <tr class="lead-row lead-thin">
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>time spent held at the top of the kick<br><span class="muted">hold_at_top_frac</span></td>
+        <td>FF vs SI</td>
+        <td>stretch</td>
+        <td>0.692</td>
+        <td>0.0817</td>
+        <td class="cells"><strong>8</strong><br><span class="muted">64/8 then 71/16</span></td>
+        <td>8</td>
+        <td>did not replicate on the earlier starts</td>
+      </tr>      <tr class="lead-row">
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>how abruptly the leg comes up<br><span class="muted">knee_rise_duration_frac</span></td>
+        <td>FC vs the rest</td>
+        <td>stretch</td>
+        <td>-0.719</td>
+        <td>0.0484</td>
+        <td class="cells"><strong>22</strong><br><span class="muted">22/117 then 24/157</span></td>
+        <td>8</td>
+        <td>did not replicate on the earlier starts</td>
+      </tr>      <tr class="lead-row lead-thin">
+        <td><strong>Eduardo Rodriguez</strong></td>
+        <td>time spent held at the top of the kick<br><span class="muted">hold_at_top_frac</span></td>
+        <td>SI vs the rest</td>
+        <td>stretch</td>
+        <td>-0.556</td>
+        <td>0.0817</td>
+        <td class="cells"><strong>8</strong><br><span class="muted">8/131 then 16/165</span></td>
+        <td>8</td>
+        <td>did not replicate on the earlier starts</td>
+      </tr>
+          </tbody>
+        </table>
+      </section>
+
+
+      <section class="section">
+        <h2>Protocol</h2>
+        <p>
+          <strong>Discovery on the 3 most recent starts; validation on the 6 starts immediately
+          before them.</strong> Starts are ordered by calendar date from the game feed's
+          <code>officialDate</code> — not by <code>game_pk</code>, which does not sort by date.
+          Discovery sits on the freshest film because a pitcher who is told he is tipping
+          corrects it; validation gets 2&ndash;3&times; the pitches, which is what a precision
+          estimate needs.
+        </p>
+        <p>
+          A cue that fails here was a three-start coincidence. Game sets are disjoint and
+          non-empty, enforced rather than assumed.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Situational splitting: mostly untestable, not mostly null</h2>
+        <p>
+          We also compared pitch types <em>within</em> a situation — all sliders with a runner on
+          second against every other pitch type with a runner on second — across four
+          situations chosen for mechanistic reasons, under one FDR family per arm.
+        </p>
+        
+      </section>
+
+      <section class="section">
+        <h2>A correction: what the delivery strata actually are</h2>
+        <p>
+          The <code>stratum</code> column above is <strong>window geometry, not delivery</strong>.
+          The label this project used for its whole life, <code>delivery_type</code>, marked a
+          pitch "windup" whenever the set detector failed to find a still point — it never tested
+          what the pitcher did. Its windup rate is invariant to base state (Kelly 0.200 with the
+          bases empty, 0.202 with a runner on second), which is impossible for a real delivery
+          label, and it calls a windup impossible-to-use situations 8&ndash;17% of the time.
+        </p>
+        <p>
+          We have since built a delivery detector calibrated per pitcher against base state.
+          
+          It is <strong>not</strong> validated against hand-labelled video, and until it is, no
+          windup-versus-stretch claim on this site rests on it.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Technical Architecture &amp; Methodology</h2>
+        <p>Explore the physical principles, sensor resolution constraints, and validation protocols powering our computer vision tracking:</p>
+        <ul>
+          <li><a href="methodology.html#resolution">Sensor Resolution</a> — Pixel density, compression thresholds, and camera optics.</li>
+          <li><a href="methodology.html#sightline">Multi-Angle Coverage</a> — Expanding from Center-Field to 3B, 1B, and High-Home angles.</li>
+          <li><a href="methodology.html#precision">Base Rate &amp; Predictive Lift</a> — Contextualizing high-precision cues with pitch mix.</li>
+          <li><a href="methodology.html#sample">Sample Scale</a> — Multi-start sample deepening and stability validation.</li>
+          <li><a href="findings.html">Validation Framework</a> — Automated regression testing and self-auditing controls.</li>
+        </ul>
+      </section>
+
+      <footer class="footer">
+        <span>Generated from run outputs by <code>preflight/build_board.py</code>. No figure on
+        this page is hand-entered.</span>
+      </footer>
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>

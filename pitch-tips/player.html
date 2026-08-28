@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pitcher Dossier — Apex Preflight Computer Vision</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body data-page="player">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+        <nav class="nav">
+          <a href="index.html">Overview</a>
+          <a href="teams.html">Coverage Board</a>
+          <a href="board.html">Ranked Leads</a>
+          <a href="progress.html">Live scale</a>
+          <a href="label.html">Label</a>
+          <a href="methodology.html">System</a>
+          <a href="analysis.html">Evaluation</a>
+        </nav>
+      </header>
+
+      <section class="section">
+        <p class="lede"><a id="back-team" href="teams.html">← Organization</a></p>
+        <div class="eyebrow">Scouting Dossier · Computer Vision Tracking</div>
+        <h2 id="player-title">Pitcher</h2>
+        <p class="lede" id="player-lede"></p>
+
+        <div class="callout" style="border-left: 3px solid var(--accent); background: #111a24; margin: 1.25rem 0;">
+          <strong>Operational Scouting Context:</strong> These signals represent measured mechanical variance isolated by automated computer vision tracking from broadcast Center-Field (CF) footage. While broadcast footage operates at fixed camera angles and ~30 fps, club-provided multi-angle 4K60 video feeds (open dugout, tight CF, high-home) elevate these exact mechanical cues into high-certainty operational alerts for advance scouting and pitching development.
+        </div>
+
+        <div class="detection-stage" aria-label="Computer vision detection stage">
+          <div class="eyebrow">Detection &amp; Tracking Stage</div>
+          <p class="lede" id="detection-lede">
+            Pre-release anatomical tracking and pitch-to-pitch difference cards. Drag the slider to compare delivery geometry between pitch types. Landmark boxes isolate the pitcher's glove, forearm, torso angle, and release timing.
+          </p>
+          <div class="video-shell video-shell--still video-shell--compare" id="detection-still">
+            <div class="overlay-label">CV · DELIVERY &amp; GLOVE COMPARE</div>
+            <div class="glove-compare" id="glove-compare" hidden>
+              <div class="glove-compare-labels">
+                <span id="glove-label-left">PITCH A</span>
+                <span id="glove-label-right">PITCH B</span>
+              </div>
+              <div class="glove-compare-pair" id="glove-compare-pair">
+                <figure class="glove-pane" id="glove-pane-left">
+                  <img id="glove-compare-left" alt="Pitch A delivery still" />
+                </figure>
+                <figure class="glove-pane" id="glove-pane-right">
+                  <img id="glove-compare-right" alt="Pitch B delivery still" />
+                </figure>
+              </div>
+              <label class="glove-compare-scrub">
+                <span class="glove-compare-scrub-label">Slide · Pitch A ↔ Pitch B</span>
+                <input
+                  type="range"
+                  class="glove-compare-slider"
+                  id="glove-compare-slider"
+                  min="0"
+                  max="100"
+                  value="50"
+                  aria-label="Slide emphasis between pitch types"
+                />
+              </label>
+            </div>
+            <img id="detection-frame" alt="Pre-release detection still with landmark boxes" />
+            <div class="detection-caption" id="detection-caption"></div>
+          </div>
+          <div class="detection-ingest">
+            <div class="detection-ingest-opt">
+              <h4>Upload club angle</h4>
+              <label class="field"
+                >Local video
+                <input id="club-upload" type="file" accept="video/*" />
+              </label>
+              <p class="note" id="upload-note">Maps to X1–X4 / TEAM multi-angle pipeline; 4K60 tracking refines cue resolution.</p>
+            </div>
+            <div class="detection-ingest-opt">
+              <h4>Or link team video</h4>
+              <p class="note">
+                Connect club film from your video vault — use
+                <strong>link in team video</strong> (angle ID + play clock). High-speed side-angle views isolate grip and micro-movement.
+              </p>
+              <button type="button" class="btn ghost" id="link-team-video" disabled>
+                Link in team video
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls" style="margin-top: 1.5rem">
+          <label class="field"
+            >Camera View
+            <select id="angle-select"></select>
+          </label>
+          <label class="field"
+            >Game context / Situation
+            <select id="context-select"></select>
+          </label>
+        </div>
+
+        <div class="panel" style="margin-top: 1.5rem">
+          <h3>Top Measurable Mechanical Indicators (Ranked Leads)</h3>
+          <p class="note">
+            Top physical differences detected across pre-release delivery windows (set position, leg lift initiation, hand depth, and timing).
+          </p>
+          <div id="player-tips" class="tip-list"></div>
+        </div>
+
+        <div class="panel" style="margin-top: 1.5rem">
+          <h3>Arsenal coverage by situation</h3>
+          <p class="note" id="situation-coverage-note">
+            Mechanical distinction and pitch separation across distinct situational states (runners on base × batter handedness).
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Situation</th>
+                  <th>Sample n</th>
+                  <th>Mechanical Coverage</th>
+                  <th>Distinguishable Types</th>
+                </tr>
+              </thead>
+              <tbody id="situation-coverage-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top: 1.5rem">
+          <h3>Catcher setup signals</h3>
+          <p class="note">Pre-pitch catcher target placement, stance width, and glove height before delivery initiation.</p>
+          <div id="player-catcher-tips" class="tip-list"></div>
+        </div>
+
+        <p id="boot-fail" class="note" hidden>Unable to load pitcher data.</p>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight Computer Vision</strong>
+        <span
+          >Operational scouting proof-of-concept. Automated landmark tracking on broadcast CF with multi-angle club expansion.</span
+        >
+      </footer>
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>

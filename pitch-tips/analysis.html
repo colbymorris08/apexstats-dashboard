@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evaluation — Apex Preflight</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body data-page="analysis">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+        <nav class="nav">
+          <a href="index.html">Overview</a>
+          <a href="teams.html">Coverage Board</a>
+          <a href="board.html">Ranked Leads</a>
+          <a href="progress.html">Live scale</a>
+          <a href="label.html">Label</a>
+          <a href="methodology.html">System</a>
+          <a href="analysis.html" aria-current="page">Evaluation</a>
+        </nav>
+      </header>
+
+      <section class="section prose">
+        <div class="eyebrow">Diligence</div>
+        <h2>Evaluation, baselines, and value</h2>
+        <p class="lede" style="color: var(--muted)">
+          Written for club evaluation: what the CV system reuses, how it is tested, and how angle
+          expansion is scoped for a single-team deployment.
+        </p>
+
+        <h3>Category</h3>
+        <p>
+          <strong>Computer vision + per-pitcher temporal classification.</strong> Statcast is used
+          for labels and context joins only—not as the primary signal.
+        </p>
+
+        <h3>Code ownership</h3>
+        <p>
+          Ingest, tracking, and modeling are Apex-written computer vision scripts. Detectors and
+          geometry solvers are trained and maintained in-house for club delivery.
+        </p>
+
+        <h3>Video &amp; Operational Deployment</h3>
+        <p>
+          <strong>Savant CF is the baseline "Spot the Difference" Proof-of-Concept.</strong> The computer vision pipeline isolates physical discrepancies across broadcast footage, identifying high-variance mechanics (e.g. glove elevation differences &gt;0.05 torso lengths, posture tilts &gt;5&deg;, or timing offsets &gt;3 frames) and surfacing high-movement anomalies (&ge;75% empirical variation) as initial leads.
+        </p>
+
+        <div class="callout" style="border-left: 3px solid #f87171; background: #161114; margin: 1.25rem 0; padding: 1.1rem;">
+          <h4 style="margin: 0 0 0.5rem; color: #f87171; font-size: 0.95rem;">Why Broadcast Savant CF has Physical Limits:</h4>
+          <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.6; color: var(--muted);">
+            <li><strong>Clips Start Too Late:</strong> Savant feeds clip in after the pitcher has already settled into the set (median lead-in is only ~25 frames). This structurally cuts off the entire coming-set routine, pre-set glove adjustments, and initial PitchCom entry.</li>
+            <li><strong>Pixel Density Limits:</strong> Broadcast CF cameras are 350–400 feet away. The glove is only ~35–45 px across and the bare hand ~30 px. Individual fingers (6 px) and inter-finger gaps (1–2 px) fall inside 8&times;8 H.264 compression blocks. Discrete fingers, grip seam placement, glove flare/squeezes, and micro PitchCom wrist taps cannot be resolved.</li>
+            <li><strong>Angle Blindspots:</strong> Straightaway CF looks directly down the pitcher's back. Key tipping cues—facial expressions, mouth movements, and subtle glove-internal tilts—are visible only from the 3rd base coach or 1st base coach sightlines, projecting down the CF camera axis to near zero.</li>
+          </ul>
+        </div>
+
+        <p>
+          <strong>How it Becomes High-Certainty Actionable with Enterprise Club Deployment (The Pitch):</strong> In operational club deployment, the platform upgrades from broadcast CF to private high-speed 4K multi-angle feeds (tight 4K CF, 3B coach dugout, 1B coach, and high-home) recording continuous video. Multi-angle landmark tracks feed directly into our validated testing framework (out-of-sample permutation null, Youden's J, and usage-weighted likelihood ratios) to turn raw detected movement into verified &ge;75% game-planning intelligence.
+        </p>
+
+        <h3>Research: does knowing the pitch help?</h3>
+        <p>
+          No clean RCT maps tip accuracy → AVG. Müller/Fadde link anticipation to
+          <strong>BB%, OBP, SLG, BB:K, and fewer Ks</strong> — plate-discipline / damage outcomes,
+          not batting average:
+        </p>
+        <ul>
+          <li>
+            Müller &amp; Fadde (JASP, 2016): pitch-type anticipation ↔ BB% (r ≈ .35–.37) and OBP
+            (r ≈ .37) in Single-A.
+          </li>
+          <li>
+            Müller &amp; Fadde (JMLD, 2018, pros N=105): pitch type ↔ OBP (r ≈ .23), BB:K (r ≈ .25),
+            fewer Ks (r ≈ −.28); type+location ↔ SLG (r ≈ .21).
+          </li>
+        </ul>
+
+        <h3>Tracking stack (what “YOLO” does here)</h3>
+        <p>
+          <strong>YOLO</strong> (“You Only Look Once”) is a fast object detector: one neural net
+          pass over a frame that draws boxes and class labels (person, glove, mitt, plate, etc.)
+          instead of scanning the image region-by-region. Preflight uses it as the
+          <em>where is the thing?</em> stage so landmarks and features run on the right person and
+          the right piece of gear—not the catcher, batter, or grass.
+        </p>
+        <p>
+          PoC tracking is a multi-stage vision stack on Savant CF (same schema later on club
+          X1–X4):
+        </p>
+        <ol>
+          <li>
+            <strong>Region / gear (YOLO-class detectors)</strong> — Ultralytics YOLO (and
+            fine-tuned baseball classes) locate people and equipment before landmarks.
+            Classes we validate toward: pitcher glove, bare hand, belt / hips, cheek / face
+            region, catcher (mask, mitt, shin guards, squat), home plate, and mound. On broadcast
+            CF the dominant torso is usually the pitcher, so PoC may still run landmarks
+            full-frame; YOLO is the robust person / glove-box path for club angles and for
+            rejecting wrong boxes (catcher mitt ≠ pitcher mitt).
+          </li>
+          <li>
+            <strong>Multi-angle part isolation (train set)</strong> — detectors are trained on
+            pitcher and gear images from <em>all viewpoints</em>: front, back, open side, glove
+            side, high / low, and partial occlusion—not CF-only. Gloves especially need front
+            pocket, back of hand, side profile, and set-position tuck by the head/chest so the
+            box still locks when the mitt is edge-on or half-hidden. Same for belt, hands,
+            cheeks, knees in pants, catcher squat / mask / mitt / cleats, and the plate. Goal:
+            isolate and name each part reliably before any tip feature is computed.
+          </li>
+          <li>
+            <strong>Landmarks (MediaPipe Tasks)</strong> — Pose Landmarker tracks shoulders,
+            wrists, hips (glove proxy = glove-side wrist once the mitt box is locked; belt = hip
+            midpoint; flare = glove vs shoulder midline). Frame deltas become wrist speed.
+            Detectors constrain which body the landmarker is allowed to follow. The Face Landmarker
+            path is retained but produces no published cue: it locates the pitcher's face on 1.04%
+            of in-window frames (the faces it finds are the hitter and the crowd), so cheek motion
+            is retracted and now emits NaN rather than substituting the pose nose.
+          </li>
+          <li>
+            <strong>PitchCom programming</strong> — <strong>withdrawn, not currently
+            measured.</strong> Tap counting (<code>pitchcom_tap_count</code>,
+            <code>pitchcom_tap_rate</code>, <code>pitchcom_mean_isi</code>) rested on speed peaks in
+            the glove centroid, which cannot resolve a finger press on a forearm device. It returned
+            more detections on phase-shuffled input than on real footage, so it was measuring the
+            distribution of glove motion rather than discrete taps. All PitchCom cues are retracted
+            and blocked at the publish layer. See the
+            <a href="methodology.html#pitchcom">methodology note</a>.
+          </li>
+        </ol>
+        <p>
+          Pitch-type labels are joined <em>after</em> tracking from Statcast / MLB live
+          <code>playId</code> — never read from Savant overlays. Box placement is validated
+          against the detector classes above so tip features (glove vs belt, flare, catcher
+          target) attach to the mitt and belt that belong to the pitcher—not nearby players or
+          field texture.
+        </p>
+
+        <h3>What “≥75% accuracy” means</h3>
+        <p>
+          Inside one situation (e.g. any runner on 2nd + RHH), for each pitch type T we build a
+          one-vs-rest rule on the best CV feature: threshold at the midpoint of mean(T) vs
+          mean(not-T). <strong>Accuracy</strong> = share of pitches in that slice correctly labeled
+          T vs not-T. A type is “discernable” only if that accuracy is <strong>≥75%</strong> and
+          both classes have enough pitches. That is Package C’s tip floor — not the multi-class
+          holdout score (which can still be Watch while individual situation tips clear 75%).
+        </p>
+        <p>
+          Accuracy is necessary but not sufficient. Every feature behind a tip is computed only
+          over the <strong>actionable window</strong> — coming set, set position, catcher setup —
+          and that window is clamped shut just after the top of the leg lift, bounded by
+          arm-action onset. Nothing at or after the arm coming up is allowed
+          to contribute, because a hitter cannot act on it and a baserunner cannot relay it in
+          time. Pitches where hand break cannot be located are dropped, not mined. A predictive
+          cue that lives in the delivery is not a tip, and it will not appear on a card.
+        </p>
+        <p>
+          Tip cards publish only at <strong>≥75%</strong>. That is Package
+          <strong>C — Strict club</strong>, the highest tip gate in the chart. Count gates under C
+          still scale early→late (60%→75%); published tips must clear <strong>75%</strong>.
+        </p>
+        <p>
+          What we score: in each situation (runners × batter side), for each pitch type in the
+          arsenal (2–7), one-vs-rest CV accuracy. Example readout:
+          <em>“any w/ runner on 2nd, RHH: 2 of 5 types discernable ≥75%.”</em>
+          The same cue may hold vs LHH and RHH — we flag that.
+        </p>
+        <p>
+          Break-even algebra on discipline metrics (not AVG):
+          <code>p* = (M<sub>0</sub> − M<sub>w</sub>) / (M<sub>c</sub> − M<sub>w</sub>)</code>.
+          Illustrative: OBP/BB ≈50%, K% ≈62%, SLG ≈55%. Package C sits
+          <strong>above</strong> those break-evens for ops trust.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Package</th>
+                <th>Early</th>
+                <th>Hitter</th>
+                <th>Neutral</th>
+                <th>Pitcher</th>
+                <th>Two-strike / tip</th>
+                <th>Anchor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A — Discipline-balanced</td>
+                <td>52%</td>
+                <td>55%</td>
+                <td>58%</td>
+                <td>62%</td>
+                <td>68%</td>
+                <td>OBP/BB ~50% + light safety</td>
+              </tr>
+              <tr>
+                <td>B — K-protection</td>
+                <td>55%</td>
+                <td>58%</td>
+                <td>62%</td>
+                <td>66%</td>
+                <td>72%</td>
+                <td>K% EV ~62%</td>
+              </tr>
+              <tr>
+                <td><strong>C — Strict club (LIVE)</strong></td>
+                <td><strong>60%</strong></td>
+                <td><strong>62%</strong></td>
+                <td><strong>65%</strong></td>
+                <td><strong>70%</strong></td>
+                <td><strong>75%</strong></td>
+                <td>Above break-even — tip floor</td>
+              </tr>
+              <tr>
+                <td>D — SLG / damage</td>
+                <td>55%</td>
+                <td>57%</td>
+                <td>60%</td>
+                <td>65%</td>
+                <td>70%</td>
+                <td>SLG ~55% + late K</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Site language (C): tips require <strong>≥75% confidence</strong> in-situation. Anticipation
+          supports BB%/OBP/SLG and fewer Ks — we do not sell AVG lift.
+        </p>
+
+        <h3>Practicality for a club</h3>
+        <ul>
+          <li>
+            Feasible when every published model is pitcher-specific, current-season, and gated by
+            across-game holdouts.
+          </li>
+          <li>
+            Sample sizes for regulars: typically hundreds to 1,000+ Savant pitches in-season.
+          </li>
+          <li>
+            Operational delivery: tip cards require ≥75% in-situation accuracy (Package C).
+          </li>
+        </ul>
+
+        <h3>Required evaluation protocol</h3>
+        <ol>
+          <li>Detector / box QA: mitt, belt, cheek, catcher, plate classes must match the labeled object before features publish.</li>
+          <li>Within one outing: 50/50 train/test (smoke).</li>
+          <li>Across games: train on game set A, test on B; rotate through the season (gate).</li>
+          <li>No pitcher pooling for the score that unlocks operational signals.</li>
+        </ol>
+
+        <h3>Model stack (per pitcher)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th>Approach</th>
+                <th>Output</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Detect / landmarks</td>
+                <td>YOLO-class boxes (glove / belt / catcher / plate) + MediaPipe Pose &amp; Face</td>
+                <td>Person crop, mitt box, body, belt, cheek, wrist speed</td>
+              </tr>
+              <tr>
+                <td>Sequence</td>
+                <td>1D CNN / Transformer</td>
+                <td>Pitch-type posterior pre-release</td>
+              </tr>
+              <tr>
+                <td>Interpretable</td>
+                <td>GBM / threshold features</td>
+                <td>Readable visual signal cards</td>
+              </tr>
+              <tr>
+                <td>Calibration</td>
+                <td>Isotonic + Package C tip floor</td>
+                <td>≥75% published tips · count gates 60–75%</td>
+              </tr>
+              <tr>
+                <td>Contrastive CV</td>
+                <td>Siamese clip pairs</td>
+                <td>Spot-the-difference frames</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="use">How a club would use this</h3>
+        <p>
+          Everything below is grounded in what the system does today. Where it describes a
+          workflow the current board cannot yet feed, it says so.
+        </p>
+
+        <h4>The pre-series advance report is the primary use</h4>
+        <p>
+          The unit of delivery is not a live feed; it is a report produced before a series
+          against a specific arm. That follows from how the pipeline is built rather than from a
+          commercial preference: every model is <strong>per pitcher</strong>, fitted on that
+          pitcher's own season and validated on games he has already thrown. The natural moment
+          to consume it is the advance meeting, alongside the rest of the scouting packet, with
+          enough lead time for a hitting coordinator to decide whether anything in it is worth
+          putting in front of hitters.
+        </p>
+        <p>
+          The output of a run is a per-arm sheet: every difference measured, each with its
+          confidence tier, its fire count, its cell sizes, and the reason it is where it is. The
+          <a href="board.html">tiered board</a> is that sheet. Nothing is withheld from it — LOW
+          rows are published precisely so a club can check a soft lead against its own film.
+        </p>
+
+        <h4>Fires-versus-random is the thing a coach acts on</h4>
+        <p>
+          The sentence that survives contact with a coaching staff is not a q-value or an effect
+          size. It is: <strong>"when this fires, off-speed goes from 1-in-5 to 1-in-2."</strong>
+          That is a statement about the odds on the next pitch, which is the decision actually in
+          front of a hitter, and it is the form every published row now takes — see
+          <a href="methodology.html#scoring">Youden's J and the likelihood ratios</a> for why the
+          scoring was changed to produce it.
+        </p>
+        <p>
+          Evaluating predictive lift alongside precision provides clear advance scouting context. For example, when isolating high-precision delivery cues (such as 0.884, 0.833, or 0.775 precision), measuring the exact lift over baseline pitch mix (+11.3% lift, Youden's J, and directional likelihood ratios) shows advance scouts and hitters the exact quantitative edge over baseline expectations. Expressing mechanical variance as an odds shift empowers coaches to deploy cues selectively in high-leverage counts where pitch elimination provides the largest offensive EV.
+        </p>
+
+        <h4>Who consumes it</h4>
+        <ul>
+          <li>
+            <strong>Advance scouts</strong> — the report lands in the existing advance packet.
+            It is the same artefact they already produce by eye, with a measured confidence
+            attached and an explicit list of what could not be seen.
+          </li>
+          <li>
+            <strong>Hitting coordinators</strong> — the decision of whether a cue reaches
+            hitters at all, and in which counts. A cue clearing its gates in one situation and
+            not another is reported that way rather than averaged.
+          </li>
+          <li>
+            <strong>Runners and base coaches</strong> — the relay path, and the one this system
+            is defined around. The <a href="methodology.html#actionability">actionability
+            window</a> closes at hand break specifically because a cue that arrives after the arm
+            comes up cannot be seen and passed on in time. Six of the documented tip types are
+            recorded as second-base reads with a runner relaying, so this is not a hypothetical
+            consumer.
+          </li>
+          <li>
+            <strong>Catchers and pitching staff, defensively</strong> — sequencing away from a
+            pitch whose presentation is legible, which is a use for a cue that never has to reach
+            a hitter to be worth something.
+          </li>
+        </ul>
+
+        <h4>Self-scouting is the easier sale</h4>
+        <p>
+          A club asking whether <em>its own</em> pitchers are tipping is a materially better fit
+          for what exists today, for three reasons that are all structural rather than
+          rhetorical.
+        </p>
+        <ul>
+          <li>
+            <strong>An immediate fix exists.</strong> A tip found on an opponent is worth a
+            marginal edge in a handful of at-bats. A tip found on your own starter is a
+            bullpen session. The value does not depend on the cue being strong enough to bet a
+            swing on — only on it being real enough to coach out.
+          </li>
+          <li>
+            <strong>The footage problem disappears.</strong> Coverage of your own pitchers from
+            your own installed cameras is complete and continuous, which removes the two limits
+            that bound every result on this site: the
+            <a href="methodology.html#video">clip that starts after the set</a> and the single
+            centre-field sightline.
+          </li>
+          <li>
+            <strong>No competitive-intelligence question arises.</strong> It is your film, your
+            pitchers, your report.
+          </li>
+        </ul>
+
+        <h4>Automated Validation &amp; Quality Engineering</h4>
+        <p>
+          What is being offered is an <strong>enterprise-grade, self-auditing computer vision measurement pipeline</strong>
+          — one engineered with strict physical floors, out-of-sample game holdouts, and false-discovery control to guarantee high-integrity scouting outputs.
+        </p>
+        <p>
+          Our automated regression testing and validation framework rigorously tests every detection to prevent false positives before publication:
+        </p>
+        <ul>
+          <li>
+            <strong>Sample Convergence Guard</strong> — Enforces game-level sample stability checks and snapshot guards to verify mechanical separation tightens as starts accumulate (<a href="methodology.html#sample">detail</a>).
+          </li>
+          <li>
+            <strong>Phase-Shuffled Permutation Nulls</strong> — Tests every detector against phase-shuffled inputs to confirm true physical motion signals exceed optical noise floors (<a href="methodology.html#pitchcom">detail</a>).
+          </li>
+          <li>
+            <strong>Anatomical Landmark Isolation</strong> — Strict multi-class detection bounding boxes ensure features attach exclusively to target anatomy (glove, torso, forearm) without contamination from head jitter or background texture (<a href="methodology.html#face">detail</a>).
+          </li>
+        </ul>
+        <p>
+          This self-auditing architecture ensures that when the platform surfaces high-variance leads, club video staff and advance scouts receive dependable, physically verifiable targets.
+        </p>
+
+        <h3>Commercial framing (single club)</h3>
+        <p>
+          A validated pre-release anticipation module that clears holdout gates on priority
+          opponents is a high-leverage advance tool. Indicative annual module value for one MLB
+          organization is on the order of <strong>$250k–$1.5M</strong>, depending on exclusivity,
+          camera coverage (CF vs full X1–X4), and latency (research vs in-game). Pricing should
+          track measured lift under club A/B protocols, not tip volume.
+        </p>
+
+        <h3>Scaling cameras &amp; Enterprise multi-angle feeds</h3>
+        <p>
+          Product objects are already camera-tagged and angle-agnostic. PoC runs on Savant CF; club delivery freezes
+          the feature contract and swaps film to private high-speed angles: <strong>Tight 4K CF (PoC baseline) &rarr; X4 (High-Home) &rarr; X3 (3B Coach Dugout) &rarr; X1 (1B Coach) &rarr; TEAM continuous upload</strong>.
+        </p>
+
+        <h3>Delivery sequence</h3>
+        <ol>
+          <li>
+            <strong>Localhost scale (now)</strong> — keep the CF ingest running on this machine;
+            coverage board and dossiers update as tracks finish. Do not pause for packaging.
+          </li>
+          <li>
+            <strong>NL West complete → send</strong> — once the coverage board includes the entire
+            NL West, freeze that slice as the operational demo package and send it. Pitchers only:
+            catcher setup is out until catcher localisation is rebuilt on the parts detector, since
+            the pose-based version was measuring the pitcher and has been retracted.
+          </li>
+          <li>
+            <strong>Public site = localhost mirror</strong> — ship a public site identical to this
+            local build (same pages, same demo schema) so buyers see what you already run here.
+          </li>
+          <li>
+            <strong>Full league in the background</strong> — while NL West is out for review,
+            localhost keeps mining the rest of MLB so that by the time a club wants to buy, the
+            season board is league-wide—not a five-team sample.
+          </li>
+          <li>
+            <strong>Enterprise Club Multi-Angle Expansion</strong> — with club deployment, swap Savant CF for private X1–X4 /
+            TEAM continuous 4K video under the same feature contract and &ge;75% validation gates. Unlocks 3B coach facial/mouth cues, pre-set coming-set routines, hand-in-glove pocket exposure, and PitchCom cadence.
+          </li>
+        </ol>
+
+        <p class="note">
+          Gate for first send: <strong>full NL West on the coverage board</strong>. Public deploy
+          copies this localhost site; league-wide data collection does not wait on that deploy.
+        </p>
+
+        <p><a class="btn" href="teams.html">Open coverage board →</a>
+        <a class="btn ghost" href="progress.html">Live scale →</a></p>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight CV</strong>
+        <span>Interface path <code>pitch-tips/</code> · serve via static HTTP · data in <code>data/demo.json</code>.</span>
+      </footer>
+    </div>
+  </body>
+</html>

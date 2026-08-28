@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Live scale — Apex Preflight</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+    <meta http-equiv="refresh" content="15" />
+  </head>
+  <body data-page="progress">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+        <nav class="nav">
+          <a href="index.html">Overview</a>
+          <a href="teams.html">Coverage Board</a>
+          <a href="board.html">Ranked Leads</a>
+          <a href="progress.html" aria-current="page">Live scale</a>
+          <a href="label.html">Label</a>
+          <a href="methodology.html">System</a>
+          <a href="analysis.html">Evaluation</a>
+        </nav>
+      </header>
+
+      <section class="section">
+        <div class="eyebrow">League Tracking · Automated CV Processing</div>
+        <h2>Team-by-Team &amp; Player-by-Player Tracking Progress</h2>
+        <p class="lede" id="progress-lede">Loading tracking progress…</p>
+        <p class="note">
+          <strong>Operational Scouting Pipeline:</strong> Automated tracking processes game video through delivery-window detection and pose landmark extraction to isolate measurable physical discrepancies. Broadcast Center-Field cameras serve as the baseline screening feed; multi-angle 4K60 team feeds provide conclusive verification.
+        </p>
+        <p class="note">
+          <strong>Ranked Mechanical Indicators:</strong> Each arm features top measurable variance signals sorted by physical separation floor multiples and statistical effect size across pitch pairings.
+        </p>
+        <div class="hero-meta" id="progress-stats" style="margin: 1rem 0"></div>
+        <div class="panel">
+          <h3>Current / recent</h3>
+          <div id="progress-current" class="tip-list"></div>
+        </div>
+        <div class="panel" style="margin-top: 1rem">
+          <h3>By team</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Team</th>
+                  <th>Done</th>
+                  <th>Queued</th>
+                  <th>Tips ≥75%</th>
+                  <th>Catcher tips</th>
+                </tr>
+              </thead>
+              <tbody id="progress-teams"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="panel" style="margin-top: 1rem">
+          <h3>Players</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>Team</th>
+                  <th>Status</th>
+                  <th>n</th>
+                  <th>Pitcher tips</th>
+                  <th>Catcher tips</th>
+                </tr>
+              </thead>
+              <tbody id="progress-players"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight CV</strong>
+        <span>Reads <code>data/progress.json</code> written by the league scaler.</span>
+      </footer>
+    </div>
+    <script src="js/progress.js"></script>
+  </body>
+</html>

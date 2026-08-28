@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Clip janitor, kept alive by launchd.
+
+  start_new_session=True survives shell teardown but nothing else: it does not
+  restart on crash, on OOM kill, or on login. The janitor died silently three
+  times, and a dead janitor means the disk refills until tracking stops with
+  "no space left on device".
+
+  KeepAlive makes the OS the supervisor. Install with scripts/install_launchd.sh.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.apexstats.supervisor</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/colbymorris/apexstats/pitch-tips/scripts/overnight.sh</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/colbymorris/apexstats/pitch-tips</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+        <key>PYTHONPATH</key>
+        <string>/Users/colbymorris/apexstats/pitch-tips/cv</string>
+        <key>MPLCONFIGDIR</key>
+        <string>/tmp/mpl</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <!-- Do not let a crash-loop spin the CPU; 30s between respawns. -->
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+    <key>StandardOutPath</key>
+    <string>/Users/colbymorris/apexstats/pitch-tips/runs/launchd_supervisor.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/colbymorris/apexstats/pitch-tips/runs/launchd_supervisor.log</string>
+</dict>
+</plist>

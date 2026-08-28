@@ -1,0 +1,633 @@
+{
+  "status": "running",
+  "scope": "NL West rotations \u2192 NL West rest \u2192 rest of MLB",
+  "season": 2026,
+  "games": 8,
+  "queue_total": 584,
+  "nlwest_pitchers": 65,
+  "remaining": 566,
+  "sec_per_pitch": 10.0,
+  "eta_hours": 325.8,
+  "est_total_pitches": 117290,
+  "current": {
+    "name": "Michael King",
+    "team": "SD",
+    "message": "pitcher [1/6] last 8 games \u00b7 set + coming-set tracks"
+  },
+  "done": {
+    "657277": {
+      "name": "Logan Webb",
+      "team": "SF",
+      "n_tracked": 392,
+      "holdout": 0.171,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/logan_webb_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 1059,
+      "ready": true,
+      "state": "complete"
+    },
+    "693433": {
+      "name": "Bryan Woo",
+      "team": "SEA",
+      "n_tracked": 219,
+      "holdout": 0.167,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/bryan_woo_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 315,
+      "ready": true,
+      "state": "complete"
+    },
+    "656288": {
+      "name": "Griffin Canning",
+      "team": "SD",
+      "n_tracked": 91,
+      "holdout": 0.261,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/griffin_canning_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 275,
+      "ready": true,
+      "state": "complete"
+    },
+    "518876": {
+      "name": "Merrill Kelly",
+      "team": "ARI",
+      "n_tracked": 400,
+      "holdout": 0.229,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/merrill_kelly_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 2180,
+      "ready": true,
+      "state": "complete"
+    },
+    "593958": {
+      "name": "Eduardo Rodriguez",
+      "team": "ARI",
+      "n_tracked": 430,
+      "holdout": 0.234,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/eduardo_rodriguez_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 770,
+      "ready": true,
+      "state": "complete"
+    },
+    "694297": {
+      "name": "Brandon Pfaadt",
+      "team": "ARI",
+      "n_tracked": 463,
+      "holdout": 0.185,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brandon_pfaadt_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 742,
+      "ready": true,
+      "state": "complete"
+    },
+    "608372": {
+      "name": "Tomoyuki Sugano",
+      "team": "COL",
+      "n_tracked": 504,
+      "holdout": 0.309,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tomoyuki_sugano_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 697,
+      "ready": true,
+      "state": "complete"
+    },
+    "663372": {
+      "name": "Ryan Feltner",
+      "team": "COL",
+      "n_tracked": 503,
+      "holdout": 0.094,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/ryan_feltner_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 702,
+      "ready": true,
+      "state": "complete"
+    },
+    "687312": {
+      "name": "Gabriel Hughes",
+      "team": "COL",
+      "n_tracked": 463,
+      "holdout": 0.143,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/gabriel_hughes_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 671,
+      "ready": true,
+      "state": "complete"
+    },
+    "685299": {
+      "name": "Tanner Gordon",
+      "team": "COL",
+      "n_tracked": 288,
+      "holdout": 0.179,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tanner_gordon_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 402,
+      "ready": true,
+      "state": "complete"
+    },
+    "808967": {
+      "name": "Yoshinobu Yamamoto",
+      "team": "LAD",
+      "n_tracked": 244,
+      "holdout": 0.2,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/yoshinobu_yamamoto_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 294,
+      "ready": true,
+      "state": "complete"
+    },
+    "669373": {
+      "name": "Tarik Skubal",
+      "team": "LAD",
+      "n_tracked": 151,
+      "holdout": 0.2,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tarik_skubal_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 178,
+      "ready": true,
+      "state": "complete"
+    },
+    "676263": {
+      "name": "Jack Dreyer",
+      "team": "LAD",
+      "n_tracked": 98,
+      "holdout": 0.2,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jack_dreyer_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 126,
+      "ready": true,
+      "state": "complete"
+    },
+    "623474": {
+      "name": "Jimmy Herget",
+      "team": "COL",
+      "n_tracked": 164,
+      "holdout": 0.167,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jimmy_herget_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 174,
+      "ready": true,
+      "state": "complete"
+    },
+    "808963": {
+      "name": "Roki Sasaki",
+      "team": "LAD",
+      "n_tracked": 165,
+      "holdout": 0.28,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/roki_sasaki_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 207,
+      "ready": true,
+      "state": "complete"
+    },
+    "641778": {
+      "name": "Eric Lauer",
+      "team": "LAD",
+      "n_tracked": 216,
+      "holdout": 0.204,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/eric_lauer_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 255,
+      "ready": true,
+      "state": "complete"
+    },
+    "660271": {
+      "name": "Shohei Ohtani",
+      "team": "LAD",
+      "n_tracked": 204,
+      "holdout": 0.222,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/shohei_ohtani_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 244,
+      "ready": true,
+      "state": "complete"
+    },
+    "607192": {
+      "name": "Tyler Glasnow",
+      "team": "LAD",
+      "n_tracked": 21,
+      "holdout": 0.455,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": false,
+      "failed_checks": [
+        "volume"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tyler_glasnow_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 46,
+      "ready": false,
+      "state": "tracking"
+    }
+  },
+  "failed": {
+    "645261": {
+      "name": "Sandy Alcantara",
+      "team": "FA",
+      "error": "No MLBAM id for Sandy Alcantara"
+    },
+    "656464": {
+      "name": "Kevin Ginkel",
+      "team": "ARI",
+      "error": "Only 5 tracked pitches; need more successful downloads"
+    },
+    "666661": {
+      "name": "Juan Morillo",
+      "team": "ARI",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=666661&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "664199": {
+      "name": "Taylor Clarke",
+      "team": "ARI",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=664199&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "642528": {
+      "name": "Jonathan Lo\u00e1isiga",
+      "team": "ARI",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=642528&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "642701": {
+      "name": "Dennis Santana",
+      "team": "ARI",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=642701&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "C672515": {
+      "name": "Gabriel Moreno",
+      "team": "ARI",
+      "error": "'pitcher'"
+    },
+    "C543510": {
+      "name": "James McCann",
+      "team": "ARI",
+      "error": "'pitcher'"
+    },
+    "623474": {
+      "name": "Jimmy Herget",
+      "team": "COL",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=623474&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "808963": {
+      "name": "Roki Sasaki",
+      "team": "LAD",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=808963&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "641778": {
+      "name": "Eric Lauer",
+      "team": "LAD",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=641778&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "660271": {
+      "name": "Shohei Ohtani",
+      "team": "LAD",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=660271&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "607192": {
+      "name": "Tyler Glasnow",
+      "team": "LAD",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=607192&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "650633": {
+      "name": "Michael King",
+      "team": "SD",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=650633&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "621111": {
+      "name": "Walker Buehler",
+      "team": "SD",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=621111&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "592662": {
+      "name": "Robbie Ray",
+      "team": "SD",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=592662&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "681190": {
+      "name": "Randy V\u00e1squez",
+      "team": "SD",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=681190&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "663554": {
+      "name": "Casey Mize",
+      "team": "SD",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=663554&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    }
+  },
+  "catchers_done": {
+    "C672515": {
+      "name": "Gabriel Moreno",
+      "team": "ARI",
+      "role": "starter",
+      "n_tracked": 52,
+      "tips_ge_75": 0,
+      "publishable": false,
+      "failed_checks": [
+        "placement"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/catcher_gabriel_moreno_poc"
+    },
+    "C543510": {
+      "name": "James McCann",
+      "team": "ARI",
+      "role": "backup",
+      "n_tracked": 34,
+      "tips_ge_75": 0,
+      "publishable": false,
+      "failed_checks": [
+        "volume"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/catcher_james_mccann_poc"
+    }
+  },
+  "by_team": {
+    "ARI": {
+      "queued": 13,
+      "done": 3,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "COL": {
+      "queued": 13,
+      "done": 5,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "LAD": {
+      "queued": 13,
+      "done": 7,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "SD": {
+      "queued": 13,
+      "done": 1,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "SF": {
+      "queued": 13,
+      "done": 1,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "SEA": {
+      "queued": 16,
+      "done": 1,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "ATH": {
+      "queued": 24,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "ATL": {
+      "queued": 20,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "BAL": {
+      "queued": 21,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "BOS": {
+      "queued": 20,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "CHC": {
+      "queued": 27,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "CIN": {
+      "queued": 21,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "CLE": {
+      "queued": 17,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "CWS": {
+      "queued": 21,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "DET": {
+      "queued": 22,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "HOU": {
+      "queued": 19,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "KC": {
+      "queued": 22,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "LAA": {
+      "queued": 21,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "MIA": {
+      "queued": 19,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "MIL": {
+      "queued": 24,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "MIN": {
+      "queued": 23,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "NYM": {
+      "queued": 17,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "NYY": {
+      "queued": 20,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "PHI": {
+      "queued": 20,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "PIT": {
+      "queued": 20,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "STL": {
+      "queued": 17,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "TB": {
+      "queued": 18,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "TEX": {
+      "queued": 22,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "TOR": {
+      "queued": 21,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    },
+    "WSH": {
+      "queued": 27,
+      "done": 0,
+      "pitcher_tips": 0,
+      "catcher_tips": 0
+    }
+  },
+  "phases": {
+    "nlw_rotation": {
+      "total": 23,
+      "done": 16
+    },
+    "nlw_rest": {
+      "total": 42,
+      "done": 1
+    },
+    "mlb": {
+      "total": 519,
+      "done": 1
+    }
+  },
+  "totals": {
+    "pitcher_tips": 0,
+    "catcher_tips": 0
+  },
+  "updated_at": "2026-08-27T22:11:55",
+  "live": {
+    "pitches_done": 90,
+    "pitches_target": null
+  },
+  "heartbeat": true
+}

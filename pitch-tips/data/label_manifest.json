@@ -1,0 +1,357 @@
+{
+  "version": 1,
+  "angle": "CF_savant",
+  "classes": [
+    {
+      "id": "pitcher_glove",
+      "label": "Pitcher glove",
+      "color": "#ff8c00"
+    },
+    {
+      "id": "bare_hand",
+      "label": "Bare hand",
+      "color": "#f0c040"
+    },
+    {
+      "id": "belt",
+      "label": "Belt / hips",
+      "color": "#5ec8ff"
+    },
+    {
+      "id": "cheek",
+      "label": "Cheek / face",
+      "color": "#ff6b9d"
+    },
+    {
+      "id": "knee",
+      "label": "Knee (pants)",
+      "color": "#9b8cff"
+    },
+    {
+      "id": "catcher_mitt",
+      "label": "Catcher mitt",
+      "color": "#70af5f"
+    },
+    {
+      "id": "catcher_mask",
+      "label": "Catcher mask",
+      "color": "#c0c0c0"
+    },
+    {
+      "id": "catcher_shin",
+      "label": "Catcher shin guard",
+      "color": "#88a0b8"
+    },
+    {
+      "id": "catcher_cleat",
+      "label": "Catcher cleat",
+      "color": "#e8e0d0"
+    },
+    {
+      "id": "plate",
+      "label": "Home plate",
+      "color": "#ffffff"
+    }
+  ],
+  "frames": [
+    {
+      "id": "bryan_woo_poc_CH_4f1b89ea_f136",
+      "src": "media/detection/label_pool/bryan_woo_poc_CH_4f1b89ea_f136.jpg",
+      "pitcher": "Bryan Woo",
+      "team": "SEA",
+      "pitchType": "CH",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "drew_thorpe_poc_CH_362ae294_f148",
+      "src": "media/detection/label_pool/drew_thorpe_poc_CH_362ae294_f148.jpg",
+      "pitcher": "Drew Thorpe",
+      "team": "CWS",
+      "pitchType": "CH",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "eduardo_rodriguez_poc_CH_e12a3906_f155",
+      "src": "media/detection/label_pool/eduardo_rodriguez_poc_CH_e12a3906_f155.jpg",
+      "pitcher": "Eduardo Rodriguez",
+      "team": "ARI",
+      "pitchType": "CH",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "jes\u00fas_luzardo_poc_CH_20056010_f306",
+      "src": "media/detection/label_pool/jes\u00fas_luzardo_poc_CH_20056010_f306.jpg",
+      "pitcher": "Jesus Luzardo",
+      "team": "PHI",
+      "pitchType": "CH",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "merrill_kelly_poc_CH_75628f6d_f162",
+      "src": "media/detection/label_pool/merrill_kelly_poc_CH_75628f6d_f162.jpg",
+      "pitcher": "Merrill Kelly",
+      "team": "ARI",
+      "pitchType": "CH",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "taj_bradley_poc_CU_ca43bedf_f175",
+      "src": "media/detection/label_pool/taj_bradley_poc_CU_ca43bedf_f175.jpg",
+      "pitcher": "Taj Bradley",
+      "team": "TB",
+      "pitchType": "CU",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "webb_poc_CH_297ce350_f261",
+      "src": "media/detection/label_pool/webb_poc_CH_297ce350_f261.jpg",
+      "pitcher": "Logan Webb",
+      "team": "SF",
+      "pitchType": "CH",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "bryan_woo_poc_CU_0bf02d88_f154",
+      "src": "media/detection/label_pool/bryan_woo_poc_CU_0bf02d88_f154.jpg",
+      "pitcher": "Bryan Woo",
+      "team": "SEA",
+      "pitchType": "CU",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "drew_thorpe_poc_FC_28001c3b_f175",
+      "src": "media/detection/label_pool/drew_thorpe_poc_FC_28001c3b_f175.jpg",
+      "pitcher": "Drew Thorpe",
+      "team": "CWS",
+      "pitchType": "FC",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "eduardo_rodriguez_poc_CU_c0c7d8fc_f452",
+      "src": "media/detection/label_pool/eduardo_rodriguez_poc_CU_c0c7d8fc_f452.jpg",
+      "pitcher": "Eduardo Rodriguez",
+      "team": "ARI",
+      "pitchType": "CU",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "jes\u00fas_luzardo_poc_FF_8931a084_f177",
+      "src": "media/detection/label_pool/jes\u00fas_luzardo_poc_FF_8931a084_f177.jpg",
+      "pitcher": "Jesus Luzardo",
+      "team": "PHI",
+      "pitchType": "FF",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "merrill_kelly_poc_CU_8aacde83_f160",
+      "src": "media/detection/label_pool/merrill_kelly_poc_CU_8aacde83_f160.jpg",
+      "pitcher": "Merrill Kelly",
+      "team": "ARI",
+      "pitchType": "CU",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "taj_bradley_poc_FC_32981272_f180",
+      "src": "media/detection/label_pool/taj_bradley_poc_FC_32981272_f180.jpg",
+      "pitcher": "Taj Bradley",
+      "team": "TB",
+      "pitchType": "FC",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "webb_poc_FC_08fdcc8f_f383",
+      "src": "media/detection/label_pool/webb_poc_FC_08fdcc8f_f383.jpg",
+      "pitcher": "Logan Webb",
+      "team": "SF",
+      "pitchType": "FC",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "bryan_woo_poc_FF_00caaec5_f318",
+      "src": "media/detection/label_pool/bryan_woo_poc_FF_00caaec5_f318.jpg",
+      "pitcher": "Bryan Woo",
+      "team": "SEA",
+      "pitchType": "FF",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "drew_thorpe_poc_FF_ee77fcc7_f158",
+      "src": "media/detection/label_pool/drew_thorpe_poc_FF_ee77fcc7_f158.jpg",
+      "pitcher": "Drew Thorpe",
+      "team": "CWS",
+      "pitchType": "FF",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "eduardo_rodriguez_poc_FC_29faa717_f227",
+      "src": "media/detection/label_pool/eduardo_rodriguez_poc_FC_29faa717_f227.jpg",
+      "pitcher": "Eduardo Rodriguez",
+      "team": "ARI",
+      "pitchType": "FC",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "jes\u00fas_luzardo_poc_SI_65519dc4_f250",
+      "src": "media/detection/label_pool/jes\u00fas_luzardo_poc_SI_65519dc4_f250.jpg",
+      "pitcher": "Jesus Luzardo",
+      "team": "PHI",
+      "pitchType": "SI",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "merrill_kelly_poc_FC_a85e8dff_f212",
+      "src": "media/detection/label_pool/merrill_kelly_poc_FC_a85e8dff_f212.jpg",
+      "pitcher": "Merrill Kelly",
+      "team": "ARI",
+      "pitchType": "FC",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "taj_bradley_poc_FF_7c6c38cc_f178",
+      "src": "media/detection/label_pool/taj_bradley_poc_FF_7c6c38cc_f178.jpg",
+      "pitcher": "Taj Bradley",
+      "team": "TB",
+      "pitchType": "FF",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "webb_poc_FF_00d3aeca_f134",
+      "src": "media/detection/label_pool/webb_poc_FF_00d3aeca_f134.jpg",
+      "pitcher": "Logan Webb",
+      "team": "SF",
+      "pitchType": "FF",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "bryan_woo_poc_SI_0667c75e_f149",
+      "src": "media/detection/label_pool/bryan_woo_poc_SI_0667c75e_f149.jpg",
+      "pitcher": "Bryan Woo",
+      "team": "SEA",
+      "pitchType": "SI",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "drew_thorpe_poc_SL_c6ca3b3f_f205",
+      "src": "media/detection/label_pool/drew_thorpe_poc_SL_c6ca3b3f_f205.jpg",
+      "pitcher": "Drew Thorpe",
+      "team": "CWS",
+      "pitchType": "SL",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "eduardo_rodriguez_poc_FF_8b53b43e_f219",
+      "src": "media/detection/label_pool/eduardo_rodriguez_poc_FF_8b53b43e_f219.jpg",
+      "pitcher": "Eduardo Rodriguez",
+      "team": "ARI",
+      "pitchType": "FF",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "jes\u00fas_luzardo_poc_ST_a31c38ec_f218",
+      "src": "media/detection/label_pool/jes\u00fas_luzardo_poc_ST_a31c38ec_f218.jpg",
+      "pitcher": "Jesus Luzardo",
+      "team": "PHI",
+      "pitchType": "ST",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "merrill_kelly_poc_FF_3ef3e333_f164",
+      "src": "media/detection/label_pool/merrill_kelly_poc_FF_3ef3e333_f164.jpg",
+      "pitcher": "Merrill Kelly",
+      "team": "ARI",
+      "pitchType": "FF",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "taj_bradley_poc_FS_c118ed5b_f177",
+      "src": "media/detection/label_pool/taj_bradley_poc_FS_c118ed5b_f177.jpg",
+      "pitcher": "Taj Bradley",
+      "team": "TB",
+      "pitchType": "FS",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "webb_poc_SI_05ffbe29_f161",
+      "src": "media/detection/label_pool/webb_poc_SI_05ffbe29_f161.jpg",
+      "pitcher": "Logan Webb",
+      "team": "SF",
+      "pitchType": "SI",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "bryan_woo_poc_SL_0449db76_f187",
+      "src": "media/detection/label_pool/bryan_woo_poc_SL_0449db76_f187.jpg",
+      "pitcher": "Bryan Woo",
+      "team": "SEA",
+      "pitchType": "SL",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "drew_thorpe_poc_ST_57c17588_f617",
+      "src": "media/detection/label_pool/drew_thorpe_poc_ST_57c17588_f617.jpg",
+      "pitcher": "Drew Thorpe",
+      "team": "CWS",
+      "pitchType": "ST",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "eduardo_rodriguez_poc_SI_7e341245_f167",
+      "src": "media/detection/label_pool/eduardo_rodriguez_poc_SI_7e341245_f167.jpg",
+      "pitcher": "Eduardo Rodriguez",
+      "team": "ARI",
+      "pitchType": "SI",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "merrill_kelly_poc_SI_5eab3ee2_f322",
+      "src": "media/detection/label_pool/merrill_kelly_poc_SI_5eab3ee2_f322.jpg",
+      "pitcher": "Merrill Kelly",
+      "team": "ARI",
+      "pitchType": "SI",
+      "angle": "CF",
+      "role": "set_frame"
+    },
+    {
+      "id": "webb_poc_ST_031c12c6_f234",
+      "src": "media/detection/label_pool/webb_poc_ST_031c12c6_f234.jpg",
+      "pitcher": "Logan Webb",
+      "team": "SF",
+      "pitchType": "ST",
+      "angle": "CF",
+      "role": "set_frame"
+    }
+  ],
+  "ordering": "round_robin_by_pitcher",
+  "note": "One frame per play; Next always advances to a different pitcher."
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>Pick glove</title>
+<style>
+body{margin:0;background:#111;color:#eee;font:14px/1.4 monospace}
+#info{padding:10px;position:sticky;top:0;background:#111;z-index:5}
+#wrap{position:relative;display:inline-block;margin:8px}
+img{display:block;cursor:crosshair;image-rendering:pixelated}
+#box{position:absolute;border:3px solid #f80;pointer-events:none;display:none;box-shadow:0 0 0 1px #000}
+button{margin:4px;padding:6px 10px}
+</style></head><body>
+<div id="info">Click the GLOVE center on the zoomed crop. Origin offset applied automatically.</div>
+<div>
+  <button onclick="load('ff')">FF crop</button>
+  <button onclick="load('sl')">SL crop</button>
+</div>
+<div id="wrap"><img id="im"><div id="box"></div></div>
+<script>
+const ORIGIN={ff:[380,250], sl:[300,250]};
+const SRC={ff:'media/detection/pick_ff_crop.jpg', sl:'media/detection/pick_sl_crop.jpg'};
+let mode='ff', cx=0, cy=0, s=40, scale=3;
+const img=document.getElementById('im'), box=document.getElementById('box'), info=document.getElementById('info');
+function load(m){mode=m; img.src=SRC[m];}
+img.onload=()=>{/* wait click */};
+img.onclick=e=>{
+  const r=img.getBoundingClientRect();
+  const sx=img.naturalWidth/r.width;
+  const lx=Math.round((e.clientX-r.left)*sx);
+  const ly=Math.round((e.clientY-r.top)*sx);
+  // convert from upscaled crop coords to full-frame
+  const [ox,oy]=ORIGIN[mode];
+  cx=ox+Math.round(lx/scale);
+  cy=oy+Math.round(ly/scale);
+  draw(lx, ly);
+};
+function draw(lx, ly){
+  const r=img.getBoundingClientRect();
+  const sx=img.naturalWidth/r.width;
+  const ss=s*scale/sx;
+  box.style.display='block';
+  box.style.left=((lx/sx) - ss/2)+'px';
+  box.style.top=((ly/sx) - ss/2)+'px';
+  box.style.width=ss+'px';
+  box.style.height=ss+'px';
+  info.textContent=`${mode.toUpperCase()} full-frame cx=${cx} cy=${cy} s=${s}`;
+  document.title=`PICK ${mode} ${cx},${cy},${s}`;
+}
+document.onkeydown=e=>{
+  if(e.key==='['){s=Math.max(20,s-2); info.textContent+=` size→${s}`}
+  if(e.key===']'){s+=2; info.textContent+=` size→${s}`}
+};
+load('ff');
+</script></body></html>

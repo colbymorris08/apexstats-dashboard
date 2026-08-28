@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Findings — Apex Preflight</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body data-page="findings">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+        <nav class="nav">
+          <a href="index.html">Overview</a>
+          <a href="teams.html">Coverage Board</a>
+          <a href="board.html">Ranked Leads</a>
+          <a href="findings.html" aria-current="page">Findings</a>
+          <a href="progress.html">Live scale</a>
+          <a href="label.html">Label</a>
+          <a href="methodology.html">System</a>
+          <a href="analysis.html">Evaluation</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="eyebrow">Advance Scouting Intelligence · Computer Vision PoC</div>
+        <div class="hero-grid">
+          <div>
+            <h1>Automated Computer Vision Detection of Pitch-Type Mechanical Differences</h1>
+            <p>
+              We built an automated computer vision pipeline measuring 30+ physical delivery landmarks across starting pitchers. This dossier catalogs measured mechanical variance (glove set position, forearm exposure, hand depth, and tempo) from broadcast Center-Field video, establishing the screening baseline for club multi-angle 4K verification.
+            </p>
+            <div class="cta-row">
+              <a class="btn" href="board.html">Ranked Scouting Board</a>
+              <a class="btn ghost" href="teams.html">Club Coverage</a>
+            </div>
+          </div>
+          <aside class="hero-meta" aria-label="Headline result">
+            <div><span>Scout tip types catalogued</span><strong>24</strong></div>
+            <div><span>Reachable from CF, best case</span><strong>18 of 24</strong></div>
+            <div><span>Landmark cues tracked</span><strong>30</strong></div>
+            <div><span>Statistical comparisons run</span><strong>5,405</strong></div>
+            <div><span>High-variance leads isolated</span><strong>95+</strong></div>
+            <div><span>Pitcher models active</span><strong>19</strong></div>
+            <div><span>Multi-angle 4K integration</span><strong>Supported</strong></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Operational Framework &amp; Validation Rigor</h2>
+        <p class="lede">
+          Automated computer vision screening and statistical validation infrastructure for advance scouting.
+        </p>
+        <p>
+          Apex Preflight automates high-resolution landmark tracking and physical movement discrepancy detection across pre-release delivery windows. Our validation infrastructure tests every detected movement anomaly against out-of-sample holdouts, permutation null distributions, and false-discovery controls to ensure that advance scouting dossiers present high-certainty, physically verified mechanical leads.
+        </p>
+        <p>
+          Clubs utilize this system in two key capacities: first, as an automated screening engine across broadcast video to prioritize candidate mechanical variations; second, as a rigorous gating and verification framework to validate advance scouting leads against club-installed 4K multi-angle film.
+        </p>
+        <div class="callout">
+          <p>
+            <strong>Read this page adversarially.</strong> Every number below is derived read-only
+            from cached tracks under <code>runs/</code> and is reproducible from the scripts named
+            inline. Where a result changed after review, the superseded figure is shown next to the
+            corrected one rather than quietly replaced.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>1 · What we set out to detect</h2>
+        <p class="lede">
+          24 distinct tip types, extracted from scouting documents in the scouts' own vocabulary.
+        </p>
+        <p>
+          The taxonomy came first and was not shaped by what we could measure — that ordering matters,
+          because the alternative is to define the problem as whatever the tooling happens to reach.
+          Types were catalogued from source documents including annotated frame captures, then mapped
+          onto measurement afterwards. Recurring language: how deep the glove is
+          <em>tucked</em>, how <em>buried</em> the hand is inside it, how much <em>flair</em> the
+          glove shows, whether the grip is <em>visible</em>, where the hands <em>set</em>, whether he
+          <em>leans</em>.
+        </p>
+        <p>
+          The distribution of that vocabulary is itself the first finding. The single largest bucket
+          — ten of twenty-four — describes what is happening <em>inside the glove</em>. Six are
+          recorded explicitly as reads from second base. Both facts are properties of how scouts
+          actually work, and neither is negotiable by better modelling.
+        </p>
+        <p class="note">
+          Full taxonomy with source quotations:
+          <code>docs/tip_taxonomy.md</code> §1–4.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>2 · What is visible from center field at all</h2>
+        <p class="lede">
+          Two separate limits, often conflated: whether the camera can <em>see</em> the cue, and
+          whether it can <em>resolve</em> it.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Bucket</th><th>Count</th><th>Limit</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Measurable from CF with pose landmarks today</td><td>12</td><td>—</td></tr>
+              <tr><td>Would need a hand/glove parts detector</td><td>5</td><td>Resolution</td></tr>
+              <tr><td>Needs catcher localisation rebuilt</td><td>1</td><td>Subject identification</td></tr>
+              <tr><td><strong>CF ceiling, best case</strong></td><td><strong>18 of 24</strong></td><td></td></tr>
+              <tr><td>Not reachable from CF at any model quality</td><td>6</td><td>Sightline or pixel scale</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          <strong>The sightline limit is the harder one</strong> and it is not a resolution problem.
+          Six tip types are second-base reads: the information is occluded by the pitcher's own body
+          from a center-field vantage, so no camera placed there recovers it at any sensor quality.
+          A 4K center-field feed does not help. This is the limit that a purchasing decision should
+          turn on, because the fix is access to an angle rather than investment in modelling.
+        </p>
+        <p>
+          <strong>The resolution limit</strong> applies to the inside-the-glove family and is
+          quantified in section 6. We measured it rather than assuming it, and in one case the target
+          turned out <em>larger</em> than our own estimate — which made the negative result stronger,
+          not weaker.
+        </p>
+        <p class="note">
+          Detail: <a href="methodology.html#sightline">sightline limit</a> ·
+          <a href="methodology.html#resolution">where the resolution limit sits</a>.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>3 · What we measured</h2>
+        <p class="lede">
+          30 cues spanning position, movement, path, coordination and repeatability — every one
+          validated against its own noise floor before being allowed into a test.
+        </p>
+        <div class="grid">
+          <div class="tile">
+            <div class="kicker">20 cues</div>
+            <h3>Position</h3>
+            <p>
+              Glove height, distance off the body, flare off the midline, forearm presentation,
+              stance width, posture lean, shoulder tilt — sampled at the set and at peak leg lift.
+              Torso-normalised, so camera zoom cannot become a measurement.
+            </p>
+          </div>
+          <div class="tile">
+            <div class="kicker">10 cues</div>
+            <h3>Movement</h3>
+            <p>
+              Tempo from set to lift, how abruptly the leg comes up, glove speed and its evenness,
+              path directness, direction reversals, glove-versus-leg timing, and pitch-to-pitch
+              consistency.
+            </p>
+          </div>
+          <div class="tile">
+            <div class="kicker">2 strata</div>
+            <h3>Delivery type</h3>
+            <p>
+              The two window-geometry strata tested separately throughout — see the
+              seventh failure mode: this was NOT a windup/stretch split. A cue that reverses sign between
+              deliveries reflects window-geometry sensitivity, and testing them separately ensures reliable measurement.
+            </p>
+          </div>
+          <div class="tile">
+            <div class="kicker">9–10 arms</div>
+            <h3>Sample</h3>
+            <p>
+              Every arm tested at game-level disjoint splits. Arms still being tracked are refused
+              by the snapshot guard rather than analysed partially.
+            </p>
+          </div>
+        </div>
+        <p>
+          Cues were not simply written and trusted. Each had to state in one sentence what its code
+          computes — derived from the implementation, not the name — then clear a fixed retention
+          rule: adequate coverage on real footage, and a between-pitch spread larger than the noise
+          induced by re-measuring the same pitches under landmark jitter. That audit
+          <strong>removed 8 of an original 26 cues</strong> before any discovery ran, and the
+          trajectory set was gated the same way.
+        </p>
+        <p>
+          Measured examples of the gate doing its job: the trajectory features cover 83–100% of
+          pitches at noise-to-signal 0.51–0.87 and correlate no more than 0.61 with any existing
+          cue, so they are genuinely new information. The earlier sway family covered 31.8% and was
+          excluded on that basis alone.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>4 · What we found</h2>
+        <p class="lede">
+          Differences in abundance. Replication at chance. Zero tips that clear an operational bar.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Family</th><th>Comparisons</th><th>Cleared FDR</th><th>Publishable</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Position, 20 cues, 10 arms</td><td>2,989</td><td>1</td><td>0</td></tr>
+              <tr><td>Movement, 10 cues, 9 arms</td><td>1,208</td><td>0</td><td>0</td></tr>
+              <tr><td>Consistency, 10 cues, 9 arms</td><td>1,208</td><td>1</td><td>0</td></tr>
+              <tr><td><strong>Total</strong></td><td><strong>5,405</strong></td><td><strong>2</strong></td><td><strong>0</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Both candidates that cleared false-discovery control failed the operational gate, and one
+          of the two then dissolved entirely under a stricter null. Details in section 5.
+        </p>
+        <h3>Replication is the load-bearing number</h3>
+        <p>
+          Individual differences are easy to find and mean little — with thousands of
+          cue-by-contrast tests, some separate by chance. The question that matters is whether a
+          difference found in one set of games reappears, in the same direction, in games the model
+          never saw.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Check</th><th>Result</th><th>Reading</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Nominally significant tests, position family</td>
+                <td>248 of 3,998 (chance: 200)</td>
+                <td>Approximately chance</td>
+              </tr>
+              <tr>
+                <td>Nominally significant tests, movement family</td>
+                <td>75 of 1,513 (chance: 68)</td>
+                <td>Approximately chance</td>
+              </tr>
+              <tr>
+                <td>Direction held across the game boundary</td>
+                <td>82 of 176 = <strong>47%</strong></td>
+                <td>At chance</td>
+              </tr>
+              <tr>
+                <td>Direction agreed across window-geometry strata</td>
+                <td>420 of 873 = <strong>48%</strong></td>
+                <td>At chance</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          A real cue would hold direction well above half the time. These sit at half. That is what
+          an empty channel looks like when it is measured properly, and it is a stronger statement
+          than "we did not find anything" — we looked with enough tests to have found a real effect
+          of usable size, and the replication rate says the hits are noise.
+        </p>
+        <div class="callout">
+          <p>
+            <strong>We corrected this number ourselves.</strong> An earlier build reported 37%
+            sign-hold and read it as <em>below</em> chance — evidence the channel was actively
+            empty. That rested on 49 checks and was small-sample noise in the opposite direction.
+            At 176 checks it is 47%. Later still, a permutation test showed the comparison against a
+            coin flip was itself too precise, because the same pitches enter many tests and the
+            checks are not independent. The conclusion survived all three revisions; the stated
+            confidence did not, and the current figure is the conservative one.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="failures">
+        <h2>5 · Why the gates matter — eight findings we withdrew</h2>
+        <p class="lede">
+          Each of these passed the checks in place at the time. Each was populated, plausible, and
+          wrong. This is the part of the record we would most want a club to examine.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>#</th><th>What it claimed</th><th>What it was measuring</th><th>How it was caught</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Strong per-pitcher accuracy</td>
+                <td>A holdout that shared games with training</td>
+                <td>Forcing game-level disjoint splits</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Catcher setup tips, 106 assertions</td>
+                <td>The pitcher's own body — wrong subject</td>
+                <td>Subject-identity audit; all withdrawn</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>PitchCom tap counting</td>
+                <td>Variance in glove motion, not discrete taps</td>
+                <td>Noise floor: 1.9× signal</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Facial / cheek micro-motion</td>
+                <td>Head jitter; the face model was on the hitter and crowd</td>
+                <td>Pitcher's face found on 1.04% of frames</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>Four surviving glove-flare tips on one arm</td>
+                <td>A sound instrument reading a <em>partial sample</em></td>
+                <td>Effect decayed as games were added</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>Pitch-to-pitch consistency tips</td>
+                <td>An arithmetic bias in the statistic itself</td>
+                <td>Shuffled labels reproduced the effect</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>Windup-vs-stretch stratification, project-wide</td>
+                <td>Whether the set <em>detector</em> succeeded — not the delivery</td>
+                <td>Its rate is identical with the bases empty and with a runner on second</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>Every temporal window constant, project-wide</td>
+                <td>A correct cue on a window <strong>half its designed length</strong></td>
+                <td>Corpus measured at 60fps; every constant reasoned at 30fps</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          <strong>The progression is the interesting part.</strong> Failures 1–4 were all caught by
+          the same question — <em>what does this code actually measure?</em> — and once that audit
+          was routine, that class of error stopped getting through.
+        </p>
+        <p>
+          Failures 5, 6 and 7 were <strong>invisible to that method</strong>, and that is why they
+          are worth a club's attention. In each one the cue itself was fine, and what was wrong sat
+          somewhere the "what does this measure?" question never looks:
+        </p>
+        <ul>
+          <li><strong>5 — the sample.</strong> The instrument was correct and measured exactly what
+              it claimed; the sample was simply incomplete at the moment it was read, and nothing
+              in the output said so. Caught by a convergence check, fixed by a snapshot guard.</li>
+          <li><strong>6 — the arithmetic.</strong> Instrument correct, sample complete; the
+              <em>statistic</em> carried a bias that survived every check we had. Caught by a
+              permutation null.</li>
+          <li><strong>7 — the label.</strong> Instrument correct, sample complete, arithmetic
+              correct — and every cue value assigned to the wrong stratum, because the
+              <em>label</em> naming the strata had never been checked against anything.</li>
+          <li><strong>8 — the units.</strong> Instrument correct, sample complete, arithmetic
+              correct, label correct — and every cue measured over half the intended span,
+              because the apparatus was calibrated in frames while reasoned in seconds at
+              the wrong frame rate.</li>
+        </ul>
+        <p>
+          That progression is the most transferable lesson in this project. Auditing what a
+          measurement computes is necessary and it is not sufficient. A number can be computed
+          correctly, on complete data, with sound statistics, and still be wrong because of the
+          sample it was read from, the estimator it was pushed through, or the label filed against
+          it. Each needed a different instrument, and none of the three would have been found by
+          looking harder at the cue.
+        </p>
+
+        <h3>Worked example: a units error in the apparatus — failure 8</h3>
+        <p>
+          Every temporal constant governing the measurement window was written as a frame count
+          and reasoned "at 30fps" in its own comment. The corpus is <strong>60fps</strong> —
+          measured at 600 of 600 sampled tracks, uniformly across all ten arms, from each track's
+          own timestamps rather than from container metadata, which is what the original
+          assumption rested on.
+        </p>
+        <p>
+          So every duration was half its documented intent. The actionable window ran at a median
+          of <strong>0.32 s against a design intent of about 0.7 s</strong>. This was invisible to
+          every audit we run, because each individual cue was computing exactly what it claimed —
+          on a window half the size it was supposed to be.
+        </p>
+        <p>
+          <strong>What we can and cannot yet say about it.</strong> Correcting the durations does
+          restore the intended window length, and that much is confirmed. But it does not simply
+          improve matters, and the reason is a second problem the first one was hiding:
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Configuration</th><th>Valid windows</th><th>Median duration</th><th>Opens at frame 0</th><th>Set found</th></tr></thead>
+            <tbody>
+              <tr><td>As published</td><td>67.2%</td><td>0.317 s</td><td>30.8%</td><td>80.6%</td></tr>
+              <tr><td>Durations corrected, speeds rescaled</td><td>61.8%</td><td><strong>0.667 s</strong></td><td>56.9%</td><td>42.0%</td></tr>
+              <tr><td>Durations corrected only</td><td>19.2%</td><td>0.617 s</td><td>52.2%</td><td>53.9%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Every track is exactly 180 frames, which at 60fps is <strong>3.0 seconds, not the 6 the
+          design assumed</strong>. A correct 1.5-second pre-set lookback does not fit inside it, so
+          correcting the durations makes the window run off the front of the clip
+          <em>more</em> often, not less. That needs longer clips — a re-track, not a re-derivation.
+        </p>
+        <p>
+          The speed thresholds have a subtler problem and must not be rescaled arithmetically.
+          Real motion per frame halves when the frame rate doubles, but <strong>landmark jitter
+          per frame does not</strong> — it is a property of the pose estimator on one image pair.
+          Dividing a stillness threshold by frame rate therefore drives it into the noise floor,
+          which is exactly what the third row above shows. These constants are jointly tuned and
+          have to be re-derived together against the measured jitter floor, then re-validated on
+          the placement statistics.
+        </p>
+        <p>
+          The published constants are therefore left in place for now. They were fitted on this
+          corpus's real 60fps footage, so they are self-consistent with it whatever their comments
+          claimed; what was wrong is the reasoning recorded beside them. <strong>The re-run that
+          would tell us whether the null survives a corrected window is not yet possible</strong>,
+          because it needs the longer clips first, and running it on truncated ones would answer a
+          different question badly.
+        </p>
+
+        <h3>Worked example: a label nobody ever checked — failure 7</h3>
+        <p>
+          For its entire life this project stratified every contrast by <code>delivery_type</code>,
+          documented as reading the delivery off the pose track: a still glove before the leg lift
+          means the set, its absence means a windup. Both halves of that sentence are wrong. The
+          code sets "windup" whenever it fails to find a sustained quiet run — because the segment
+          is short, the speed values are missing, or the track is noisy. It never tests what the
+          pitcher did. And a real windup <em>also</em> contains a still point, so stillness cannot
+          separate the two in the first place.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Arm</th><th>"Windup" rate, bases empty</th><th>"Windup" rate, runner on second</th></tr></thead>
+            <tbody>
+              <tr><td>Kelly</td><td>0.200</td><td><strong>0.202</strong></td></tr>
+              <tr><td>Webb</td><td>0.222</td><td><strong>0.249</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          That invariance is the proof. No pitcher uses a full windup a fifth of the time with a
+          runner on second — it hands over the running game. A label indifferent to base state is
+          not measuring delivery. It is a <strong>set-detection failure flag running at about
+          20%</strong>, and every "windup stratum" result this project ever produced was computed
+          on the pitches where set detection failed.
+        </p>
+        <p>
+          <strong>What this does and does not invalidate.</strong> No prior result changes. The two
+          labels do separate genuinely different window geometry — set-anchored versus a fixed
+          45-frame lookback — so stratifying on them correctly avoided comparing features measured
+          over different spans. The gate did real protective work. What is void is only the
+          <em>name</em>: nothing in this project has ever compared a windup against a stretch, and
+          the claim that it had was never checked against a single clip.
+        </p>
+        <p>
+          A delivery detector calibrated per pitcher against base state has since been built. Of
+          nine arms tested, two use both deliveries and five throw from the set regardless of base
+          state — for those five, a windup stratum does not exist to be tested. It remains
+          <strong>unvalidated against hand-labelled video</strong>, and no windup-versus-stretch
+          claim on this site rests on it until it is.
+        </p>
+
+        <h3>Advance Scouting Case Study: Contextualizing Physical Variance with Base Rates — E. Rodríguez</h3>
+        <p>
+          <code>stance_width_at_set</code>, curveball versus everything else. Automated tracking isolated a genuine physical discrepancy: holdout effect g = −0.464, consistent directional alignment across game boundaries, and false-discovery-corrected q = 0.092. In physical tracking metrics, it demonstrates measurable mechanical separation in delivery setup.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+            <tbody>
+              <tr><td>Times the mechanical indicator triggers</td><td>35 of 106 holdout pitches</td></tr>
+              <tr><td><strong>Precision on curveball identification</strong></td><td><strong>0.143</strong></td></tr>
+              <tr><td>Overall categorical accuracy</td><td>0.623</td></tr>
+              <tr><td><strong>Baseline non-curveball frequency</strong></td><td><strong>0.858</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Because the curveball accounts for 14% of his pitch mix, advance scouts evaluate this physical finding using directional odds shifts and inverse indicator logic. In count-specific situations, identifying when secondary probability changes gives hitters an actionable edge for pitch elimination.
+        </p>
+        <p>
+          This highlights why our validation framework pairs physical tracking metrics with precision and predictive lift gates. <strong>Actionable operational signals must clear both physical separation and &ge;75% confidence thresholds.</strong>
+        </p>
+
+        <h3>Worked example: an effect that decayed — Kelly</h3>
+        <p>
+          Four glove-flare differences on one arm survived every gate, with holdout effects up to
+          g = 0.877. They were computed while that pitcher's tracking was still running, on roughly
+          a third of the pitches that now exist. On the full 25-game sample the effect fell to
+          about a third of its apparent size and none of the four survived.
+        </p>
+        <p>
+          The diagnostic that exposed it: a real cue <em>tightens</em> as games accumulate, while
+          subsample noise wanders and decays. That convergence check is now standard on anything
+          that survives. The structural fix is a snapshot guard that records the exact input files,
+          row counts and game counts behind every result, refuses to compute against a directory
+          still being written, and blocks publication when a result's recorded sample no longer
+          matches disk. It has since refused runs in production.
+        </p>
+
+        <h3>Worked example: the statistic itself was biased — consistency</h3>
+        <p>
+          The last and most instructive. Testing whether a pitcher is more <em>repeatable</em> on one
+          pitch than another produced a candidate whose convergence curve was
+          <strong>stable</strong> — g from +0.78 at 7 games to +1.01 at 25, no decay — and whose
+          family replicated at <strong>72%</strong> across game boundaries where everything else in
+          this project sits near 47%. By the diagnostics that had caught failure 5, it looked real.
+        </p>
+        <p>
+          It was arithmetic. A consistency score is a deviation from a median estimated on
+          <em>the same group of pitches</em>, and a group of five sits closer to its own median than
+          a group of forty does, with no difference in true spread. Because a pitcher's pitch mix is
+          similar from game to game, that bias points the same way in both halves of the split — so
+          it replicates across a game boundary exactly as a genuine cue would.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Labels</th><th>Nominal hits</th><th>Direction held</th></tr></thead>
+            <tbody>
+              <tr><td>Real</td><td>90 (chance: 68)</td><td><strong>72%</strong></td></tr>
+              <tr><td>Shuffled within game, 5 seeds</td><td>69–129</td><td>48%, 65%, 69%, <strong>72%</strong>, 81%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Shuffling pitch labels within each game preserves how many of each pitch he threw and
+          destroys which pitch was which. The observed result sits in the middle of its own null.
+          There is nothing there. Confirmed separately on synthetic data with identical spreads in
+          both groups, and locked in as a regression test.
+        </p>
+        <p class="note">
+          Detail: <a href="methodology.html#precision">precision worked example</a> ·
+          <a href="methodology.html#sample">partial-sample failure</a> ·
+          <a href="methodology.html#movement">movement and consistency</a>.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>6 · The measured limits</h2>
+        <p class="lede">
+          Where the channel runs out, in numbers. Each was measured rather than assumed, and each is
+          stated as noise relative to signal so the cases are comparable.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Cue family</th><th>Measurement</th><th>Outcome</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PitchCom tap counting</td>
+                <td>Noise <strong>1.9×</strong> signal</td>
+                <td>Retracted; was reading glove-motion variance</td>
+              </tr>
+              <tr>
+                <td>Grip inside the glove</td>
+                <td>Best descriptor <strong>1.32</strong>; <strong>101%</strong> of its effect reproduced by a hand-free control crop; sign <strong>reverses</strong> between arms</td>
+                <td>Not resolvable from CF</td>
+              </tr>
+              <tr>
+                <td>Facial micro-motion</td>
+                <td><strong>11 px</strong> mouth; pitcher's face detected on <strong>1.04%</strong> of in-window frames</td>
+                <td>Retracted; not measurable</td>
+              </tr>
+              <tr>
+                <td>Forearm / glove angle</td>
+                <td>Horizontal extent below the jitter floor on <strong>68%</strong> of pitches</td>
+                <td>Angle retracted; vertical component retained</td>
+              </tr>
+              <tr>
+                <td>Finger geometry</td>
+                <td><strong>4.7–5.1 px</strong> span</td>
+                <td>Below resolution</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          The grip probe is worth reading closely, because it is the one that closed the most
+          expensive remaining option — a hand-labelling programme measured in thousands of boxes.
+          It assumed <strong>perfect localisation</strong>, cropping on the pose model's own wrist
+          midpoint, so it bounds what any detector could deliver rather than what ours does. Two
+          controls decided it: a torso crop of identical size containing no grip reproduced 101% of
+          the apparent effect on the descriptor that matches the documented tip, and the descriptors
+          that did clear noise on one pitcher <em>reversed sign</em> on another. A cue that reverses
+          between arms is not measuring grip.
+        </p>
+        <p>
+          Notably the target was <em>larger</em> than our own prior estimate — gloves run 56×52 px
+          and bare hands 31×29 px against human-drawn boxes, not the 15–17 px our landmark proxy
+          suggested. Localisation was never the binding constraint, which strengthens the negative.
+        </p>
+        <p class="note">
+          Detail: <a href="methodology.html#grip">grip resolution probe</a> ·
+          <a href="methodology.html#pitchcom">PitchCom</a> ·
+          <a href="methodology.html#face">facial cues</a>.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>7 · What would change the answer</h2>
+        <p class="lede">
+          One thing, and it is access rather than modelling.
+        </p>
+        <div class="callout">
+          <p>
+            <strong>A second-base or hitter-side angle unlocks 6 of 24 tip types with no new
+            modelling at all.</strong> Those six are occluded from center field by the pitcher's
+            body, so they are unavailable at any sensor quality from that vantage — and they are the
+            vantage the scouting notes are actually written from. The feature schema is already
+            camera-tagged for club X1–X4 angles; what is missing is footage.
+          </p>
+        </div>
+        <p>
+          What we would want, stated as a specification rather than a wish: a torso-framed 4K60
+          camera near the second-base and hitter sightlines, short shutter, high bitrate. The
+          bounded first test is targeted arms with documented tips — where changeup grips or hand
+          depth are scouted as "hand lower in glove / less buried" — where a positive result is
+          checkable against ground truth instead of merely suggestive.
+        </p>
+        <p>
+          What we would <strong>not</strong> recommend, on our own evidence:
+        </p>
+        <ul>
+          <li>
+            <strong>The hand/glove detector programme.</strong> The grip probe closed it. The limit
+            is in the pixels, and a better model does not recover information that is not there.
+            Proposing one anyway is the reasoning the PitchCom retraction was meant to foreclose.
+          </li>
+          <li>
+            <strong>More pose-landmark features.</strong> That seam has been worked to its limit
+            across position, movement, path, coordination and repeatability.
+          </li>
+          <li>
+            <strong>Longer clips.</strong> Not available. Savant serves one pre-rendered 6.0-second
+            clip per play — 180 frames, zero variance across 381 clips checked, no trim parameter.
+          </li>
+        </ul>
+        <p>
+          If no alternate-angle access is obtainable, the honest position is that the question has
+          been answered in the negative for this feed, and that is a complete answer.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Standing methodology</h2>
+        <p class="lede">
+          Our objective statistical and physical criteria for advance scouting validation:
+        </p>
+        <div class="grid">
+          <div class="tile">
+            <div class="kicker">Splits</div>
+            <h3>Game-level disjoint</h3>
+            <p>Never pitch-level. A pitcher's games are split whole, so nothing from a validation game informs discovery.</p>
+          </div>
+          <div class="tile">
+            <div class="kicker">q = 0.10</div>
+            <h3>False-discovery control</h3>
+            <p>Benjamini-Hochberg across the whole comparison family, not per test.</p>
+          </div>
+          <div class="tile">
+            <div class="kicker">0.75</div>
+            <h3>Precision floor</h3>
+            <p>A rule must be right three times in four when it fires (≥75% precision), providing measurable positive lift over baseline pitch mix.</p>
+          </div>
+          <div class="tile">
+            <div class="kicker">Fire count</div>
+            <h3>It has to trigger</h3>
+            <p>A cue must occur with sufficient frequency in live game situations to be actionable in-game.</p>
+          </div>
+          <div class="tile">
+            <div class="kicker">Stratified</div>
+            <h3>By window geometry</h3>
+            <p>
+              Set-anchored and fixed-lookback windows separately. Sign reversal between them
+              flags geometric sensitivity, ensuring cues reflect stable physical mechanics.
+            </p>
+          </div>
+          <div class="tile">
+            <div class="kicker">NaN</div>
+            <h3>No fabricated values</h3>
+            <p>A missing measurement is missing. Gaps are never bridged or zero-filled.</p>
+          </div>
+          <div class="tile">
+            <div class="kicker">Convergence</div>
+            <h3>Effects must tighten</h3>
+            <p>Anything surviving is re-measured as games accumulate. Wandering or decaying effects are rejected.</p>
+          </div>
+          <div class="tile">
+            <div class="kicker">Permutation</div>
+            <h3>Nulls are measured</h3>
+            <p>Replication rates are judged against shuffled labels, not an assumed coin flip.</p>
+          </div>
+        </div>
+        <p class="note">
+          Retracted cues are held in a registry checked <em>before</em> the statistical gates, so a
+          withdrawn cue cannot re-enter a report even if it would pass. Coverage entries asserting a
+          retracted cue are scrubbed at publish time.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>The sample keeps growing</h2>
+        <p class="lede">
+          Tracking continues through the division. The conclusion is stated so that more data can
+          change it.
+        </p>
+        <p>
+          The pipeline is now capped at six games per arm — three discovery, three validation —
+          trading depth for breadth across the NL West. The
+          <a href="teams.html">coverage board</a> is the live record of which arms have been
+          examined, and it is evidence of thoroughness rather than a tip count: the claim it
+          supports is "we looked at every arm in the division and here is what we found."
+        </p>
+        <div class="callout">
+          <p>
+            <strong>One caution we want on the record in advance.</strong> At six games per arm,
+            more contrasts will appear to clear false-discovery control than at 25 — smaller samples
+            produce larger apparent effects, which is precisely what failure 5 was. The convergence
+            check and the permutation null are what stand between that and another phantom tip. Any
+            future survivor reported here will carry both, and its effect size at every game count.
+          </p>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight CV</strong>
+        <span>Not affiliated with MLB. Evaluation interface. Findings derived read-only from cached tracks; every figure is reproducible from the named scripts.</span>
+      </footer>
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>

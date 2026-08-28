@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Organization Summary — Apex Preflight Computer Vision</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body data-page="team">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+        <nav class="nav">
+          <a href="index.html">Overview</a>
+          <a href="teams.html" aria-current="page">Coverage Board</a>
+          <a href="board.html">Ranked Leads</a>
+          <a href="progress.html">Live scale</a>
+          <a href="label.html">Label</a>
+          <a href="methodology.html">System</a>
+          <a href="analysis.html">Evaluation</a>
+        </nav>
+      </header>
+
+      <section class="section">
+        <p class="lede"><a href="teams.html">← Coverage board</a></p>
+        <div class="eyebrow">Organization Summary</div>
+        <h2 id="team-title">Organization</h2>
+        <p class="lede" id="team-lede"></p>
+
+        <div class="panel" style="margin-bottom: 1.5rem">
+          <h3>Pitchers Under Computer Vision Tracking</h3>
+          <div id="player-grid" class="grid"></div>
+        </div>
+
+        <div class="panel" style="margin-bottom: 1.5rem">
+          <h3>Catchers Under Computer Vision Tracking</h3>
+          <p class="note">Pre-pitch target drift, setup crouch depth, stance width, and glove motion dynamics isolated from broadcast CF.</p>
+          <div id="catcher-grid" class="grid"></div>
+        </div>
+
+        <div class="panel" style="margin-bottom: 1.5rem">
+          <h3>Top Measured Mechanical Indicators (Team Rollup)</h3>
+          <div id="team-tips" class="tip-list"></div>
+        </div>
+
+        <div class="panel">
+          <h3>Catcher Setup Tracking</h3>
+          <p class="note">Pre-pitch catcher target placement, stance width, and glove height before delivery initiation.</p>
+          <div id="team-catcher-tips" class="tip-list"></div>
+        </div>
+        <p id="boot-fail" class="note" hidden>Unable to load organization data.</p>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight Computer Vision</strong>
+        <span>Open an individual pitcher dossier for detailed visual cue breakdowns, detection stills, and situation coverage.</span>
+      </footer>
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>

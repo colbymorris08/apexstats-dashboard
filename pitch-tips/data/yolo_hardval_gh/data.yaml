@@ -1,0 +1,7 @@
+path: /Users/colbymorris/apexstats/pitch-tips/data/yolo_hardval_gh
+train: images/train
+val: images/val
+nc: 2
+names:
+  0: pitcher_glove
+  1: bare_hand

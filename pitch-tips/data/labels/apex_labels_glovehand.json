@@ -1,0 +1,2322 @@
+{
+ "format": "apex-parts-labels-v1",
+ "angle": "CF",
+ "classes": [
+  {
+   "name": "pitcher_glove"
+  },
+  {
+   "name": "bare_hand"
+  }
+ ],
+ "note": "specialist subset: ['pitcher_glove', 'bare_hand']",
+ "images": [
+  {
+   "id": "bryan_woo_poc_CH_4f1b89ea_f136",
+   "file_name": "media/detection/label_pool/bryan_woo_poc_CH_4f1b89ea_f136.jpg",
+   "pitcher": "Bryan Woo",
+   "team": "SEA",
+   "pitchType": "CH",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.490433,
+      0.615041,
+      0.031115,
+      0.050212
+     ],
+     "xywh": [
+      0.474875,
+      0.589935,
+      0.031115,
+      0.050212
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_CU_0bf02d88_f154",
+   "file_name": "media/detection/label_pool/bryan_woo_poc_CU_0bf02d88_f154.jpg",
+   "pitcher": "Bryan Woo",
+   "team": "SEA",
+   "pitchType": "CU",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.407815,
+      0.702486,
+      0.032194,
+      0.040465
+     ],
+     "xywh": [
+      0.391718,
+      0.682253,
+      0.032194,
+      0.040465
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.482169,
+      0.644811,
+      0.04948,
+      0.069489
+     ],
+     "xywh": [
+      0.457429,
+      0.610067,
+      0.04948,
+      0.069489
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_FF_00caaec5_f12",
+   "file_name": "media/detection/candidates/bryan_woo_poc_FF_00caaec5_f12.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.528347,
+      0.549484,
+      0.025761,
+      0.054684
+     ],
+     "xywh": [
+      0.515467,
+      0.522142,
+      0.025761,
+      0.054684
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.526921,
+      0.556613,
+      0.011228,
+      0.03267
+     ],
+     "xywh": [
+      0.521307,
+      0.540278,
+      0.011228,
+      0.03267
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_FF_00caaec5_f24",
+   "file_name": "media/detection/candidates/bryan_woo_poc_FF_00caaec5_f24.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.526136,
+      0.524628,
+      0.01676,
+      0.043818
+     ],
+     "xywh": [
+      0.517756,
+      0.502719,
+      0.01676,
+      0.043818
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_FF_00caaec5_f36",
+   "file_name": "media/detection/candidates/bryan_woo_poc_FF_00caaec5_f36.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.522071,
+      0.526329,
+      0.022343,
+      0.039302
+     ],
+     "xywh": [
+      0.5109,
+      0.506678,
+      0.022343,
+      0.039302
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.521196,
+      0.536223,
+      0.010802,
+      0.019277
+     ],
+     "xywh": [
+      0.515795,
+      0.526585,
+      0.010802,
+      0.019277
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_FF_00caaec5_f48",
+   "file_name": "media/detection/candidates/bryan_woo_poc_FF_00caaec5_f48.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.525358,
+      0.549178,
+      0.020008,
+      0.051682
+     ],
+     "xywh": [
+      0.515354,
+      0.523337,
+      0.020008,
+      0.051682
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.531773,
+      0.535963,
+      0.043132,
+      0.064354
+     ],
+     "xywh": [
+      0.510207,
+      0.503786,
+      0.043132,
+      0.064354
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_FF_0549d378_f12",
+   "file_name": "media/detection/candidates/bryan_woo_poc_FF_0549d378_f12.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.358145,
+      0.474665,
+      0.037841,
+      0.059355
+     ],
+     "xywh": [
+      0.339225,
+      0.444988,
+      0.037841,
+      0.059355
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.358271,
+      0.487127,
+      0.010843,
+      0.030562
+     ],
+     "xywh": [
+      0.352849,
+      0.471846,
+      0.010843,
+      0.030562
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_FF_0549d378_f24",
+   "file_name": "media/detection/candidates/bryan_woo_poc_FF_0549d378_f24.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.352413,
+      0.466801,
+      0.010623,
+      0.025198
+     ],
+     "xywh": [
+      0.347102,
+      0.454202,
+      0.010623,
+      0.025198
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.35774,
+      0.459826,
+      0.025812,
+      0.05254
+     ],
+     "xywh": [
+      0.344833,
+      0.433557,
+      0.025812,
+      0.05254
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_FF_0549d378_f36",
+   "file_name": "media/detection/candidates/bryan_woo_poc_FF_0549d378_f36.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.358053,
+      0.468676,
+      0.024037,
+      0.061499
+     ],
+     "xywh": [
+      0.346034,
+      0.437927,
+      0.024037,
+      0.061499
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.358376,
+      0.4729,
+      0.011618,
+      0.028035
+     ],
+     "xywh": [
+      0.352567,
+      0.458882,
+      0.011618,
+      0.028035
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_FF_0549d378_f48",
+   "file_name": "media/detection/candidates/bryan_woo_poc_FF_0549d378_f48.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.360395,
+      0.505912,
+      0.016673,
+      0.033901
+     ],
+     "xywh": [
+      0.352059,
+      0.488961,
+      0.016673,
+      0.033901
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.359315,
+      0.505697,
+      0.030821,
+      0.062794
+     ],
+     "xywh": [
+      0.343905,
+      0.4743,
+      0.030821,
+      0.062794
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_SL_138babe9_f12",
+   "file_name": "media/detection/candidates/bryan_woo_poc_SL_138babe9_f12.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "SL",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.387411,
+      0.577054,
+      0.041074,
+      0.07886
+     ],
+     "xywh": [
+      0.366874,
+      0.537624,
+      0.041074,
+      0.07886
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_SL_138babe9_f24",
+   "file_name": "media/detection/candidates/bryan_woo_poc_SL_138babe9_f24.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "SL",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.387401,
+      0.578869,
+      0.037892,
+      0.089078
+     ],
+     "xywh": [
+      0.368455,
+      0.53433,
+      0.037892,
+      0.089078
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_SL_138babe9_f36",
+   "file_name": "media/detection/candidates/bryan_woo_poc_SL_138babe9_f36.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "SL",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.383136,
+      0.576356,
+      0.044256,
+      0.063707
+     ],
+     "xywh": [
+      0.361008,
+      0.544502,
+      0.044256,
+      0.063707
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bryan_woo_poc_SL_138babe9_f48",
+   "file_name": "media/detection/candidates/bryan_woo_poc_SL_138babe9_f48.jpg",
+   "pitcher": "Bryan Woo",
+   "pitchType": "SL",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.388181,
+      0.5645,
+      0.057526,
+      0.07543
+     ],
+     "xywh": [
+      0.359418,
+      0.526785,
+      0.057526,
+      0.07543
+     ]
+    }
+   ]
+  },
+  {
+   "id": "drew_thorpe_poc_CH_362ae294_f148",
+   "file_name": "media/detection/label_pool/drew_thorpe_poc_CH_362ae294_f148.jpg",
+   "pitcher": "Drew Thorpe",
+   "team": "CWS",
+   "pitchType": "CH",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.382589,
+      0.485037,
+      0.029315,
+      0.040018
+     ],
+     "xywh": [
+      0.367931,
+      0.465028,
+      0.029315,
+      0.040018
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.394139,
+      0.4816,
+      0.052538,
+      0.06694
+     ],
+     "xywh": [
+      0.36787,
+      0.44813,
+      0.052538,
+      0.06694
+     ]
+    }
+   ]
+  },
+  {
+   "id": "drew_thorpe_poc_FC_28001c3b_f175",
+   "file_name": "media/detection/label_pool/drew_thorpe_poc_FC_28001c3b_f175.jpg",
+   "pitcher": "Drew Thorpe",
+   "team": "CWS",
+   "pitchType": "FC",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.399391,
+      0.556979,
+      0.039163,
+      0.058637
+     ],
+     "xywh": [
+      0.37981,
+      0.527661,
+      0.039163,
+      0.058637
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.392262,
+      0.579679,
+      0.015777,
+      0.029302
+     ],
+     "xywh": [
+      0.384373,
+      0.565028,
+      0.015777,
+      0.029302
+     ]
+    }
+   ]
+  },
+  {
+   "id": "drew_thorpe_poc_FF_ee77fcc7_f158",
+   "file_name": "media/detection/label_pool/drew_thorpe_poc_FF_ee77fcc7_f158.jpg",
+   "pitcher": "Drew Thorpe",
+   "team": "CWS",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.388849,
+      0.473519,
+      0.022845,
+      0.037754
+     ],
+     "xywh": [
+      0.377427,
+      0.454642,
+      0.022845,
+      0.037754
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.401528,
+      0.467144,
+      0.064247,
+      0.066337
+     ],
+     "xywh": [
+      0.369405,
+      0.433976,
+      0.064247,
+      0.066337
+     ]
+    }
+   ]
+  },
+  {
+   "id": "eduardo_rodriguez_poc_CH_e12a3906_f155",
+   "file_name": "media/detection/label_pool/eduardo_rodriguez_poc_CH_e12a3906_f155.jpg",
+   "pitcher": "Eduardo Rodriguez",
+   "team": "ARI",
+   "pitchType": "CH",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.305272,
+      0.418662,
+      0.050986,
+      0.082401
+     ],
+     "xywh": [
+      0.279779,
+      0.377462,
+      0.050986,
+      0.082401
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.315452,
+      0.417392,
+      0.016551,
+      0.028685
+     ],
+     "xywh": [
+      0.307177,
+      0.403049,
+      0.016551,
+      0.028685
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ff_flare_009dc5d3_a_f116",
+   "file_name": "media/detection/candidates/ff_flare_009dc5d3_a_f116.jpg",
+   "pitcher": "unknown",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.362494,
+      0.548818,
+      0.042814,
+      0.071051
+     ],
+     "xywh": [
+      0.341087,
+      0.513292,
+      0.042814,
+      0.071051
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_brandon_pfaadt_poc_7aab5a01_f176",
+   "file_name": "media/detection/hard_gloves/hard_brandon_pfaadt_poc_7aab5a01_f176.jpg",
+   "pitcher": "Brandon Pfaadt",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.47139,
+      0.424443,
+      0.053655,
+      0.058269
+     ],
+     "xywh": [
+      0.444563,
+      0.395308,
+      0.053655,
+      0.058269
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_brandon_pfaadt_poc_89022ef5_f254",
+   "file_name": "media/detection/hard_gloves/hard_brandon_pfaadt_poc_89022ef5_f254.jpg",
+   "pitcher": "Brandon Pfaadt",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.297783,
+      0.531271,
+      0.045966,
+      0.061489
+     ],
+     "xywh": [
+      0.2748,
+      0.500526,
+      0.045966,
+      0.061489
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_brandon_pfaadt_poc_c72d1b9d_f279",
+   "file_name": "media/detection/hard_gloves/hard_brandon_pfaadt_poc_c72d1b9d_f279.jpg",
+   "pitcher": "Brandon Pfaadt",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.216452,
+      0.551921,
+      0.046974,
+      0.071502
+     ],
+     "xywh": [
+      0.192965,
+      0.51617,
+      0.046974,
+      0.071502
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_bryan_woo_poc_04021632_f183",
+   "file_name": "media/detection/hard_gloves/hard_bryan_woo_poc_04021632_f183.jpg",
+   "pitcher": "Bryan Woo",
+   "team": "SEA",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.437401,
+      0.565792,
+      0.044622,
+      0.056436
+     ],
+     "xywh": [
+      0.41509,
+      0.537574,
+      0.044622,
+      0.056436
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_bryan_woo_poc_083eec72_f261",
+   "file_name": "media/detection/hard_gloves/hard_bryan_woo_poc_083eec72_f261.jpg",
+   "pitcher": "Bryan Woo",
+   "team": "SEA",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.274014,
+      0.548255,
+      0.036108,
+      0.083612
+     ],
+     "xywh": [
+      0.25596,
+      0.50645,
+      0.036108,
+      0.083612
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_bryan_woo_poc_1f0ce4ac_f261",
+   "file_name": "media/detection/hard_gloves/hard_bryan_woo_poc_1f0ce4ac_f261.jpg",
+   "pitcher": "Bryan Woo",
+   "team": "SEA",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.268848,
+      0.666839,
+      0.052772,
+      0.059717
+     ],
+     "xywh": [
+      0.242462,
+      0.63698,
+      0.052772,
+      0.059717
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_bryan_woo_poc_247d58a4_f168",
+   "file_name": "media/detection/hard_gloves/hard_bryan_woo_poc_247d58a4_f168.jpg",
+   "pitcher": "Bryan Woo",
+   "team": "SEA",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.352619,
+      0.510408,
+      0.032007,
+      0.073467
+     ],
+     "xywh": [
+      0.336616,
+      0.473675,
+      0.032007,
+      0.073467
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_bryan_woo_poc_247d58a4_f313",
+   "file_name": "media/detection/hard_gloves/hard_bryan_woo_poc_247d58a4_f313.jpg",
+   "pitcher": "Bryan Woo",
+   "team": "SEA",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.245193,
+      0.590897,
+      0.034211,
+      0.069386
+     ],
+     "xywh": [
+      0.228088,
+      0.556204,
+      0.034211,
+      0.069386
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.313097,
+      0.614898,
+      0.043882,
+      0.058765
+     ],
+     "xywh": [
+      0.291156,
+      0.585515,
+      0.043882,
+      0.058765
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_drew_thorpe_poc_0012ba2c_f282",
+   "file_name": "media/detection/hard_gloves/hard_drew_thorpe_poc_0012ba2c_f282.jpg",
+   "pitcher": "Drew Thorpe",
+   "team": "CWS",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.356016,
+      0.604808,
+      0.085798,
+      0.094334
+     ],
+     "xywh": [
+      0.313117,
+      0.557641,
+      0.085798,
+      0.094334
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_drew_thorpe_poc_11e28ff1_f214",
+   "file_name": "media/detection/hard_gloves/hard_drew_thorpe_poc_11e28ff1_f214.jpg",
+   "pitcher": "Drew Thorpe",
+   "team": "CWS",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.412812,
+      0.579617,
+      0.028055,
+      0.091155
+     ],
+     "xywh": [
+      0.398785,
+      0.53404,
+      0.028055,
+      0.091155
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_drew_thorpe_poc_65ea9da4_f227",
+   "file_name": "media/detection/hard_gloves/hard_drew_thorpe_poc_65ea9da4_f227.jpg",
+   "pitcher": "Drew Thorpe",
+   "team": "CWS",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.374477,
+      0.694768,
+      0.023225,
+      0.054462
+     ],
+     "xywh": [
+      0.362865,
+      0.667537,
+      0.023225,
+      0.054462
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.339119,
+      0.589636,
+      0.041638,
+      0.088208
+     ],
+     "xywh": [
+      0.3183,
+      0.545532,
+      0.041638,
+      0.088208
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_drew_thorpe_poc_c55f9eee_f182",
+   "file_name": "media/detection/hard_gloves/hard_drew_thorpe_poc_c55f9eee_f182.jpg",
+   "pitcher": "Drew Thorpe",
+   "team": "CWS",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.388095,
+      0.622051,
+      0.016425,
+      0.05509
+     ],
+     "xywh": [
+      0.379882,
+      0.594506,
+      0.016425,
+      0.05509
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_drew_thorpe_poc_c55f9eee_f223",
+   "file_name": "media/detection/hard_gloves/hard_drew_thorpe_poc_c55f9eee_f223.jpg",
+   "pitcher": "Drew Thorpe",
+   "team": "CWS",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.395322,
+      0.552376,
+      0.032975,
+      0.078954
+     ],
+     "xywh": [
+      0.378834,
+      0.512899,
+      0.032975,
+      0.078954
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_drew_thorpe_poc_e162f57c_f176",
+   "file_name": "media/detection/hard_gloves/hard_drew_thorpe_poc_e162f57c_f176.jpg",
+   "pitcher": "Drew Thorpe",
+   "team": "CWS",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.356295,
+      0.478247,
+      0.037355,
+      0.065458
+     ],
+     "xywh": [
+      0.337618,
+      0.445518,
+      0.037355,
+      0.065458
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_eduardo_rodriguez_poc_6c503f07_f149",
+   "file_name": "media/detection/hard_gloves/hard_eduardo_rodriguez_poc_6c503f07_f149.jpg",
+   "pitcher": "Eduardo Rodriguez",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.506011,
+      0.664738,
+      0.024347,
+      0.031316
+     ],
+     "xywh": [
+      0.493838,
+      0.64908,
+      0.024347,
+      0.031316
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.48419,
+      0.618442,
+      0.043853,
+      0.073001
+     ],
+     "xywh": [
+      0.462263,
+      0.581941,
+      0.043853,
+      0.073001
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_eduardo_rodriguez_poc_6c503f07_f278",
+   "file_name": "media/detection/hard_gloves/hard_eduardo_rodriguez_poc_6c503f07_f278.jpg",
+   "pitcher": "Eduardo Rodriguez",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.571563,
+      0.681535,
+      0.029291,
+      0.074449
+     ],
+     "xywh": [
+      0.556918,
+      0.644311,
+      0.029291,
+      0.074449
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_eduardo_rodriguez_poc_8f50b373_f93",
+   "file_name": "media/detection/hard_gloves/hard_eduardo_rodriguez_poc_8f50b373_f93.jpg",
+   "pitcher": "Eduardo Rodriguez",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.501552,
+      0.653373,
+      0.010941,
+      0.033635
+     ],
+     "xywh": [
+      0.496082,
+      0.636555,
+      0.010941,
+      0.033635
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.499003,
+      0.654431,
+      0.027656,
+      0.062258
+     ],
+     "xywh": [
+      0.485175,
+      0.623302,
+      0.027656,
+      0.062258
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_eduardo_rodriguez_poc_a13a745e_f319",
+   "file_name": "media/detection/hard_gloves/hard_eduardo_rodriguez_poc_a13a745e_f319.jpg",
+   "pitcher": "Eduardo Rodriguez",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.351677,
+      0.569199,
+      0.039724,
+      0.086153
+     ],
+     "xywh": [
+      0.331815,
+      0.526122,
+      0.039724,
+      0.086153
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_eduardo_rodriguez_poc_b214f939_f235",
+   "file_name": "media/detection/hard_gloves/hard_eduardo_rodriguez_poc_b214f939_f235.jpg",
+   "pitcher": "Eduardo Rodriguez",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.495868,
+      0.699421,
+      0.049668,
+      0.0843
+     ],
+     "xywh": [
+      0.471034,
+      0.657271,
+      0.049668,
+      0.0843
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.596622,
+      0.628658,
+      0.02077,
+      0.073932
+     ],
+     "xywh": [
+      0.586237,
+      0.591691,
+      0.02077,
+      0.073932
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_jes\u00fas_luzardo_poc_0b7932d5_f128",
+   "file_name": "media/detection/hard_gloves/hard_jes\u00fas_luzardo_poc_0b7932d5_f128.jpg",
+   "pitcher": "Jesus Luzardo",
+   "team": "PHI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.227128,
+      0.498274,
+      0.023607,
+      0.035326
+     ],
+     "xywh": [
+      0.215325,
+      0.480611,
+      0.023607,
+      0.035326
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.205748,
+      0.490796,
+      0.064954,
+      0.082073
+     ],
+     "xywh": [
+      0.173271,
+      0.44976,
+      0.064954,
+      0.082073
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_jes\u00fas_luzardo_poc_2bb1a380_f123",
+   "file_name": "media/detection/hard_gloves/hard_jes\u00fas_luzardo_poc_2bb1a380_f123.jpg",
+   "pitcher": "Jesus Luzardo",
+   "team": "PHI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.222481,
+      0.505569,
+      0.017285,
+      0.03809
+     ],
+     "xywh": [
+      0.213838,
+      0.486524,
+      0.017285,
+      0.03809
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.212665,
+      0.505174,
+      0.043272,
+      0.089727
+     ],
+     "xywh": [
+      0.191029,
+      0.46031,
+      0.043272,
+      0.089727
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_jes\u00fas_luzardo_poc_3ac9287e_f393",
+   "file_name": "media/detection/hard_gloves/hard_jes\u00fas_luzardo_poc_3ac9287e_f393.jpg",
+   "pitcher": "Jesus Luzardo",
+   "team": "PHI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.262008,
+      0.414971,
+      0.047088,
+      0.089079
+     ],
+     "xywh": [
+      0.238464,
+      0.370431,
+      0.047088,
+      0.089079
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.276004,
+      0.607269,
+      0.025759,
+      0.060375
+     ],
+     "xywh": [
+      0.263125,
+      0.577081,
+      0.025759,
+      0.060375
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_jes\u00fas_luzardo_poc_4bfbee41_f325",
+   "file_name": "media/detection/hard_gloves/hard_jes\u00fas_luzardo_poc_4bfbee41_f325.jpg",
+   "pitcher": "Jesus Luzardo",
+   "team": "PHI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.229067,
+      0.596668,
+      0.026756,
+      0.073861
+     ],
+     "xywh": [
+      0.215689,
+      0.559737,
+      0.026756,
+      0.073861
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_jes\u00fas_luzardo_poc_83e2b02f_f148",
+   "file_name": "media/detection/hard_gloves/hard_jes\u00fas_luzardo_poc_83e2b02f_f148.jpg",
+   "pitcher": "Jesus Luzardo",
+   "team": "PHI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.217187,
+      0.497464,
+      0.046131,
+      0.064324
+     ],
+     "xywh": [
+      0.194121,
+      0.465302,
+      0.046131,
+      0.064324
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.225405,
+      0.504779,
+      0.016596,
+      0.028006
+     ],
+     "xywh": [
+      0.217107,
+      0.490776,
+      0.016596,
+      0.028006
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_merrill_kelly_poc_844ffba6_f306",
+   "file_name": "media/detection/hard_gloves/hard_merrill_kelly_poc_844ffba6_f306.jpg",
+   "pitcher": "Merrill Kelly",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.217882,
+      0.537412,
+      0.053831,
+      0.075816
+     ],
+     "xywh": [
+      0.190966,
+      0.499504,
+      0.053831,
+      0.075816
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.301265,
+      0.538966,
+      0.024,
+      0.051465
+     ],
+     "xywh": [
+      0.289266,
+      0.513233,
+      0.024,
+      0.051465
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_merrill_kelly_poc_94065e8a_f234",
+   "file_name": "media/detection/hard_gloves/hard_merrill_kelly_poc_94065e8a_f234.jpg",
+   "pitcher": "Merrill Kelly",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.308598,
+      0.448915,
+      0.026785,
+      0.071715
+     ],
+     "xywh": [
+      0.295206,
+      0.413057,
+      0.026785,
+      0.071715
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_merrill_kelly_poc_94065e8a_f276",
+   "file_name": "media/detection/hard_gloves/hard_merrill_kelly_poc_94065e8a_f276.jpg",
+   "pitcher": "Merrill Kelly",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.405368,
+      0.568075,
+      0.040641,
+      0.049298
+     ],
+     "xywh": [
+      0.385048,
+      0.543426,
+      0.040641,
+      0.049298
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.294915,
+      0.579354,
+      0.029683,
+      0.060031
+     ],
+     "xywh": [
+      0.280074,
+      0.549339,
+      0.029683,
+      0.060031
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_merrill_kelly_poc_d46d96ce_f239",
+   "file_name": "media/detection/hard_gloves/hard_merrill_kelly_poc_d46d96ce_f239.jpg",
+   "pitcher": "Merrill Kelly",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.36864,
+      0.422489,
+      0.029524,
+      0.051465
+     ],
+     "xywh": [
+      0.353878,
+      0.396756,
+      0.029524,
+      0.051465
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_merrill_kelly_poc_d46d96ce_f345",
+   "file_name": "media/detection/hard_gloves/hard_merrill_kelly_poc_d46d96ce_f345.jpg",
+   "pitcher": "Merrill Kelly",
+   "team": "ARI",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.424353,
+      0.548073,
+      0.043323,
+      0.072292
+     ],
+     "xywh": [
+      0.402692,
+      0.511927,
+      0.043323,
+      0.072292
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.305844,
+      0.548397,
+      0.0417,
+      0.069093
+     ],
+     "xywh": [
+      0.284994,
+      0.513851,
+      0.0417,
+      0.069093
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_taj_bradley_poc_20118b97_f293",
+   "file_name": "media/detection/hard_gloves/hard_taj_bradley_poc_20118b97_f293.jpg",
+   "pitcher": "Taj Bradley",
+   "team": "TB",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.248408,
+      0.639162,
+      0.03236,
+      0.055191
+     ],
+     "xywh": [
+      0.232228,
+      0.611567,
+      0.03236,
+      0.055191
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_taj_bradley_poc_698ca14c_f269",
+   "file_name": "media/detection/hard_gloves/hard_taj_bradley_poc_698ca14c_f269.jpg",
+   "pitcher": "Taj Bradley",
+   "team": "TB",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.34908,
+      0.629235,
+      0.056684,
+      0.093716
+     ],
+     "xywh": [
+      0.320737,
+      0.582377,
+      0.056684,
+      0.093716
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_taj_bradley_poc_9c6b33aa_f109",
+   "file_name": "media/detection/hard_gloves/hard_taj_bradley_poc_9c6b33aa_f109.jpg",
+   "pitcher": "Taj Bradley",
+   "team": "TB",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.3617,
+      0.436593,
+      0.044189,
+      0.092653
+     ],
+     "xywh": [
+      0.339606,
+      0.390266,
+      0.044189,
+      0.092653
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_webb_poc_02ad3e16_f238",
+   "file_name": "media/detection/hard_gloves/hard_webb_poc_02ad3e16_f238.jpg",
+   "pitcher": "Logan Webb",
+   "team": "SF",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.271366,
+      0.652851,
+      0.043933,
+      0.078681
+     ],
+     "xywh": [
+      0.249399,
+      0.613511,
+      0.043933,
+      0.078681
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_webb_poc_056abd25_f161",
+   "file_name": "media/detection/hard_gloves/hard_webb_poc_056abd25_f161.jpg",
+   "pitcher": "Logan Webb",
+   "team": "SF",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.437387,
+      0.546398,
+      0.052635,
+      0.083379
+     ],
+     "xywh": [
+      0.411069,
+      0.504708,
+      0.052635,
+      0.083379
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.27945,
+      0.704331,
+      0.02273,
+      0.075532
+     ],
+     "xywh": [
+      0.268085,
+      0.666565,
+      0.02273,
+      0.075532
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_webb_poc_0f5aef00_f198",
+   "file_name": "media/detection/hard_gloves/hard_webb_poc_0f5aef00_f198.jpg",
+   "pitcher": "Logan Webb",
+   "team": "SF",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.318884,
+      0.651586,
+      0.024393,
+      0.032147
+     ],
+     "xywh": [
+      0.306687,
+      0.635512,
+      0.024393,
+      0.032147
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.333694,
+      0.695011,
+      0.02941,
+      0.078094
+     ],
+     "xywh": [
+      0.318989,
+      0.655965,
+      0.02941,
+      0.078094
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_webb_poc_15109b2c_f164",
+   "file_name": "media/detection/hard_gloves/hard_webb_poc_15109b2c_f164.jpg",
+   "pitcher": "Logan Webb",
+   "team": "SF",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.457713,
+      0.507265,
+      0.05251,
+      0.068272
+     ],
+     "xywh": [
+      0.431458,
+      0.473128,
+      0.05251,
+      0.068272
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.325194,
+      0.603295,
+      0.031364,
+      0.066723
+     ],
+     "xywh": [
+      0.309512,
+      0.569933,
+      0.031364,
+      0.066723
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hard_webb_poc_310bc4c2_f210",
+   "file_name": "media/detection/hard_gloves/hard_webb_poc_310bc4c2_f210.jpg",
+   "pitcher": "Logan Webb",
+   "team": "SF",
+   "pitchType": "?",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.494698,
+      0.686198,
+      0.046792,
+      0.100986
+     ],
+     "xywh": [
+      0.471302,
+      0.635705,
+      0.046792,
+      0.100986
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.455953,
+      0.746831,
+      0.034035,
+      0.042818
+     ],
+     "xywh": [
+      0.438936,
+      0.725422,
+      0.034035,
+      0.042818
+     ]
+    }
+   ]
+  },
+  {
+   "id": "jes\u00fas_luzardo_poc_CH_20056010_f306",
+   "file_name": "media/detection/label_pool/jes\u00fas_luzardo_poc_CH_20056010_f306.jpg",
+   "pitcher": "Jesus Luzardo",
+   "team": "PHI",
+   "pitchType": "CH",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.303711,
+      0.627835,
+      0.049816,
+      0.077047
+     ],
+     "xywh": [
+      0.278803,
+      0.589312,
+      0.049816,
+      0.077047
+     ]
+    }
+   ]
+  },
+  {
+   "id": "jes\u00fas_luzardo_poc_FF_8931a084_f177",
+   "file_name": "media/detection/label_pool/jes\u00fas_luzardo_poc_FF_8931a084_f177.jpg",
+   "pitcher": "Jesus Luzardo",
+   "team": "PHI",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.260268,
+      0.477538,
+      0.028717,
+      0.046186
+     ],
+     "xywh": [
+      0.24591,
+      0.454445,
+      0.028717,
+      0.046186
+     ]
+    },
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.302655,
+      0.617224,
+      0.030627,
+      0.075677
+     ],
+     "xywh": [
+      0.287342,
+      0.579386,
+      0.030627,
+      0.075677
+     ]
+    }
+   ]
+  },
+  {
+   "id": "merrill_kelly_poc_CH_75628f6d_f162",
+   "file_name": "media/detection/label_pool/merrill_kelly_poc_CH_75628f6d_f162.jpg",
+   "pitcher": "Merrill Kelly",
+   "team": "ARI",
+   "pitchType": "CH",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.419958,
+      0.539632,
+      0.045664,
+      0.068432
+     ],
+     "xywh": [
+      0.397127,
+      0.505416,
+      0.045664,
+      0.068432
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.300646,
+      0.490837,
+      0.035255,
+      0.03774
+     ],
+     "xywh": [
+      0.283018,
+      0.471966,
+      0.035255,
+      0.03774
+     ]
+    }
+   ]
+  },
+  {
+   "id": "merrill_kelly_poc_CU_8aacde83_f160",
+   "file_name": "media/detection/label_pool/merrill_kelly_poc_CU_8aacde83_f160.jpg",
+   "pitcher": "Merrill Kelly",
+   "team": "ARI",
+   "pitchType": "CU",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.344505,
+      0.375494,
+      0.045386,
+      0.045684
+     ],
+     "xywh": [
+      0.321812,
+      0.352652,
+      0.045386,
+      0.045684
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.340581,
+      0.385926,
+      0.019033,
+      0.025797
+     ],
+     "xywh": [
+      0.331065,
+      0.373027,
+      0.019033,
+      0.025797
+     ]
+    }
+   ]
+  },
+  {
+   "id": "taj_bradley_poc_FS_c118ed5b_f177",
+   "file_name": "media/detection/label_pool/taj_bradley_poc_FS_c118ed5b_f177.jpg",
+   "pitcher": "Taj Bradley",
+   "team": "TB",
+   "pitchType": "FS",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.427913,
+      0.453988,
+      0.031363,
+      0.036053
+     ],
+     "xywh": [
+      0.412232,
+      0.435962,
+      0.031363,
+      0.036053
+     ]
+    }
+   ]
+  },
+  {
+   "id": "webb_poc_CH_297ce350_f261",
+   "file_name": "media/detection/label_pool/webb_poc_CH_297ce350_f261.jpg",
+   "pitcher": "Logan Webb",
+   "team": "SF",
+   "pitchType": "CH",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.260714,
+      0.718001,
+      0.057979,
+      0.084374
+     ],
+     "xywh": [
+      0.231725,
+      0.675814,
+      0.057979,
+      0.084374
+     ]
+    }
+   ]
+  },
+  {
+   "id": "webb_poc_FF_00d3aeca_f134",
+   "file_name": "media/detection/label_pool/webb_poc_FF_00d3aeca_f134.jpg",
+   "pitcher": "Logan Webb",
+   "team": "SF",
+   "pitchType": "FF",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.491874,
+      0.605007,
+      0.046766,
+      0.077026
+     ],
+     "xywh": [
+      0.468491,
+      0.566494,
+      0.046766,
+      0.077026
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.486943,
+      0.603113,
+      0.013348,
+      0.028515
+     ],
+     "xywh": [
+      0.480269,
+      0.588855,
+      0.013348,
+      0.028515
+     ]
+    }
+   ]
+  },
+  {
+   "id": "webb_poc_SI_05ffbe29_f161",
+   "file_name": "media/detection/label_pool/webb_poc_SI_05ffbe29_f161.jpg",
+   "pitcher": "Logan Webb",
+   "team": "SF",
+   "pitchType": "SI",
+   "angle": "CF",
+   "width": null,
+   "height": null,
+   "boxes": [
+    {
+     "class": "pitcher_glove",
+     "class_id": 0,
+     "yolo": [
+      0.4463,
+      0.591322,
+      0.065223,
+      0.073312
+     ],
+     "xywh": [
+      0.413689,
+      0.554666,
+      0.065223,
+      0.073312
+     ]
+    },
+    {
+     "class": "bare_hand",
+     "class_id": 1,
+     "yolo": [
+      0.294609,
+      0.759595,
+      0.046346,
+      0.082516
+     ],
+     "xywh": [
+      0.271436,
+      0.718337,
+      0.046346,
+      0.082516
+     ]
+    }
+   ]
+  }
+ ]
+}

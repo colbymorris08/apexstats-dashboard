@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Part labeler — Apex Preflight</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="css/label.css" />
+  </head>
+  <body data-page="label">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+        <nav class="nav">
+          <a href="index.html">Overview</a>
+          <a href="teams.html">Coverage Board</a>
+          <a href="board.html">Ranked Leads</a>
+          <a href="progress.html">Live scale</a>
+          <a href="label.html" aria-current="page">Label</a>
+          <a href="methodology.html">System</a>
+          <a href="analysis.html">Evaluation</a>
+        </nav>
+      </header>
+
+      <section class="section">
+        <div class="eyebrow">YOLO / RT-DETR train set · CF angle</div>
+        <h2>Part labeler</h2>
+        <p class="lede">
+          One frame per play, ordered so <strong>every “Next” is a different pitcher</strong> — you
+          get breadth instead of near-duplicate frames of the same arm. Click-drag boxes, then export
+          <strong>JSON for training</strong> plus a <strong>PDF packet</strong> to drop in chat.
+        </p>
+        <div class="cta-row" style="margin-bottom: 1rem">
+          <a class="btn ghost" href="label.html">All 10 parts</a>
+          <a class="btn ghost" href="label.html?set=gloves">Hard gloves · glove + hand only</a>
+          <a class="btn" href="label.html?set=hands">Hand in glove · at lift</a>
+        </div>
+        <p class="note">
+          <strong>Model Training &amp; Fine-Tuning:</strong> Labeling trains the computer vision model to identify anatomical markers and equipment bounding boxes across varied camera angles. Fine-tuning requires diverse training samples per camera angle accounting for lighting variations (dark vs light / day vs night), different stadium backgrounds, jersey colors, player complexions, hand positioning, and glove angles to maximize detection accuracy.
+        </p>
+        <p class="note">
+          <strong>Hand-in-Glove &amp; Occluded Sets:</strong> Frames captured inside the actionable delivery window (set position through peak leg lift). Annotations train the detector to learn degrees of hand burial and exposure inside the glove based on camera angle. Box the visible portion of the hand even when only peeking out of or through the glove; label glove-only when no hand is visible at all. Both are required to fine-tune detection across stadium lighting, jersey colors, and hand positioning.
+        </p>
+
+        <div class="label-layout">
+          <aside class="label-sidebar panel">
+            <h3>Class</h3>
+            <div class="label-classes" id="label-classes"></div>
+            <h3>Frame</h3>
+            <p class="note" id="label-frame-meta">Loading…</p>
+            <div class="label-nav-row">
+              <button type="button" class="btn ghost" id="btn-prev">← Prev</button>
+              <button type="button" class="btn ghost" id="btn-next">Next →</button>
+            </div>
+            <button type="button" class="btn" id="btn-next-unlabeled" style="width: 100%; margin-top: 0.35rem">
+              Next unlabeled (u)
+            </button>
+            <button type="button" class="btn ghost" id="btn-undo" style="width: 100%; margin-top: 0.5rem">
+              Undo last box
+            </button>
+            <button type="button" class="btn ghost" id="btn-clear" style="width: 100%; margin-top: 0.35rem">
+              Clear this frame
+            </button>
+            <h3 style="margin-top: 1.25rem">Export</h3>
+            <button type="button" class="btn" id="btn-export-json" style="width: 100%">
+              Download YOLO JSON
+            </button>
+            <button type="button" class="btn ghost" id="btn-export-pdf" style="width: 100%; margin-top: 0.35rem">
+              Open PDF packet (print)
+            </button>
+            <p class="note" id="label-stats" style="margin-top: 0.75rem"></p>
+            <p class="note">
+              Keys: <code>1–9</code> class · <code>n</code>/<code>p</code> next/prev ·
+              <code>z</code> undo · <code>s</code> save JSON
+            </p>
+          </aside>
+
+          <div class="label-stage panel">
+            <div class="label-canvas-wrap" id="label-canvas-wrap">
+              <img id="label-img" alt="CF frame to label" draggable="false" />
+              <canvas id="label-canvas"></canvas>
+            </div>
+            <ul class="label-box-list" id="label-box-list"></ul>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight CV</strong>
+        <span>Labels → <code>data/labels/</code> · train script: <code>cv/preflight/yolo_from_labels.py</code></span>
+      </footer>
+    </div>
+    <script src="js/label.js" type="module"></script>
+  </body>
+</html>

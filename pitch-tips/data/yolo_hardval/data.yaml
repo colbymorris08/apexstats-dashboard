@@ -1,0 +1,15 @@
+path: /Users/colbymorris/apexstats/pitch-tips/data/yolo_hardval
+train: images/train
+val: images/val
+nc: 10
+names:
+  0: pitcher_glove
+  1: bare_hand
+  2: belt
+  3: cheek
+  4: knee
+  5: catcher_mitt
+  6: catcher_mask
+  7: catcher_shin
+  8: catcher_cleat
+  9: plate

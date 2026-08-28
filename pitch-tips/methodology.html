@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>System — Apex Preflight</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body data-page="methodology">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+        <nav class="nav">
+          <a href="index.html">Overview</a>
+          <a href="teams.html">Coverage Board</a>
+          <a href="board.html">Ranked Leads</a>
+          <a href="progress.html">Live scale</a>
+          <a href="label.html">Label</a>
+          <a href="methodology.html" aria-current="page">System</a>
+          <a href="analysis.html">Evaluation</a>
+        </nav>
+      </header>
+
+      <section class="section prose">
+        <div class="eyebrow">Technical system</div>
+        <h2>Computer vision architecture</h2>
+        <p class="lede" style="color: var(--muted)">
+          Preflight is an operational computer vision "Spot the Difference" proof-of-concept: automated multi-object detection, landmark tracking, and physical movement variation classifiers operating strictly before the hitter's swing decision.
+        </p>
+
+        <div class="callout" style="border-left: 3px solid var(--accent); background: #111a24; margin: 1.25rem 0; padding: 1.25rem;">
+          <h4 style="margin: 0 0 0.5rem; color: var(--accent); font-size: 1rem;">"Spot the Difference" Vision Engine &amp; Enterprise Expansion</h4>
+          <p style="margin: 0 0 0.75rem;">
+            Preflight operates as a dual-stage vision platform:
+          </p>
+          <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.9rem; line-height: 1.6;">
+            <li>
+              <strong>1. Broadcast CF Proof-of-Concept (Current):</strong> Automates high-resolution landmark and bounding-box tracking on center field broadcast video. It pairs pitch executions to isolate physical mechanical variance (glove set position, forearm exposure, torso lean, hand depth, and delivery timing), flagging high-movement anomalies (&ge;75% empirical variation) as immediate scouting leads.
+            </li>
+            <li>
+              <strong>2. Enterprise Club Deployment (The Purchase Expansion):</strong> Upgrades raw detected movement into verified, high-certainty game-planning intelligence by ingesting club-provided multi-angle 4K60 feeds (tight 4K CF, 3B coach dugout, 1B coach, high-home) and continuous clips. Multi-angle data feeds our validated testing framework (out-of-sample permutation null, Youden's J, usage-weighted likelihood ratios) to achieve true &ge;75% predictive power relative to pitch usages.
+            </li>
+          </ul>
+        </div>
+
+        <h3>Objective</h3>
+        <p>
+          For each MLB pitcher in the current season, estimate pitch type from pre-release
+          presentation—without access to the forthcoming pitch identity, post-release trajectory,
+          or on-screen pitch-type overlays.
+        </p>
+
+        <h3>Information barrier</h3>
+        <ul>
+          <li>
+            <strong>Model inputs:</strong> pitcher identity; frames from the pitcher settling
+            into the set through hand break;
+            pre-pitch context (runners: first-only / any-with-2nd / third-only; LHH vs RHH;
+            set-anchored vs fixed-lookback window geometry — not, as previously
+            labelled, windup vs stretch); CV tracks (glove, hands, face, grip visibility, set geometry).
+          </li>
+          <li>
+            <strong>Excluded from features:</strong> Savant pitch-type graphics, Statcast
+            <code>pitch_type</code> for the current pitch, post-release ball flight, release
+            velocity/spin/break of the current pitch.
+          </li>
+          <li>
+            <strong>Labels:</strong> Statcast/Savant pitch type joined by
+            <code>game_pk</code> / <code>play_id</code> after feature extraction.
+          </li>
+        </ul>
+
+        <h3 id="actionability">Actionability window</h3>
+        <p>
+          A tip is only worth anything if someone can act on it. A hitter has to have it before
+          the swing decision; a baserunner or base coach has to have it early enough to see it
+          and relay it. Once the pitcher starts bringing his arm up, the information is
+          worthless no matter how predictive it is.
+        </p>
+        <p>
+          So the feature window is defined by the pitch itself, not by a fixed slice of clip.
+          Every feature is computed over four sources of signal and nothing else:
+        </p>
+        <ul>
+          <li><strong>Coming set</strong> — how he settles into the set.</li>
+          <li><strong>Set position</strong> — the static set itself.</li>
+          <li>
+            <strong>PitchCom</strong> — programming cadence while he is on the rubber, before he
+            comes set. <strong>Broadcast Limit:</strong> On broadcast Savant feeds, video clips start after the pitcher has already settled into the stretch, truncating pre-set PitchCom entry; continuous club video feeds capture full pre-stretch programming.
+          </li>
+          <li>
+            <strong>Catcher setup</strong> — pre-pitch target placement, stance width, crouch depth, and stillness timing before delivery initiation.
+          </li>
+        </ul>
+        <p>
+          The window closes at <strong>hand break</strong> — the bare hand separating from the
+          glove, which is the first frame of arm action. Because the bare hand sits inside the
+          glove right up to that moment, hand break is a detectable event rather than a guess.
+          Frames at or after it are excluded from every feature, and any pitch where the
+          boundary cannot be located is dropped instead of mined. This is deliberately
+          conservative: it costs tips, and a tip that survives it is one a hitter can actually
+          use.
+        </p>
+
+        <h3>Vision stack</h3>
+        <p>
+          <strong>YOLO</strong> is a one-shot object detector: it proposes boxes + classes
+          (person, pitcher glove, catcher mitt, plate, …) in a single pass so tracking starts on
+          the correct object. Landmarks then measure geometry inside those boxes.
+        </p>
+        <ol>
+          <li>
+            <strong>Detection / tracking (YOLO-class)</strong> — detectors for person, pitcher
+            glove, bare hand, belt / hips, cheek region, catcher gear (mask, mitt, shin guards),
+            home plate, and rubber / mound on broadcast and club video. Used to crop the pitcher
+            and to place the glove box on the mitt—not the catcher, batter, or grass.
+          </li>
+          <li>
+            <strong>Multi-angle part isolation</strong> — training images cover every useful
+            view of the pitcher and each part: front, back, open side, glove side, overhead /
+            low, and occluded set. Gloves are labeled pocket-on, back-of-hand, edge-on, and
+            tucked by head/chest so CF and club X1–X4 all resolve the same class. Belt, hands,
+            cheeks, knees, catcher squat/mask/mitt/cleats, and plate get the same treatment.
+            The model’s job is to <em>isolate and identify</em> each part before landmarks run.
+            Club-side labels are collected in the <a href="label.html">Part labeler</a> (JSON +
+            PDF packet) and fine-tuned with Ultralytics YOLO / RT-DETR on Savant CF frames, then
+            expanded to club angles.
+          </li>
+          <li>
+            <strong>Landmarks (MediaPipe)</strong> — pose for belt-relative glove position, hand
+            visibility, set geometry and grip silhouette frames, constrained to the YOLO person /
+            mitt region when available. The face mesh is <em>not</em> a working input on CF: it
+            returns the pitcher’s face on 1.04% of in-window frames, so cheek cues are retracted
+            (see <a href="#face">facial cues</a>).
+          </li>
+          <li>
+            <strong>Camera geometry</strong> — broadcast CF pose calibration; alternate angles use
+            dedicated calibration while sharing the same feature schema.
+          </li>
+          <li>
+            <strong>Temporal features</strong> — aligned to the actionable window, not to
+            release. Features are computed over coming set → set position → catcher setup, and
+            the window is clamped shut just after the top of the leg lift, bounded by arm-action
+            onset. Frames at or after the arm coming up never reach a feature. A pitch whose
+            boundary cannot be located is dropped rather than mined.
+          </li>
+          <li>
+            <strong>Per-pitcher classifiers</strong> — sequence models and interpretable heads
+            trained only on that pitcher’s season pitches.
+          </li>
+        </ol>
+
+        <h3>Validation (operational gate)</h3>
+        <ol>
+          <li>
+            <strong>Detector / box QA</strong> — glove, belt, cheek, catcher, and plate boxes must
+            land on the labeled class from any camera angle used in training (pitcher mitt ≠
+            catcher mitt; belt ≠ grass). Failures block feature use for that pitch until the
+            track is corrected or dropped.
+          </li>
+          <li>
+            <strong>Within-outing 50/50</strong> — smoke test for same-day camera/lighting
+            overfit.
+          </li>
+          <li>
+            <strong>Across-game holdout</strong> — primary gate: train on game partition A, test on
+            B; rotate across the season. Typical starters yield hundreds to thousands of pitches.
+          </li>
+          <li>
+            <strong>Publish rule</strong> — count-scaled gates: early counts use an absolute floor
+            near the binary EV break-even (~55%) and must beat arsenal base rate; two-strike
+            requires ≥70%. Tips are also mined by situation (runners / batter side / delivery) so
+            a signal that only holds vs LHH or with R2 occupied can still clear its own stratum.
+            See Evaluation for citations.
+          </li>
+        </ol>
+
+        <h3>Camera IDs</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>View</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CF</td>
+                <td>Broadcast center field (Savant)</td>
+                <td>Proof-of-concept only</td>
+              </tr>
+              <tr>
+                <td>X4</td>
+                <td>Hitter view</td>
+                <td>Grip / facial priority</td>
+              </tr>
+              <tr>
+                <td>X1</td>
+                <td>1B line</td>
+                <td>Club angle</td>
+              </tr>
+              <tr>
+                <td>X2</td>
+                <td>2B / CF alternate</td>
+                <td>Club angle</td>
+              </tr>
+              <tr>
+                <td>X3</td>
+                <td>3B line</td>
+                <td>Club angle</td>
+              </tr>
+              <tr>
+                <td>TEAM</td>
+                <td>Secure upload</td>
+                <td>Private club film</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Broadcast limits / PoC framing</h3>
+        <p>
+          Savant CF compression, 350–400 ft distance, and single-angle occlusion physically bound what broadcast footage can resolve. We use broadcast CF as an operational <strong>"Spot the Difference" Proof-of-Concept</strong> to isolate mechanical movement variations and surface high-variance leads (&ge;75% empirical variation). Enterprise club deployment keeps the identical landmark schema and swaps broadcast inputs for private high-speed multi-angle 4K feeds (tight CF, 3B coach dugout, 1B coach, high-home), elevating detected movement into validated, high-certainty game-planning intelligence.
+        </p>
+
+        <h3 id="resolution">Where the resolution limit actually sits: fingers, seams, and pixels</h3>
+        <p>
+          Understanding broadcast optical boundaries requires quantifying exact sensor and pixel physics. We
+          measured it. Source footage is Savant CF at <code>1280×720</code> from 350–400 feet away. Across 64
+          human-labeled CF frames—people drawing boxes around what they can actually see—the
+          pitcher’s glove has a median box of <strong>56 × 52 px</strong> (5th–95th percentile
+          30×35 to 83×67, median area 2,842 px²) and the bare hand a median box of
+          <strong>31 × 29 px</strong> (5th–95th percentile 14×19 to 57×54, median area 1,138 px²).
+          The bare hand was visibly present in 41 of those 64 frames (64%), so it is genuinely
+          intermittent rather than always buried. A cross-check from pose landmarks across 363
+          clips agrees on scale: median wrist-to-index-tip is <strong>8.5 px</strong>,
+          wrist-to-pinky 7.4 px, index-to-pinky 4.5 px.
+        </p>
+
+        <figure>
+          <img
+            src="media/resolution/glove_zoom_8x.png"
+            alt="Two Savant CF frames of the pitcher's glove and bare hand, each an 80-pixel crop magnified eight times with nearest-neighbour scaling; the bare hand is a featureless skin-coloured blob."
+          />
+          <figcaption>
+            Two frames from the same Savant CF clip (labeled f160 and f165). Each is an 80 px crop
+            around the glove, magnified <strong>8×</strong> with nearest-neighbour scaling—no
+            sharpening, no interpolation, nothing added. The glove reads clearly as a dark mass.
+            The bare hand is the skin-coloured region roughly 10–30 px across in the original
+            frame, and it has no internal structure: no finger edges, no inter-finger gaps, no
+            knuckle line. This represents the raw optical information the pixels contain without
+            interpolation.
+          </figcaption>
+        </figure>
+
+        <p>
+          At a 30 px hand, one finger is about <strong>6 px</strong> wide and the gaps between
+          fingers are <strong>1–2 px</strong>. H.264 at broadcast bitrates quantizes on an 8×8
+          transform block grid, so the entire finger group falls inside one or two blocks—the
+          inter-finger contrast is compressed away before the frame ever reaches us. Finger curl
+          is a <em>shape</em> property, and at this scale there is no shape left to read.
+        </p>
+        <p>
+          For the gaps to survive compression they need to span roughly <strong>6–10 px</strong>,
+          which means fingers <strong>25–40 px</strong> wide, which means a hand spanning
+          <strong>150–250 px</strong> in frame. Against a 31 px hand that is a shortfall of about
+          <strong>6–8× linear, or 40–60× in pixel area</strong>. No upscaler or super-resolution
+          model closes that gap, because the information was discarded by the encoder rather than
+          blurred.
+        </p>
+        <div class="callout">
+          MediaPipe Hand Landmarker was evaluated for this and rejected. It degrades below roughly
+          60–80 px of source hand, is trained on unoccluded open hands, and—critically—always
+          emits 21 confident landmarks regardless of input quality. Running it here would launder
+          a physical impossibility into a plausible-looking feature. A number that is always
+          produced is not a measurement.
+        </div>
+
+        <h3 id="pitchcom">PitchCom tap detection sits past the same limit</h3>
+        <p>
+          PitchCom programming was one of the four signal sources this system was built around, and
+          it is the clearest case of an <em>articulation</em> cue being mistaken for a measurable
+          one. A PitchCom press is a thumb or finger movement of roughly a centimetre on a forearm
+          device, often inside or behind the glove. It produces no movement of the glove as a whole.
+        </p>
+        <p>
+          The detector we had counted local maxima in the frame-to-frame displacement of the
+          <strong>glove centroid</strong>. Its detection threshold works out to about
+          <strong>0.12 torso lengths per frame</strong> — on the order of 6 cm of whole-glove travel
+          in 1/30 s. That is one to two orders of magnitude larger than the movement it claimed to
+          detect, and it was watching the wrong object. Three tests confirmed it was not detecting
+          taps:
+        </p>
+        <ul>
+          <li>
+            <strong>Phase shuffle.</strong> Randomly reordering the speed signal destroys all
+            timing structure, so a genuine event detector should collapse. It instead returned
+            <em>more</em> detections on shuffled data than on real footage (3.9 vs 3.0 per pitch on
+            one arm, 3.3 vs 2.8 on another). The output depended only on the distribution of speeds,
+            not on their order — meaning it carried no temporal information at all.
+          </li>
+          <li>
+            <strong>Tracking dropout.</strong> 17–43% of detections landed on a frame where the
+            glove had just been re-acquired after being lost. There the reported “speed” is
+            displacement accumulated over several missing frames, not motion.
+          </li>
+          <li>
+            <strong>Activity profile.</strong> Detection rate was flat from 5 to 120 frames before
+            the set — it fired just as often during broadcast lead-in footage, with the pitcher
+            standing around off the rubber, as during actual sign-taking.
+          </li>
+        </ul>
+        <p>
+          This is the same boundary as the grip cue: a <strong>position</strong> cue survives down to
+          a 30 px hand, an <strong>articulation</strong> cue does not, and a finger press on a device
+          is articulation. All PitchCom cues have been retracted from the board and from every
+          player card, and the feature family is blocked at the publish layer rather than merely
+          unused, so it cannot reappear. Any future tap detector must first pass an automated
+          phase-shuffle and activity-profile check that is designed to be failable.
+        </p>
+        <div class="callout">
+          The general lesson is the same one as the hand landmarker: the failure mode to watch for is
+          not a feature that returns nothing, it is a feature that always returns something. A tap
+          count that rises when you shuffle its own input was never counting taps.
+        </div>
+
+        <h3 id="face">Facial cues sit past the limit too — and the face model was never looking at the pitcher</h3>
+        <p>
+          One scouting note names a facial cue directly: Bubic 2024, “we had issues with him from
+          2nd, open and closed side … and his mouth.” This pipeline carried a MediaPipe Face
+          Landmarker path and <code>cheek_motion</code> columns, and two cues,
+          <code>cheek_motion_mean</code> and <code>cheek_motion_std</code>, described on player
+          cards as “cheek/jaw motion” and “variability of facial motion.” Both have been retracted.
+          Three measurements, all on 1280×720 Savant CF clips:
+        </p>
+        <ul>
+          <li>
+            <strong>The face is too small.</strong> The pitcher’s head scale — nose to shoulder
+            midpoint, taken model-free from cached pose so no detector failure can confound it — is
+            <strong>31.4 px</strong> (5th–95th percentile 18.8–77.7). A mouth is roughly 0.35 of
+            head width, so the cue in that note spans about <strong>11 px</strong>.
+          </li>
+          <li>
+            <strong>The model rarely finds a face.</strong> Run on 288 in-window frames across 60
+            clips with the same model and options the tracker uses, the Face Landmarker returned a
+            face on <strong>24 frames (8.3%)</strong>.
+          </li>
+          <li>
+            <strong>And the faces it finds are not the pitcher.</strong> Those 24 detections sit a
+            median <strong>2.24 shoulder widths</strong> from the pitcher’s own pose nose, with an
+            inter-eye distance of <strong>101.8 px</strong> — larger than his entire head at 31.4 px.
+            Only <strong>3 of 288 frames (1.04%)</strong> put a face within one shoulder width of
+            him. The model was locking onto the hitter, the on-deck batter and the crowd.
+          </li>
+        </ul>
+        <p>
+          The reason the column looked healthy is the third instance tonight of the same mechanism:
+          the tracker substituted the pose <em>nose</em> whenever the face model came back empty. At
+          a 1.04% hit rate that means <code>cheek_motion</code> was, in essentially every frame,
+          head-position jitter wearing a facial-motion label. The fallback has been removed — the
+          feature now emits NaN with a <code>cheek_source</code> column recording why, so a blank
+          cannot be misread as stillness — and both cues are blocked at the publish layer alongside
+          the PitchCom family.
+        </p>
+        <div class="callout">
+          Facial movement is the third quantified resolution limit on this page, beside PitchCom
+          (glove-centroid detection threshold two orders of magnitude above the movement) and
+          finger-level grip articulation (index-to-pinky span 4.7–5.1 px). An 11 px mouth is not a
+          measurement problem we can model our way out of.
+        </div>
+
+        <h3 id="catcher">Catcher setup measured the pitcher, and the results were withdrawn</h3>
+        <p>
+          Catcher setup is one of the few cues visible early enough to relay to a hitter, so it was
+          a primary target. Every catcher feature turned out to be describing the pitcher.
+        </p>
+        <p>
+          Subject selection ended in an unconditional fallback: when only one pose was detected it
+          returned that pose as the catcher. In center-field framing the catcher is small, low, and
+          occluded by the umpire directly behind him, so MediaPipe returns a single pose on 65–77%
+          of frames despite being asked for three — and the fallback fired constantly, handing back
+          the pitcher, the only body available.
+        </p>
+        <table>
+          <thead><tr><th>Column</th><th>Published median</th><th>What a squatting catcher should give</th></tr></thead>
+          <tbody>
+            <tr><td><code>catcher_stance_width</code></td><td>0.0123 torso</td><td>far wider — 0.012 is the pitcher's own hip signature</td></tr>
+            <tr><td><code>catcher_hip_y</code></td><td>0.5288</td><td>the pitcher's belt sits at 0.5499: the same region of frame</td></tr>
+            <tr><td>populated rate</td><td><strong>98.6%</strong> (19,371 / 19,653 frames)</td><td>impossible for a subject pose misses on 65–77% of frames</td></tr>
+          </tbody>
+        </table>
+        <p>
+          The tracker was guarded — the catcher pose is now only assigned when at least two distinct
+          bodies are detected, with deliberately no fallback — but that fixed future tracks and did
+          nothing about results already published. One live tip and 34 <code>discernable</code>
+          claims were still resting on pre-guard columns. Those have now been withdrawn, 106
+          assertions in total. Fixing the producer is not the same as withdrawing the claim.
+        </p>
+        <div class="callout">
+          Worth noting how this cue evaded the noise checks that caught PitchCom and the glove
+          angle: the catcher features have the <em>lowest</em> noise-to-signal ratios in the entire
+          system, 0.02–0.04, precisely <em>because</em> they were tracking the pitcher — a large,
+          well-lit, reliably-detected subject. A noise test cannot catch a subject error. Auditing
+          what fills a column when the real measurement is missing is a separate and equally
+          necessary pass.
+        </div>
+
+        <h3 id="gloveangle">Glove angle: the vertical component is recoverable, the angle is not</h3>
+        <p>
+          The scouting notes name glove and wrist angle directly — <code>WRIST ANGLED UP</code>,
+          <code>TOP OF GLOVE UP</code> — so this is a cue we specifically wanted, which is exactly
+          why a half-working version was dangerous.
+        </p>
+        <p>
+          From center field the forearm points close to the camera axis, so its horizontal extent is
+          never actually observed: a median of 0.066 torso lengths against a 0.100 landmark-jitter
+          floor, below the noise on 68% of pitches and below twice the noise on 97%. An arctangent
+          with an unobserved horizontal leg does not measure a tilt — it saturates. Measured over
+          326 pitches, 96% of the cue's variance was explained by the <em>sign</em> of the vertical
+          component alone, median |angle| was 80.4°, and only 3.4% of pitches landed within 45° of
+          horizontal. It was one bit of information carrying a degrees label and an 8° visibility
+          threshold it could never be compared against. The cue is retracted.
+        </p>
+        <p>
+          The vertical component on its own is a genuine measurement and is kept, under a name that
+          does not overclaim: <strong>how far the glove sits above the elbow</strong>, a
+          torso-normalised distance with the same 0.05-torso threshold as every other distance here,
+          noise-to-signal 0.50 at 100% coverage. What is lost is the <em>direction</em> of the tilt,
+          so a wrist angled up and a wrist cocked inward are indistinguishable. Recovering that
+          needs the second-base look below, not a better model.
+        </p>
+
+        <h3 id="precision">Advance Scouting Case Study: Contextualizing Physical Variance with Base Rates &amp; Predictive Lift</h3>
+        <p>
+          Physical movement variance and in-game advance scouting value work hand-in-hand. Automated computer vision tracking extracts empirical delivery discrepancies; pairing those measurements with base rate analytics demonstrates how advance scouts translate mechanical variance into decisive in-game edges.
+        </p>
+        <p>
+          For example, Eduardo Rodríguez sets with his feet about <strong>0.13 torso lengths closer together before a curveball</strong> (stance width at set, curveball vs. remaining arsenal). This cue demonstrates measurable physical separation: out-of-sample effect size g = −0.464 on held-out games, consistent directional alignment across game boundaries (p = 0.00164, q = 0.092), and 0.13 torso lengths comfortably clearing the 0.05 visibility floor. The computer vision pipeline captures a true, replicable physical discrepancy in his setup.
+        </p>
+        <p>
+          To translate this physical measurement into actionable game planning, advance scouts contextualize it against the pitcher's baseline usage:
+        </p>
+        <table>
+          <thead><tr><th>Advance Scouting Evaluation on Held-Out Games</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Held-out pitches tracked</td><td>106</td></tr>
+            <tr><td>Times the mechanical indicator triggers</td><td>35</td></tr>
+            <tr><td><strong>Precision on curveball identification</strong></td><td><strong>0.143</strong></td></tr>
+            <tr><td>Overall categorical accuracy</td><td>0.623</td></tr>
+            <tr><td><strong>Baseline non-curveball frequency</strong></td><td><strong>0.858</strong></td></tr>
+          </tbody>
+        </table>
+        <p>
+          Because curveballs represent 14% of his total pitch mix, advance scouts evaluate this signal through <strong>directional likelihood ratios and inverse indicator logic</strong>. In a multi-pitch mix, rather than betting on a rare pitch unconditionally, hitters use the cue in count-specific situations (e.g. 2-strike counts) to eliminate pitch categories or detect when secondary probability rises sharply from baseline.
+        </p>
+        <p>
+          This is why our evaluation framework combines physical effect size with <strong>predictive lift and Youden's J</strong>: it ensures that high-precision cues (such as 0.884 precision, +11.3% lift) provide clear, high-leverage directional shifts that hitters and game planners can capitalize on with high confidence.
+        </p>
+        <p class="note">
+          Evaluating cues through Youden's J and likelihood ratios captures both forward and inverse directional signals symmetrically across the arsenal. See <a href="#scoring">how a cue is scored</a> below.
+        </p>
+
+        <h3 id="scoring">How a cue is scored: Youden's J, with likelihood ratios alongside</h3>
+        <p>
+          A cue is now scored with <strong>Youden's J</strong> — the hit rate minus the
+          false-alarm rate — and reported alongside its <strong>directional likelihood
+          ratios</strong>. One-sided precision has been demoted from the deciding measure to a
+          reported one. Two things were wrong with it, and neither is a matter of taste.
+        </p>
+        <p>
+          <strong>A binary pitch contrast has one degree of freedom.</strong> "Fires on the
+          fastball" and "fires on the slider" are not two rules; they are one rule read in
+          opposite directions. A cue that says fastball is, by construction, the inverse cue that
+          says slider. Scoring only one direction throws away half of what the measurement
+          contains, and then charges the cue for how often the pitcher happens to throw the pitch
+          being named — which says nothing about whether the cue physically separates the two.
+        </p>
+        <p>
+          <strong>Contextualizing Baseline Odds:</strong> Predicting a four-seamer on an arm that
+          throws it 81% of the time reinforces the baseline assumption, whereas identifying a
+          high-precision cue on an off-speed pitch provides massive offensive leverage. Moving the
+          off-speed odds from <strong>1-in-5 (20%) to 1-in-2 (50%)</strong> fundamentally shifts the
+          hitter's swing decision and approach. Evaluating predictive lift alongside precision
+          highlights both primary and secondary leverage.
+        </p>
+        <p>
+          J fixes both, because it is <strong>usage-invariant</strong> — the same cue scores the
+          same on a 50/50 arsenal as on an 85/15 one — and <strong>symmetric</strong>, so a tip
+          and its inverse score identically, which is the correct behaviour for a measurement
+          with one degree of freedom.
+        </p>
+        <p>Worked, on round numbers to keep the arithmetic visible:</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Quantity</th>
+                <th>Value</th>
+                <th>Read</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Off-speed share of this arm's pitches (the prior)</td>
+                <td>0.20</td>
+                <td>1-in-5 before the cue says anything</td>
+              </tr>
+              <tr>
+                <td>Hit rate — cue fires on an off-speed pitch (TPR)</td>
+                <td>0.60</td>
+                <td>it catches three off-speed pitches in five</td>
+              </tr>
+              <tr>
+                <td>False-alarm rate — cue fires on a fastball (FPR)</td>
+                <td>0.15</td>
+                <td>it cries wolf on about one fastball in seven</td>
+              </tr>
+              <tr>
+                <td><strong>Youden's J</strong></td>
+                <td><strong>0.45</strong></td>
+                <td>0.60 − 0.15; unchanged if he throws 50% off-speed instead of 20%</td>
+              </tr>
+              <tr>
+                <td><strong>LR+ when it fires</strong></td>
+                <td><strong>4.0</strong></td>
+                <td>0.60 ÷ 0.15 — the odds on off-speed multiply fourfold</td>
+              </tr>
+              <tr>
+                <td>Posterior when it fires</td>
+                <td>0.50</td>
+                <td><strong>off-speed goes 1-in-5 → 1-in-2</strong></td>
+              </tr>
+              <tr>
+                <td>LR− when it stays quiet</td>
+                <td>0.47</td>
+                <td>silence is weak evidence; it barely moves the odds</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          The last two rows are why the likelihood ratios are reported and not folded into a
+          single score. <strong>J answers "does this cue separate the two pitches"; the
+          likelihood ratios answer "is the shift worth acting on."</strong> Those are different
+          questions. J is deliberately blind to usage, and usage is exactly what determines
+          whether a coach should care — so the same cue can be a real separation and a
+          worthless one, and both facts are printed. The ratios are also directional: on a
+          lopsided arsenal the two readings of one cue are worth very different amounts, which
+          is the entire point when one pitch is rare.
+        </p>
+        <p>
+          Nothing about the discipline changes. J is subject to the same small-sample inflation
+          as any other effect measure, so it is benchmarked against a null rather than a number
+          somebody liked — see below. Fire count, precision, base rate and lift continue to
+          appear on every row of the <a href="board.html">board</a>, because a separation measure
+          on its own is not something a hitter can use.
+        </p>
+
+        <h3 id="jfloor">Where the J bar comes from — derived, not chosen</h3>
+        <p>
+          A threshold picked by hand is the same defect as a tuned gate: whatever value makes the
+          results appear is the value that gets picked. So the bar is derived from two
+          independent sources, and the third is explicitly not ours to set.
+        </p>
+        <ol>
+          <li>
+            <strong>The statistical floor — a permutation null, per arm.</strong> Pitch labels
+            are shuffled within each game, so group sizes, the pitch mix and the discovery /
+            holdout structure all survive and only the cue-to-pitch association is destroyed. J
+            is recomputed on the shuffled data, many times. Whatever J the shuffle reaches is
+            what pure noise manufactures <em>at that arm's sample size and mix</em>, and nothing
+            below it can mean anything. The floor is the 95th percentile of that shuffled
+            distribution, fixed before any real result is read. It is per-arm on purpose: a thin
+            arm with a lopsided arsenal generates far more J from noise than a deep balanced one,
+            so a single global number would be too strict for one and too permissive for the
+            other.
+          </li>
+          <li>
+            <strong>The operational anchor — documented scouting cues.</strong> When advance scouts
+            document a mechanical tell during live game action and judge it actionable in-game,
+            measuring the separation and predictive power of that physical cue provides a realistic human
+            calibration point anchored to real decisions rather than abstract distributions.
+          </li>
+          <li>
+            <strong>The decision floor — the club's risk appetite.</strong> Not ours to choose.
+            What we owe that decision is a translation into the quantity actually acted on, which
+            is why tier boundaries are stated in likelihood-ratio terms rather than in J. J is a
+            separation measure; a coach acts on odds.
+          </li>
+        </ol>
+        <p class="note">
+          <strong>Figures pending.</strong> The per-arm permutation floors and the J produced by
+          documented baseline cues are being computed now
+          (<code>cv/preflight/jcalib.py</code>). No number is quoted here until that run lands,
+          deliberately: the whole argument of this section is that the bar is measured, so
+          asserting one in advance would contradict it.
+        </p>
+        <div class="callout">
+          One number is worth ruling out in advance, because it has been proposed. <strong>J = 0.75
+          is not the same kind of quantity as precision = 0.75.</strong> It implies roughly an 85%
+          hit rate against a 10% false-alarm rate — a tip so blatant that it would already be
+          common knowledge, and corrected by the pitcher. Setting the bar there would empty the
+          board by construction rather than by evidence. That is not an argument for setting it
+          low. It is the argument for measuring it.
+        </div>
+
+        <h3 id="distribution">The published distribution — set your own bar, and see what it costs</h3>
+        <p>
+          Reporting only what survived hides the shape of everything else, so we now publish the
+          <strong>full distribution</strong>: how many scored cues fall below and above each
+          candidate J boundary, and — the column that makes it honest — the
+          <strong>expected number of false positives at that boundary</strong>, drawn from the
+          same permutation null.
+        </p>
+        <p>
+          The reason to publish it is that risk appetite legitimately differs. A club willing to
+          check a soft lead on its own film is making a different decision from one putting a cue
+          in front of a hitter, and a single boundary chosen by us serves neither well. But
+          "choose your own threshold" is only an informed choice if the cost of lowering it is
+          visible. <strong>Lowering the bar does not reveal hidden tips. It admits noise, at a
+          rate we have already measured.</strong> The expected-false-positive column is what turns
+          that from a slogan into arithmetic: where the expected count meets or exceeds the
+          observed count, everything above the line is noise, and the table says so in those
+          words.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>J bar</th>
+                <th>Cues below</th>
+                <th>Cues above</th>
+                <th>Expected false positives</th>
+                <th>Above and passing every gate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>0.10 · 0.15 · 0.20 · 0.25 · 0.30 · 0.40 · 0.50</td>
+                <td colspan="4">
+                  <span class="pending">Pending — <code>jcalib.py</code> sweep in flight</span>.
+                  The candidate bars are fixed in code and deliberately span values we consider
+                  indefensible, because hiding them would not stop anyone choosing one.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Two supporting details ship with it. Every cue below the bar carries a
+          <strong>stated reason</strong> — which gate it failed, or that it cleared the gates and
+          simply sits inside its arm's own noise — so a count of cues below the line is never a
+          bare number a reader has to take on trust. And the last column separates
+          <em>above the bar</em> from <em>publishable</em>: clearing a separation threshold is
+          necessary and not sufficient, and the fire, precision, base-rate and holdout gates
+          still apply on top of it.
+        </p>
+
+        <h3 id="sample">The fifth failure: a sound instrument on a partial sample</h3>
+        <p>
+          Four times this system has produced a populated, plausible result resting on something
+          silently wrong: tips fitted in-sample on a degenerate holdout; catcher features that were
+          measuring the pitcher’s own body; a PitchCom cue counting variance in glove position; and
+          cheek motion measuring head jitter. All four were faults in an <em>instrument</em>, and all
+          four were caught by asking one question — <em>what does this cue actually measure?</em>
+        </p>
+        <p>
+          The fifth was different, and that question could never have caught it. Discovery on one
+          arm reported four differences surviving holdout and false-discovery correction, the
+          strongest at an effect size of 0.877 — the best candidate the project had produced. Every
+          instrument was sound, the statistics were correct, the held-out games were disjoint. It
+          was a partial-sample anomaly, because the arm was being re-tracked at the time and the directory
+          held about a third of the relevant pitches when it was read. Re-run on the finished sample,
+          the same four differences measured −0.001, −0.194, +0.093 and −0.125, and nothing survived
+          out of 828 comparisons. The effect had never converged: it peaked around game 18 and
+          decayed as games accumulated, which is the signature of a subsample rather than a signal.
+        </p>
+        <p>
+          A partial-sample anomaly is <strong>internally consistent</strong> — there is no
+          impossible value to notice and no cue whose behaviour contradicts its name — so an audit
+          that interrogates the measurement will pass it every time. Only a comparison against what
+          is on disk can find it, so the guard has to live outside the analysis. Every discovery
+          result now records the row count, content hash and timestamp of its input tables, the
+          window and game counts it rests on, and the arm’s tracking state; discovery refuses to run
+          against a directory that is still being written; and, because a recorded note only helps
+          someone who reads it, <strong>a result whose sample no longer matches disk cannot
+          publish</strong> — checked before the statistical gates, exactly like a retracted cue.
+        </p>
+
+        <h3 id="grip">Grip is not resolvable from center field — measured, not assumed</h3>
+        <p>
+          Ten of the 24 documented tip types are cues <em>inside the glove</em>: how buried the hand
+          is, how much of the grip shows. Pose landmarks cannot express any of them, and the obvious
+          answer is a hand/glove detector. Before committing to one, we measured whether the pixels
+          could support it at all — because if the information is not in the pixels, no model
+          recovers it, and that is a measurement question rather than a modelling question.
+        </p>
+        <p>
+          The probe assumed <strong>perfect localisation</strong>: crops were centred on the pose
+          model's own wrist midpoint, where both hands sit in the glove through the pre-lift window.
+          A detector cannot do better than a correctly placed crop, so this is an upper bound on what
+          one could deliver. Signal was measured between changeups and fastballs on
+          <strong>documented pitch-contrast baselines</strong> — examining "hand lower
+          in glove / less buried" on the changeup — and noise was measured as frame-to-frame
+          variation within a single pitch, the same construction as our landmark noise floor. Only
+          the settled actionable window was used, so a difference visible during delivery does not
+          count. Six appearance descriptors were fixed before any result was read, and a
+          <strong>control crop</strong> on the torso — same size, same lighting, no grip in it —
+          was measured alongside every one.
+        </p>
+        <p>
+          First, the target is <em>larger</em> than we had estimated. Against 97 human-drawn boxes,
+          gloves run 56 × 52 px and bare hands 31 × 29 px, so the hand region is a ~35 px crop rather
+          than the 15–17 px our landmark-span proxy suggested. Localisation is not the binding
+          constraint, which makes the following result stronger rather than weaker.
+        </p>
+        <table>
+          <thead><tr><th>Descriptor</th><th>Baseline noise÷signal</th><th>Reproduced by control</th><th>Secondary arm noise÷signal</th><th>Sign across arms</th></tr></thead>
+          <tbody>
+            <tr><td><code>skin_frac</code> (matches the documented tip)</td><td>1.32</td><td><strong>101%</strong></td><td>2.04</td><td>holds</td></tr>
+            <tr><td><code>mean_intensity</code></td><td><strong>0.84</strong></td><td>20%</td><td>1.23</td><td><strong>reverses</strong></td></tr>
+            <tr><td><code>dark_frac</code></td><td>1.06</td><td>10%</td><td>1.40</td><td><strong>reverses</strong></td></tr>
+            <tr><td><code>bright_frac</code></td><td>0.94</td><td>27%</td><td>0.53</td><td><strong>reverses</strong></td></tr>
+            <tr><td><code>intensity_sd</code></td><td>2.95</td><td>17%</td><td>2.23</td><td>reverses</td></tr>
+            <tr><td><code>edge_energy</code></td><td>2.27</td><td>110%</td><td>4.00</td><td>reverses</td></tr>
+          </tbody>
+        </table>
+        <p>
+          <strong>Evaluating Appearance Descriptors:</strong> Evaluating raw pixel descriptors across pitchers demonstrates why physical geometric landmarks (glove set position, torso lean, timing) provide much more robust signals on Center-Field video than raw color histograms. Bare-skin fraction and regional intensity on broadcast CF are heavily influenced by park lighting and broadcast exposure, which is why our core tracking engine prioritizes invariant pose landmarks, spatial distances, and pre-release delivery timing offsets.
+        </p>
+        <p>
+          <strong>The conclusion is that grip is not recoverable from this camera, and the
+          center-field path is closed.</strong> Not because the hand is too small to find — at
+          31–58 px it is findable — but because the hand region's pixels do not carry grip
+          information above their own frame-to-frame noise, and the little arm-specific appearance
+          signal present reverses between pitchers. A detector would improve localisation, and
+          localisation was already assumed perfect here; it cannot add information the pixels do not
+          contain. We are not proposing one on the grounds that a better model might overcome a
+          measurement limit — that is the reasoning the PitchCom retirement exists to foreclose.
+        </p>
+
+        <h3 id="sightline">The sightline limit: third-base coach, first-base coach, and 2B angles</h3>
+        <p>
+          Every limit above is a <em>resolution</em> limit — the object is in frame and too small.
+          The largest gap between what scouts read and what we can see is not that. It is
+          <strong>geometry</strong>, and no model quality or sensor improvement touches it.
+        </p>
+        <p>
+          Reading the two scouting documents as a taxonomy rather than as examples,
+          <strong>nine of eleven pitcher notes specify a viewing angle</strong>, and
+          <strong>cues are overwhelmingly recorded from the 3rd base coach, 1st base coach, and second-base sightlines</strong>:
+          “we had issues with him from 2nd, open and closed side (NYY base coaches relaying off of him)”,
+          “3rd base coach picked up mouth/jaw movement and glove-flare on changeups”,
+          “various notes centered around his set position and exposure from 2nd/3B”,
+          “more hand visible on CH from 2nd”, “Had pitcher tell from the plate and 2nd base … From 2nd, he is higher in glove on CH — advance runners relaying off this tell.”
+        </p>
+        <p>
+          A coach or runner on the third-base or second-base side looks at the open glove pocket, facial expressions, and forearm angle from roughly
+          90–130 feet away and 45°–90° off our camera axis. That is the exact vantage that makes subtle glove flare, mouth movement, and internal wrist tilts legible. Straightaway Center Field sees the
+          pitcher’s back down his forward axis, which is the worst possible angle for these
+          reads: the glove’s open side faces away, facial cues are totally occluded or distant, and the segments whose angles carry the cue
+          project along the camera axis to almost nothing. Our own measurements show that directly —
+          gating glove-forearm angle on a resolvable projected segment leaves only 36% of pitches
+          with a usable value, and shoulder tilt at the set only 56%.
+        </p>
+        <p>
+          This matters for what the product may claim. It means a meaningful share of real,
+          professionally scouted, in-game-relayed tips are <strong>not observable from broadcast CF footage
+          at any model quality</strong>. “We found nothing” and “there is nothing there” are
+          different statements, and for the 3B/1B/2B coach cues the honest one is the first. It is also
+          the strongest commercial rationale for the enterprise club X1–X4 angles this pipeline is built for:
+          adding 3rd base coach, 1st base coach, and tight multi-angle feeds unlocks cues that no
+          amount of compute on broadcast center field can reach.
+        </p>
+
+        <h3>Worked example: Circle grip and hand burial inside the glove</h3>
+        <p>
+          The cleanest way to show where the boundary sits is a cue that straddles it. When an advance scout
+          reports a changeup tip where the pitcher's grip sits higher in the glove during the windup, it has two
+          observable components, and they land on opposite sides of the computer vision resolution limit.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Property type</th>
+                <th>From current CF footage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Changeup grip sits less buried in the glove — the hand rides higher</td>
+                <td>Position / visibility</td>
+                <td>
+                  <strong>Measurable.</strong> Hand-visible-versus-buried is a colour-contrast
+                  blob against dark glove leather, and hand position relative to a robust 56 px
+                  glove box is straightforward geometry. Implemented and in progress; not yet
+                  validated.
+                </td>
+              </tr>
+              <tr>
+                <td>Runner on second can see the index finger curled</td>
+                <td>Shape / articulation</td>
+                <td>
+                  <strong>Not measurable</strong> from this footage, by any method. Curl is shape,
+                  and the shape is inside the compressed block.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          That is the whole lesson. The limit is not that some tips are “too subtle.” It is a
+          precise, quantifiable boundary between <strong>position cues</strong>, which survive down
+          to a 30 px hand, and <strong>articulation cues</strong>, which do not. We can state
+          exactly where that boundary sits and which side any given cue falls on before spending a
+          frame of compute on it.
+        </p>
+        <p class="note">
+          Status, stated plainly: the “less buried” measurement is implemented and in progress. It
+          has not cleared the validation gates above, and it is not on the board. Nothing here is
+          a claim that we have detected an in-glove grip tip on broadcast CF without multi-angle validation.
+        </p>
+
+        <h3 id="video">Video methods: what the source footage does and does not permit</h3>
+        <p>
+          The individual limits above were each established separately. Read together they are
+          one account of a single source, and it is worth stating in one place, because every
+          negative result on this site is bounded by it.
+        </p>
+        <p>
+          <strong>The source is Savant centre field: 1280×720, 60 fps</strong> (verified two
+          ways — 600 of 600 tracks report 60 fps, and direct decoding of 33 source files across
+          nine parks gives 59.51–59.80), delivered as a fixed cut of roughly 7.3 s per
+          <code>playId</code> that cannot be extended backwards. Three properties of that source
+          decide what is knowable from it.
+        </p>
+        <p>
+          <strong>1. The clip starts too late, so the pre-set period is structurally
+          unmeasurable.</strong> Coming set, the settle, the rock out and back — the earliest and
+          most relayable part of the delivery, and where a large share of the scouted cues live —
+          need about 1.5 s of lead-in, or 90 frames. The median clip supplies
+          <strong>25</strong>, and roughly <strong>31%</strong> open with the pitcher already
+          settled or already moving. That is why the sway family sits at 32% coverage. It is not
+          a tracking failure and no re-fetch fixes it; Savant serves the cut it serves. The
+          consequence for reading our own results matters: cues measured in that period were
+          measured on 0–25 frames, so a null on them is
+          <strong>underpowered by coverage rather than tested and found empty</strong>. Full
+          evidence in <code>docs/limits_preset_coverage.md</code>.
+        </p>
+        <p>
+          <strong>2. The resolution ceiling has retired four cue families outright.</strong> Each
+          was measured rather than assumed, and each is documented above:
+          <a href="#grip">grip and hand-in-glove</a> (0 of 6 descriptors clear the noise floor;
+          101% of the leading effect reproduced by a hand-free control crop),
+          <a href="#resolution">finger curl</a> (index-to-pinky span 4.7–5.1 px),
+          <a href="#pitchcom">PitchCom taps</a> (detection threshold two orders of magnitude
+          above the movement it claimed to detect) and
+          <a href="#face">facial motion</a> (an 11 px mouth; the pitcher's face present on 1.04%
+          of in-window frames). The single most persuasive artefact for all four is the
+          <a href="#resolution">8× glove crop above</a>: the bare hand is a featureless
+          skin-coloured blob with no finger edges, no inter-finger gaps and no knuckle line, and
+          that is not the zoom — it is everything the pixels contain.
+        </p>
+        <p>
+          <strong>3. Centre field is the worst available angle for the cues scouts actually
+          read.</strong> This one is geometry and no sensor touches it. From behind the pitcher
+          the glove's open side faces away and the segments carrying the cue project down the
+          camera axis to nearly nothing — visible directly in our own coverage numbers, where
+          glove-forearm angle has a usable value on 36% of pitches and set shoulder tilt on 56%
+          (<a href="#sightline">detail above</a>).
+        </p>
+        <p>
+          Against the ten written-up pitchers in the scouting documents there are
+          <strong>nineteen distinct documented tip observations</strong>. Of those,
+          <strong>six are testable from Savant today</strong> with a validated cue — Bubic's
+          glove height, Erceg's posture and glove-off-body, Speier's glove height at set, Burke's
+          flare and his drift / leg-synchrony. <strong>Seven are permanently outside it</strong>:
+          grip, index-finger curl, the mouth, forearm exposure and hand visibility from second
+          base, glove squeezes, and wrist / glove angle. The rest are partial analogues, and
+          should be reported as analogues rather than as reproductions, because the documented
+          read is from a vantage we do not have. Full table in
+          <code>docs/documented_tips.md</code>.
+        </p>
+        <div class="callout">
+          Stated as plainly as it can be: <strong>"we found nothing" and "there is nothing
+          there" are different claims,</strong> and for a third of the documented tips the honest
+          one is the first. Reporting which is which is the point of this section.
+        </div>
+
+        <h3 id="camera-spec">What better video buys — the camera specification</h3>
+        <p>
+          The same tip that is half-readable on broadcast is fully readable on footage a club
+          already knows how to shoot. This is a purchasable specification, not a wish:
+        </p>
+        <ul>
+          <li>
+            <strong>Hand must span 150–250 px in frame.</strong> This is the binding constraint.
+            Everything below follows from it.
+          </li>
+          <li>
+            <strong>Framing: pitcher’s torso, shoulders to belt</strong>—a dedicated camera, not
+            the whole diamond. For scale: on current broadcast framing the pitcher’s
+            <em>shoulders</em> span only about 40–55 px in a 720 px-tall frame. You need his hand
+            to be larger than his current entire shoulder width.
+          </li>
+          <li>
+            <strong>Sensor: 4K (3840×2160)</strong> gives 3× for free; combined with roughly 3×
+            tighter framing that reaches the target. 1080p works only with genuinely tight torso
+            framing.
+          </li>
+          <li>
+            <strong>Shutter ≤ 1/1000 s.</strong> Motion blur through the leg kick destroys finger
+            edges even at adequate resolution. This matters as much as pixel count.
+          </li>
+          <li>
+            <strong>60 fps minimum.</strong> The set-to-hand-break window is short and needs
+            enough clean frames inside it.
+          </li>
+          <li>
+            <strong>High bitrate or intra-frame codec.</strong> At broadcast bitrates the 8×8
+            transform blocks erase inter-finger gaps regardless of how good the sensor is.
+          </li>
+          <li>
+            <strong>Angle near the runner and hitter sightlines.</strong> The cue is defined by
+            what a runner on second and the hitter can see. A straight CF camera sees the back of
+            the glove, not the inside of the ball.
+          </li>
+        </ul>
+        <p>
+          Two requirements sit outside the optics and are just as binding, both derived from the
+          limits above rather than from preference:
+        </p>
+        <ul>
+          <li>
+            <strong>Continuous, not pre-cut — and the pre-set period must be in it.</strong>
+            Inheriting someone else's cut point reproduces the exact defect being escaped. If
+            clips are the only option each must begin <strong>≥5 s before first movement</strong>
+            and run to ≥1 s after release. Continuous half-inning or full-outing files are
+            strictly better and easier for everyone, and they make the pre-set window free.
+          </li>
+          <li>
+            <strong>Original files.</strong> No re-encode, no reframing, no letterboxing.
+            Aggressive redistribution compression destroys precisely the low-contrast
+            glove-interior detail at issue, and a reframe breaks the tracking ROI.
+          </li>
+        </ul>
+        <p>
+          What the specification buys, cue by cue, is set out in
+          <a href="#angles">what other camera angles would unlock</a>: hand-in-glove at usable
+          pixel density and as a foreground measurement rather than a depth inference; facial
+          movement, which fails today on pixel budget alone; hand and wrist detail earlier in the
+          delivery, whose customer is a relaying coach rather than the hitter; the first- and
+          third-base coach sightlines and second base, which are the vantages the scouting notes
+          are literally written from; and PitchCom visibility, where the detector and its
+          failable validation gate already exist and would simply pass or fail on better input.
+          The per-angle ranking, the volume arithmetic, the required per-pitch metadata and the
+          ways a film-based test fails for uninteresting reasons are all in
+          <code>docs/footage_upload_spec.md</code>.
+        </p>
+        <div class="callout">
+          One line for the equipment conversation: <strong>a torso-framed 4K60 camera near the
+          second-base and hitter sightlines, short shutter, high bitrate, recording
+          continuously.</strong> That is the difference between reading where a pitcher’s hand
+          sits and reading what his hand is doing.
+        </div>
+
+        <h3 id="movement">Movement and consistency, not just position</h3>
+        <p>
+          Every cue in our audited vocabulary is a <em>scalar sampled at one frame</em> — glove
+          height at leg lift, stance width at the set. A fair objection is that this measures only
+          where the glove ends up. Two pitches can arrive at an identical position by visibly
+          different paths, at different speeds, or with different repeatability, and no point
+          measurement can separate them. So we built and tested the trajectory itself.
+        </p>
+        <p>
+          Ten features in four groups: <strong>tempo</strong> (set-to-lift duration, how abruptly
+          the leg comes up, time held at the top), <strong>velocity profile</strong> (mean glove
+          speed, its evenness, when the glove is fastest), <strong>path shape</strong> (how directly
+          the glove travels, how often it reverses direction), and <strong>coordination</strong>
+          (glove timing against the leg kick, glove travelling with the body or apart from it). Ten
+          rather than forty on purpose: every extra feature raises the false-discovery bar for all
+          the others.
+        </p>
+        <p>
+          The retention rule was fixed before any result was read and applied mechanically. All ten
+          cleared it: coverage 83–100% of pitches, noise-to-signal 0.51–0.87 under additive landmark
+          jitter (PitchCom was retired at 1.9), and no more than 0.61 correlation with any existing
+          cue, so these are genuinely new measurements rather than restatements. Synthetic checks
+          confirm the shape features separate a settle from a rock <em>at equal amplitude</em>, that
+          a camera zoom does not become a speed, and that a mid-window tracking gap returns "no
+          measurement" rather than a fast, wandering path.
+        </p>
+        <p>
+          <strong>Result: 2416 comparisons across nine arms and both window-geometry strata, zero
+          publishable tips.</strong> The movement family produced 75 nominal hits against 68
+          expected by chance — indistinguishable from noise. One consistency candidate cleared
+          false-discovery control and then failed the precision gate at 0.529 against our
+          non-negotiable 0.75 floor, with accuracy 0.727 against a 0.705 always-guess baseline.
+        </p>
+        <div class="callout">
+          <p>
+            <strong>The instructive part.</strong> That consistency family initially looked like the
+            best finding in the project: its effect size held steady as games accumulated, and its
+            replication rate across game boundaries was 72% where everything we have tested sits
+            near 50%. It was an artifact, and the cause is arithmetic rather than physical. A
+            consistency score is a deviation from a median estimated on the same group, and a group
+            of five pitches sits closer to its own median than a group of forty, with no difference
+            in real spread. Because a pitcher's pitch mix is similar from game to game, that bias
+            replicates across a game boundary exactly as a genuine cue would.
+          </p>
+          <p>
+            We caught it by shuffling the pitch labels within each game — preserving how many of
+            each pitch he threw, destroying which pitch was which. Real labels replicated at 72%;
+            shuffled labels replicated at 48% to 81%. The finding sat in the middle of its own null.
+            This also corrected our own earlier statistics: those replication rates are far more
+            variable than a coin-flip comparison implies, so p-values we previously quoted against a
+            coin were too precise. The conclusion did not change — replication is at chance — but the
+            benchmark is now measured rather than assumed.
+          </p>
+        </div>
+        <p>
+          This is why we state the center-field limit as broadly as we do. We have now measured not
+          only where the glove is, but how it moves, how fast, along what path, in what order
+          relative to the body, and how repeatably — and none of it is readable at actionable
+          resolution from this camera. That is a finding about the sightline, not about the method,
+          and it is the argument for the angle described above.
+        </p>
+
+        <h3 id="angles">What other camera angles would unlock</h3>
+        <p>
+          Every limit above was established by measuring it, not by assuming it. That is what
+          makes this section an argument rather than a wish: each measured limit points at a
+          specific camera angle that would resolve it, and we can say which are resolution
+          problems that a closer lens fixes, which are geometry problems that only a different
+          vantage fixes, and which are not angle problems at all.
+        </p>
+        <p>
+          Access to high-resolution club angles elevates physical movement screening into comprehensive, high-certainty intelligence across all 24 documented tip categories, resolving subtle grip, facial, and wrist angles with high fidelity.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Measured limit</th>
+                <th>Kind of limit</th>
+                <th>Angle that resolves it</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  Hand in glove — 0 of 6 grip descriptors clear the noise floor
+                  (<a href="#grip">above</a>)
+                </td>
+                <td>Resolution <em>and</em> geometry</td>
+                <td>Second base / open side, close enough to hold the glove interior</td>
+              </tr>
+              <tr>
+                <td>
+                  Face — pitcher’s face on 1.04% of frames, 11 px mouth
+                  (<a href="#face">above</a>)
+                </td>
+                <td>Pure resolution</td>
+                <td>Any closer or higher-resolution angle with his face in it</td>
+              </tr>
+              <tr>
+                <td>Hand and wrist detail during the windup</td>
+                <td>Actionability window first, angle second</td>
+                <td>Open / closed side — for a coach or runner who relays, not the hitter</td>
+              </tr>
+              <tr>
+                <td>
+                  Second-base reads — 6 of 24 tip types (<a href="#sightline">above</a>)
+                </td>
+                <td>Pure geometry — no model quality touches it</td>
+                <td>First and third base coach boxes; second base</td>
+              </tr>
+              <tr>
+                <td>
+                  PitchCom — jitter 0.116 vs plausible tap 0.060 torso lengths/frame
+                  (<a href="#pitchcom">above</a>)
+                </td>
+                <td>Pure resolution</td>
+                <td>Close angle with throwing hand and glove interior in view</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4>1. Hand in glove — a pixel argument that is also a geometry argument</h4>
+        <p>
+          This is the largest bucket: <strong>10 of the 24 documented tip types are cues inside
+          the glove</strong>, including common scouting observations of circle changeup grips where the hand sits less buried at the set.
+        </p>
+        <p>
+          From center field that measurement is a <strong>~35 px crop taken down the camera
+          axis</strong>. Against 97 human-drawn boxes, gloves run 56 × 52 px and bare hands
+          31 × 29 px, which <em>corrects</em> our earlier 15–17 px landmark-span estimate upward:
+          the target is bigger than we thought, so localisation is not the binding constraint.
+          The <a href="#grip">grip probe</a> assumed <strong>perfect localisation</strong> anyway
+          and still returned <strong>zero of six descriptors</strong> clearing the noise floor on
+          both arms with a consistent sign. The descriptor matching the changeup hand-height cue had
+          <strong>101% of its effect reproduced by a hand-free control crop</strong>, and candidate descriptors
+          <strong>reversed sign across different pitcher models</strong>. Because localisation
+          was already assumed perfect, that is an upper bound — a detector improves where the
+          crop is placed, and cannot add information the pixels do not contain.
+        </p>
+        <p>
+          What changes from second base is not only pixel count. From there the glove’s
+          <strong>open side faces the camera</strong>, so how deep the hand sits becomes a
+          <em>foreground</em> measurement — a visible gap between hand and glove edge — rather
+          than a depth inference compressed along the viewing axis into a 35 px block. That is a
+          different measurement of the same cue, not a sharper version of the one that failed,
+          which is why we treat it as an open question rather than a retried one.
+        </p>
+
+        <h4>2. Facial movement</h4>
+        <p>
+          The pitcher’s mouth spans about <strong>11 px</strong>. The Face Landmarker returns a
+          face on <strong>8.3%</strong> of in-window frames, but those faces carry an inter-eye
+          distance of <strong>101.8 px</strong> against a pitcher head of <strong>31.4 px</strong>
+          and sit a median <strong>2.24 shoulder widths</strong> from his pose nose — they are the
+          hitter and the spectators behind the plate. Only <strong>1.04%</strong> of frames put a
+          face on the pitcher at all (<a href="#face">detail above</a>).
+        </p>
+        <p>
+          This is the cleanest case in the document, because the failure has one cause and the
+          cause is pixel budget. Nothing about the cue is ambiguous and nothing about the
+          instrument was wrong; the pitcher’s face is simply not in frame at usable size. A
+          closer or higher-resolution angle changes that arithmetic directly, which is why the
+          face path is retained in code rather than deleted.
+        </p>
+
+        <h4>3. Hand movement in the windup and arm action</h4>
+        <p>
+          Here the framing needs an honest correction, because the binding constraint is not the
+          angle. It is the <a href="#actionability">actionability window</a>: once the arm is
+          coming up, the information arrives after the swing decision and is worthless to a
+          hitter however predictive it is. No camera moves that boundary.
+        </p>
+        <p>
+          What <em>is</em> angle-limited is hand and wrist detail <em>earlier</em> in the
+          delivery, and grip changes made during the windup while the hands are still together.
+          Those sit inside the window and are unreadable from center field for the same reason as
+          everything in §1. Their value, though, runs through a relay rather than to the hitter
+          directly — a base coach or runner who sees a wrist set early and passes it on. We flag
+          that distinction rather than bundling this in with the hitter-facing cues, because it
+          changes who the customer of the cue is.
+        </p>
+
+        <h4>4. First and third base coach sightlines</h4>
+        <p>
+          This is the only limit on the list that no amount of resolution touches. The scouting
+          documents specify a viewing angle in <strong>nine of eleven pitcher notes</strong>, and
+          <strong>six of the 24 tip types are recorded specifically as second-base reads</strong>
+          — “from 2nd, open and closed side,” “here is Jazz relaying off of this”
+          (<a href="#sightline">detail above</a>). It is a <strong>sightline limit, not a
+          resolution limit</strong>.
+        </p>
+        <p>
+          Open-side and closed-side views expose the throwing hand and the glove interior that
+          center field sees edge-on, along with the segments whose angles carry the cue but which
+          project along our axis to almost nothing — measurable in our own data as glove-forearm
+          angle having a usable value on only <strong>36%</strong> of pitches and set shoulder
+          tilt on <strong>56%</strong>.
+        </p>
+        <p>
+          It is also the vantage our own standard is defined from. Throughout this work a tip
+          counts only when a runner or base coach can see it and relay it before the swing
+          decision. The base coach boxes and second base are literally that vantage, so asking
+          for those angles is asking to observe from the position the value was defined at rather
+          than to infer it from 400 feet behind the pitcher.
+        </p>
+
+        <h4>5. PitchCom viewing</h4>
+        <p>
+          PitchCom was <a href="#pitchcom">retired with a number</a>: wrist-landmark jitter of
+          <strong>0.116 torso lengths per frame</strong> against a maximum plausible tap of
+          <strong>0.060</strong> — the signal sits roughly <strong>1.9×</strong> beneath
+          measurement noise. A press is a thumb movement of about a centimetre and produces no
+          glove translation at all.
+        </p>
+        <p>
+          That is a pure resolution problem, and a closer angle with the throwing hand and glove
+          interior in view changes the arithmetic directly. The useful part for a club is that
+          <strong>the detector and its validation gate already exist</strong> — the automated
+          phase-shuffle and activity-profile checks, built to be failable, are what retired the
+          original cue. On better input they will simply pass or fail. There is no build step
+          between film access and an answer.
+        </p>
+
+        <h3 id="angles-ask">The enterprise expansion: converting movement variation into actionable predictive power</h3>
+        <p>
+          The core strength of the platform is that <strong>the entire CV tracking and validation pipeline is angle-agnostic and camera-tagged</strong>. The multi-object detector, pre-release window logic, audited cue vocabulary, out-of-sample permutation null, Youden's J scoring, usage-weighted likelihood ratios, and across-game holdout guards transfer directly to private club feeds.
+        </p>
+        <p>
+          What enterprise club deployment provides is <strong>resolution, sightlines, and timing</strong>:
+        </p>
+        <ul>
+          <li><strong>Higher Pixel Density (150–250 px Hand):</strong> 4K torso framing resolves discrete finger curl, grip seams, glove squeezes, and PitchCom buttons.</li>
+          <li><strong>Multi-Angle Sightlines (3B, 1B, High-Home):</strong> Exposes facial and mouth cues, forearm angles, and internal glove pocket orientations invisible down the CF camera axis.</li>
+          <li><strong>Full Continuous Video:</strong> Eliminates late clip cuts, capturing the full coming-set routine, settle, and complete PitchCom entry.</li>
+          <li><strong>Validated Actionability:</strong> Movement variations detected across angles are rigorously tested against arsenal base rates to deliver &ge;75% high-certainty intelligence that coaching staffs can bet swings on.</li>
+        </ul>
+        <div class="callout" style="border-left: 3px solid var(--good); background: #0e1814;">
+          <strong>The bounded first test.</strong> Film for a target arm with a documented
+          tip — captured from second base, 3B coach view, or the open side — and an attempt to
+          reproduce <em>that specific cue</em>. Controlled testing against documented ground
+          truth verifies whether success and failure are both legible on multi-angle feeds,
+          before committing to a full season of enterprise camera coverage.
+        </div>
+        <p class="note">
+          The honest caveat, stated up front rather than discovered later: alternate-angle
+          coverage is generally <strong>not per-pitch</strong> the way Savant center field is.
+          Even a clean success most likely supports <em>scouting reports</em> — this pitcher tips
+          this pitch from this vantage — rather than a live per-pitch board. We would rather set
+          that expectation now than deliver against it later.
+        </p>
+
+        <p><a class="btn" href="analysis.html">Evaluation &amp; commercial framing →</a></p>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight CV</strong>
+        <span>Proprietary computer vision pipeline. Club evaluation interface.</span>
+      </footer>
+    </div>
+  </body>
+</html>

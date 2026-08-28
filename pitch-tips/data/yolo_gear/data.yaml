@@ -1,0 +1,13 @@
+path: /Users/colbymorris/apexstats/pitch-tips/data/yolo_gear
+train: images/train
+val: images/val
+nc: 8
+names:
+  0: belt
+  1: cheek
+  2: knee
+  3: catcher_mitt
+  4: catcher_mask
+  5: catcher_shin
+  6: catcher_cleat
+  7: plate

@@ -10,3 +10,22 @@ venv/
 *.pdf
 *.log
 .DS_Store
+
+# Large datasets and media files
+*.pt
+*.onnx
+*.mp4
+*.avi
+*.mov
+*.xlsx
+*.csv
+.gc_session.json
+.apex_*_sent_date
+
+# Run artifact caches
+pitch-tips/runs/
+pitch-tips/media/
+pitch-tips/data/tracks/
+pitch-tips/cv/preflight/runs/
+pitch-tips/cv/preflight/models/*.pt
+

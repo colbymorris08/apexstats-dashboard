@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Apex Preflight — Computer Vision Pitch Anticipation &amp; Mechanical Discrepancy Tracking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body data-page="home">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+    <nav class="nav">
+      <a href="index.html" aria-current="page">Overview</a>
+      <a href="teams.html">Coverage Board</a>
+      <a href="board.html">Ranked Leads</a>
+      <a href="progress.html">Live scale</a>
+      <a href="label.html">Label</a>
+      <a href="methodology.html">System</a>
+      <a href="analysis.html">Evaluation</a>
+    </nav>
+      </header>
+
+      <section class="hero">
+        <div class="eyebrow">Confidential · MLB Advance Scouting &amp; Pitching Intel</div>
+        <div class="hero-grid">
+          <div>
+            <h1>Computer Vision "Spot the Difference" Engine for Pitch Tipping &amp; Movement Variation.</h1>
+            <p>
+              Apex Preflight is an operational computer vision proof-of-concept (PoC) that automates high-resolution landmark and bounding-box tracking to detect pitch-to-pitch mechanical variation—glove set height, forearm exposure, torso lean, hand depth, and delivery timing—strictly before ball release. Built for MLB advance scouting, the system isolates high-movement anomalies (&ge;75% empirical variation) from broadcast video and scales into an actionable, high-certainty enterprise platform with club-provided 4K multi-angle feeds.
+            </p>
+            <div class="cta-row">
+              <a class="btn" href="board.html">Ranked Variation Leads</a>
+              <a class="btn ghost" href="teams.html">Coverage Board</a>
+              <a class="btn ghost" href="methodology.html">Vision Architecture</a>
+            </div>
+          </div>
+          <aside class="hero-meta" aria-label="Product facts">
+            <div><span>Domain</span><strong>Computer Vision PoC</strong></div>
+            <div><span>Core Engine</span><strong>"Spot the Difference" CV</strong></div>
+            <div><span>Unit of Model</span><strong>One Pitcher (Per-Arm)</strong></div>
+            <div><span>Baseline Feed</span><strong>Broadcast Center-Field (CF)</strong></div>
+            <div><span>Current Detection</span><strong>Glove, Posture, Forearm, Timing</strong></div>
+            <div><span>Enterprise Upgrade</span><strong>4K Multi-Angle (3B, 1B, Tight CF)</strong></div>
+            <div><span>Actionable Gate</span><strong>Validated Out-of-Sample (&ge;75%)</strong></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="eyebrow">Operational Framework</div>
+        <h2>"Spot the Difference" Movement Variation Detection</h2>
+        <p class="lede">
+          Automated computer vision pairs pitches across pitch types, tracking anatomical landmarks frame-by-frame through the pre-release window to isolate mechanical variance before release.
+        </p>
+
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); margin-bottom: 1.5rem;">
+          <div class="tile" style="border-left: 3px solid var(--accent); background: var(--bg-panel);">
+            <div class="kicker">CURRENT BROADCAST POC</div>
+            <h3 style="margin-top: 0.35rem;">Automated Mechanical Screening</h3>
+            <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 0.75rem;">
+              Tracks high-resolution pose landmarks and bounding boxes on standard broadcast Center-Field (CF) video feeds.
+            </p>
+            <ul style="font-size: 0.82rem; color: var(--muted); padding-left: 1.2rem; margin: 0; line-height: 1.6;">
+              <li><strong>Physical Discrepancy Isolation:</strong> Measures glove elevation (&gt;0.05 torso lengths), elbow/forearm angle, torso lean (&gt;5&deg;), and delivery timing offsets.</li>
+              <li><strong>Empirical Variation Leads:</strong> Automatically surfaces high-movement anomalies (&ge;75% empirical variation) as priority scouting targets.</li>
+              <li><strong>Zero Overlay Contamination:</strong> Tracks strictly pre-release motion with an absolute information barrier before ball release.</li>
+            </ul>
+          </div>
+
+          <div class="tile" style="border-left: 3px solid var(--good); background: var(--bg-panel);">
+            <div class="kicker" style="color: var(--good);">ENTERPRISE CLUB DEPLOYMENT</div>
+            <h3 style="margin-top: 0.35rem;">Validated High-Certainty Intelligence</h3>
+            <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 0.75rem;">
+              Upgrades raw movement variation into game-actionable intelligence via high-resolution multi-angle club video and our rigorous validation testing.
+            </p>
+            <ul style="font-size: 0.82rem; color: var(--muted); padding-left: 1.2rem; margin: 0; line-height: 1.6;">
+              <li><strong>Multi-Angle Camera Feeds:</strong> Tight 4K CF, 3rd Base coach dugout, 1st Base coach, and High-Home views.</li>
+              <li><strong>Full Temporal Capture:</strong> Continuous recording capturing complete coming-set routines and pre-stretch PitchCom programming.</li>
+              <li><strong>Validated Statistical Testing:</strong> Out-of-sample permutation nulls, Youden's J, and usage-weighted likelihood ratios to verify true &ge;75% game-planning power.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Computer Vision Pipeline</h2>
+        <p class="lede">
+          End-to-end vision system: ingest game video, detect and track anatomical landmarks with neural networks, segment pre-release delivery windows, and compute physical separation between pitch types.
+        </p>
+        <div class="pipeline">
+          <div class="pipeline-step">
+            <div class="n">01</div>
+            <h4>Ingest</h4>
+            <p>Savant play clips and private club 4K video feeds synchronized to pitch clock.</p>
+          </div>
+          <div class="pipeline-step">
+            <div class="n">02</div>
+            <h4>Detect &amp; Track</h4>
+            <p>YOLO-class object detection (pitcher mitt, catcher, belt) + MediaPipe 33-landmark pose tracking.</p>
+          </div>
+          <div class="pipeline-step">
+            <div class="n">03</div>
+            <h4>Actionable Window</h4>
+            <p>Pre-release features locked from static set through peak leg lift (strictly before arm action).</p>
+          </div>
+          <div class="pipeline-step">
+            <div class="n">04</div>
+            <h4>Mechanical Discrepancy</h4>
+            <p>Quantify physical separation (torso lengths, degrees, frames) and rank high-variance leads.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Tracked Pitchers &amp; Mechanical Indicators</h2>
+        <p class="lede" id="picks-summary">
+          Pitchers under active computer vision tracking with ranked physical variance indicators.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Pitcher</th>
+                <th>Club</th>
+                <th>Status</th>
+                <th>Holdout Baseline</th>
+                <th>Pitches Tracked</th>
+                <th>Indicators Isolated</th>
+                <th>Top Measurable Discrepancy</th>
+              </tr>
+            </thead>
+            <tbody id="picks-table-body"></tbody>
+          </table>
+        </div>
+        <p class="note">
+          <span class="badge ok">live PoC</span> = Computer vision tracking active on broadcast CF. Every pitcher dossier includes top ranked mechanical differences, anatomical landmark overlays, and situation breakdowns.
+        </p>
+      </section>
+
+      <section class="section">
+        <h2>Catcher Setup Tracking</h2>
+        <p class="lede" id="catcher-picks-summary">
+          Pre-pitch catcher target placement, stance width, and glove height before delivery initiation across game situations.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Catcher / Pairing</th>
+                <th>Club</th>
+                <th>Situation</th>
+                <th>Predicted Pitch</th>
+                <th>Signal Strength</th>
+                <th>Visual Indicator</th>
+              </tr>
+            </thead>
+            <tbody id="catcher-picks-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Pitcher &amp; Organization Workspace</h2>
+        <p class="lede">Select a club or pitcher to open their dedicated scouting dossier.</p>
+        <div class="controls">
+          <label class="field"
+            >Organization
+            <select id="team-select"></select>
+          </label>
+          <label class="field"
+            >Pitcher
+            <select id="player-select"></select>
+          </label>
+        </div>
+        <div class="cta-row">
+          <a class="btn" id="go-team" href="teams.html">Organization Summary</a>
+          <a class="btn ghost" id="go-player" href="#">Pitcher Dossier</a>
+        </div>
+        <p id="boot-fail" class="note" hidden>
+          Unable to load <code>data/demo.json</code>.
+        </p>
+      </section>
+
+      <section class="section">
+        <div class="eyebrow">Hardware &amp; Video Physics</div>
+        <h2>Broadcast CF Limits vs. Enterprise Expansion</h2>
+        <p class="lede">
+          Why standard broadcast feeds are bounded by physical optics and timing, and how private club video unlocks complete mechanical resolution.
+        </p>
+
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 2rem;">
+          <div class="tile" style="border-top: 3px solid #f87171;">
+            <div class="kicker" style="color: #f87171;">PHYSICAL LIMIT #1</div>
+            <h3>Clips Start Too Late</h3>
+            <p>
+              Standard Savant video cuts in <strong>after the pitcher is already set</strong> (median lead-in is only ~25 frames). This structurally cuts off the entire coming-set settle, pre-set glove positioning, and initial PitchCom entry.
+            </p>
+          </div>
+
+          <div class="tile" style="border-top: 3px solid #f87171;">
+            <div class="kicker" style="color: #f87171;">PHYSICAL LIMIT #2</div>
+            <h3>Pixel Density Ceiling</h3>
+            <p>
+              From 350–400 ft away, the pitcher’s glove spans only <strong>~35–45 pixels</strong> and the bare hand ~30 px. Individual fingers (6 px) and 1–2 px gaps are quantized away by 8&times;8 H.264 compression blocks. Grip seams and micro PitchCom wrist taps are physically unresolvable.
+            </p>
+          </div>
+
+          <div class="tile" style="border-top: 3px solid #f87171;">
+            <div class="kicker" style="color: #f87171;">PHYSICAL LIMIT #3</div>
+            <h3>Angle &amp; Sightline Blindspots</h3>
+            <p>
+              CF cameras look straight down the pitcher's back. Key tipping cues—facial expressions, mouth movements, and subtle glove-internal tilts—are visible only from the <strong>3rd Base coach or 1st Base coach sightlines</strong>, projecting along the CF axis to almost zero.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout" style="border-left: 3px solid var(--good); background: #0c1815; padding: 1.25rem 1.5rem; margin-top: 1.5rem; border-radius: 4px;">
+          <h3 style="margin: 0 0 0.5rem; color: #4ade80; font-size: 1.1rem;">The Enterprise Expansion: Making Detected Movement Actionable</h3>
+          <p style="margin: 0 0 0.85rem; color: var(--muted); font-size: 0.92rem; line-height: 1.6;">
+            When deployed with club-provided video, the platform swaps compressed broadcast CF for tight 4K multi-angle feeds under the exact same landmark schema:
+          </p>
+          <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 0.85rem;">
+            <div style="background: rgba(0,0,0,0.3); padding: 0.85rem; border: 1px solid rgba(255,255,255,0.06); border-radius: 3px;">
+              <strong style="color: var(--text); font-size: 0.85rem;">1. Multi-Angle Coverage</strong>
+              <p style="font-size: 0.78rem; color: var(--muted); margin: 0.35rem 0 0;">3B coach dugout view, 1B coach view, tight 4K CF, and high-home view behind plate.</p>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 0.85rem; border: 1px solid rgba(255,255,255,0.06); border-radius: 3px;">
+              <strong style="color: var(--text); font-size: 0.85rem;">2. Full Continuous Capture</strong>
+              <p style="font-size: 0.78rem; color: var(--muted); margin: 0.35rem 0 0;">Captures the entire coming-set routine and full PitchCom programming before the stretch.</p>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 0.85rem; border: 1px solid rgba(255,255,255,0.06); border-radius: 3px;">
+              <strong style="color: var(--text); font-size: 0.85rem;">3. Validated Predictive Power</strong>
+              <p style="font-size: 0.78rem; color: var(--muted); margin: 0.35rem 0 0;">Multi-angle cues feed our out-of-sample permutation null, Youden's J, and usage-weighted likelihood ratios to deliver verified &ge;75% game-planning intelligence.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Multi-Angle Camera Architecture</h2>
+        <p class="lede">
+          Broadcast center-field provides the production baseline. Club-provided multi-angle feeds share the unified landmark tracker schema—elevating baseline detections to high-certainty operational alerts.
+        </p>
+        <div class="grid">
+          <div class="tile">
+            <div class="kicker">CF</div>
+            <h3>Broadcast Center-Field</h3>
+            <p>Standard Savant broadcast footage. Automated detector suite and landmark solve tuned for CF camera geometry.</p>
+          </div>
+          <div class="tile">
+            <div class="kicker">X4</div>
+            <h3>High-Home / Hitter View</h3>
+            <p>Priority club angle for grip silhouette, fingers in glove pocket, and facial/head posture micro-movement.</p>
+          </div>
+          <div class="tile">
+            <div class="kicker">X1–X3</div>
+            <h3>Dugout / Base Lines (3B &amp; 1B)</h3>
+            <p>3B and 1B dugout / base coach cameras. Unobstructed view of glove separation, forearm angle, and hand break depth.</p>
+          </div>
+          <div class="tile">
+            <div class="kicker">TEAM</div>
+            <h3>Secure Club Ingest</h3>
+            <p>Direct upload or video vault linkage (angle ID + play clock) for private high-speed multi-angle tracking.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight Computer Vision</strong>
+        <span>Operational scouting demonstration. Computer vision isolating physical mechanical variance across MLB pitching staffs.</span>
+      </footer>
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>

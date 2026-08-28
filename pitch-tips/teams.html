@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Organization Coverage — Apex Preflight Computer Vision</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+  </head>
+  <body data-page="teams">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+    <nav class="nav">
+      <a href="index.html">Overview</a>
+      <a href="teams.html" aria-current="page">Coverage Board</a>
+      <a href="board.html">Ranked Leads</a>
+      <a href="progress.html">Live scale</a>
+      <a href="label.html">Label</a>
+      <a href="methodology.html">System</a>
+      <a href="analysis.html">Evaluation</a>
+    </nav>
+      </header>
+
+      <section class="section">
+        <div class="eyebrow">MLB Organization Layer · 2026 Computer Vision Tracking</div>
+        <h2>NL West &amp; MLB Club Coverage Board</h2>
+        <p class="lede">
+          Aggregated mechanical indicator inventory and computer vision roster tracking across MLB clubs. Full coverage across active rotations, bullpens, and catcher batteries isolating pre-release movement variation (≥75% signal floor).
+        </p>
+
+        <div class="coverage-stats-ribbon">
+          <div class="coverage-stat-card">
+            <div class="val good">5 / 5</div>
+            <div class="lbl">NL West Clubs Active</div>
+          </div>
+          <div class="coverage-stat-card">
+            <div class="val">18</div>
+            <div class="lbl">Starters &amp; Relievers</div>
+          </div>
+          <div class="coverage-stat-card">
+            <div class="val">10</div>
+            <div class="lbl">Catchers Modeled</div>
+          </div>
+          <div class="coverage-stat-card">
+            <div class="val">71+</div>
+            <div class="lbl">Movement Indicators</div>
+          </div>
+          <div class="coverage-stat-card">
+            <div class="val good">100%</div>
+            <div class="lbl">NL West CV Modeled</div>
+          </div>
+        </div>
+
+        <div class="coverage-filter-bar">
+          <button type="button" class="filter-btn active" data-filter="nlwest">NL West Focus (5 Clubs)</button>
+          <button type="button" class="filter-btn" data-filter="all">All MLB Tracked Clubs (10)</button>
+        </div>
+
+        <div id="team-grid" class="coverage-cards-grid"></div>
+        <p id="boot-fail" class="note" hidden>Unable to load coverage data.</p>
+      </section>
+
+      <section class="section">
+        <div class="eyebrow">Division Matrix</div>
+        <h2>NL West Side-by-Side Coverage Matrix</h2>
+        <p class="lede">
+          Cross-club comparison of tracked pitching depth, catcher batteries, modeled delivery samples, and surfaced mechanical variance indicators.
+        </p>
+        <div id="matrix-container"></div>
+      </section>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight Computer Vision</strong>
+        <span>MLB Organization Tracking Coverage.</span>
+      </footer>
+    </div>
+    <script src="js/app.js"></script>
+  </body>
+</html>
