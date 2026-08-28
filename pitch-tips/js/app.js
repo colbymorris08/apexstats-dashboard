@@ -1,4 +1,4 @@
-const SHOWCASE_ARM_IDS = new Set(["roupp", "webb", "eduardo_rodriguez"]);
+const SHOWCASE_ARM_IDS = new Set(["roupp", "webb", "eduardo_rodriguez", "gabriel_moreno"]);
 
 function checkIsLiteMode() {
   const url = new URL(location.href);
@@ -282,7 +282,7 @@ function wirePicksTable(data) {
 
   if (summary) {
     if (isLiteMode) {
-      summary.innerHTML = `<strong>3 Showcase Arms Unlocked</strong> (Roupp, Woo, Webb) · ${players.length} Total Arms Tracked · Request Enterprise Demo for full database`;
+      summary.innerHTML = `<strong>4 Showcase Profiles Unlocked</strong> (Roupp, Rodriguez, Webb, Moreno) · ${players.length} Total Arms Tracked · Request Enterprise Demo for full database`;
     } else {
       summary.textContent = `${players.length} pitchers under active CV tracking · ${totalSignals} measurable mechanical indicators isolated across broadcast CF`;
     }

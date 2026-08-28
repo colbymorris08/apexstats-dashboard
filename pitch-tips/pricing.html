@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pricing &amp; Access Tiers — Preflight Computer Vision</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;650;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+    <style>
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+      .pricing-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--line-strong);
+        border-radius: 6px;
+        padding: 1.75rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+      .pricing-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent);
+      }
+      .pricing-card.featured {
+        border-color: var(--accent);
+        box-shadow: 0 8px 32px rgba(61, 139, 253, 0.15);
+        background: linear-gradient(180deg, rgba(17, 26, 36, 0.95) 0%, rgba(12, 19, 27, 0.98) 100%);
+      }
+      .pricing-badge {
+        display: inline-block;
+        font-family: var(--mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 0.25rem 0.6rem;
+        border-radius: 3px;
+        margin-bottom: 0.85rem;
+      }
+      .pricing-badge.blue {
+        background: rgba(61, 139, 253, 0.15);
+        color: var(--accent);
+        border: 1px solid rgba(61, 139, 253, 0.35);
+      }
+      .pricing-badge.gold {
+        background: rgba(232, 162, 58, 0.15);
+        color: var(--warn);
+        border: 1px solid rgba(232, 162, 58, 0.35);
+      }
+      .pricing-badge.green {
+        background: rgba(62, 207, 142, 0.15);
+        color: var(--good);
+        border: 1px solid rgba(62, 207, 142, 0.35);
+      }
+      .pricing-badge.purple {
+        background: rgba(168, 85, 247, 0.15);
+        color: #c084fc;
+        border: 1px solid rgba(168, 85, 247, 0.35);
+      }
+      .pricing-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin: 0 0 0.35rem;
+        color: #fff;
+        line-height: 1.3;
+      }
+      .pricing-rate {
+        margin: 0.6rem 0 0.9rem;
+        display: flex;
+        align-items: baseline;
+        gap: 0.4rem;
+      }
+      .pricing-rate .amount {
+        font-family: var(--mono);
+        font-size: 1.85rem;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1;
+      }
+      .pricing-rate .period {
+        font-family: var(--mono);
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .pricing-rate.quote .amount {
+        font-size: 1.15rem;
+        color: var(--good);
+      }
+      .pricing-target {
+        font-size: 0.84rem;
+        color: var(--muted);
+        margin-bottom: 1.25rem;
+        min-height: 2.5rem;
+        line-height: 1.45;
+      }
+      .pricing-features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1.5rem;
+        font-size: 0.85rem;
+        color: var(--text);
+      }
+      .pricing-features li {
+        padding: 0.45rem 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        line-height: 1.45;
+      }
+      .pricing-features li::before {
+        content: "✓";
+        color: var(--good);
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .pricing-features li.strong-feat {
+        color: #fff;
+        font-weight: 600;
+      }
+      .legal-protection-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.25rem;
+        margin: 1.5rem 0 2.5rem;
+      }
+      .protection-card {
+        background: linear-gradient(135deg, rgba(62, 207, 142, 0.07) 0%, rgba(61, 139, 253, 0.05) 100%);
+        border: 1px solid rgba(62, 207, 142, 0.35);
+        border-radius: 6px;
+        padding: 1.4rem 1.5rem;
+      }
+      .protection-card h3 {
+        margin: 0 0 0.5rem;
+        font-size: 1.1rem;
+        color: var(--good);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .protection-card p {
+        margin: 0;
+        font-size: 0.88rem;
+        color: var(--text);
+        line-height: 1.55;
+      }
+    </style>
+  </head>
+  <body data-page="pricing">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="index.html">
+          <strong>Preflight</strong>
+          <em>Computer Vision</em>
+        </a>
+        <nav class="nav">
+          <a href="index.html">Overview</a>
+          <a href="lite.html"><span class="badge hot" style="font-size:0.68rem; margin-right:0.25rem;">Lite</span> Showcase</a>
+          <a href="teams.html">Coverage Board</a>
+          <a href="board.html">Ranked Leads</a>
+          <a href="progress.html">Live scale</a>
+          <a href="pricing.html" aria-current="page">Pricing &amp; Access</a>
+          <a href="label.html">Label</a>
+          <a href="methodology.html">System</a>
+          <a href="analysis.html">Evaluation</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="eyebrow">Program Licensing &amp; Enterprise Procurement</div>
+        <h1>Pricing, Exclusivity &amp; Deployment Tiers</h1>
+        <p class="lede">
+          Preflight provides automated pre-release pitch tipping detection, weekly opponent rotation audits, and catcher setup scouting. We offer structured exclusivity tiers for college programs looking to lock out conference rivals, and private multi-angle deployment for MLB front offices.
+        </p>
+        <div class="cta-row" style="margin-top: 1rem;">
+          <a
+            class="btn"
+            href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request&body=Name:%20%0D%0AOrganization/School:%20%0D%0ALevel:%20%0D%0ATier%20of%20Interest:%20%0D%0ANotes:%20"
+          >
+            Email Inquiries: colby.morris08@gmail.com →
+          </a>
+          <a class="btn ghost" href="lite_pricing.html">Open Lite Pricing View</a>
+        </div>
+      </section>
+
+      <!-- LEGAL PROTECTION & DATA FIREWALLS -->
+      <section class="section">
+        <div class="eyebrow">Data Security &amp; Compliance</div>
+        <h2>Legal Protection &amp; Data Firewalls</h2>
+        <p class="lede">
+          Zero-compromise operational security for NCAA baseball programs and Major League Baseball organizations.
+        </p>
+
+        <div class="legal-protection-grid">
+          <div class="protection-card">
+            <h3><span>🛡️</span> Mutual NDA Guarantee</h3>
+            <p>
+              Executed before film sharing. Every college program and professional club engagement is strictly protected under a binding mutual Non-Disclosure Agreement (NDA) executed prior to receiving, transferring, or analyzing team video feeds.
+            </p>
+          </div>
+
+          <div class="protection-card">
+            <h3><span>🔒</span> Zero-Leakage Data Firewalls</h3>
+            <p>
+              Internal program game footage, tactical notes, and scouting plans are completely compartmentalized and never shared across teams or conferences. Your program's proprietary video assets and scouting intelligence remain 100% private.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TIERS GRID -->
+      <section class="section">
+        <div class="eyebrow">Program &amp; Franchise Licensing Tiers</div>
+        <h2>Select Your Deployment Model</h2>
+        <p class="lede">
+          From automated Synergy weekly opponent audits to multi-angle stadium 4K ingest and total national exclusivity.
+        </p>
+
+        <div class="pricing-grid">
+          <!-- College Tier 1 -->
+          <div class="pricing-card">
+            <div>
+              <span class="pricing-badge blue">College · Tier 1 (2027 Season)</span>
+              <h3 class="pricing-title">Standard Team License</h3>
+              <div class="pricing-rate">
+                <span class="amount">$9,500</span>
+                <span class="period">/ season</span>
+              </div>
+              <p class="pricing-target">
+                For NCAA Division I &amp; II programs seeking automated pre-series advance scouting edge.
+              </p>
+              <ul class="pricing-features">
+                <li class="strong-feat">Synergy Video Integration &amp; Automated Batch Ingest</li>
+                <li class="strong-feat">Automated Weekly Opponent Rotation &amp; Bullpen Audits</li>
+                <li class="strong-feat">Catcher Setup Scouting (Target positioning &amp; crouch timing)</li>
+                <li>Pre-release delivery comparison viewer &amp; difference cards</li>
+                <li>Printable &amp; exportable scouting dossiers for coaching staff</li>
+                <li>Standard email &amp; video coordination onboarding support</li>
+              </ul>
+            </div>
+            <div>
+              <a
+                class="btn"
+                style="width:100%; text-align:center; justify-content:center;"
+                href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request%20-%20College%20Tier%201%20($9,500/season)&body=Name:%20%0D%0AOrganization/School:%20%0D%0ALevel:%20NCAA%20Division%20I/II%0D%0ATier:%20College%20Tier%201%20(Standard%20Team%20License%20-%20$9,500/season)%0D%0ANotes:%20"
+              >
+                Inquire for College Tier 1 →
+              </a>
+            </div>
+          </div>
+
+          <!-- College Tier 2: Conference Exclusivity -->
+          <div class="pricing-card featured">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="pricing-badge gold">College · Tier 2 (2027 Season)</span>
+                <span class="badge hot" style="font-size:0.68rem;">MOST REQUESTED</span>
+              </div>
+              <h3 class="pricing-title">Conference Exclusivity</h3>
+              <div class="pricing-rate">
+                <span class="amount" style="color:var(--warn);">$25,000</span>
+                <span class="period">/ season</span>
+              </div>
+              <p class="pricing-target" style="color: #ffd180;">
+                <em>"Monopolize Your Conference"</em> — Single-program conference lockout (no conference rivals can purchase Preflight).
+              </p>
+              <ul class="pricing-features">
+                <li class="strong-feat" style="color: var(--warn);">★ Single-Program Conference Lockout Guarantee</li>
+                <li class="strong-feat">Zero conference rivals permitted to license or access Preflight</li>
+                <li>Everything in College Tier 1 (Full Synergy automated audits)</li>
+                <li>Priority compute: 24-hour rapid turnaround on weekly opponent rotation &amp; bullpen audits</li>
+                <li>Active catcher setup scouting &amp; conference battery tracking</li>
+                <li>Weekly scouting strategy calls &amp; visual tell translation for hitters</li>
+                <li>Pre-tournament / Regional / Super Regional priority scouting</li>
+              </ul>
+            </div>
+            <div>
+              <a
+                class="btn"
+                style="width:100%; text-align:center; justify-content:center; background:var(--warn); color:#000; font-weight:700;"
+                href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request%20-%20Conference%20Exclusivity%20($25,000/season)&body=Name:%20%0D%0AOrganization/School:%20%0D%0AConference:%20%0D%0ATier:%20College%20Tier%202%20(Conference%20Exclusivity%20-%20$25,000/season)%0D%0ANotes:%20"
+              >
+                Lock Out Your Conference ($25K) →
+              </a>
+            </div>
+          </div>
+
+          <!-- College Tier 3: National Monopoly -->
+          <div class="pricing-card">
+            <div>
+              <span class="pricing-badge purple">College · Tier 3</span>
+              <h3 class="pricing-title">National Monopoly / Sole Contract</h3>
+              <div class="pricing-rate quote">
+                <span class="amount" style="color: #c084fc;">Contact Directly / Custom Enterprise Quote</span>
+              </div>
+              <p class="pricing-target">
+                For a single premier championship program securing total unilateral exclusive rights across all college baseball.
+              </p>
+              <ul class="pricing-features">
+                <li class="strong-feat" style="color: #c084fc;">★ Complete Exclusive National NCAA Rights</li>
+                <li class="strong-feat">Zero other college baseball teams permitted to purchase</li>
+                <li>Full non-conference, conference, and College World Series advance prep</li>
+                <li>Automated weekly opponent rotation &amp; bullpen audits with Synergy video integration</li>
+                <li>Catcher setup &amp; target positioning tell scouting</li>
+                <li>Custom fine-tuned CV models for all scheduled opposing arms</li>
+                <li>Dedicated video coordinator pipeline integration &amp; custom tagging</li>
+                <li>Direct dedicated scouting line with Colby Morris</li>
+              </ul>
+            </div>
+            <div>
+              <a
+                class="btn"
+                style="width:100%; text-align:center; justify-content:center;"
+                href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request%20-%20National%20Monopoly%20Sole%20Contract&body=Name:%20%0D%0AOrganization/School:%20%0D%0ALevel:%20NCAA%20Division%20I%0D%0ATier:%20College%20Tier%203%20(National%20Monopoly%20Sole%20Contract)%0D%0ANotes:%20"
+              >
+                Inquire for National Monopoly →
+              </a>
+            </div>
+          </div>
+
+          <!-- Pro / MLB Enterprise -->
+          <div class="pricing-card" style="border-color: rgba(62, 207, 142, 0.4);">
+            <div>
+              <span class="pricing-badge green">MLB Enterprise</span>
+              <h3 class="pricing-title">Pro / MLB Enterprise Deployment</h3>
+              <div class="pricing-rate quote">
+                <span class="amount">Contact Directly / Custom Enterprise Quote</span>
+              </div>
+              <p class="pricing-target">
+                Per-season club license or lump sum franchise acquisition for Major League Baseball Front Offices.
+              </p>
+              <ul class="pricing-features">
+                <li class="strong-feat">Direct Multi-Angle In-Stadium Camera Ingest (4K60 tight CF, 1B/3B coach feeds, dugout cameras)</li>
+                <li>Sub-pixel hand burial, finger curl, and wrist cock classification</li>
+                <li>Full 40-man roster, Minor League affiliates, and trade-target audits</li>
+                <li>Pre-set PitchCom cadence, rubber adjustment, and tempo anomaly tracking</li>
+                <li>Direct API / database push to proprietary club analytics systems</li>
+                <li>Defensive staff audit: test own pitching staff to prevent opponent tipping</li>
+                <li>Custom on-prem or private cloud instance under strict security</li>
+              </ul>
+            </div>
+            <div>
+              <a
+                class="btn"
+                style="width:100%; text-align:center; justify-content:center;"
+                href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request%20-%20MLB%20Enterprise&body=Name:%20%0D%0AOrganization/Club:%20%0D%0ALevel:%20MLB/MiLB%20Professional%0D%0ATier:%20Pro%20/%20MLB%20Enterprise%20(Custom%20Quote)%0D%0ANotes:%20"
+              >
+                Contact Colby Directly for MLB Quote →
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT / INQUIRY CALLOUT -->
+      <section class="section">
+        <div class="callout" style="border-left: 3px solid var(--accent); background: var(--bg-panel); padding: 1.5rem;">
+          <h3 style="margin: 0 0 0.5rem; color: #fff;">Direct Onboarding &amp; Scouting Inquiries</h3>
+          <p style="margin: 0 0 1rem; color: var(--muted); font-size: 0.9rem; line-height: 1.55;">
+            To schedule an advance scouting demonstration, execute an NDA, or verify conference exclusivity availability:
+          </p>
+          <div class="cta-row">
+            <a
+              class="btn"
+              href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request&body=Name:%20%0D%0AOrganization/School:%20%0D%0ALevel:%20%0D%0ATier%20of%20Interest:%20%0D%0ANotes:%20"
+            >
+              Email colby.morris08@gmail.com →
+            </a>
+            <button type="button" class="btn ghost trigger-pilot-modal">
+              Request Pilot / Schedule Audit
+            </button>
+            <a class="btn ghost" href="https://twitter.com/colbymorris08" target="_blank" rel="noopener">
+              Twitter / X DM: @colbymorris08
+            </a>
+            <a class="btn ghost" href="lite.html">
+              Explore Lite Showcase
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pilot Request Modal Component -->
+      <div class="lite-modal-backdrop" id="pilot-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="pilot-modal-title">
+        <div class="lite-modal" id="pilot-modal">
+          <button class="lite-modal-close" id="pilot-modal-close" aria-label="Close dialog">✕</button>
+          <div class="eyebrow" style="margin-bottom:0.4rem; color:var(--accent);">Preflight Pilot Outreach</div>
+          <h3 id="pilot-modal-title">Request Scouting Pilot / Schedule Audit</h3>
+          <p class="sub">
+            Connect your coaching staff, advance scouts, and analytics department to Preflight's automated pitch anticipation models and video audit pipeline.
+          </p>
+
+          <div class="features-list">
+            <div>✓ Signed mutual NDA executed prior to video sharing (100% confidentiality guaranteed)</div>
+            <div>✓ Zero-leakage compartmentalized data firewalls across all programs</div>
+            <div>✓ Automated weekly opponent rotation &amp; bullpen audits via Synergy or stadium video</div>
+            <div>✓ Active catcher setup &amp; pitcher pre-release mechanical variance reports</div>
+            <div>✓ Conference lockout protection (guaranteed single-program exclusivity)</div>
+          </div>
+
+          <form id="pilot-modal-form">
+            <div class="form-group">
+              <label for="pilot-name">Full Name *</label>
+              <input type="text" id="pilot-name" required placeholder="e.g. Coach Dan Miller" />
+            </div>
+
+            <div class="form-group">
+              <label for="pilot-org">Organization / School *</label>
+              <input type="text" id="pilot-org" required placeholder="e.g. Texas A&amp;M University / MLB Club" />
+            </div>
+
+            <div class="form-group">
+              <label for="pilot-email">Work / Official Email *</label>
+              <input type="email" id="pilot-email" required placeholder="e.g. dmiller@athletics.tamu.edu" />
+            </div>
+
+            <div class="form-group">
+              <label for="pilot-level">Level / Division *</label>
+              <select id="pilot-level">
+                <option value="NCAA Division I (Power Conference)">NCAA Division I (Power Conference - SEC, ACC, Big 12, Big Ten)</option>
+                <option value="NCAA Division I (Mid-Major)">NCAA Division I (Mid-Major)</option>
+                <option value="NCAA Division II / III / NAIA / JUCO">NCAA Division II / III / NAIA / JUCO</option>
+                <option value="MLB / MiLB Professional Organization">MLB / MiLB Professional Organization</option>
+                <option value="Independent / Player Development Facility">Independent / Player Development Facility</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pilot-tier">Tier of Interest *</label>
+              <select id="pilot-tier">
+                <option value="College Tier 1: Standard Team License ($9,500/season)">College Tier 1: Standard Team License ($9,500/season)</option>
+                <option value="College Tier 2: Conference Exclusivity ($25,000/season)" selected>College Tier 2: Conference Exclusivity ("Monopolize Your Conference" - $25,000/season)</option>
+                <option value="College Tier 3: National Monopoly Sole Contract">College Tier 3: National Monopoly Sole Contract (Custom Quote)</option>
+                <option value="Pro / MLB Enterprise (Custom Quote)">Pro / MLB Enterprise (Custom Quote)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pilot-notes">Notes / Specific Opponents / Timeline</label>
+              <textarea id="pilot-notes" rows="3" placeholder="Specify any upcoming weekend series, conference rivals, target pitchers, or Synergy video setup..."></textarea>
+            </div>
+
+            <div class="lite-modal-actions">
+              <button type="submit" class="lite-btn-primary">Submit Pilot Request →</button>
+              <a href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request" class="lite-btn-secondary">Direct Email</a>
+            </div>
+          </form>
+
+          <div class="lite-success-message" id="pilot-modal-success">
+            <strong>Thank you for your pilot request.</strong> Your default email client has been prepared with your request parameters directed to Colby Morris (<a href="mailto:colby.morris08@gmail.com" style="color:inherit; font-weight:bold;">colby.morris08@gmail.com</a>). We will respond promptly to coordinate NDA execution and video setup.
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <strong>Colby Morris · Preflight CV</strong>
+        <span>Proprietary &amp; Confidential Computer Vision Scouting Platform</span>
+      </footer>
+    </div>
+    <script src="js/lite_app.js"></script>
+  </body>
+</html>

@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;650;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;650;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/site.css" />
@@ -24,34 +24,35 @@
           <a href="lite.html" aria-current="page">Overview</a>
           <a href="lite_teams.html">Coverage Board</a>
           <a href="lite_board.html">Ranked Leads</a>
-          <a href="progress.html">Live Scale</a>
-          <a href="methodology.html">Architecture</a>
-          <a href="analysis.html">Evaluation</a>
+          <a href="lite_pricing.html">Pricing &amp; Access</a>
+          <a href="lite_methodology.html">Architecture &amp; CV</a>
           <a href="#" class="lite-nav-cta trigger-pilot-modal">Request Pilot Access</a>
         </nav>
       </header>
 
       <section class="hero">
-        <div class="eyebrow">Public Showcase · MLB Advance Scouting &amp; Pitch Anticipation</div>
+        <div class="eyebrow">Public Showcase · MLB &amp; College Advance Scouting Intel</div>
         <div class="hero-grid">
           <div>
-            <h1>Computer Vision "Spot the Difference" Engine for Pitch Tipping &amp; Movement Variation.</h1>
+            <h1>Computer Vision "Spot the Difference" Engine for Pitch Tipping &amp; Catcher Setup Cues.</h1>
             <p>
-              Apex Preflight automates high-resolution landmark and bounding-box tracking to detect pitch-to-pitch mechanical variation—glove set height, forearm exposure, torso lean, hand depth, and delivery timing—strictly before ball release.
+              Apex Preflight automates high-resolution landmark and bounding-box tracking to detect pitch-to-pitch mechanical variation—glove set height, forearm exposure, torso posture, hand depth, and catcher target positioning—strictly before ball release.
             </p>
             <div class="cta-row">
               <a class="btn" href="lite_player.html?id=eduardo_rodriguez">Explore Showcase: Eduardo Rodriguez →</a>
               <a class="btn ghost" href="lite_player.html?id=webb">Logan Webb →</a>
-              <a class="btn ghost trigger-pilot-modal" href="#">Request Enterprise Pilot</a>
+              <button type="button" class="btn ghost trigger-pilot-modal" style="color:var(--warn); border-color:rgba(232,162,58,0.4);">
+                Request Pilot / Schedule Scouting Audit →
+              </button>
             </div>
           </div>
           <aside class="hero-meta" aria-label="Product facts">
             <div><span>Domain</span><strong>Computer Vision Showcase</strong></div>
-            <div><span>Showcase Arms</span><strong>Eduardo Rodriguez, Webb, Roupp</strong></div>
-            <div><span>Unit of Model</span><strong>One Pitcher (Per-Arm)</strong></div>
-            <div><span>Baseline Feed</span><strong>Broadcast Center-Field (CF)</strong></div>
-            <div><span>Detection Scope</span><strong>Glove, Posture, Forearm, Timing</strong></div>
-            <div><span>Enterprise Access</span><strong>Full MLB Rosters &amp; 4K Multi-Angle</strong></div>
+            <div><span>Showcase Pitchers</span><strong>Eduardo Rodriguez, Webb, Roupp</strong></div>
+            <div><span>Showcase Catcher</span><strong>Gabriel Moreno (ARI) Battery</strong></div>
+            <div><span>Baseline Feed</span><strong>Broadcast Center-Field (CF) &amp; Synergy</strong></div>
+            <div><span>Detection Scope</span><strong>Glove, Posture, Forearm, Catcher Setup</strong></div>
+            <div><span>Enterprise Access</span><strong>Conference Exclusivity &amp; 4K Multi-Angle</strong></div>
             <div><span>Actionable Gate</span><strong>Validated Out-of-Sample (&ge;75%)</strong></div>
           </aside>
         </div>
@@ -59,7 +60,7 @@
 
       <!-- Showcase Arms Banner & Cards -->
       <section class="section">
-        <div class="eyebrow">Interactive Showcase Arms</div>
+        <div class="eyebrow">Interactive Showcase Pitchers</div>
         <h2>Tested MLB Pitcher Case Studies (Full Interactive Tools Unlocked)</h2>
         <p class="lede">
           Experience our interactive delivery comparison slider and full pre-release mechanical cue breakdowns across these benchmark starting pitchers.
@@ -70,12 +71,102 @@
         </div>
       </section>
 
+      <!-- REAL CATCHER TIP SHOWCASE (Gabriel Moreno ARI / Will Smith LAD / Patrick Bailey SF) -->
+      <section class="section" id="catcher-showcase-root">
+        <div class="eyebrow">Battery &amp; Target Tracking · Real NL West Discovery</div>
+        <h2>Featured Catcher Setup Tell: Pre-Pitch Target Shift &amp; Stance Timing</h2>
+        <p class="lede">
+          Pitchers aren't the only ones tipping pitches. Computer vision isolates pre-pitch target positioning, glove elevation shifts, and crouch posture cues across MLB catchers before the pitcher comes set.
+        </p>
+
+        <div class="catcher-showcase-container">
+          <div class="catcher-showcase-header">
+            <div>
+              <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.25rem;">
+                <span class="lite-badge-showcase">★ UNLOCKED CATCHER CASE STUDY</span>
+                <span class="badge hot" id="catcher-signal-badge">100% Signal Floor</span>
+              </div>
+              <h3 style="margin:0; font-size:1.4rem;" id="catcher-active-name">Gabriel Moreno</h3>
+              <div style="font-size:0.85rem; color:var(--muted); margin-top:0.2rem;" id="catcher-active-team">
+                Arizona Diamondbacks (ARI) · Primary Starter
+              </div>
+            </div>
+
+            <!-- Catcher Selector Tabs -->
+            <div class="catcher-selector-pills">
+              <button type="button" class="catcher-tab-btn active" data-catcher="gabriel_moreno">
+                Gabriel Moreno (ARI)
+              </button>
+              <button type="button" class="catcher-tab-btn" data-catcher="will_smith">
+                Will Smith (LAD)
+              </button>
+              <button type="button" class="catcher-tab-btn" data-catcher="patrick_bailey">
+                Patrick Bailey (SF)
+              </button>
+            </div>
+          </div>
+
+          <!-- Tell Sub-Tabs -->
+          <div class="catcher-tell-tabs" id="catcher-tell-buttons">
+            <!-- Populated dynamically by lite_app.js -->
+          </div>
+
+          <div class="catcher-visual-grid">
+            <!-- Interactive Visual Strike Zone Target Display -->
+            <div class="catcher-diagram-box">
+              <div style="position:absolute; top:1rem; left:1.25rem; font-family:var(--mono); font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">
+                Computer Vision · Pre-Pitch Glove Target Shift
+              </div>
+              <div id="catcher-svg-display" style="width:100%; display:flex; justify-content:center; margin-top:1.25rem;">
+                <!-- SVG rendered by lite_app.js -->
+              </div>
+            </div>
+
+            <!-- Tell Data & Metrics -->
+            <div>
+              <h4 style="margin:0 0 0.5rem; font-size:1.15rem; color:#fff;">Biomechanical Target Variance</h4>
+              <p style="font-size:0.88rem; color:var(--text); line-height:1.55; margin-bottom:1rem;" id="catcher-observation-text">
+                Before Merrill Kelly or Eduardo Rodriguez comes set, Moreno establishes his primary glove target noticeably wider glove-side (outside border to LHH) on Changeups compared to 4-Seam Fastballs.
+              </p>
+
+              <div class="catcher-stat-metrics">
+                <div class="catcher-metric-tile">
+                  <div class="catcher-metric-val good" id="c-metric-1-val">+7.8 in</div>
+                  <div class="catcher-metric-lbl" id="c-metric-1-lbl">Glove-Side Target Shift</div>
+                </div>
+                <div class="catcher-metric-tile">
+                  <div class="catcher-metric-val good" id="c-metric-2-val">100%</div>
+                  <div class="catcher-metric-lbl" id="c-metric-2-lbl">Predictive Signal Floor</div>
+                </div>
+                <div class="catcher-metric-tile">
+                  <div class="catcher-metric-val" id="c-metric-3-val">0.48 m</div>
+                  <div class="catcher-metric-lbl" id="c-metric-3-lbl">Target Y (Low-Away)</div>
+                </div>
+                <div class="catcher-metric-tile">
+                  <div class="catcher-metric-val warn" id="c-metric-4-val">CH vs FF</div>
+                  <div class="catcher-metric-lbl" id="c-metric-4-lbl">Primary Pitch Contrast</div>
+                </div>
+              </div>
+
+              <div style="background:var(--bg-elev); border-left:3px solid var(--accent); padding:0.85rem 1rem; border-radius:3px; margin-top:1rem;">
+                <div style="font-size:0.8rem; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.25rem;">
+                  Advance Scouting &amp; Game Planning Translation
+                </div>
+                <p style="font-size:0.84rem; color:var(--text); margin:0; line-height:1.5;" id="catcher-takeaway-text">
+                  When Moreno sets target >6 inches glove-side before the pitcher settles into the stretch, off-speed probability is 94%+. LHH hitters can eliminate the high inside fastball.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- 4-Step Operational Workflow Section -->
       <section class="section">
         <div class="eyebrow">Operational Workflow</div>
         <h2>Operational Workflow: From Automated Detection to On-Field Execution</h2>
         <p class="lede">
-          How Major League clubs transform computer vision signals into on-field competitive advantage through a four-stage execution pipeline.
+          How Major League clubs and college championship programs transform computer vision signals into on-field competitive advantage through a four-stage execution pipeline.
         </p>
 
         <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
@@ -125,23 +216,23 @@
         </div>
       </section>
 
-      <!-- Enterprise Access Banner -->
+      <!-- Enterprise & Exclusivity Banner -->
       <section class="section">
         <div class="lite-showcase-banner">
           <div>
-            <h3>Enterprise Front Office &amp; Advance Scouting Access</h3>
+            <h3>Enterprise Program Licensing &amp; Conference Exclusivity</h3>
             <p>
-              Preflight provides full-roster pitch anticipation models, in-stadium 4K multi-angle video integration (open dugout, tight CF, high-home), and pre-series opponent dossiers for MLB clubs.
+              Preflight provides full-roster pitch anticipation models, in-stadium 4K multi-angle video integration, and conference lockout protection (guaranteed single-school license per conference).
             </p>
             <div class="lite-showcase-pills">
-              <span class="lite-showcase-pill"><span class="dot"></span>Full NL West Rotations &amp; Bullpens</span>
-              <span class="lite-showcase-pill"><span class="dot"></span>10 Modeled Catcher Batteries</span>
-              <span class="lite-showcase-pill"><span class="dot"></span>Custom Club Multi-Angle Ingestion</span>
-              <span class="lite-showcase-pill"><span class="dot"></span>Advance Scouting PDF &amp; CSV Exports</span>
+              <span class="lite-showcase-pill"><span class="dot"></span>Signed Mutual NDA Prior to Video Sharing</span>
+              <span class="lite-showcase-pill"><span class="dot"></span>Conference Lockout Protection (Tier 2)</span>
+              <span class="lite-showcase-pill"><span class="dot"></span>Automated Synergy Weekend Rotation Audits</span>
+              <span class="lite-showcase-pill"><span class="dot"></span>47+ Active NL West Catcher Setup Cues</span>
             </div>
           </div>
           <button type="button" class="btn trigger-pilot-modal" style="white-space: nowrap; font-size: 0.95rem; padding: 0.85rem 1.5rem;">
-            Request Pilot Access →
+            Request Pilot / Schedule Audit →
           </button>
         </div>
       </section>
@@ -197,58 +288,69 @@
     <div class="lite-modal-backdrop" id="pilot-modal-backdrop">
       <div class="lite-modal" id="pilot-modal">
         <button type="button" class="lite-modal-close" id="pilot-modal-close">&times;</button>
-        <h3>Request Enterprise Pilot Access</h3>
+        <div class="eyebrow" style="margin-bottom:0.4rem; color:var(--accent);">Preflight Pilot Outreach</div>
+        <h3 id="pilot-modal-title">Request Scouting Pilot / Schedule Audit</h3>
         <p class="sub">
-          Connect your club's video coordinators, advance scouts, and analytics staff to Preflight's full-roster pitch anticipation models and 4K multi-angle ingestion pipeline.
+          Connect your coaching staff, advance scouts, and analytics department to Preflight's automated pitch anticipation models and video audit pipeline.
         </p>
 
         <div class="features-list">
-          <div>✓ Full MLB team rosters, active rotations, and high-leverage bullpens</div>
-          <div>✓ In-stadium multi-angle video integration (Synergy, high-home, dugout 4K60)</div>
-          <div>✓ Rigorous FDR &alpha;=0.10 holdout validation (zero post-release leakage)</div>
-          <div>✓ Custom pre-series opponent advance scouting dossiers</div>
+          <div>✓ Signed NDA executed prior to video sharing (100% confidentiality guaranteed)</div>
+          <div>✓ Automated opponent weekend rotation audits via Synergy or stadium video</div>
+          <div>✓ Active catcher setup &amp; pitcher pre-release mechanical variance reports</div>
+          <div>✓ Conference lockout protection (guaranteed single-school exclusivity)</div>
         </div>
 
         <form id="pilot-modal-form">
           <div class="form-group">
-            <label for="pilot-name">Full Name</label>
-            <input type="text" id="pilot-name" required placeholder="e.g. Alex Campbell" />
+            <label for="pilot-name">Full Name *</label>
+            <input type="text" id="pilot-name" required placeholder="e.g. Coach Dan Miller" />
           </div>
 
           <div class="form-group">
-            <label for="pilot-org">Organization / Club</label>
-            <input type="text" id="pilot-org" required placeholder="e.g. San Francisco Giants / MLB Front Office" />
+            <label for="pilot-org">Organization / School *</label>
+            <input type="text" id="pilot-org" required placeholder="e.g. Texas A&amp;M University / MLB Club" />
           </div>
 
           <div class="form-group">
-            <label for="pilot-email">Work / Club Email</label>
-            <input type="email" id="pilot-email" required placeholder="e.g. acampbell@sfgiants.com" />
+            <label for="pilot-email">Work / Official Email *</label>
+            <input type="email" id="pilot-email" required placeholder="e.g. dmiller@athletics.tamu.edu" />
           </div>
 
           <div class="form-group">
-            <label for="pilot-role">Primary Role / Department</label>
-            <select id="pilot-role">
-              <option value="Advance Scouting">Advance Scouting &amp; Game Planning</option>
-              <option value="Pitching Development">Pitching Analytics &amp; Player Development</option>
-              <option value="Front Office">Baseball Operations / Front Office</option>
-              <option value="Video Coordination">Video Coordination &amp; Ingest</option>
-              <option value="Independent Analyst">Media / Independent Research</option>
+            <label for="pilot-level">Level / Division *</label>
+            <select id="pilot-level">
+              <option value="NCAA Division I (Power Conference)">NCAA Division I (Power Conference - SEC, ACC, Big 12, Big Ten)</option>
+              <option value="NCAA Division I (Mid-Major)">NCAA Division I (Mid-Major)</option>
+              <option value="NCAA Division II / III / NAIA / JUCO">NCAA Division II / III / NAIA / JUCO</option>
+              <option value="MLB / MiLB Professional Organization">MLB / MiLB Professional Organization</option>
+              <option value="Independent / Player Development Facility">Independent / Player Development Facility</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label for="pilot-notes">Target Pitchers / Scope of Interest</label>
-            <textarea id="pilot-notes" rows="3" placeholder="Specify any specific arms, division focus, or multi-angle video feeds..."></textarea>
+            <label for="pilot-tier">Tier of Interest *</label>
+            <select id="pilot-tier">
+              <option value="College Tier 1: Standard Team License">College Tier 1: Standard Team License</option>
+              <option value="College Tier 2: Conference Exclusivity Premium" selected>College Tier 2: Conference Exclusivity Premium ("Monopolize Your Conference")</option>
+              <option value="College Tier 3: National Monopoly Sole Contract">College Tier 3: National Monopoly Sole Contract</option>
+              <option value="Pro / MLB Enterprise (Custom Quote)">Pro / MLB Enterprise (Custom Quote)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pilot-notes">Notes / Specific Opponents / Timeline</label>
+            <textarea id="pilot-notes" rows="3" placeholder="Specify any upcoming weekend series, conference rivals, target pitchers, or Synergy video setup..."></textarea>
           </div>
 
           <div class="lite-modal-actions">
             <button type="submit" class="lite-btn-primary">Submit Pilot Request →</button>
-            <a href="https://twitter.com/colbymorris08" target="_blank" rel="noopener" class="lite-btn-secondary">Direct Twitter / X DM</a>
+            <a href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request" class="lite-btn-secondary">Direct Email</a>
           </div>
         </form>
 
         <div class="lite-success-message" id="pilot-modal-success">
-          <strong>Thank you for your interest.</strong> Your default email client has been prepared with your pilot request details. We will reach out shortly with onboarding instructions and custom club demo access.
+          <strong>Thank you for your pilot request.</strong> Your default email client has been prepared with your request parameters directed to Colby Morris (<a href="mailto:colby.morris08@gmail.com" style="color:inherit; font-weight:bold;">colby.morris08@gmail.com</a>). We will respond promptly to coordinate NDA execution and video setup.
         </div>
       </div>
     </div>

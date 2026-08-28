@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vision Architecture &amp; Evaluation — Apex Preflight Lite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;650;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="css/lite.css" />
+    <style>
+      .workflow-card {
+        background: var(--bg-panel);
+        border: 1px solid var(--line-strong);
+        border-radius: 6px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        position: relative;
+      }
+      .workflow-num {
+        font-family: var(--mono);
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: 0.25rem;
+      }
+      .cv-pill {
+        display: inline-block;
+        background: rgba(61, 139, 253, 0.12);
+        color: var(--accent);
+        border: 1px solid rgba(61, 139, 253, 0.3);
+        padding: 0.2rem 0.5rem;
+        border-radius: 3px;
+        font-size: 0.75rem;
+        font-family: var(--mono);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body data-page="lite_methodology">
+    <div class="wrap">
+      <header class="topbar">
+        <a class="brand" href="lite.html">
+          <strong>Apex Preflight</strong>
+          <em>Computer Vision · Lite Showcase</em>
+        </a>
+        <nav class="nav">
+          <a href="lite.html">Overview</a>
+          <a href="lite_teams.html">Coverage Board</a>
+          <a href="lite_board.html">Ranked Leads</a>
+          <a href="lite_pricing.html">Pricing &amp; Access</a>
+          <a href="lite_methodology.html" aria-current="page">Architecture &amp; CV</a>
+          <a href="#" class="lite-nav-cta trigger-pilot-modal">Request Pilot Access</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="eyebrow">Computer Vision Engine &amp; Commercial Value</div>
+        <h1>How Preflight Isolates Actionable Tells Before Ball Release</h1>
+        <p class="lede">
+          Preflight replaces slow, manual video scrubbing with an automated computer vision pipeline. By combining high-speed object detection and 3D skeletal tracking, the engine discovers physical mechanical differences across pitch types with zero post-release data leakage.
+        </p>
+        <div class="cta-row" style="margin-top: 1rem;">
+          <button type="button" class="btn trigger-pilot-modal">Schedule Scouting Audit / Request Pilot →</button>
+          <a class="btn ghost" href="lite_pricing.html">View Pricing &amp; Exclusivity Tiers</a>
+        </div>
+      </section>
+
+      <!-- 4-STEP OPERATIONAL WORKFLOW -->
+      <section class="section">
+        <div class="eyebrow">Actionable Implementation</div>
+        <h2>The 4-Step Operational Workflow</h2>
+        <p class="lede">
+          A mechanical tell is only valuable if it can be recognized and acted upon in real game situations. Preflight follows a proven 4-stage operational pipeline from automated discovery to on-field execution.
+        </p>
+
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin: 1.5rem 0;">
+          <div class="workflow-card" style="border-top: 3px solid var(--accent);">
+            <div class="workflow-num">01</div>
+            <h3 style="margin: 0; font-size: 1.1rem; color: #fff;">The Model Finds the Pattern</h3>
+            <p style="margin: 0; font-size: 0.88rem; color: var(--muted); line-height: 1.55;">
+              Automated computer vision continuously scans game footage, tracking 30+ anatomical landmarks across uniform delivery strata to surface mechanical discrepancies before hand break.
+            </p>
+          </div>
+
+          <div class="workflow-card" style="border-top: 3px solid #3ecf8e;">
+            <div class="workflow-num" style="color: #3ecf8e;">02</div>
+            <h3 style="margin: 0; font-size: 1.1rem; color: #fff;">Analysts Confirm the Tip</h3>
+            <p style="margin: 0; font-size: 0.88rem; color: var(--muted); line-height: 1.55;">
+              Advance scouts and quantitative analysts vet signals against baseline pitch mixes, verify sample sizes, eliminate lighting artifacts, and confirm cues across multi-game holdout video.
+            </p>
+          </div>
+
+          <div class="workflow-card" style="border-top: 3px solid #e8a23a;">
+            <div class="workflow-num" style="color: #e8a23a;">03</div>
+            <h3 style="margin: 0; font-size: 1.1rem; color: #fff;">Coaches Teach How to Spot It</h3>
+            <p style="margin: 0; font-size: 0.88rem; color: var(--muted); line-height: 1.55;">
+              Hitting coaches and pitching coordinators translate complex landmark metrics into simple, intuitive visual cues and situational game plans for hitters and runners.
+            </p>
+          </div>
+
+          <div class="workflow-card" style="border-top: 3px solid #a855f7;">
+            <div class="workflow-num" style="color: #a855f7;">04</div>
+            <h3 style="margin: 0; font-size: 1.1rem; color: #fff;">Players Execute on the Field</h3>
+            <p style="margin: 0; font-size: 0.88rem; color: var(--muted); line-height: 1.55;">
+              Hitters in the batter's box, runners at second base, and base coaches spot the verified tell in real time before ball release to optimize swing decisions and run creation.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMPUTER VISION ARCHITECTURE -->
+      <section class="section">
+        <div class="eyebrow">Technical Architecture</div>
+        <h2>Computer Vision &amp; Deep Learning Stack</h2>
+        <p class="lede">
+          Built on production-grade computer vision models fine-tuned specifically on high-speed baseball pitching mechanics.
+        </p>
+
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+          <div class="panel">
+            <span class="cv-pill">YOLOv8 Detection</span>
+            <h3 style="margin: 0.75rem 0 0.4rem; color: #fff;">High-Speed Object &amp; Gear Localization</h3>
+            <p style="font-size: 0.88rem; color: var(--muted); line-height: 1.55;">
+              Custom-trained YOLOv8 models identify and segment critical equipment and anatomical regions with sub-pixel precision across changing broadcast lighting, jersey colors, and camera zooms:
+            </p>
+            <ul style="font-size: 0.85rem; color: var(--text); padding-left: 1.2rem; line-height: 1.6; margin-bottom: 0;">
+              <li><strong>Pitching Glove Bounding:</strong> Glove pocket orientation, flare angle, and set elevation.</li>
+              <li><strong>Bare Hand Tracking:</strong> Hand depth, grip insertion timing, and finger curl exposure.</li>
+              <li><strong>Catcher Setup Detection:</strong> Pre-pitch glove target placement and crouch width.</li>
+            </ul>
+          </div>
+
+          <div class="panel">
+            <span class="cv-pill" style="color:var(--good); border-color:rgba(62,207,142,0.3); background:rgba(62,207,142,0.12);">MediaPipe Pose</span>
+            <h3 style="margin: 0.75rem 0 0.4rem; color: #fff;">3D Skeletal Landmark Tracking</h3>
+            <p style="font-size: 0.88rem; color: var(--muted); line-height: 1.55;">
+              Full 33-point anatomical pose estimation maps full-body kinematics throughout the entire pre-pitch sequence:
+            </p>
+            <ul style="font-size: 0.85rem; color: var(--text); padding-left: 1.2rem; line-height: 1.6; margin-bottom: 0;">
+              <li><strong>Torso Lean &amp; Spine Angle:</strong> Pre-pitch posture shifts correlated with off-speed pitches.</li>
+              <li><strong>Lead Knee Lift Dynamics:</strong> Tempo acceleration and knee height variations.</li>
+              <li><strong>Forearm Exposure:</strong> Forearm tilt angle relative to the pitcher's torso axis.</li>
+            </ul>
+          </div>
+
+          <div class="panel">
+            <span class="cv-pill" style="color:var(--warn); border-color:rgba(232,162,58,0.3); background:rgba(232,162,58,0.12);">Strict Gating</span>
+            <h3 style="margin: 0.75rem 0 0.4rem; color: #fff;">Strict Temporal Gating (Zero Leakage)</h3>
+            <p style="font-size: 0.88rem; color: var(--muted); line-height: 1.55;">
+              To guarantee zero post-release data leakage and preserve true predictive utility:
+            </p>
+            <ul style="font-size: 0.85rem; color: var(--text); padding-left: 1.2rem; line-height: 1.6; margin-bottom: 0;">
+              <li><strong>Gated Window:</strong> Tracking begins when the pitcher settles into the set and terminates precisely at the frame of hand break.</li>
+              <li><strong>No Statcast/Trajectory Leakage:</strong> Ball release velocity, trajectory, spin rate, and on-screen graphics are strictly excluded from feature computation.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SYNERGY VS MULTI-ANGLE PRO INGEST -->
+      <section class="section">
+        <div class="eyebrow">Video Pipeline Integration</div>
+        <h2>Synergy Video Ingest (College) vs. 4K Stadium Ingest (Pro)</h2>
+        <p class="lede">
+          Preflight adapts to your program's existing video infrastructure without requiring specialized hardware installations.
+        </p>
+
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0;">
+          <div class="tile" style="border-top: 3px solid var(--accent); background: var(--bg-panel); padding: 1.5rem;">
+            <span class="badge ok" style="margin-bottom:0.6rem;">College / NCAA Pipeline</span>
+            <h3 style="margin: 0 0 0.5rem; font-size: 1.2rem;">Synergy Video Integration</h3>
+            <p style="font-size: 0.88rem; color: var(--muted); line-height: 1.55; margin-bottom: 0.85rem;">
+              Connects directly to your program's Synergy video vault. Preflight automatically downloads opponent games, segments pitch deliveries, and extracts pre-release cues for the entire opposing weekend rotation within hours of game completion.
+            </p>
+            <ul style="font-size: 0.84rem; color: var(--text); padding-left: 1.2rem; line-height: 1.55; margin: 0;">
+              <li>Zero additional camera hardware needed</li>
+              <li>Automated weekend series advance dossiers</li>
+              <li>Catcher target and stance shift auditing</li>
+            </ul>
+          </div>
+
+          <div class="tile" style="border-top: 3px solid var(--good); background: var(--bg-panel); padding: 1.5rem;">
+            <span class="badge hot" style="margin-bottom:0.6rem;">MLB / Pro Pipeline</span>
+            <h3 style="margin: 0 0 0.5rem; font-size: 1.2rem;">Multi-Angle 4K Stadium Ingest</h3>
+            <p style="font-size: 0.88rem; color: var(--muted); line-height: 1.55; margin-bottom: 0.85rem;">
+              Links with proprietary in-stadium club cameras (4K tight CF, 1B/3B coach dugout cameras, high-home). Multi-angle synchronization captures subtle grip exposure, hand depth inside the glove pocket, and micro-timing adjustments.
+            </p>
+            <ul style="font-size: 0.84rem; color: var(--text); padding-left: 1.2rem; line-height: 1.55; margin: 0;">
+              <li>Sub-pixel hand burial &amp; finger curl tracking</li>
+              <li>Continuous pre-pitch video (PitchCom entry &amp; rubber prep)</li>
+              <li>Defensive internal audit of own pitching staff</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- EVALUATION & RESEARCH EVIDENCE -->
+      <section class="section">
+        <div class="eyebrow">Measurable Value &amp; Diligence</div>
+        <h2>Why Pitch Anticipation Wins Games</h2>
+        <p class="lede">
+          Decades of sports science and modern baseball analytics demonstrate that pitch anticipation translates directly into elite plate discipline and offensive run creation.
+        </p>
+
+        <div class="panel" style="padding: 1.5rem; margin: 1.5rem 0;">
+          <h3 style="margin: 0 0 0.75rem; color: #fff;">Key Anticipation Metrics (Müller &amp; Fadde Research)</h3>
+          <p style="font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem;">
+            Knowing the incoming pitch type before arm acceleration produces statistically significant gains across critical offensive categories:
+          </p>
+          <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="background:var(--bg-elev); padding:1rem; border-radius:4px; border-left:3px solid var(--good);">
+              <div style="font-family:var(--mono); font-size:1.4rem; font-weight:700; color:var(--good);">+ Walk Rate</div>
+              <div style="font-size:0.82rem; color:var(--muted); margin-top:0.3rem;">Enhanced BB% and on-base discipline against off-speed pitches.</div>
+            </div>
+            <div style="background:var(--bg-elev); padding:1rem; border-radius:4px; border-left:3px solid var(--accent);">
+              <div style="font-family:var(--mono); font-size:1.4rem; font-weight:700; color:var(--accent);">- Strikeout Rate</div>
+              <div style="font-size:0.82rem; color:var(--muted); margin-top:0.3rem;">Drastic reduction in chases out of the zone on two-strike counts.</div>
+            </div>
+            <div style="background:var(--bg-elev); padding:1rem; border-radius:4px; border-left:3px solid var(--warn);">
+              <div style="font-family:var(--mono); font-size:1.4rem; font-weight:700; color:var(--warn);">+ Slugging %</div>
+              <div style="font-size:0.82rem; color:var(--muted); margin-top:0.3rem;">Hard-hit rate surges when sitting on anticipated fastballs or breaking balls.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CALL TO ACTION -->
+      <section class="section">
+        <div class="callout" style="border-left: 3px solid var(--accent); background: var(--bg-panel); padding: 1.5rem;">
+          <h3 style="margin: 0 0 0.5rem; color: #fff;">Deploy Preflight for Your Next Opponent Series</h3>
+          <p style="margin: 0 0 1rem; color: var(--muted); font-size: 0.9rem; line-height: 1.55;">
+            Request a private scouting audit to see what our computer vision models uncover in your upcoming weekend rotation or conference opponents.
+          </p>
+          <div class="cta-row">
+            <button type="button" class="btn trigger-pilot-modal">
+              Schedule Scouting Audit / Request Pilot →
+            </button>
+            <a class="btn ghost" href="lite_pricing.html">
+              View Pricing &amp; Exclusivity Tiers
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pilot Request Modal Component -->
+      <div class="lite-modal-backdrop" id="pilot-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="pilot-modal-title">
+        <div class="lite-modal" id="pilot-modal">
+          <button class="lite-modal-close" id="pilot-modal-close" aria-label="Close dialog">✕</button>
+          <div class="eyebrow" style="margin-bottom:0.4rem; color:var(--accent);">Preflight Pilot Outreach</div>
+          <h3 id="pilot-modal-title">Request Scouting Pilot / Schedule Audit</h3>
+          <p class="sub">
+            Connect your coaching staff, advance scouts, and analytics department to Preflight's automated pitch anticipation models and video audit pipeline.
+          </p>
+
+          <div class="features-list">
+            <div>✓ Signed NDA executed prior to video sharing (100% confidentiality guaranteed)</div>
+            <div>✓ Automated opponent weekend rotation audits via Synergy or stadium video</div>
+            <div>✓ Active catcher setup &amp; pitcher pre-release mechanical variance reports</div>
+            <div>✓ Conference lockout protection (guaranteed single-school exclusivity)</div>
+          </div>
+
+          <form id="pilot-modal-form">
+            <div class="form-group">
+              <label for="pilot-name">Full Name *</label>
+              <input type="text" id="pilot-name" required placeholder="e.g. Coach Dan Miller" />
+            </div>
+
+            <div class="form-group">
+              <label for="pilot-org">Organization / School *</label>
+              <input type="text" id="pilot-org" required placeholder="e.g. Texas A&amp;M University / MLB Club" />
+            </div>
+
+            <div class="form-group">
+              <label for="pilot-email">Work / Official Email *</label>
+              <input type="email" id="pilot-email" required placeholder="e.g. dmiller@athletics.tamu.edu" />
+            </div>
+
+            <div class="form-group">
+              <label for="pilot-level">Level / Division *</label>
+              <select id="pilot-level">
+                <option value="NCAA Division I (Power Conference)">NCAA Division I (Power Conference - SEC, ACC, Big 12, Big Ten)</option>
+                <option value="NCAA Division I (Mid-Major)">NCAA Division I (Mid-Major)</option>
+                <option value="NCAA Division II / III / NAIA / JUCO">NCAA Division II / III / NAIA / JUCO</option>
+                <option value="MLB / MiLB Professional Organization">MLB / MiLB Professional Organization</option>
+                <option value="Independent / Player Development Facility">Independent / Player Development Facility</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pilot-tier">Tier of Interest *</label>
+              <select id="pilot-tier">
+                <option value="College Tier 1: Standard Team License">College Tier 1: Standard Team License</option>
+                <option value="College Tier 2: Conference Exclusivity Premium" selected>College Tier 2: Conference Exclusivity Premium ("Monopolize Your Conference")</option>
+                <option value="College Tier 3: National Monopoly Sole Contract">College Tier 3: National Monopoly Sole Contract</option>
+                <option value="Pro / MLB Enterprise (Custom Quote)">Pro / MLB Enterprise (Custom Quote)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="pilot-notes">Notes / Specific Opponents / Timeline</label>
+              <textarea id="pilot-notes" rows="3" placeholder="Specify any upcoming weekend series, conference rivals, target pitchers, or Synergy video setup..."></textarea>
+            </div>
+
+            <div class="lite-modal-actions">
+              <button type="submit" class="lite-btn-primary">Submit Pilot Request →</button>
+              <a href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request" class="lite-btn-secondary">Direct Email</a>
+            </div>
+          </form>
+
+          <div class="lite-success-message" id="pilot-modal-success">
+            <strong>Thank you for your pilot request.</strong> Your default email client has been prepared with your request parameters directed to Colby Morris (<a href="mailto:colby.morris08@gmail.com" style="color:inherit; font-weight:bold;">colby.morris08@gmail.com</a>). We will respond promptly to coordinate NDA execution and video setup.
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <strong>Apex Baseball · Preflight CV</strong>
+        <span>Proprietary &amp; Confidential Computer Vision Scouting Platform</span>
+      </footer>
+    </div>
+    <script src="js/lite_app.js"></script>
+  </body>
+</html>

@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 584,
   "nlwest_pitchers": 65,
-  "remaining": 548,
+  "remaining": 547,
   "sec_per_pitch": 10.0,
   "eta_hours": 325.8,
   "est_total_pitches": 117290,
   "current": {
-    "name": "Ryan Zeferjahn",
+    "name": "Jacob Webb",
     "team": "CHC",
-    "message": "pitcher [102/519] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [103/519] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "518876": {
@@ -598,6 +598,22 @@
       "n_current_tracks": 102,
       "ready": true,
       "state": "complete"
+    },
+    "666171": {
+      "name": "Ryan Zeferjahn",
+      "team": "CHC",
+      "n_tracked": 139,
+      "holdout": 0.333,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/ryan_zeferjahn_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 153,
+      "ready": false,
+      "state": "tracking"
     }
   },
   "failed": {
@@ -1431,7 +1447,7 @@
     },
     "CHC": {
       "queued": 27,
-      "done": 0,
+      "done": 1,
       "pitcher_tips": 0,
       "catcher_tips": 0
     },
@@ -1561,16 +1577,16 @@
     },
     "mlb": {
       "total": 519,
-      "done": 0
+      "done": 1
     }
   },
   "totals": {
     "pitcher_tips": 0,
     "catcher_tips": 0
   },
-  "updated_at": "2026-08-28T11:46:36",
+  "updated_at": "2026-08-28T12:06:11",
   "live": {
-    "pitches_done": 130,
+    "pitches_done": 60,
     "pitches_target": null
   },
   "heartbeat": true
