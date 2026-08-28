@@ -96,7 +96,7 @@ function ensureEnterpriseModal() {
         <span class="enterprise-modal-badge">🔒 Enterprise Scouting Access</span>
         <h2 id="modal-player-target">Unlock Full 60+ Arm League Database</h2>
         <p class="modal-desc">
-          You are viewing a protected arm from the full Apex Preflight Computer Vision platform. Interactive showcase access is 100% unlocked for <strong>Eduardo Rodriguez</strong>, <strong>Logan Webb</strong>, and <strong>Landen Roupp</strong>.
+          You are viewing a protected arm from the full Preflight Computer Vision platform. Interactive showcase access is 100% unlocked for <strong>Landen Roupp</strong>, <strong>Eduardo Rodriguez</strong>, and <strong>Logan Webb</strong>.
         </p>
       </div>
       <div class="enterprise-features-list">
@@ -110,7 +110,7 @@ function ensureEnterpriseModal() {
       <div class="enterprise-actions">
         <a class="btn-primary" href="https://x.com/colbymorris08" target="_blank" rel="noopener noreferrer">Request Enterprise Pilot / DM @colbymorris08 →</a>
         <a class="btn-secondary" href="player.html?id=roupp${isLiteMode ? '&lite=1' : ''}">View Unlocked Showcase: Landen Roupp →</a>
-        <a class="btn-secondary" href="player.html?id=webb${isLiteMode ? '&lite=1' : ''}">View Unlocked Showcase: Logan Webb →</a>
+        <a class="btn-secondary" href="player.html?id=eduardo_rodriguez${isLiteMode ? '&lite=1' : ''}">View Unlocked Showcase: Eduardo Rodriguez →</a>
       </div>
     </div>
   `;

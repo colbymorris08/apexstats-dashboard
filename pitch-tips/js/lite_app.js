@@ -1,8 +1,8 @@
 /**
- * Apex Preflight Lite — Public Showcase & Enterprise Scouting Preview Logic
+ * Colby Morris Preflight Lite — Public Showcase & Enterprise Scouting Preview Logic
  */
 
-const SHOWCASE_IDS = ["eduardo_rodriguez", "webb", "roupp"];
+const SHOWCASE_IDS = ["roupp", "eduardo_rodriguez", "webb", "gabriel_moreno"];
 
 async function loadDemo() {
   try {
@@ -659,7 +659,7 @@ function wireLiteLanding(data) {
       });
 
     if (picksSummary) {
-      picksSummary.textContent = `${players.length} MLB pitchers modeled · 4 interactive showcase profiles unlocked (Eduardo Rodriguez, Logan Webb, Landen Roupp & Gabriel Moreno) · Full staff accessible via Enterprise Pilot`;
+      picksSummary.textContent = `${players.length} MLB pitchers modeled · 4 interactive showcase profiles unlocked (Landen Roupp, Eduardo Rodriguez, Logan Webb & Gabriel Moreno) · Full staff accessible via Enterprise Pilot`;
     }
 
     picksTable.innerHTML = players

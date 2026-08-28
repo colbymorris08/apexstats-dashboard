@@ -15,6 +15,22 @@
     "message": "pitcher [103/519] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
+    "518876": {
+      "name": "Merrill Kelly",
+      "team": "ARI",
+      "n_tracked": 400,
+      "holdout": 0.229,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/merrill_kelly_poc",
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
+    },
     "593958": {
       "name": "Eduardo Rodriguez",
       "team": "ARI",
@@ -721,6 +737,11 @@
       "team": "LAD",
       "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=605483&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
     },
+    "676263": {
+      "name": "Jack Dreyer",
+      "team": "LAD",
+      "error": "HTTPSConnectionPool(host='statsapi.mlb.com', port=443): Max retries exceeded with url: /api/v1.1/game/824881/feed/live (Caused by NameResolutionError(\"HTTPSConnection(host='statsapi.mlb.com', port=443): Failed to resolve 'statsapi.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
     "683618": {
       "name": "Edgardo Henriquez",
       "team": "LAD",
@@ -830,6 +851,11 @@
       "name": "Trent Harris",
       "team": "SF",
       "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=805345&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "693433": {
+      "name": "Bryan Woo",
+      "team": "SEA",
+      "error": "HTTPSConnectionPool(host='statsapi.mlb.com', port=443): Max retries exceeded with url: /api/v1.1/game/824156/feed/live (Caused by NameResolutionError(\"HTTPSConnection(host='statsapi.mlb.com', port=443): Failed to resolve 'statsapi.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
     },
     "605488": {
       "name": "Jeffrey Springs",
@@ -1558,9 +1584,9 @@
     "pitcher_tips": 0,
     "catcher_tips": 0
   },
-  "updated_at": "2026-08-28T12:08:42",
+  "updated_at": "2026-08-28T12:11:14",
   "live": {
-    "pitches_done": 60,
+    "pitches_done": 70,
     "pitches_target": null
   },
   "heartbeat": true
