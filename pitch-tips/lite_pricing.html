@@ -16,8 +16,9 @@
       .pricing-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.5rem;
+        gap: 1.75rem;
         margin: 2rem 0;
+        align-items: stretch;
       }
       .pricing-card {
         background: var(--bg-panel);
@@ -27,8 +28,11 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        gap: 1.5rem;
         position: relative;
         transition: transform 0.15s ease, border-color 0.15s ease;
+        box-sizing: border-box;
+        height: 100%;
       }
       .pricing-card:hover {
         transform: translateY(-2px);
@@ -38,6 +42,37 @@
         border-color: var(--warn);
         box-shadow: 0 8px 32px rgba(232, 162, 58, 0.18);
         background: linear-gradient(180deg, rgba(24, 28, 34, 0.98) 0%, rgba(14, 18, 22, 0.99) 100%);
+      }
+      .pricing-card-body {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+      }
+      .pricing-card-action {
+        margin-top: auto;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .pricing-card-action .btn,
+      .pricing-card .btn {
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        line-height: 1.35;
+        padding: 0.85rem 1.1rem;
+        font-size: 0.86rem;
+        font-weight: 700;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: break-word;
+        border-radius: var(--radius);
       }
       .pricing-badge {
         display: inline-block;
@@ -49,6 +84,7 @@
         padding: 0.25rem 0.6rem;
         border-radius: 3px;
         margin-bottom: 0.85rem;
+        align-self: flex-start;
       }
       .pricing-badge.blue {
         background: rgba(61, 139, 253, 0.15);
@@ -82,13 +118,14 @@
         display: flex;
         align-items: baseline;
         gap: 0.4rem;
+        flex-wrap: wrap;
       }
       .pricing-rate .amount {
         font-family: var(--mono);
         font-size: 1.85rem;
         font-weight: 700;
         color: #fff;
-        line-height: 1;
+        line-height: 1.1;
       }
       .pricing-rate .period {
         font-family: var(--mono);
@@ -106,12 +143,24 @@
         min-height: 2.5rem;
         line-height: 1.45;
       }
+      .pricing-tier-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 0.6rem 0.8rem;
+        margin: 0.75rem 0 1rem;
+        font-size: 0.8rem;
+        line-height: 1.5;
+      }
       .pricing-features {
         list-style: none;
         padding: 0;
-        margin: 0 0 1.5rem;
+        margin: 0 0 0.5rem;
         font-size: 0.85rem;
         color: var(--text);
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
       }
       .pricing-features li {
         padding: 0.45rem 0;
@@ -120,6 +169,10 @@
         gap: 0.5rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         line-height: 1.45;
+      }
+      .pricing-features li:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
       }
       .pricing-features li::before {
         content: "✓";
@@ -156,6 +209,18 @@
         font-size: 0.88rem;
         color: var(--text);
         line-height: 1.55;
+      }
+      @media (max-width: 640px) {
+        .pricing-grid {
+          grid-template-columns: 1fr;
+          gap: 1.25rem;
+        }
+        .pricing-card {
+          padding: 1.35rem 1.15rem;
+        }
+        .pricing-card-action {
+          padding-top: 1rem;
+        }
       }
     </style>
   </head>
@@ -255,7 +320,7 @@
         <div class="pricing-grid">
           <!-- College Tier 1 -->
           <div class="pricing-card">
-            <div>
+            <div class="pricing-card-body">
               <span class="pricing-badge blue">College · Tier 1 (2027 Season)</span>
               <h3 class="pricing-title">Standard Team License</h3>
               <div class="pricing-rate">
@@ -265,7 +330,7 @@
               <p class="pricing-target">
                 Flexible scope based on your program's scouting needs (Weekend Starters vs. Full Staff &amp; Midweeks).
               </p>
-              <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 6px; padding: 0.6rem 0.8rem; margin: 0.75rem 0 1rem; font-size: 0.8rem; line-height: 1.5;">
+              <div class="pricing-tier-box">
                 <div style="font-weight: 700; color: var(--accent); margin-bottom: 0.25rem;">Flexible Package Options:</div>
                 <div>&bull; <strong>Weekend Starters Only:</strong> $5,000 &ndash; $7,500</div>
                 <div>&bull; <strong>Weekend Starters + Key Relievers:</strong> $8,500 &ndash; $10,500</div>
@@ -280,11 +345,10 @@
                 <li>Standard email &amp; video coordination onboarding support</li>
               </ul>
             </div>
-            <div>
+            <div class="pricing-card-action">
               <a
                 class="btn"
                 href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request%20-%20College%20Tier%201%20($5K-$15K/season)&body=Name:%20%0D%0AOrganization/School:%20%0D%0ALevel:%20NCAA%20Division%20I/II%0D%0ATier:%20College%20Tier%201%20(Standard%20Team%20License%20-%20$5K-$15K/season)%0D%0AScope%20Preference%20(Starters%20Only%20vs%20Full%20Staff):%20%0D%0ANotes:%20"
-                style="width:100%; text-align:center; justify-content:center;"
               >
                 Inquire for College Tier 1 →
               </a>
@@ -293,7 +357,7 @@
 
           <!-- College Tier 2: Conference Exclusivity -->
           <div class="pricing-card featured">
-            <div>
+            <div class="pricing-card-body">
               <div style="display:flex; justify-content:space-between; align-items:center;">
                 <span class="pricing-badge gold">College · Tier 2 (2027 Season)</span>
                 <span class="badge hot" style="font-size:0.68rem;">MOST REQUESTED</span>
@@ -306,7 +370,7 @@
               <p class="pricing-target" style="color: #ffd180;">
                 <em>"Monopolize Your Conference"</em> — Single-program conference lockout (no conference rivals can purchase Preflight).
               </p>
-              <div style="background: rgba(255,183,77,0.08); border: 1px solid rgba(255,183,77,0.25); border-radius: 6px; padding: 0.6rem 0.8rem; margin: 0.75rem 0 1rem; font-size: 0.8rem; line-height: 1.5; color: #fff;">
+              <div class="pricing-tier-box" style="background: rgba(255,183,77,0.08); border: 1px solid rgba(255,183,77,0.25); color: #fff;">
                 <div style="font-weight: 700; color: var(--warn); margin-bottom: 0.25rem;">Conference Exclusivity Tiers:</div>
                 <div>&bull; <strong>Mid-Major Conference Lockout:</strong> $18,000 &ndash; $22,000</div>
                 <div>&bull; <strong>Power Conference Lockout (SEC, ACC, Big 12, Big Ten):</strong> $25,000 &ndash; $35,000</div>
@@ -322,11 +386,11 @@
                 <li>Pre-tournament / Regional / Super Regional priority scouting</li>
               </ul>
             </div>
-            <div>
+            <div class="pricing-card-action">
               <a
                 class="btn"
+                style="background:var(--warn); color:#000; font-weight:700;"
                 href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request%20-%20Conference%20Exclusivity%20($18K-$35K/season)&body=Name:%20%0D%0AOrganization/School:%20%0D%0AConference:%20%0D%0ATier:%20College%20Tier%202%20(Conference%20Exclusivity%20-%20$18K-$35K/season)%0D%0ANotes:%20"
-                style="width:100%; text-align:center; justify-content:center; background:var(--warn); color:#000; font-weight:700;"
               >
                 Inquire for Conference Lockout →
               </a>
@@ -335,7 +399,7 @@
 
           <!-- College Tier 3: National Monopoly -->
           <div class="pricing-card">
-            <div>
+            <div class="pricing-card-body">
               <span class="pricing-badge purple">College · Tier 3</span>
               <h3 class="pricing-title">National Monopoly / Sole Contract</h3>
               <div class="pricing-rate quote">
@@ -355,11 +419,10 @@
                 <li>Direct dedicated scouting line with Colby Morris</li>
               </ul>
             </div>
-            <div>
+            <div class="pricing-card-action">
               <a
                 class="btn"
                 href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request%20-%20National%20Monopoly%20Sole%20Contract&body=Name:%20%0D%0AOrganization/School:%20%0D%0ALevel:%20NCAA%20Division%20I%0D%0ATier:%20College%20Tier%203%20(National%20Monopoly%20Sole%20Contract)%0D%0ANotes:%20"
-                style="width:100%; text-align:center; justify-content:center;"
               >
                 Inquire for National Monopoly →
               </a>
@@ -368,7 +431,7 @@
 
           <!-- Pro / International Enterprise -->
           <div class="pricing-card" style="border-color: rgba(62, 207, 142, 0.4);">
-            <div>
+            <div class="pricing-card-body">
               <span class="pricing-badge green">Pro / Enterprise</span>
               <h3 class="pricing-title">Pro &amp; International Enterprise Deployment</h3>
               <div class="pricing-rate quote">
@@ -388,11 +451,10 @@
                 <li>Custom on-prem or private cloud instance under strict security</li>
               </ul>
             </div>
-            <div>
+            <div class="pricing-card-action">
               <a
                 class="btn"
                 href="mailto:colby.morris08@gmail.com?subject=Preflight%20Scouting%20Pilot%20Request%20-%20Pro%20Enterprise&body=Name:%20%0D%0AOrganization/Club:%20%0D%0ALevel:%20Professional%20(MLB/NPB/KBO/CPBL/LMB/Winter%20Leagues)%0D%0ATier:%20Pro%20/%20Enterprise%20Deployment%20(Custom%20Quote)%0D%0ANotes:%20"
-                style="width:100%; text-align:center; justify-content:center;"
               >
                 Contact Colby Directly for Enterprise Quote →
               </a>
