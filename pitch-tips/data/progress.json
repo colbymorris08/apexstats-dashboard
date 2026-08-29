@@ -5,48 +5,16 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 62,
-  "remaining": 658,
+  "remaining": 652,
   "sec_per_pitch": 10.0,
-  "eta_hours": 532.5,
-  "est_total_pitches": 191690,
+  "eta_hours": 529.2,
+  "est_total_pitches": 190530,
   "current": {
-    "name": "Jordan Romano",
-    "team": "COL",
-    "message": "pitcher [10/11] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Kyle Hurt",
+    "team": "LAD",
+    "message": "pitcher [10/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
-    "808967": {
-      "name": "Yoshinobu Yamamoto",
-      "team": "LAD",
-      "n_tracked": 244,
-      "holdout": 0.2,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
-      "publishable": true,
-      "failed_checks": [],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/yoshinobu_yamamoto_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "669373": {
-      "name": "Tarik Skubal",
-      "team": "LAD",
-      "n_tracked": 151,
-      "holdout": 0.2,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
-      "publishable": true,
-      "failed_checks": [],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tarik_skubal_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
     "808963": {
       "name": "Roki Sasaki",
       "team": "LAD",
@@ -58,56 +26,6 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/roki_sasaki_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "641778": {
-      "name": "Eric Lauer",
-      "team": "LAD",
-      "n_tracked": 216,
-      "holdout": 0.204,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
-      "publishable": true,
-      "failed_checks": [],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/eric_lauer_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "660271": {
-      "name": "Shohei Ohtani",
-      "team": "LAD",
-      "n_tracked": 204,
-      "holdout": 0.222,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
-      "publishable": true,
-      "failed_checks": [],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/shohei_ohtani_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "607192": {
-      "name": "Tyler Glasnow",
-      "team": "LAD",
-      "n_tracked": 21,
-      "holdout": 0.455,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
-      "publishable": false,
-      "failed_checks": [
-        "volume"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tyler_glasnow_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -660,8 +578,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jimmy_herget_poc",
       "schema": "rich_72col",
       "n_current_tracks": 174,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     },
     "677955": {
       "name": "Jaden Hill",
@@ -679,6 +597,181 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jaden_hill_poc",
       "schema": "rich_72col",
       "n_current_tracks": 27,
+      "ready": true,
+      "state": "complete"
+    },
+    "605447": {
+      "name": "Jordan Romano",
+      "team": "COL",
+      "n_tracked": 112,
+      "holdout": 0.364,
+      "tips_ge_75": 1,
+      "catcher_tips": 1,
+      "legacy_tips_ge_75": 1,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jordan_romano_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 129,
+      "ready": true,
+      "state": "complete"
+    },
+    "693308": {
+      "name": "Nick Frasso",
+      "team": "COL",
+      "n_tracked": 110,
+      "holdout": 0.167,
+      "tips_ge_75": 0,
+      "catcher_tips": 4,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/nick_frasso_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 128,
+      "ready": true,
+      "state": "complete"
+    },
+    "808967": {
+      "name": "Yoshinobu Yamamoto",
+      "team": "LAD",
+      "n_tracked": 244,
+      "holdout": 0.128,
+      "tips_ge_75": 3,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/yoshinobu_yamamoto_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 294,
+      "ready": true,
+      "state": "complete"
+    },
+    "669373": {
+      "name": "Tarik Skubal",
+      "team": "LAD",
+      "n_tracked": 242,
+      "holdout": 0.188,
+      "tips_ge_75": 8,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 8,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tarik_skubal_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 288,
+      "ready": true,
+      "state": "complete"
+    },
+    "641778": {
+      "name": "Eric Lauer",
+      "team": "LAD",
+      "n_tracked": 216,
+      "holdout": 0.204,
+      "tips_ge_75": 0,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/eric_lauer_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 255,
+      "ready": true,
+      "state": "complete"
+    },
+    "660271": {
+      "name": "Shohei Ohtani",
+      "team": "LAD",
+      "n_tracked": 18,
+      "holdout": 1.0,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": false,
+      "failed_checks": [
+        "volume"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/shohei_ohtani_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 23,
+      "ready": true,
+      "state": "complete"
+    },
+    "681911": {
+      "name": "Alex Vesia",
+      "team": "LAD",
+      "n_tracked": 91,
+      "holdout": 0.091,
+      "tips_ge_75": 1,
+      "catcher_tips": 1,
+      "legacy_tips_ge_75": 1,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/alex_vesia_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 111,
+      "ready": true,
+      "state": "complete"
+    },
+    "683618": {
+      "name": "Edgardo Henriquez",
+      "team": "LAD",
+      "n_tracked": 131,
+      "holdout": 0.091,
+      "tips_ge_75": 7,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 7,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/edgardo_henriquez_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 161,
+      "ready": true,
+      "state": "complete"
+    },
+    "656945": {
+      "name": "Tanner Scott",
+      "team": "LAD",
+      "n_tracked": 81,
+      "holdout": 0.5,
+      "tips_ge_75": 0,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tanner_scott_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 101,
+      "ready": false,
+      "state": "tracking"
+    },
+    "607192": {
+      "name": "Tyler Glasnow",
+      "team": "LAD",
+      "n_tracked": 17,
+      "holdout": 0.333,
+      "tips_ge_75": 8,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 8,
+      "publishable": false,
+      "failed_checks": [
+        "holdout",
+        "volume"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tyler_glasnow_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 41,
       "ready": false,
       "state": "tracking"
     }
@@ -747,7 +840,7 @@
     "607192": {
       "name": "Tyler Glasnow",
       "team": "LAD",
-      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=607192&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+      "error": "HTTPSConnectionPool(host='statsapi.mlb.com', port=443): Max retries exceeded with url: /api/v1.1/game/824881/feed/live (Caused by NameResolutionError(\"HTTPSConnection(host='statsapi.mlb.com', port=443): Failed to resolve 'statsapi.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
     },
     "650633": {
       "name": "Michael King",
@@ -822,7 +915,7 @@
     "656945": {
       "name": "Tanner Scott",
       "team": "LAD",
-      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=656945&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+      "error": "Only 0 tracked pitches; need more successful downloads"
     },
     "623465": {
       "name": "Evan Phillips",
@@ -2120,15 +2213,15 @@
     },
     "COL": {
       "queued": 11,
-      "done": 9,
-      "pitcher_tips": 29,
-      "catcher_tips": 28
+      "done": 11,
+      "pitcher_tips": 30,
+      "catcher_tips": 33
     },
     "LAD": {
       "queued": 14,
-      "done": 6,
-      "pitcher_tips": 0,
-      "catcher_tips": 0
+      "done": 10,
+      "pitcher_tips": 29,
+      "catcher_tips": 15
     },
     "SD": {
       "queued": 13,
@@ -2157,12 +2250,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 47,
-    "catcher_tips": 42
+    "pitcher_tips": 77,
+    "catcher_tips": 62
   },
-  "updated_at": "2026-08-29T01:54:00",
+  "updated_at": "2026-08-29T10:50:28",
   "live": {
-    "pitches_done": 20,
+    "pitches_done": 10,
     "pitches_target": null
   },
   "heartbeat": true
