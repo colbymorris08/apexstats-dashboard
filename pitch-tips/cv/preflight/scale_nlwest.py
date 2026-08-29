@@ -19,6 +19,7 @@ import requests
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT.parent))
 
+from preflight.git_sync import sync_findings  # noqa: E402
 from preflight.merge_demo import main as merge_demo_main  # noqa: E402
 from preflight.provenance import validated_counts  # noqa: E402
 from preflight.run_catcher_poc import run_catcher_poc  # noqa: E402
@@ -520,6 +521,7 @@ def main() -> int:
                 )
             if args.merge_demo:
                 merge_demo_main()
+            sync_findings(display, context="pitcher")
             snapshot(current={"name": display, "team": team, "message": "done"})
         except Exception as e:
             print(f"FAIL {display}: {e}")
@@ -569,6 +571,7 @@ def main() -> int:
                 }
                 if args.merge_demo:
                     merge_demo_main()
+                sync_findings(c["name"], context=f"catcher ({c['role']})")
             except Exception as e:
                 print(f"FAIL catcher {c['name']}: {e}")
                 progress["failed"][key] = {"name": c["name"], "team": team, "error": str(e)}

@@ -17,9 +17,11 @@ import requests
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT.parent))
 
+from preflight.git_sync import sync_findings  # noqa: E402
 from preflight.merge_demo import main as merge_demo_main  # noqa: E402
 from preflight.provenance import validated_counts  # noqa: E402
 from preflight.run_poc import run_poc  # noqa: E402
+from preflight.clip_cache import free_bytes, purge_tracked_clips  # noqa: E402
 
 UA = {"User-Agent": "PreflightCV/0.5"}
 SITE_DATA = Path(__file__).resolve().parents[2] / "data"
@@ -199,8 +201,17 @@ def main() -> int:
                 "legacy_tips_ge_75": (rep.get("situation_coverage") or {}).get("n_tips_ge_floor"),
                 "work": str(work),
             }
+            n_purged, freed = purge_tracked_clips(work, keep_per_arm=0)
+            if n_purged:
+                print(
+                    f"  clip cache: purged {n_purged} tracked clips, "
+                    f"freed {freed / 1e9:.1f} GB, "
+                    f"{free_bytes(args.runs) / 1e9:.1f} GB free",
+                    flush=True,
+                )
             if args.merge_demo:
                 merge_demo_main()
+            sync_findings(display, context="pitcher")
             snapshot(
                 current={"name": display, "team": team, "message": "done"},
                 status="running",

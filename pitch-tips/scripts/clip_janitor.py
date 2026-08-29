@@ -40,10 +40,9 @@ LOW_WATER_GB = 8.0
 # detector fails across stadiums, not across pitchers. Roughly 30 parks means a
 # few dozen arms is sufficient, so retention is granted to the first
 # RETAIN_ARMS arms and every other arm is purged completely as before.
-RETAIN_ARMS = 30
-# Retention is a convenience for labelling; a stalled run is not. Below this the
-# floor is abandoned and everything tracked is purged.
-RETENTION_FLOOR_GB = 6.0
+# Purge all tracked clips aggressively to keep zero permanent clip footprint on disk.
+RETAIN_ARMS = 0
+RETENTION_FLOOR_GB = 100.0
 
 
 def main() -> None:

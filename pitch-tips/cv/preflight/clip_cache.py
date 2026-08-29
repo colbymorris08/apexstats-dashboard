@@ -35,9 +35,9 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-# Enough for detector labelling and coverage measurement on one arm without
-# holding a whole outing. At ~5.6 MB per clip this is ~224 MB per arm.
-KEEP_PER_ARM = 40
+# Purge all completed arm video clips now that tracks exist.
+# Retaining full outings exhausts hard drives. Setting keep_per_arm=0 frees all raw video.
+KEEP_PER_ARM = 0
 
 
 def _game_of(work: Path) -> dict[str, str]:

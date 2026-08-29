@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 62,
-  "remaining": 652,
+  "remaining": 646,
   "sec_per_pitch": 10.0,
   "eta_hours": 529.2,
   "est_total_pitches": 190530,
   "current": {
-    "name": "Kyle Hurt",
-    "team": "LAD",
-    "message": "pitcher [10/14] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Wandy Peralta",
+    "team": "SD",
+    "message": "pitcher [8/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -30,38 +30,6 @@
       "n_current_tracks": 0,
       "ready": false,
       "state": "empty"
-    },
-    "650633": {
-      "name": "Michael King",
-      "team": "SD",
-      "n_tracked": 238,
-      "holdout": 0.077,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
-      "publishable": true,
-      "failed_checks": [],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/michael_king_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "621111": {
-      "name": "Walker Buehler",
-      "team": "SD",
-      "n_tracked": 228,
-      "holdout": 0.194,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
-      "publishable": true,
-      "failed_checks": [],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/walker_buehler_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 162,
-      "ready": true,
-      "state": "complete"
     },
     "592662": {
       "name": "Robbie Ray",
@@ -753,8 +721,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tanner_scott_poc",
       "schema": "rich_72col",
       "n_current_tracks": 101,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     },
     "607192": {
       "name": "Tyler Glasnow",
@@ -772,6 +740,149 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tyler_glasnow_poc",
       "schema": "rich_72col",
       "n_current_tracks": 41,
+      "ready": true,
+      "state": "complete"
+    },
+    "669165": {
+      "name": "Kyle Hurt",
+      "team": "LAD",
+      "n_tracked": 76,
+      "holdout": 0.25,
+      "tips_ge_75": 3,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kyle_hurt_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 109,
+      "ready": true,
+      "state": "complete"
+    },
+    "678020": {
+      "name": "Seth Halvorsen",
+      "team": "LAD",
+      "n_tracked": 26,
+      "holdout": 0.111,
+      "tips_ge_75": 3,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout",
+        "volume"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/seth_halvorsen_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 37,
+      "ready": true,
+      "state": "complete"
+    },
+    "605483": {
+      "name": "Blake Snell",
+      "team": "LAD",
+      "n_tracked": 110,
+      "holdout": 0.163,
+      "tips_ge_75": 4,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blake_snell_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 134,
+      "ready": true,
+      "state": "complete"
+    },
+    "623465": {
+      "name": "Evan Phillips",
+      "team": "LAD",
+      "n_tracked": 71,
+      "holdout": 0.0,
+      "tips_ge_75": 3,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/evan_phillips_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 115,
+      "ready": true,
+      "state": "complete"
+    },
+    "592779": {
+      "name": "Brock Stewart",
+      "team": "LAD",
+      "n_tracked": 80,
+      "holdout": 0.0,
+      "tips_ge_75": 3,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brock_stewart_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 107,
+      "ready": true,
+      "state": "complete"
+    },
+    "650633": {
+      "name": "Michael King",
+      "team": "SD",
+      "n_tracked": 238,
+      "holdout": 0.077,
+      "tips_ge_75": 5,
+      "catcher_tips": 7,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/michael_king_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 269,
+      "ready": true,
+      "state": "complete"
+    },
+    "621111": {
+      "name": "Walker Buehler",
+      "team": "SD",
+      "n_tracked": 229,
+      "holdout": 0.194,
+      "tips_ge_75": 8,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 8,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/walker_buehler_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 288,
+      "ready": true,
+      "state": "complete"
+    },
+    "670970": {
+      "name": "Adrian Morejon",
+      "team": "SD",
+      "n_tracked": 104,
+      "holdout": 0.25,
+      "tips_ge_75": 4,
+      "catcher_tips": 6,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/adrian_morejon_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 172,
       "ready": false,
       "state": "tracking"
     }
@@ -2219,15 +2330,15 @@
     },
     "LAD": {
       "queued": 14,
-      "done": 10,
-      "pitcher_tips": 29,
-      "catcher_tips": 15
+      "done": 15,
+      "pitcher_tips": 45,
+      "catcher_tips": 28
     },
     "SD": {
       "queued": 13,
-      "done": 6,
-      "pitcher_tips": 0,
-      "catcher_tips": 0
+      "done": 7,
+      "pitcher_tips": 17,
+      "catcher_tips": 15
     },
     "SF": {
       "queued": 12,
@@ -2250,12 +2361,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 77,
-    "catcher_tips": 62
+    "pitcher_tips": 110,
+    "catcher_tips": 90
   },
-  "updated_at": "2026-08-29T10:50:28",
+  "updated_at": "2026-08-29T16:36:09",
   "live": {
-    "pitches_done": 10,
+    "pitches_done": 70,
     "pitches_target": null
   },
   "heartbeat": true

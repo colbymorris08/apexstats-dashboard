@@ -435,6 +435,12 @@ def main() -> None:
 
     demo_cleaned = _clean_nans(demo)
     DEMO.write_text(json.dumps(demo_cleaned, indent=2) + "\n")
+    # Mirror to pitch-tips/demo.json
+    root_demo = ROOT / "demo.json"
+    try:
+        root_demo.write_text(json.dumps(demo_cleaned, indent=2) + "\n")
+    except Exception:
+        pass
     print(
         f"Merged {len(players)} total profiles ({len(catchers)} catchers) → {DEMO} "
         f"({demo['meta']['provenance']['publishedTips']} pitcher leads, "
