@@ -514,6 +514,7 @@ code {
 
 .table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   margin: 1rem 0 1.35rem;
   border: 1px solid var(--line);
 }
@@ -1022,6 +1023,7 @@ th {
 
 .matrix-table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   margin: 1.5rem 0;
   border: 1px solid var(--line-strong);
   background: var(--bg-panel);
@@ -1399,5 +1401,31 @@ table.matrix-table tr:hover td {
   gap: 0.75rem;
   flex-wrap: wrap;
 }
+
+/* Mobile & Touch Viewport Enhancements */
+@media (max-width: 768px) {
+  .wrap {
+    width: calc(100% - 1.5rem);
+  }
+
+  .nav {
+    gap: 0.5rem 0.85rem;
+  }
+
+  .nav a, .btn, .btn-primary, .btn-secondary, button {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .coverage-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .matrix-table-wrap, .table-wrap {
+    box-shadow: inset -8px 0 8px -8px rgba(0,0,0,0.5);
+  }
+}
+
 
 
