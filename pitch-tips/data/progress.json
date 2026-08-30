@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 61,
-  "remaining": 632,
+  "remaining": 631,
   "sec_per_pitch": 10.0,
   "eta_hours": 518.0,
   "est_total_pitches": 186470,
   "current": {
-    "name": "Sandy Alcantara",
+    "name": "Jes\u00fas Luzardo",
     "team": "OTH",
-    "message": "pitcher [1/638] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [2/638] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -1117,8 +1117,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/trent_harris_poc",
       "schema": "rich_72col",
       "n_current_tracks": 152,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     },
     "683627": {
       "name": "Anthony Molina",
@@ -1137,6 +1137,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/anthony_molina_poc",
       "schema": "rich_72col",
       "n_current_tracks": 35,
+      "ready": true,
+      "state": "complete"
+    },
+    "645261": {
+      "name": "Sandy Alcantara",
+      "team": "OTH",
+      "n_tracked": 280,
+      "holdout": 0.233,
+      "tips_ge_75": 5,
+      "catcher_tips": 5,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/sandy_alcantara_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 311,
       "ready": false,
       "state": "tracking"
     }
@@ -2602,9 +2620,9 @@
     },
     "OTH": {
       "queued": 638,
-      "done": 0,
-      "pitcher_tips": 0,
-      "catcher_tips": 0
+      "done": 1,
+      "pitcher_tips": 5,
+      "catcher_tips": 5
     },
     "CHC": {
       "queued": 0,
@@ -2615,12 +2633,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 161,
-    "catcher_tips": 125
+    "pitcher_tips": 166,
+    "catcher_tips": 130
   },
-  "updated_at": "2026-08-30T01:23:37",
+  "updated_at": "2026-08-30T02:10:16",
   "live": {
-    "pitches_done": 270,
+    "pitches_done": 220,
     "pitches_target": null
   },
   "heartbeat": true

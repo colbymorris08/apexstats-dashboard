@@ -167,10 +167,10 @@
     "publish_min_calibrated_accuracy": 0.75,
     "provenance": {
       "rule": "Pitcher and Catcher CV Detected Movement Leads (\u226575% signal floor).",
-      "publishedPlayers": 67,
+      "publishedPlayers": 68,
       "publishedCatchers": 0,
-      "publishedTips": 166,
-      "publishedCatcherTips": 130
+      "publishedTips": 172,
+      "publishedCatcherTips": 133
     },
     "tierRules": {
       "precisionAlwaysShownWithBaseRate": true,
@@ -269,10 +269,11 @@
       "id": "mia",
       "name": "Miami Marlins",
       "abbr": "MIA",
-      "tipCount": 5,
-      "avgConfidence": 0.784,
-      "playersWithTips": 1,
+      "tipCount": 11,
+      "avgConfidence": 0.782,
+      "playersWithTips": 2,
       "players": [
+        "luzardo",
         "alcantara"
       ],
       "catchers": []
@@ -27946,6 +27947,1435 @@
         "tipSplitBacksTips": true,
         "backedTips": 6,
         "backedCatcherTips": 5
+      }
+    },
+    "luzardo": {
+      "id": "luzardo",
+      "name": "Jes\u00fas Luzardo",
+      "teamId": "mia",
+      "throws": "L",
+      "role": "SP",
+      "picked": true,
+      "pickConfidence": 0.2,
+      "tier": "watch",
+      "pitchesModeled": 223,
+      "holdoutAccuracy": 0.2,
+      "summary": "Savant CF PoC: 223 pitches / 8 games. 6 pitcher leads \u00b7 3 catcher setup leads (\u226575% detected movement separation floor).",
+      "contextCoverage": {
+        "runner_bucket": {
+          "second_any": 116,
+          "1b": 53,
+          "other": 36,
+          "3b": 18
+        },
+        "batter_tag": {
+          "rhh": 172,
+          "lhh": 51
+        },
+        "delivery": {
+          "stretch": 223
+        },
+        "runner_exact": {
+          "1b": 53,
+          "12": 49,
+          "2b": 43,
+          "13": 36,
+          "3b": 18,
+          "loaded": 16,
+          "23": 8
+        }
+      },
+      "tips": [
+        {
+          "id": "disc-all-lhh-CH-wrist_speed_mean",
+          "title": "CH discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+CH"
+          },
+          "lookFor": "More glove micro-motion leans CH vs the rest of the arsenal.",
+          "predicts": "CH",
+          "confidence": 0.824,
+          "precision": 0.125,
+          "feature": "wrist_speed_mean",
+          "threshold": 0.12556636439372765,
+          "high_means_type": true,
+          "n": 51,
+          "nType": 3,
+          "baseline": 0.059,
+          "lift": 13.97,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-1b-rhh-CH-wrist_speed_p90",
+          "title": "CH discernable [first only, RHH up]",
+          "angle": "CF",
+          "context": [
+            "1b",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "1b+rhh+CH"
+          },
+          "lookFor": "In vs righties, first only, from the set: sharper late glove twitch leans CH vs the rest of the arsenal.",
+          "predicts": "CH",
+          "confidence": 0.793,
+          "precision": 0.727,
+          "feature": "wrist_speed_p90",
+          "threshold": 0.16637420454545454,
+          "high_means_type": true,
+          "n": 29,
+          "nType": 11,
+          "baseline": 0.379,
+          "lift": 2.09,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "1b|rhh",
+          "situationLabel": "first only, RHH up"
+        },
+        {
+          "id": "disc-1b-rhh-ST-glove_flare_mean",
+          "title": "ST discernable [first only, RHH up]",
+          "angle": "CF",
+          "context": [
+            "1b",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "1b+rhh+ST"
+          },
+          "lookFor": "In vs righties, first only, from the set: tighter glove leans ST vs the rest of the arsenal.",
+          "predicts": "ST",
+          "confidence": 0.793,
+          "precision": 0.375,
+          "feature": "glove_flare_mean",
+          "threshold": -0.015197561488601392,
+          "high_means_type": false,
+          "n": 29,
+          "nType": 4,
+          "baseline": 0.138,
+          "lift": 5.75,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "ST",
+          "situationId": "1b|rhh",
+          "situationLabel": "first only, RHH up"
+        },
+        {
+          "id": "disc-second_any-rhh-SI-glove_flare_mean",
+          "title": "SI discernable [any w/ runner on 2nd, RHH up]",
+          "angle": "CF",
+          "context": [
+            "second_any",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "second_any+rhh+SI"
+          },
+          "lookFor": "In vs righties, any time a runner is on second, from the set: tighter glove leans SI vs the rest of the arsenal.",
+          "predicts": "SI",
+          "confidence": 0.766,
+          "precision": 0.182,
+          "feature": "glove_flare_mean",
+          "threshold": -0.027763645167159748,
+          "high_means_type": false,
+          "n": 64,
+          "nType": 8,
+          "baseline": 0.125,
+          "lift": 6.13,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "second_any|rhh",
+          "situationLabel": "any w/ runner on 2nd, RHH up"
+        },
+        {
+          "id": "disc-all-all-CH-cheek_motion_std",
+          "title": "CH discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+CH"
+          },
+          "lookFor": "More variable facial motion leans CH vs the rest of the arsenal.",
+          "predicts": "CH",
+          "confidence": 0.75,
+          "precision": 0.5,
+          "feature": "cheek_motion_std",
+          "threshold": 0.0006455072575150681,
+          "high_means_type": true,
+          "n": 223,
+          "nType": 1,
+          "baseline": 0.25,
+          "lift": 3.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-all-SI-cheek_motion_std",
+          "title": "SI discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+SI"
+          },
+          "lookFor": "Steadier facial set leans SI vs the rest of the arsenal.",
+          "predicts": "SI",
+          "confidence": 0.75,
+          "precision": 0.5,
+          "feature": "cheek_motion_std",
+          "threshold": 0.00041379186871761824,
+          "high_means_type": false,
+          "n": 223,
+          "nType": 1,
+          "baseline": 0.25,
+          "lift": 3.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        }
+      ],
+      "topLeads": [
+        {
+          "id": "disc-all-lhh-CH-wrist_speed_mean",
+          "title": "CH discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+CH"
+          },
+          "lookFor": "More glove micro-motion leans CH vs the rest of the arsenal.",
+          "predicts": "CH",
+          "confidence": 0.824,
+          "precision": 0.125,
+          "feature": "wrist_speed_mean",
+          "threshold": 0.12556636439372765,
+          "high_means_type": true,
+          "n": 51,
+          "nType": 3,
+          "baseline": 0.059,
+          "lift": 13.97,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-1b-rhh-CH-wrist_speed_p90",
+          "title": "CH discernable [first only, RHH up]",
+          "angle": "CF",
+          "context": [
+            "1b",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "1b+rhh+CH"
+          },
+          "lookFor": "In vs righties, first only, from the set: sharper late glove twitch leans CH vs the rest of the arsenal.",
+          "predicts": "CH",
+          "confidence": 0.793,
+          "precision": 0.727,
+          "feature": "wrist_speed_p90",
+          "threshold": 0.16637420454545454,
+          "high_means_type": true,
+          "n": 29,
+          "nType": 11,
+          "baseline": 0.379,
+          "lift": 2.09,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "1b|rhh",
+          "situationLabel": "first only, RHH up"
+        },
+        {
+          "id": "disc-1b-rhh-ST-glove_flare_mean",
+          "title": "ST discernable [first only, RHH up]",
+          "angle": "CF",
+          "context": [
+            "1b",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "1b+rhh+ST"
+          },
+          "lookFor": "In vs righties, first only, from the set: tighter glove leans ST vs the rest of the arsenal.",
+          "predicts": "ST",
+          "confidence": 0.793,
+          "precision": 0.375,
+          "feature": "glove_flare_mean",
+          "threshold": -0.015197561488601392,
+          "high_means_type": false,
+          "n": 29,
+          "nType": 4,
+          "baseline": 0.138,
+          "lift": 5.75,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "ST",
+          "situationId": "1b|rhh",
+          "situationLabel": "first only, RHH up"
+        },
+        {
+          "id": "disc-second_any-rhh-SI-glove_flare_mean",
+          "title": "SI discernable [any w/ runner on 2nd, RHH up]",
+          "angle": "CF",
+          "context": [
+            "second_any",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "second_any+rhh+SI"
+          },
+          "lookFor": "In vs righties, any time a runner is on second, from the set: tighter glove leans SI vs the rest of the arsenal.",
+          "predicts": "SI",
+          "confidence": 0.766,
+          "precision": 0.182,
+          "feature": "glove_flare_mean",
+          "threshold": -0.027763645167159748,
+          "high_means_type": false,
+          "n": 64,
+          "nType": 8,
+          "baseline": 0.125,
+          "lift": 6.13,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "second_any|rhh",
+          "situationLabel": "any w/ runner on 2nd, RHH up"
+        },
+        {
+          "id": "disc-all-all-CH-cheek_motion_std",
+          "title": "CH discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+CH"
+          },
+          "lookFor": "More variable facial motion leans CH vs the rest of the arsenal.",
+          "predicts": "CH",
+          "confidence": 0.75,
+          "precision": 0.5,
+          "feature": "cheek_motion_std",
+          "threshold": 0.0006455072575150681,
+          "high_means_type": true,
+          "n": 223,
+          "nType": 1,
+          "baseline": 0.25,
+          "lift": 3.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-all-SI-cheek_motion_std",
+          "title": "SI discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+SI"
+          },
+          "lookFor": "Steadier facial set leans SI vs the rest of the arsenal.",
+          "predicts": "SI",
+          "confidence": 0.75,
+          "precision": 0.5,
+          "feature": "cheek_motion_std",
+          "threshold": 0.00041379186871761824,
+          "high_means_type": false,
+          "n": 223,
+          "nType": 1,
+          "baseline": 0.25,
+          "lift": 3.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        }
+      ],
+      "catcherTips": [
+        {
+          "id": "catch-all-lhh-CH-catcher_hip_y_mean",
+          "title": "CH via Catcher Setup [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+lhh+CH"
+          },
+          "lookFor": "Catcher set deeper / lower leans CH vs the rest of the arsenal.",
+          "predicts": "CH",
+          "confidence": 0.871,
+          "precision": 0.4,
+          "feature": "catcher_hip_y_mean",
+          "threshold": 0.7083229789636039,
+          "high_means_type": true,
+          "n": 51,
+          "nType": 3,
+          "baseline": 0.097,
+          "lift": 8.98,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "catch-second_any-rhh-SI-catcher_glove_speed_mean",
+          "title": "SI via catcher setup [any w/ runner on 2nd, RHH up]",
+          "angle": "CF",
+          "context": [
+            "second_any",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "second_any+rhh+SI"
+          },
+          "lookFor": "In vs righties, any time a runner is on second, from the set: more catcher glove motion at set leans SI vs the rest of the arsenal.",
+          "predicts": "SI",
+          "confidence": 0.795,
+          "precision": 0.25,
+          "feature": "catcher_glove_speed_mean",
+          "threshold": 0.1642713972363299,
+          "high_means_type": true,
+          "n": 64,
+          "nType": 4,
+          "baseline": 0.103,
+          "lift": 7.72,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "second_any|rhh",
+          "situationLabel": "any w/ runner on 2nd, RHH up"
+        },
+        {
+          "id": "catch-all-lhh-FF-catcher_glove_speed_p90",
+          "title": "FF via Catcher Setup [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+lhh+FF"
+          },
+          "lookFor": "Sharper catcher glove adjust leans FF vs the rest of the arsenal.",
+          "predicts": "FF",
+          "confidence": 0.75,
+          "precision": 0.286,
+          "feature": "catcher_glove_speed_p90",
+          "threshold": 0.14350230952380955,
+          "high_means_type": true,
+          "n": 51,
+          "nType": 3,
+          "baseline": 0.125,
+          "lift": 6.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        }
+      ],
+      "tipFloor": 0.75,
+      "tipsSource": "empirical_detection_75",
+      "featureWindow": null,
+      "tipValidation": "empirical_movement_discrimination",
+      "situationCoverage": {
+        "arsenal": [
+          "CH",
+          "FF",
+          "ST",
+          "SI"
+        ],
+        "arsenal_n": 4,
+        "tip_floor": 0.75,
+        "validation": null,
+        "n_tips_ge_floor": 6,
+        "candidates_train": null,
+        "n_failed_holdout": null,
+        "best_situation": {
+          "id": "1b|rhh",
+          "label": "first only, RHH up",
+          "runner_bucket": "1b",
+          "batter_tag": "rhh",
+          "n": 29,
+          "arsenal_n": 4,
+          "types_tested": [
+            "CH",
+            "FF",
+            "ST",
+            "SI"
+          ],
+          "discernable_n": 2,
+          "discernable_types": [
+            "CH",
+            "ST"
+          ],
+          "coverage": "2 of 4",
+          "status": "ok",
+          "types": [
+            {
+              "pitch_type": "CH",
+              "n": 11,
+              "discernable": true,
+              "accuracy": 0.793,
+              "feature": "wrist_speed_p90",
+              "precision": 0.727,
+              "threshold": 0.16637420454545454,
+              "high_means_type": true,
+              "baseline": 0.379,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "FF",
+              "n": 8,
+              "discernable": false,
+              "accuracy": 0.737,
+              "feature": "pitchcom_tap_count",
+              "precision": 0.625,
+              "threshold": 2.863095238095238,
+              "high_means_type": true,
+              "baseline": 0.368,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "ST",
+              "n": 4,
+              "discernable": true,
+              "accuracy": 0.793,
+              "feature": "glove_flare_mean",
+              "precision": 0.375,
+              "threshold": -0.015197561488601392,
+              "high_means_type": false,
+              "baseline": 0.138,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "SI",
+              "n": 6,
+              "discernable": false,
+              "accuracy": 0.621,
+              "feature": "glove_vs_belt_std",
+              "precision": 0.308,
+              "threshold": 0.05184257720305301,
+              "high_means_type": true,
+              "baseline": 0.207,
+              "status": "ok"
+            }
+          ]
+        },
+        "situations": [
+          {
+            "id": "none|lhh",
+            "label": "bases empty, LHH up",
+            "runner_bucket": "none",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 4,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "none|rhh",
+            "label": "bases empty, RHH up",
+            "runner_bucket": "none",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 4,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|lhh",
+            "label": "first only, LHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "lhh",
+            "n": 8,
+            "arsenal_n": 4,
+            "types_tested": [
+              "ST"
+            ],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|rhh",
+            "label": "first only, RHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "rhh",
+            "n": 29,
+            "arsenal_n": 4,
+            "types_tested": [
+              "CH",
+              "FF",
+              "ST",
+              "SI"
+            ],
+            "discernable_n": 2,
+            "discernable_types": [
+              "CH",
+              "ST"
+            ],
+            "coverage": "2 of 4",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "CH",
+                "n": 11,
+                "discernable": true,
+                "accuracy": 0.793,
+                "feature": "wrist_speed_p90",
+                "precision": 0.727,
+                "threshold": 0.16637420454545454,
+                "high_means_type": true,
+                "baseline": 0.379,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "FF",
+                "n": 8,
+                "discernable": false,
+                "accuracy": 0.737,
+                "feature": "pitchcom_tap_count",
+                "precision": 0.625,
+                "threshold": 2.863095238095238,
+                "high_means_type": true,
+                "baseline": 0.368,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "ST",
+                "n": 4,
+                "discernable": true,
+                "accuracy": 0.793,
+                "feature": "glove_flare_mean",
+                "precision": 0.375,
+                "threshold": -0.015197561488601392,
+                "high_means_type": false,
+                "baseline": 0.138,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 6,
+                "discernable": false,
+                "accuracy": 0.621,
+                "feature": "glove_vs_belt_std",
+                "precision": 0.308,
+                "threshold": 0.05184257720305301,
+                "high_means_type": true,
+                "baseline": 0.207,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "id": "second_any|lhh",
+            "label": "any w/ runner on 2nd, LHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "lhh",
+            "n": 21,
+            "arsenal_n": 4,
+            "types_tested": [
+              "ST",
+              "SI"
+            ],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "CH",
+                "n": 0,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "insufficient_n"
+              },
+              {
+                "pitch_type": "FF",
+                "n": 3,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "insufficient_n"
+              },
+              {
+                "pitch_type": "ST",
+                "n": 5,
+                "discernable": false,
+                "accuracy": 0.714,
+                "feature": "glove_flare_mean",
+                "precision": 0.429,
+                "threshold": -0.0029194855807507837,
+                "high_means_type": true,
+                "baseline": 0.238,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 13,
+                "discernable": false,
+                "accuracy": 0.619,
+                "feature": "wrist_speed_mean",
+                "precision": 0.727,
+                "threshold": 0.07479018963371917,
+                "high_means_type": true,
+                "baseline": 0.619,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "id": "second_any|rhh",
+            "label": "any w/ runner on 2nd, RHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "rhh",
+            "n": 64,
+            "arsenal_n": 4,
+            "types_tested": [
+              "CH",
+              "FF",
+              "ST",
+              "SI"
+            ],
+            "discernable_n": 1,
+            "discernable_types": [
+              "SI"
+            ],
+            "coverage": "1 of 4",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "CH",
+                "n": 18,
+                "discernable": false,
+                "accuracy": 0.656,
+                "feature": "glove_vs_belt_mean",
+                "precision": 0.409,
+                "threshold": 0.0061713480413394224,
+                "high_means_type": false,
+                "baseline": 0.281,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "FF",
+                "n": 23,
+                "discernable": false,
+                "accuracy": 0.594,
+                "feature": "glove_vs_belt_std",
+                "precision": 0.459,
+                "threshold": 0.05259181258896198,
+                "high_means_type": false,
+                "baseline": 0.359,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "ST",
+                "n": 15,
+                "discernable": false,
+                "accuracy": 0.656,
+                "feature": "glove_vs_belt_std",
+                "precision": 0.333,
+                "threshold": 0.05818513044315157,
+                "high_means_type": true,
+                "baseline": 0.234,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 8,
+                "discernable": true,
+                "accuracy": 0.766,
+                "feature": "glove_flare_mean",
+                "precision": 0.182,
+                "threshold": -0.027763645167159748,
+                "high_means_type": false,
+                "baseline": 0.125,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "id": "3b|lhh",
+            "label": "third only, LHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "lhh",
+            "n": 1,
+            "arsenal_n": 4,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|rhh",
+            "label": "third only, RHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "rhh",
+            "n": 11,
+            "arsenal_n": 4,
+            "types_tested": [
+              "FF",
+              "ST"
+            ],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "CH",
+                "n": 1,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "insufficient_n"
+              },
+              {
+                "pitch_type": "FF",
+                "n": 5,
+                "discernable": false,
+                "accuracy": 0.636,
+                "feature": "glove_vs_belt_mean",
+                "precision": 0.667,
+                "threshold": 0.001980204988398137,
+                "high_means_type": false,
+                "baseline": 0.455,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "ST",
+                "n": 4,
+                "discernable": false,
+                "accuracy": 0.727,
+                "feature": "glove_flare_std",
+                "precision": 0.571,
+                "threshold": 0.022678881480946097,
+                "high_means_type": false,
+                "baseline": 0.364,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 1,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "insufficient_n"
+              }
+            ]
+          }
+        ]
+      },
+      "catcherCoverage": {
+        "arsenal": [
+          "CH",
+          "FF",
+          "ST",
+          "SI"
+        ],
+        "arsenal_n": 4,
+        "tip_floor": 0.75,
+        "validation": null,
+        "n_tips_ge_floor": 3,
+        "candidates_train": null,
+        "n_failed_holdout": null,
+        "best_situation": {
+          "id": "second_any|rhh",
+          "label": "any w/ runner on 2nd, RHH up",
+          "runner_bucket": "second_any",
+          "batter_tag": "rhh",
+          "n": 64,
+          "arsenal_n": 4,
+          "types_tested": [
+            "CH",
+            "FF",
+            "ST",
+            "SI"
+          ],
+          "discernable_n": 1,
+          "discernable_types": [
+            "SI"
+          ],
+          "coverage": "1 of 4",
+          "status": "ok",
+          "types": [
+            {
+              "pitch_type": "CH",
+              "n": 18,
+              "discernable": false,
+              "accuracy": 0.561,
+              "feature": "catcher_glove_x_mean",
+              "precision": 0.3,
+              "threshold": 0.3457279339294948,
+              "high_means_type": false,
+              "baseline": 0.244,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "FF",
+              "n": 23,
+              "discernable": false,
+              "accuracy": 0.581,
+              "feature": "catcher_hip_y_mean",
+              "precision": 0.5,
+              "threshold": 0.6264554585546513,
+              "high_means_type": true,
+              "baseline": 0.419,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "ST",
+              "n": 15,
+              "discernable": false,
+              "accuracy": 0.667,
+              "feature": "catcher_glove_speed_mean",
+              "precision": 0.3,
+              "threshold": 0.1137774464553661,
+              "high_means_type": true,
+              "baseline": 0.231,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "SI",
+              "n": 8,
+              "discernable": true,
+              "accuracy": 0.795,
+              "feature": "catcher_glove_speed_mean",
+              "precision": 0.25,
+              "threshold": 0.1642713972363299,
+              "high_means_type": true,
+              "baseline": 0.103,
+              "status": "ok"
+            }
+          ]
+        },
+        "situations": [
+          {
+            "id": "none|lhh",
+            "label": "bases empty, LHH up",
+            "runner_bucket": "none",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 4,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "none|rhh",
+            "label": "bases empty, RHH up",
+            "runner_bucket": "none",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 4,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|lhh",
+            "label": "first only, LHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "lhh",
+            "n": 8,
+            "arsenal_n": 4,
+            "types_tested": [
+              "ST"
+            ],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|rhh",
+            "label": "first only, RHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "rhh",
+            "n": 29,
+            "arsenal_n": 4,
+            "types_tested": [
+              "CH",
+              "FF",
+              "ST",
+              "SI"
+            ],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "CH",
+                "n": 11,
+                "discernable": false,
+                "accuracy": 0.571,
+                "feature": "catcher_glove_x_mean",
+                "precision": 0.455,
+                "threshold": 0.39865377148311365,
+                "high_means_type": false,
+                "baseline": 0.381,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "FF",
+                "n": 8,
+                "discernable": false,
+                "accuracy": 0.706,
+                "feature": "catcher_glove_speed_p90",
+                "precision": 0.556,
+                "threshold": 0.1297373181818182,
+                "high_means_type": false,
+                "baseline": 0.353,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "ST",
+                "n": 4,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "no_separation"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 6,
+                "discernable": false,
+                "accuracy": 0.727,
+                "feature": "catcher_stance_mean",
+                "precision": 0.333,
+                "threshold": 0.02003345306971128,
+                "high_means_type": true,
+                "baseline": 0.182,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "id": "second_any|lhh",
+            "label": "any w/ runner on 2nd, LHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "lhh",
+            "n": 21,
+            "arsenal_n": 4,
+            "types_tested": [
+              "ST",
+              "SI"
+            ],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "CH",
+                "n": 0,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "insufficient_n"
+              },
+              {
+                "pitch_type": "FF",
+                "n": 3,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "insufficient_n"
+              },
+              {
+                "pitch_type": "ST",
+                "n": 5,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "no_separation"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 13,
+                "discernable": false,
+                "accuracy": 0.667,
+                "feature": "catcher_stance_mean",
+                "precision": 0.667,
+                "threshold": 0.041828536081560286,
+                "high_means_type": false,
+                "baseline": 0.556,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "id": "second_any|rhh",
+            "label": "any w/ runner on 2nd, RHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "rhh",
+            "n": 64,
+            "arsenal_n": 4,
+            "types_tested": [
+              "CH",
+              "FF",
+              "ST",
+              "SI"
+            ],
+            "discernable_n": 1,
+            "discernable_types": [
+              "SI"
+            ],
+            "coverage": "1 of 4",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "CH",
+                "n": 18,
+                "discernable": false,
+                "accuracy": 0.561,
+                "feature": "catcher_glove_x_mean",
+                "precision": 0.3,
+                "threshold": 0.3457279339294948,
+                "high_means_type": false,
+                "baseline": 0.244,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "FF",
+                "n": 23,
+                "discernable": false,
+                "accuracy": 0.581,
+                "feature": "catcher_hip_y_mean",
+                "precision": 0.5,
+                "threshold": 0.6264554585546513,
+                "high_means_type": true,
+                "baseline": 0.419,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "ST",
+                "n": 15,
+                "discernable": false,
+                "accuracy": 0.667,
+                "feature": "catcher_glove_speed_mean",
+                "precision": 0.3,
+                "threshold": 0.1137774464553661,
+                "high_means_type": true,
+                "baseline": 0.231,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 8,
+                "discernable": true,
+                "accuracy": 0.795,
+                "feature": "catcher_glove_speed_mean",
+                "precision": 0.25,
+                "threshold": 0.1642713972363299,
+                "high_means_type": true,
+                "baseline": 0.103,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "id": "3b|lhh",
+            "label": "third only, LHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "lhh",
+            "n": 1,
+            "arsenal_n": 4,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|rhh",
+            "label": "third only, RHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "rhh",
+            "n": 11,
+            "arsenal_n": 4,
+            "types_tested": [
+              "FF",
+              "ST"
+            ],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 4",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "CH",
+                "n": 1,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "insufficient_n"
+              },
+              {
+                "pitch_type": "FF",
+                "n": 5,
+                "discernable": false,
+                "accuracy": 0.5,
+                "feature": "catcher_glove_x_mean",
+                "precision": 0.429,
+                "threshold": 0.3088152891319714,
+                "high_means_type": false,
+                "baseline": 0.4,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "ST",
+                "n": 4,
+                "discernable": false,
+                "accuracy": 0.7,
+                "feature": "catcher_glove_x_mean",
+                "precision": 0.571,
+                "threshold": 0.3125329075773763,
+                "high_means_type": false,
+                "baseline": 0.4,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 1,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "insufficient_n"
+              }
+            ]
+          }
+        ]
+      },
+      "discernableSummary": {
+        "none|lhh": {
+          "label": "bases empty, LHH up",
+          "coverage": "0 of 4",
+          "discernable_types": [],
+          "n": 0
+        },
+        "none|rhh": {
+          "label": "bases empty, RHH up",
+          "coverage": "0 of 4",
+          "discernable_types": [],
+          "n": 0
+        },
+        "1b|lhh": {
+          "label": "first only, LHH up",
+          "coverage": "0 of 4",
+          "discernable_types": [],
+          "n": 8
+        },
+        "1b|rhh": {
+          "label": "first only, RHH up",
+          "coverage": "2 of 4",
+          "discernable_types": [
+            "CH",
+            "ST"
+          ],
+          "n": 29
+        },
+        "second_any|lhh": {
+          "label": "any w/ runner on 2nd, LHH up",
+          "coverage": "0 of 4",
+          "discernable_types": [],
+          "n": 21
+        },
+        "second_any|rhh": {
+          "label": "any w/ runner on 2nd, RHH up",
+          "coverage": "1 of 4",
+          "discernable_types": [
+            "SI"
+          ],
+          "n": 64
+        },
+        "3b|lhh": {
+          "label": "third only, LHH up",
+          "coverage": "0 of 4",
+          "discernable_types": [],
+          "n": 1
+        },
+        "3b|rhh": {
+          "label": "third only, RHH up",
+          "coverage": "0 of 4",
+          "discernable_types": [],
+          "n": 11
+        }
+      },
+      "poc": true,
+      "pocLive": true,
+      "illustrative": false,
+      "camera": "CF_savant_proof_of_concept",
+      "provenance": {
+        "runDir": "runs/jes\u00fas_luzardo_poc",
+        "sanityGate": "pass",
+        "tipSplitBacksTips": true,
+        "backedTips": 6,
+        "backedCatcherTips": 3
       }
     },
     "herget": {
