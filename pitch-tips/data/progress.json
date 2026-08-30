@@ -10,9 +10,9 @@
   "eta_hours": 501.9,
   "est_total_pitches": 180670,
   "current": {
-    "name": "David Morgan",
-    "team": "SD",
-    "message": "pitcher [13/13] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Kevin Gausman",
+    "team": "OTH",
+    "message": "pitcher [10/638] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -2780,9 +2780,9 @@
     "pitcher_tips": 212,
     "catcher_tips": 162
   },
-  "updated_at": "2026-08-30T08:48:09",
+  "updated_at": "2026-08-30T09:11:12",
   "live": {
-    "pitches_done": 11,
+    "pitches_done": 140,
     "pitches_target": null
   },
   "heartbeat": true
