@@ -65,6 +65,10 @@ const PLAYER_ALIASES = {
   wilmer: "wilmer_rios",
   rios: "wilmer_rios",
   monclova_rios: "wilmer_rios",
+  bauer: "wilmer_rios",
+  trevor_bauer: "wilmer_rios",
+  trevorbauer: "wilmer_rios",
+  "trevor-bauer": "wilmer_rios",
 
   // MLB Showcase
   roupp: "roupp",

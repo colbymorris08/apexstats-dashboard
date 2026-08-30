@@ -1588,8 +1588,8 @@ def apply_updates():
             players_dict["moreno"] = players_dict["gabriel_moreno"]
         if "wilmer_rios" in players_dict:
             players_dict["rios"] = players_dict["wilmer_rios"]
-        players_dict.pop("trevor_bauer", None)
-        players_dict.pop("bauer", None)
+            players_dict["bauer"] = players_dict["wilmer_rios"]
+            players_dict["trevor_bauer"] = players_dict["wilmer_rios"]
 
         # 3. Write back cleanly
         with open(path, "w", encoding="utf-8") as f:
