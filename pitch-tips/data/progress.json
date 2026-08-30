@@ -990,8 +990,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/david_morgan_poc",
       "schema": "rich_72col",
       "n_current_tracks": 16,
-      "ready": true,
-      "state": "complete"
+      "ready": false,
+      "state": "tracking"
     },
     "656529": {
       "name": "Sam Hentges",
@@ -2780,7 +2780,7 @@
     "pitcher_tips": 212,
     "catcher_tips": 162
   },
-  "updated_at": "2026-08-30T07:58:35",
+  "updated_at": "2026-08-30T08:04:13",
   "live": {
     "pitches_done": 11,
     "pitches_target": null
