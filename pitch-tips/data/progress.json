@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 61,
-  "remaining": 636,
+  "remaining": 635,
   "sec_per_pitch": 10.0,
   "eta_hours": 518.0,
   "est_total_pitches": 186470,
   "current": {
-    "name": "Reiver Sanmartin",
+    "name": "Jason Foley",
     "team": "SF",
-    "message": "pitcher [8/11] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [9/11] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -1062,6 +1062,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/carson_seymour_poc",
       "schema": "rich_72col",
       "n_current_tracks": 172,
+      "ready": true,
+      "state": "complete"
+    },
+    "665665": {
+      "name": "Reiver Sanmartin",
+      "team": "SF",
+      "n_tracked": 134,
+      "holdout": 0.364,
+      "tips_ge_75": 2,
+      "catcher_tips": 1,
+      "legacy_tips_ge_75": 2,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/reiver_sanmartin_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 159,
       "ready": false,
       "state": "tracking"
     }
@@ -2521,9 +2539,9 @@
     },
     "SF": {
       "queued": 11,
-      "done": 7,
-      "pitcher_tips": 12,
-      "catcher_tips": 9
+      "done": 8,
+      "pitcher_tips": 14,
+      "catcher_tips": 10
     },
     "OTH": {
       "queued": 638,
@@ -2540,12 +2558,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 145,
-    "catcher_tips": 114
+    "pitcher_tips": 147,
+    "catcher_tips": 115
   },
-  "updated_at": "2026-08-29T22:52:51",
+  "updated_at": "2026-08-29T23:26:37",
   "live": {
-    "pitches_done": 130,
+    "pitches_done": 110,
     "pitches_target": null
   },
   "heartbeat": true

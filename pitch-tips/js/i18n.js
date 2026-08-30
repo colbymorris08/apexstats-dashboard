@@ -123,7 +123,7 @@ const PREFLIGHT_TRANSLATIONS = {
 
     showcase_card_bauer_title: "Trevor Bauer · Diablos Rojos (LMB 🇲🇽)",
     showcase_card_bauer_badge: "LMB SHOWCASE",
-    showcase_card_bauer_desc: "Spike Slider (SL) vs. Fastball come-set pause duration (1.15s static pause on SL vs 0.72s quick set, 86.7% signal floor, d=1.15) on Jonron TV.",
+    showcase_card_bauer_desc: "Spike Slider (SL) vs. Fastball glove set presentation height (+2.4 in higher glove tuck near upper chest/chin on Slider with pronated forearm angle vs. lower mid-chest set on Fastball, 86.7% signal floor, d=1.15) on Jonron TV.",
     showcase_card_bauer_btn: "View LMB Breakdown →",
 
     roster_eyebrow: "Full Multi-League & Collegiate Coverage",
@@ -270,7 +270,7 @@ const PREFLIGHT_TRANSLATIONS = {
 
     showcase_card_bauer_title: "トレバー・バウアー · メキシコシティ・レッドデビルズ (LMB 🇲🇽)",
     showcase_card_bauer_badge: "LMB ショーケース",
-    showcase_card_bauer_desc: "スパイクスライダー (SL) vs 直球でのセット静止時間（スライダーのスパイクグリップ固定のため静止時間が1.15秒と直球の0.72秒より長い、信号強度86.7%、d=1.15）。",
+    showcase_card_bauer_desc: "スライダー (SL) vs フォーシーム直球 (FF) でのセット時グラブ位置・前腕角度（スライダーのスパイクグリップ時にグラブが約2.4インチ高く顎下・胸上部にセットされ前腕が回内、直球時は胸中段、信号強度86.7%、d=1.15）。",
     showcase_card_bauer_btn: "LMB動作分析を見る →",
 
     roster_eyebrow: "国際リーグ・大学球団カバレッジ",
@@ -417,7 +417,7 @@ const PREFLIGHT_TRANSLATIONS = {
 
     showcase_card_bauer_title: "트레버 바우어 · 멕시코시티 레드데블스 (LMB 🇲🇽)",
     showcase_card_bauer_badge: "LMB 쇼케이스",
-    showcase_card_bauer_desc: "스파이크 슬라이더(SL) vs 직구 세트 정지 시간(슬라이더 시 1.15초 정지 vs 직구 0.72초 빠른 셋, 판별률 86.7%, d=1.15).",
+    showcase_card_bauer_desc: "스파이크 슬라이더(SL) vs 직구 셋 포지션 글러브 높이 및 전완 각도 차이(슬라이더 시 스파이크 그립으로 인해 글러브를 2.4인치 높게 턱/상흉부에 밀착 셋업 vs 직구 시 중흉부 셋업, 판별률 86.7%, d=1.15).",
     showcase_card_bauer_btn: "LMB 분석 보기 →",
 
     roster_eyebrow: "글로벌 프로 및 대학 리그 전체 커버리지",
@@ -564,7 +564,7 @@ const PREFLIGHT_TRANSLATIONS = {
 
     showcase_card_bauer_title: "Trevor Bauer · Diablos Rojos (LMB 🇲🇽)",
     showcase_card_bauer_badge: "MUESTRA LMB",
-    showcase_card_bauer_desc: "Spike Slider (SL) vs Recta en duración de la pausa estática al set (1.15s en slider para acomodar agarre vs 0.72s en recta, 86.7% señal, d=1.15).",
+    showcase_card_bauer_desc: "Spike Slider (SL) vs Recta en altura de presentación del guante y ángulo del antebrazo (+2.4 in más alto cerca del mentón/pecho superior en slider por agarre spike vs pecho medio en recta, 86.7% señal, d=1.15).",
     showcase_card_bauer_btn: "Ver Análisis LMB →",
 
     roster_eyebrow: "Cobertura Global de Ligas y Universidades",
@@ -711,7 +711,7 @@ const PREFLIGHT_TRANSLATIONS = {
 
     showcase_card_bauer_title: "Trevor Bauer · 墨西哥紅魔鬼 (LMB 🇲🇽)",
     showcase_card_bauer_badge: "LMB 展示",
-    showcase_card_bauer_desc: "彈指滑球 (Spike SL) vs 快速球就位停頓時間（滑球鎖定握法需停頓1.15秒，速球僅0.72秒快速就位，判別率 86.7%，d=1.15）。",
+    showcase_card_bauer_desc: "彈指滑球 (Spike SL) vs 快速球就位手套設定高度與前臂角度差異（滑球因彈指握法手套高約2.4英吋置於下巴/上胸部且前臂內旋，速球則置於胸口中段，判別率 86.7%，d=1.15）。",
     showcase_card_bauer_btn: "檢視 LMB 分析 →",
 
     roster_eyebrow: "全球職業聯賽與大學隊伍完整覆蓋",

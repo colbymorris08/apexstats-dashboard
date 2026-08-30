@@ -966,7 +966,7 @@ LEAGUE_FRAMES = {
             "throws": "RHP",
             "angle": "Elevated Center-Field Lens",
             "pitchType": "Sweep Slider (SL 84mph)",
-            "delivery": "+185ms Pause Cadence & 1.2in Glove Dip",
+            "delivery": "High Chin/Sternum Glove Tuck (+2.4in higher set on SL)",
             "windowPos": 0.38,
             "filename": "lmb/lmb_trevor_bauer_f155.svg",
             "gloveX": 645, "gloveY": 368, "handX": 655, "handY": 372,

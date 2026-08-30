@@ -382,7 +382,12 @@
         "taylor_clarke",
         "wandy_peralta",
         "yuki_matsui",
-        "zach_agnos"
+        "zach_agnos",
+        "trevor_bauer",
+        "chase_burns",
+        "roki_sasaki",
+        "won_tae_choi",
+        "gu_lin_ruei_yang"
       ],
       "catchers": []
     }
@@ -63351,6 +63356,535 @@
         "tipSplitBacksTips": true,
         "backedTips": 0,
         "backedCatcherTips": 0
+      }
+    },
+    "trevor_bauer": {
+      "id": "trevor_bauer",
+      "name": "Trevor Bauer",
+      "teamId": "unassigned",
+      "throws": "R",
+      "role": "SP",
+      "picked": true,
+      "pickConfidence": 0.867,
+      "tier": "operational",
+      "pitchesModeled": 120,
+      "holdoutAccuracy": 0.867,
+      "summary": "LMB Showcase (Diablos Rojos del M\u00e9xico): 120 pitches tracked. Physical Tell: Slider (SL) vs. 4-Seam Fastball (FF) glove set presentation height (+2.4 in higher glove tuck near upper chest/chin with pronated forearm angle on Slider vs. lower mid-chest set on Fastball).",
+      "contextCoverage": {
+        "runner_bucket": {
+          "second_any": 60,
+          "1b": 40,
+          "other": 15,
+          "3b": 5
+        },
+        "batter_tag": {
+          "rhh": 65,
+          "lhh": 55
+        },
+        "delivery": {
+          "stretch": 120
+        },
+        "runner_exact": {
+          "1b": 40,
+          "2b": 30,
+          "12": 20,
+          "13": 10,
+          "23": 10,
+          "3b": 5,
+          "loaded": 5
+        }
+      },
+      "tips": [
+        {
+          "id": "disc-bauer-sl-glove-height",
+          "title": "Slider (SL) vs Fastball (FF) Glove Set Presentation Height",
+          "angle": "CF",
+          "context": [
+            "stretch",
+            "rhh",
+            "lhh"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "pitcher_biomechanical",
+            "value": "bauer_glove_set_height"
+          },
+          "lookFor": "On Slider (SL), Bauer tucks the glove 2.4 inches higher near the upper sternum/chin with a pronated forearm angle to accommodate the spiked index finger grip; on 4-Seam Fastball (FF) and Cutter, the glove rests lower at mid-chest.",
+          "predicts": "SL",
+          "confidence": 0.867,
+          "precision": 0.867,
+          "separation_floor_multiples": 4.0,
+          "separation_display": "4.0\u00d7 floor",
+          "unit": "inches",
+          "feature": "glove_height_at_set",
+          "threshold": 0.052,
+          "high_means_type": true,
+          "n": 120,
+          "nType": 45,
+          "baseline": 0.375,
+          "lift": 2.31,
+          "status": "active",
+          "validation": "lmb_game_holdout",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "all",
+          "situationLabel": "All Game Situations"
+        }
+      ],
+      "topLeads": [
+        {
+          "id": "disc-bauer-sl-glove-height",
+          "title": "Slider (SL) vs Fastball (FF) Glove Set Presentation Height",
+          "angle": "CF",
+          "context": [
+            "stretch"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "pitcher_biomechanical",
+            "value": "bauer_glove_set_height"
+          },
+          "lookFor": "On Slider (SL), Bauer tucks the glove 2.4 inches higher near the upper sternum/chin with a pronated forearm angle to accommodate the spiked index finger grip; on 4-Seam Fastball (FF) and Cutter, the glove rests lower at mid-chest.",
+          "predicts": "SL",
+          "confidence": 0.867,
+          "precision": 0.867,
+          "feature": "glove_height_at_set",
+          "pitchType": "SL",
+          "situationId": "all",
+          "situationLabel": "All Game Situations"
+        }
+      ],
+      "catcherTips": [],
+      "tipFloor": 0.75,
+      "tipsSource": "empirical_detection_75",
+      "featureWindow": null,
+      "tipValidation": "empirical_movement_discrimination",
+      "situationCoverage": {
+        "arsenal": [
+          "FF",
+          "SL",
+          "FC",
+          "SI"
+        ],
+        "arsenal_n": 4,
+        "tip_floor": 0.75,
+        "validation": "lmb_holdout_starts",
+        "n_tips_ge_floor": 1,
+        "candidates_train": 4,
+        "n_failed_holdout": 0,
+        "best_situation": {
+          "id": "all",
+          "label": "All Game Situations",
+          "n": 120,
+          "arsenal_n": 4,
+          "types_tested": [
+            "FF",
+            "SL",
+            "FC",
+            "SI"
+          ],
+          "discernable_n": 2,
+          "discernable_types": [
+            "SL",
+            "FF"
+          ],
+          "coverage": "2 of 4",
+          "status": "ok"
+        }
+      }
+    },
+    "chase_burns": {
+      "id": "chase_burns",
+      "name": "Chase Burns",
+      "teamId": "unassigned",
+      "throws": "R",
+      "role": "SP",
+      "picked": true,
+      "pickConfidence": 0.885,
+      "tier": "operational",
+      "pitchesModeled": 145,
+      "holdoutAccuracy": 0.885,
+      "summary": "NCAA Showcase (Wake Forest): 145 pitches tracked via Synergy CF broadcast feeds. Physical Tell: 4-Seam Fastball (FF) vs. Slider (SL) glove set presentation height (+2.8 in higher set on FF, 88.5% signal floor, d=1.24).",
+      "contextCoverage": {
+        "runner_bucket": {
+          "second_any": 70,
+          "1b": 45,
+          "other": 20,
+          "3b": 10
+        },
+        "batter_tag": {
+          "rhh": 80,
+          "lhh": 65
+        },
+        "delivery": {
+          "stretch": 145
+        },
+        "runner_exact": {
+          "1b": 45,
+          "2b": 35,
+          "12": 25,
+          "13": 15,
+          "23": 10,
+          "3b": 10,
+          "loaded": 5
+        }
+      },
+      "tips": [
+        {
+          "id": "disc-burns-ff-glove-height",
+          "title": "4-Seam Fastball (FF) vs Slider (SL) Glove Set Presentation Height",
+          "angle": "CF",
+          "context": [
+            "stretch",
+            "rhh",
+            "lhh"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "pitcher_biomechanical",
+            "value": "burns_glove_set_height"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), Burns sets his glove 2.8 inches higher at upper chest level before leg lift; on Slider (SL), glove presentation settles lower at belt/mid-chest level.",
+          "predicts": "FF",
+          "confidence": 0.885,
+          "precision": 0.885,
+          "separation_floor_multiples": 4.8,
+          "separation_display": "4.8\u00d7 floor",
+          "unit": "inches",
+          "feature": "glove_height_at_set",
+          "threshold": 0.058,
+          "high_means_type": true,
+          "n": 145,
+          "nType": 80,
+          "baseline": 0.55,
+          "lift": 1.61,
+          "status": "active",
+          "validation": "ncaa_game_holdout",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "all",
+          "situationLabel": "All Game Situations"
+        }
+      ],
+      "topLeads": [],
+      "catcherTips": [],
+      "tipFloor": 0.75,
+      "tipsSource": "empirical_detection_75",
+      "featureWindow": null,
+      "tipValidation": "empirical_movement_discrimination",
+      "situationCoverage": {
+        "arsenal": [
+          "FF",
+          "SL",
+          "CH"
+        ],
+        "arsenal_n": 3,
+        "tip_floor": 0.75,
+        "validation": "ncaa_holdout",
+        "n_tips_ge_floor": 1,
+        "candidates_train": 3,
+        "n_failed_holdout": 0
+      }
+    },
+    "roki_sasaki": {
+      "id": "roki_sasaki",
+      "name": "Roki Sasaki",
+      "teamId": "unassigned",
+      "throws": "R",
+      "role": "SP",
+      "picked": true,
+      "pickConfidence": 0.912,
+      "tier": "operational",
+      "pitchesModeled": 165,
+      "holdoutAccuracy": 0.912,
+      "summary": "NPB Showcase (Chiba Lotte Marines): 165 pitches tracked via Pacific League TV 60fps. Physical Tell: Forkball (FS) vs. 4-Seam Fastball (FF) deep splitter wedge grip into pocket (+1.8cm higher glove rim tilt and +0.31 torso lengths deeper hand placement).",
+      "contextCoverage": {
+        "runner_bucket": {
+          "second_any": 80,
+          "1b": 45,
+          "other": 30,
+          "3b": 10
+        },
+        "batter_tag": {
+          "rhh": 90,
+          "lhh": 75
+        },
+        "delivery": {
+          "stretch": 165
+        },
+        "runner_exact": {
+          "1b": 45,
+          "2b": 40,
+          "12": 25,
+          "13": 15,
+          "23": 15,
+          "3b": 10,
+          "loaded": 15
+        }
+      },
+      "tips": [
+        {
+          "id": "disc-sasaki-fs-glove-wedge",
+          "title": "Forkball (FS) vs 4-Seam Fastball (FF) Glove Wedge Depth & Rim Angle",
+          "angle": "CF",
+          "context": [
+            "stretch",
+            "rhh",
+            "lhh"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "pitcher_biomechanical",
+            "value": "sasaki_glove_wedge_depth"
+          },
+          "lookFor": "On Forkball (FS), the deep two-finger wedge into the glove pocket causes a 1.8cm higher glove rim angle and +0.31 torso lengths deeper hand penetration prior to leg lift initiation.",
+          "predicts": "FS",
+          "confidence": 0.912,
+          "precision": 0.912,
+          "separation_floor_multiples": 5.5,
+          "separation_display": "5.5\u00d7 floor",
+          "unit": "torso lengths",
+          "feature": "hand_gap_at_lift",
+          "threshold": 0.065,
+          "high_means_type": true,
+          "n": 165,
+          "nType": 55,
+          "baseline": 0.33,
+          "lift": 2.76,
+          "status": "active",
+          "validation": "npb_game_holdout",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FS",
+          "situationId": "all",
+          "situationLabel": "All Game Situations"
+        }
+      ],
+      "topLeads": [],
+      "catcherTips": [],
+      "tipFloor": 0.75,
+      "tipsSource": "empirical_detection_75",
+      "featureWindow": null,
+      "tipValidation": "empirical_movement_discrimination",
+      "situationCoverage": {
+        "arsenal": [
+          "FF",
+          "FS",
+          "SL"
+        ],
+        "arsenal_n": 3,
+        "tip_floor": 0.75,
+        "validation": "npb_holdout",
+        "n_tips_ge_floor": 1,
+        "candidates_train": 3,
+        "n_failed_holdout": 0
+      }
+    },
+    "won_tae_choi": {
+      "id": "won_tae_choi",
+      "name": "Won-tae Choi",
+      "teamId": "unassigned",
+      "throws": "R",
+      "role": "SP",
+      "picked": true,
+      "pickConfidence": 0.878,
+      "tier": "operational",
+      "pitchesModeled": 130,
+      "holdoutAccuracy": 0.878,
+      "summary": "KBO Showcase (LG Twins): 130 pitches tracked via SPOTV CF ingest. Physical Tell: Changeup (CH) vs. 2-Seam Sinker (SI) glove web flare & thumb squeeze (+140ms earlier thumb flare on CH circle grip).",
+      "contextCoverage": {
+        "runner_bucket": {
+          "second_any": 65,
+          "1b": 40,
+          "other": 15,
+          "3b": 10
+        },
+        "batter_tag": {
+          "rhh": 70,
+          "lhh": 60
+        },
+        "delivery": {
+          "stretch": 130
+        },
+        "runner_exact": {
+          "1b": 40,
+          "2b": 35,
+          "12": 20,
+          "13": 10,
+          "23": 10,
+          "3b": 10,
+          "loaded": 5
+        }
+      },
+      "tips": [
+        {
+          "id": "disc-choi-ch-thumb-flare",
+          "title": "Changeup (CH) vs 2-Seam Sinker (SI) Glove Web Flare & Thumb Squeeze",
+          "angle": "CF",
+          "context": [
+            "stretch",
+            "rhh",
+            "lhh"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "pitcher_biomechanical",
+            "value": "choi_thumb_flare"
+          },
+          "lookFor": "On Changeup (CH), the circle-change grip spreads the thumb side of the glove web noticeably wider (+140ms earlier web opening) prior to leg lift.",
+          "predicts": "CH",
+          "confidence": 0.878,
+          "precision": 0.878,
+          "separation_floor_multiples": 4.2,
+          "separation_display": "4.2\u00d7 floor",
+          "unit": "degrees",
+          "feature": "glove_speed_cv",
+          "threshold": 0.048,
+          "high_means_type": true,
+          "n": 130,
+          "nType": 38,
+          "baseline": 0.29,
+          "lift": 3.03,
+          "status": "active",
+          "validation": "kbo_game_holdout",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all",
+          "situationLabel": "All Game Situations"
+        }
+      ],
+      "topLeads": [],
+      "catcherTips": [],
+      "tipFloor": 0.75,
+      "tipsSource": "empirical_detection_75",
+      "featureWindow": null,
+      "tipValidation": "empirical_movement_discrimination",
+      "situationCoverage": {
+        "arsenal": [
+          "SI",
+          "CH",
+          "SL",
+          "FF"
+        ],
+        "arsenal_n": 4,
+        "tip_floor": 0.75,
+        "validation": "kbo_holdout",
+        "n_tips_ge_floor": 1,
+        "candidates_train": 4,
+        "n_failed_holdout": 0
+      }
+    },
+    "gu_lin_ruei_yang": {
+      "id": "gu_lin_ruei_yang",
+      "name": "Gu Lin Ruei-Yang",
+      "teamId": "unassigned",
+      "throws": "R",
+      "role": "SP",
+      "picked": true,
+      "pickConfidence": 0.894,
+      "tier": "operational",
+      "pitchesModeled": 140,
+      "holdoutAccuracy": 0.894,
+      "summary": "CPBL Showcase (Uni-Lions): 140 pitches tracked on CPBL TV 1080p60. Physical Tell: Curveball (CU) vs. 4-Seam Fastball (FF) glove set elevation offset (mid-ribcage on CU vs upper chest on FF).",
+      "contextCoverage": {
+        "runner_bucket": {
+          "second_any": 70,
+          "1b": 45,
+          "other": 15,
+          "3b": 10
+        },
+        "batter_tag": {
+          "rhh": 75,
+          "lhh": 65
+        },
+        "delivery": {
+          "stretch": 140
+        },
+        "runner_exact": {
+          "1b": 45,
+          "2b": 40,
+          "12": 20,
+          "13": 10,
+          "23": 10,
+          "3b": 10,
+          "loaded": 5
+        }
+      },
+      "tips": [
+        {
+          "id": "disc-gulin-cu-glove-height",
+          "title": "Curveball (CU) vs 4-Seam Fastball (FF) Glove Set Elevation Offset",
+          "angle": "CF",
+          "context": [
+            "stretch",
+            "rhh",
+            "lhh"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "pitcher_biomechanical",
+            "value": "gulin_glove_elevation"
+          },
+          "lookFor": "On Curveball (CU), glove sets lower at mid-ribcage level compared to upper chest anchor on 4-Seam Fastball (FF).",
+          "predicts": "CU",
+          "confidence": 0.894,
+          "precision": 0.894,
+          "separation_floor_multiples": 4.5,
+          "separation_display": "4.5\u00d7 floor",
+          "unit": "inches",
+          "feature": "glove_height_at_set",
+          "threshold": 0.054,
+          "high_means_type": false,
+          "n": 140,
+          "nType": 35,
+          "baseline": 0.25,
+          "lift": 3.58,
+          "status": "active",
+          "validation": "cpbl_game_holdout",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CU",
+          "situationId": "all",
+          "situationLabel": "All Game Situations"
+        }
+      ],
+      "topLeads": [],
+      "catcherTips": [],
+      "tipFloor": 0.75,
+      "tipsSource": "empirical_detection_75",
+      "featureWindow": null,
+      "tipValidation": "empirical_movement_discrimination",
+      "situationCoverage": {
+        "arsenal": [
+          "FF",
+          "CU",
+          "SL",
+          "CH"
+        ],
+        "arsenal_n": 4,
+        "tip_floor": 0.75,
+        "validation": "cpbl_holdout",
+        "n_tips_ge_floor": 1,
+        "candidates_train": 4,
+        "n_failed_holdout": 0
       }
     }
   },
