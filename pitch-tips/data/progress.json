@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 61,
-  "remaining": 643,
+  "remaining": 642,
   "sec_per_pitch": 10.0,
   "eta_hours": 518.0,
   "est_total_pitches": 186470,
   "current": {
-    "name": "Kyle Hart",
+    "name": "Yuki Matsui",
     "team": "SD",
-    "message": "pitcher [11/13] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [12/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -937,6 +937,24 @@
       "n_current_tracks": 122,
       "ready": true,
       "state": "complete"
+    },
+    "606996": {
+      "name": "Kyle Hart",
+      "team": "SD",
+      "n_tracked": 153,
+      "holdout": 0.222,
+      "tips_ge_75": 5,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kyle_hart_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 179,
+      "ready": false,
+      "state": "tracking"
     }
   },
   "failed": {
@@ -2388,9 +2406,9 @@
     },
     "SD": {
       "queued": 13,
-      "done": 10,
-      "pitcher_tips": 24,
-      "catcher_tips": 24
+      "done": 11,
+      "pitcher_tips": 29,
+      "catcher_tips": 27
     },
     "SF": {
       "queued": 11,
@@ -2413,12 +2431,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 117,
-    "catcher_tips": 99
+    "pitcher_tips": 122,
+    "catcher_tips": 102
   },
-  "updated_at": "2026-08-29T20:29:19",
+  "updated_at": "2026-08-29T21:00:55",
   "live": {
-    "pitches_done": 150,
+    "pitches_done": 170,
     "pitches_target": null
   },
   "heartbeat": true
