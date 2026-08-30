@@ -347,27 +347,113 @@ def evaluate_situations_validated(
 
 def _look_for(pitch_type: str, feat: str, high: bool, ctx_tags: list[str]) -> str:
     prefix = context_phrase(ctx_tags)
-    direction = {
-        "glove_vs_belt_mean": "higher glove vs belt" if high else "lower glove vs belt",
-        "glove_vs_belt_std": "more glove-height bobble" if high else "steadier glove height",
-        "glove_flare_mean": "wider glove flare" if high else "tighter glove",
-        "glove_flare_std": "more flare variance" if high else "locked flare",
-        "wrist_speed_mean": "more glove micro-motion" if high else "quieter glove",
-        "wrist_speed_p90": "sharper late glove twitch" if high else "flatter glove speed",
-        "cheek_motion_mean": "more cheek/jaw motion" if high else "earlier facial stillness",
-        "cheek_motion_std": "more variable facial motion" if high else "steadier facial set",
-        "pitchcom_tap_count": "more PitchCom glove taps" if high else "fewer PitchCom glove taps",
-        "pitchcom_tap_rate": "faster PitchCom tap cadence" if high else "slower PitchCom tap cadence",
-        "pitchcom_mean_isi": "wider gaps between PitchCom taps" if high else "tighter PitchCom tap spacing",
-        "catcher_glove_x_mean": "catcher target set more glove-side" if high else "catcher target set more arm-side",
-        "catcher_glove_y_mean": "catcher target set higher" if high else "catcher target set lower",
-        "catcher_stance_mean": "wider catcher stance at set" if high else "narrower catcher stance at set",
-        "catcher_hip_y_mean": "catcher set deeper / lower" if high else "catcher set taller",
-        "catcher_glove_speed_mean": "more catcher glove motion at set" if high else "quieter catcher glove at set",
-        "catcher_glove_speed_p90": "sharper catcher glove adjust" if high else "steadier catcher target",
-    }.get(feat, feat.replace("_", " "))
-    body = f"{direction} leans {pitch_type} vs the rest of the arsenal."
-    text = (prefix + body).strip()
+    pname = {
+        "FF": "4-Seam Fastball",
+        "SI": "2-Seam Sinker",
+        "FC": "Cutter",
+        "SL": "Slider",
+        "ST": "Sweeper",
+        "CU": "Curveball",
+        "KC": "Knuckle Curve",
+        "CV": "Curveball",
+        "CH": "Changeup",
+        "FS": "Splitter",
+        "SPL": "Splitter",
+        "KN": "Knuckleball",
+        "SV": "Slurve",
+        "OFF": "Offspeed",
+    }.get(pitch_type, f"{pitch_type} pitch")
+
+    body_map = {
+        "glove_vs_belt_mean": (
+            f"On {pname} ({pitch_type}), glove is anchored high across jersey chest letters during set pause vs low at belt buckle on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), glove sits 2 to 3 inches lower below belt seam before leg lift begins vs locked at mid-chest on rest of arsenal."
+        ),
+        "glove_vs_belt_std": (
+            f"On {pname} ({pitch_type}), glove visibly micro-bobbles vertically at set position while securing grip vs motionless hands on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), hands lock into instant motionless set hold vs micro-adjustments on rest of arsenal."
+        ),
+        "glove_flare_mean": (
+            f"On {pname} ({pitch_type}), glove pocket flares wide outward exposing inner laces vs tightly closed mitt parallel to torso on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), glove is clamped flat and tight against sternum vs flared rim on rest of arsenal."
+        ),
+        "glove_flare_std": (
+            f"On {pname} ({pitch_type}), glove pocket flexes and expands during grip dig vs rigid angle on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), glove pocket angle is locked rigid from first touch vs flexing during grip dig on rest of arsenal."
+        ),
+        "wrist_speed_mean": (
+            f"On {pname} ({pitch_type}), active wrist micro-movement is visible at glove collar vs motionless hands on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), hands and wrist remain completely quiet and still at set vs wrist micro-movement on rest of arsenal."
+        ),
+        "wrist_speed_p90": (
+            f"On {pname} ({pitch_type}), a sharp late glove twitch occurs right as knee lift starts vs smooth continuous delivery on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), motion into leg lift is completely smooth without late hitch vs sharp late twitch on rest of arsenal."
+        ),
+        "cheek_motion_mean": (
+            f"On {pname} ({pitch_type}), visible jaw clench / cheek tension occurs before coming set vs neutral relaxed face on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), face locks into immediate motionless stillness vs visible jaw/cheek motion on rest of arsenal."
+        ),
+        "cheek_motion_std": (
+            f"On {pname} ({pitch_type}), variable facial muscle shifting occurs during sign receive vs steady facial set on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), facial set remains calm and steady vs variable tension on rest of arsenal."
+        ),
+        "pitchcom_tap_count": (
+            f"On {pname} ({pitch_type}), pitcher executes 3+ deliberate PitchCom taps vs 1-2 quick taps on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), pitcher uses only 1 quick PitchCom tap before coming set vs multiple taps on rest of arsenal."
+        ),
+        "pitchcom_tap_rate": (
+            f"On {pname} ({pitch_type}), PitchCom tap cadence is rapid and brisk vs slow deliberate cadence on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), PitchCom taps are slow and spaced out vs rapid cadence on rest of arsenal."
+        ),
+        "pitchcom_mean_isi": (
+            f"On {pname} ({pitch_type}), wide pauses (>1.0s) occur between PitchCom presses vs tightly clustered taps on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), PitchCom taps occur in rapid back-to-back cluster vs wide pauses on rest of arsenal."
+        ),
+        "catcher_glove_x_mean": (
+            f"On {pname} ({pitch_type}), catcher sets target 5+ inches wider to glove-side edge vs centered target on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), catcher shifts target toward arm-side border vs centered target on rest of arsenal."
+        ),
+        "catcher_glove_y_mean": (
+            f"On {pname} ({pitch_type}), catcher sets mitt target high at chest level vs low below knees on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), catcher anchors target low below the knees vs chest-high target on rest of arsenal."
+        ),
+        "catcher_stance_mean": (
+            f"On {pname} ({pitch_type}), catcher establishes a noticeably wider base stance vs narrow compact stance on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), catcher sets up with compact, narrow foot spread vs wide blocking base on rest of arsenal."
+        ),
+        "catcher_hip_y_mean": (
+            f"On {pname} ({pitch_type}), catcher sets in a taller upright crouch vs deep one-knee crouch on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), catcher drops deep into a one-knee stance on dirt vs standard higher crouch on rest of arsenal."
+        ),
+        "catcher_glove_speed_mean": (
+            f"On {pname} ({pitch_type}), catcher exhibits active pre-set glove movement vs static target on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), catcher holds quiet motionless target at set vs active movement on rest of arsenal."
+        ),
+        "catcher_glove_speed_p90": (
+            f"On {pname} ({pitch_type}), catcher executes a sharp late glove repositioning before lift vs rock-still target on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), catcher locks into early static target hold vs late adjustments on rest of arsenal."
+        ),
+    }
+
+    body = body_map.get(feat, f"On {pname} ({pitch_type}), distinct visual variance observed on {feat.replace('_', ' ')} vs rest of arsenal.")
+    text = (prefix + " " + body).strip() if prefix else body
     return text[0].upper() + text[1:] if text else text
 
 

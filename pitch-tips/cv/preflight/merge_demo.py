@@ -273,12 +273,12 @@ def _clean_tip(t: dict, player_name: str, is_catcher: bool = False) -> dict:
             tip["title"] = f"{pred} via Catcher Setup [{sit_label}]"
         if not tip.get("lookFor"):
             cue_map = {
-                "catcher_glove_x_mean": f"Catcher glove target position drifts horizontally ({pred} setup)",
-                "catcher_glove_y_mean": f"Catcher glove target set height elevated/lowered ({pred} target)",
+                "catcher_glove_x_mean": f"Catcher glove target position drifts horizontally on {pred} setup vs central baseline",
+                "catcher_glove_y_mean": f"Catcher glove target set height elevated/lowered on {pred} target vs zone baseline",
                 "catcher_stance_mean": f"Catcher setup stance width separates between fastball vs offspeed",
-                "catcher_hip_y_mean": f"Catcher crouch depth and body center height leans {pred}",
-                "catcher_glove_speed_mean": f"Catcher pre-pitch glove motion dynamics lean {pred}",
-                "catcher_glove_speed_p90": f"Catcher glove adjustment speed prior to set position leans {pred}",
+                "catcher_hip_y_mean": f"Catcher crouch depth and body center height adjusts on {pred} vs standard stance",
+                "catcher_glove_speed_mean": f"Catcher pre-pitch glove motion dynamics differentiate {pred} vs arsenal",
+                "catcher_glove_speed_p90": f"Catcher glove adjustment speed prior to set position distinguishes {pred} vs arsenal",
             }
             tip["lookFor"] = cue_map.get(feat, f"Pre-pitch catcher physical posture and target alignment indicates {pred}")
     else:

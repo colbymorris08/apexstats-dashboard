@@ -2650,7 +2650,7 @@ def generate_showcase_players():
         {
             "id": "lead_eduardo_rodriguez_glove_set_1",
             "title": "Glove Set Height vs Belt Line · Cutter (FC 89mph) vs Changeup/Sinker (CH/SI)",
-            "cue": "lower glove vs belt leans cutter",
+            "cue": "Glove resting low on belt buckle vs high at chest letters",
             "col": "glove_vs_belt_mean",
             "feature": "glove_vs_belt_mean",
             "contrast": "FC vs CH/SI",

@@ -310,48 +310,48 @@ def _tip_text(feat: str, high: bool, pitch_a: str, pitch_b: str, ctx_tags: list[
     prefix = context_phrase(ctx_tags)
     templates = {
         "glove_vs_belt_mean": (
-            f"watch glove height vs the belt before separation — {'higher' if high else 'lower'} "
-            f"glove more often precedes {pitch_a}; the other look more often precedes {pitch_b}."
+            f"watch glove height vs the belt before separation — {'higher glove across chest lettering' if high else 'lower glove below belt seam'} "
+            f"indicates {pitch_a}; the opposite anchor indicates {pitch_b}."
         ),
         "glove_vs_belt_std": (
-            f"watch how stable glove height stays at set — {'more bobble' if high else 'steadier height'} "
-            f"leans {pitch_a}; the opposite leans {pitch_b}."
+            f"watch how stable glove height stays at set — {'vertical micro-bobble while securing grip' if high else 'immediate motionless set hold'} "
+            f"indicates {pitch_a}; the opposite pattern indicates {pitch_b}."
         ),
         "glove_flare_mean": (
-            f"watch how far the glove sits off the torso midline — {'wider flare' if high else 'tighter glove'} "
-            f"leans {pitch_a}; the opposite presentation leans {pitch_b}."
+            f"watch how far the glove sits off the torso midline — {'wider glove flare exposing laces' if high else 'glove clamped flat against sternum'} "
+            f"indicates {pitch_a}; the opposite presentation indicates {pitch_b}."
         ),
         "glove_flare_std": (
-            f"watch whether glove width wanders before hand break — {'more flare variance' if high else 'locked flare'} "
-            f"leans {pitch_a}; the opposite leans {pitch_b}."
+            f"watch whether glove width wanders before hand break — {'glove pocket flexing during grip dig' if high else 'rigid locked pocket angle'} "
+            f"indicates {pitch_a}; the opposite indicates {pitch_b}."
         ),
         "wrist_speed_mean": (
-            f"watch glove/hand stillness in the set window — {'more micro-motion' if high else 'quieter glove'} "
-            f"leans {pitch_a}; the other pattern leans {pitch_b}."
+            f"watch glove/hand stillness in the set window — {'active wrist micro-movement at glove collar' if high else 'quiet motionless hands'} "
+            f"indicates {pitch_a}; the other pattern indicates {pitch_b}."
         ),
         "wrist_speed_p90": (
-            f"watch for a late glove twitch before separation — {'a sharper peak' if high else 'a flatter peak'} "
-            f"leans {pitch_a}; the opposite leans {pitch_b}."
+            f"watch for a late glove twitch before separation — {'a sharp late glove twitch right before lift' if high else 'smooth unbroken transition into lift'} "
+            f"indicates {pitch_a}; the opposite indicates {pitch_b}."
         ),
         "cheek_motion_mean": (
-            f"from a face-visible angle, {'more cheek/jaw motion' if high else 'earlier facial stillness'} "
-            f"leans {pitch_a}; the opposite leans {pitch_b}."
+            f"from a face-visible angle, {'visible jaw clench or cheek puff during sign reception' if high else 'immediate facial stillness'} "
+            f"indicates {pitch_a}; the opposite indicates {pitch_b}."
         ),
         "cheek_motion_std": (
-            f"from a face-visible angle, {'more variable facial motion' if high else 'steadier facial set'} "
-            f"leans {pitch_a}; the opposite leans {pitch_b}."
+            f"from a face-visible angle, {'variable facial tension during sign receive' if high else 'steadier facial set'} "
+            f"indicates {pitch_a}; the opposite indicates {pitch_b}."
         ),
         "pitchcom_tap_count": (
-            f"count PitchCom glove taps before separation — {'more taps' if high else 'fewer taps'} "
-            f"leans {pitch_a}; the other pattern leans {pitch_b}."
+            f"count PitchCom glove taps before separation — {'3+ deliberate button presses' if high else '1 quick tap'} "
+            f"indicates {pitch_a}; the other pattern indicates {pitch_b}."
         ),
         "pitchcom_tap_rate": (
-            f"watch PitchCom tap cadence — {'faster tapping' if high else 'slower tapping'} "
-            f"leans {pitch_a}; the opposite leans {pitch_b}."
+            f"watch PitchCom tap cadence — {'rapid staccato tap cadence' if high else 'slow spaced-out tapping'} "
+            f"indicates {pitch_a}; the opposite indicates {pitch_b}."
         ),
         "pitchcom_mean_isi": (
-            f"watch spacing between PitchCom taps — {'wider gaps' if high else 'tighter spacing'} "
-            f"leans {pitch_a}; the opposite leans {pitch_b}."
+            f"watch spacing between PitchCom taps — {'extended pauses (>1.0s) between taps' if high else 'tight back-to-back tap clusters'} "
+            f"indicates {pitch_a}; the opposite indicates {pitch_b}."
         ),
     }
     body = templates.get(
