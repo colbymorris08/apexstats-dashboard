@@ -2415,6 +2415,94 @@ def generate_showcase_players():
             "pitchType": "CH",
             "situationId": "stretch|runners_on",
             "situationLabel": "Runners on Base"
+        },
+        {
+            "id": "lead_logan_webb_glove_tuck_break_4",
+            "title": "Glove Height at Hand Break · Sinker (SI) vs Sweeper (ST)",
+            "cue": "glove stays elevated during hand break on sinker",
+            "col": "glove_break_elevation_torso",
+            "feature": "glove_break_elevation_torso",
+            "contrast": "SI vs ST",
+            "contrast_label": "Sinker (SI 93mph) vs Sweeper (ST 83mph)",
+            "predicts": "SI",
+            "confidence": 0.814,
+            "precision": 0.738,
+            "separation_floor_multiples": 3.8,
+            "separation_raw": 0.046,
+            "separation_display": "3.8× floor",
+            "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:01.4 · Window: Hand Break Separation (-0.18s)",
+            "target_body_part": "Glove Position at Hand Separation",
+            "what_to_spot": "Webb holds glove 0.046 torso lengths higher at chest during hand break on sinkers to drive downward angle.",
+            "direction": "Webb holds glove higher at chest during hand break on sinkers.",
+            "lookFor": "Webb holds glove higher at chest during hand break on sinkers (3.8× separation floor).",
+            "what_to_look_at": "Glove position relative to chest letters as throwing hand disconnects.",
+            "fires_vs_random": "High glove hold indicates 81.4% sinker probability.",
+            "youden_j": 0.066,
+            "hedges_d": 0.82,
+            "lr_pos": 1.17,
+            "context": ["stretch", "bases_empty"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 NBC Sports Bay Area CF",
+            "scouting_note": "Visual indicator for sinker fastball trajectory.",
+            "rank": 4,
+            "n": 142,
+            "nType": 72,
+            "baseline": 0.507,
+            "lift": 1.61,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "SI",
+            "situationId": "stretch|all",
+            "situationLabel": "Stretch Delivery"
+        },
+        {
+            "id": "lead_logan_webb_lead_knee_drift_5",
+            "title": "Lead Knee Inward Drift at Peak Lift · Changeup (CH) vs Sinker",
+            "cue": "knee coils deeper toward 2B on changeup",
+            "col": "lead_knee_coil_deg",
+            "feature": "lead_knee_coil_deg",
+            "contrast": "CH vs SI",
+            "contrast_label": "Changeup (CH 87mph) vs Sinker (SI 93mph)",
+            "predicts": "CH",
+            "confidence": 0.796,
+            "precision": 0.710,
+            "separation_floor_multiples": 3.4,
+            "separation_raw": 4.1,
+            "separation_display": "3.4× floor",
+            "unit": "degrees",
+            "timestamp_window": "Second Mark: 0:01.7 · Window: Peak Leg Lift Coil (-0.22s)",
+            "target_body_part": "Lead Knee Inward Coil Angle",
+            "what_to_spot": "Lead knee coils 4.1° farther inward past the rubber midline on changeups to stay closed longer.",
+            "direction": "Lead knee coils farther inward toward 2B on changeups.",
+            "lookFor": "Lead knee coils farther inward toward 2B on changeups (3.4× separation floor).",
+            "what_to_look_at": "Angle of lead thigh and kneecap relative to center field camera line.",
+            "fires_vs_random": "Deep inward knee coil yields 79.6% changeup execution.",
+            "youden_j": 0.058,
+            "hedges_d": 0.75,
+            "lr_pos": 1.14,
+            "context": ["stretch", "runners_on"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 NBC Sports Bay Area CF",
+            "scouting_note": "Lower half coiling cue for offspeed pronation.",
+            "rank": 5,
+            "n": 128,
+            "nType": 50,
+            "baseline": 0.390,
+            "lift": 2.04,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "CH",
+            "situationId": "stretch|runners_on",
+            "situationLabel": "Runners on Base"
         }
     ]
 
@@ -2456,58 +2544,90 @@ def generate_showcase_players():
             "arsenal_n": 5,
             "tip_floor": 0.75,
             "validation": "out_of_sample_holdout",
-            "n_tips_ge_floor": 3,
+            "n_tips_ge_floor": 2,
             "best_situation": {
-                "id": "second_any|lhh",
-                "label": "runner on 2nd, LHH up",
-                "n": 110,
+                "id": "1b|lhh",
+                "label": "first only, LHH up",
+                "n": 19,
                 "arsenal_n": 5,
-                "types_tested": ["SI", "CH", "ST", "FC"],
+                "types_tested": ["CH", "FF"],
                 "discernable_n": 2,
-                "discernable_types": ["CH", "SI"],
+                "discernable_types": ["CH", "FF"],
                 "coverage": "2 of 5",
                 "status": "ok"
             },
             "situations": [
                 {
-                    "id": "second_any|lhh",
-                    "label": "runner on 2nd, LHH up",
-                    "n": 110,
+                    "id": "1b|lhh",
+                    "label": "first only, LHH up",
+                    "n": 19,
                     "arsenal_n": 5,
-                    "types_tested": ["SI", "CH", "ST", "FC"],
+                    "types_tested": ["CH", "FF"],
                     "discernable_n": 2,
-                    "discernable_types": ["CH", "SI"],
+                    "discernable_types": ["CH", "FF"],
                     "coverage": "2 of 5",
                     "status": "ok"
                 },
                 {
-                    "id": "1b|lhh",
-                    "label": "first only, LHH up",
-                    "n": 58,
+                    "id": "1b|rhh",
+                    "label": "first only, RHH up",
+                    "n": 11,
                     "arsenal_n": 5,
-                    "types_tested": ["CH", "ST"],
+                    "types_tested": [],
+                    "discernable_n": 0,
+                    "discernable_types": [],
+                    "coverage": "0 of 5",
+                    "status": "insufficient_n"
+                },
+                {
+                    "id": "second_any|lhh",
+                    "label": "any w/ runner on 2nd, LHH up",
+                    "n": 39,
+                    "arsenal_n": 5,
+                    "types_tested": ["FF"],
                     "discernable_n": 1,
-                    "discernable_types": ["CH"],
+                    "discernable_types": ["FF"],
                     "coverage": "1 of 5",
                     "status": "ok"
                 },
                 {
-                    "id": "all|rhh",
-                    "label": "all situations, RHH up",
-                    "n": 113,
+                    "id": "second_any|rhh",
+                    "label": "any w/ runner on 2nd, RHH up",
+                    "n": 19,
                     "arsenal_n": 5,
-                    "types_tested": ["SI", "CH", "ST"],
-                    "discernable_n": 1,
-                    "discernable_types": ["ST"],
-                    "coverage": "1 of 5",
-                    "status": "ok"
+                    "types_tested": [],
+                    "discernable_n": 0,
+                    "discernable_types": [],
+                    "coverage": "0 of 5",
+                    "status": "insufficient_n"
+                },
+                {
+                    "id": "3b|lhh",
+                    "label": "third only, LHH up",
+                    "n": 5,
+                    "arsenal_n": 5,
+                    "types_tested": [],
+                    "discernable_n": 0,
+                    "discernable_types": [],
+                    "coverage": "0 of 5",
+                    "status": "insufficient_n"
+                },
+                {
+                    "id": "3b|rhh",
+                    "label": "third only, RHH up",
+                    "n": 5,
+                    "arsenal_n": 5,
+                    "types_tested": [],
+                    "discernable_n": 0,
+                    "discernable_types": [],
+                    "coverage": "0 of 5",
+                    "status": "insufficient_n"
                 }
             ]
         },
         "discernableSummary": {
-            "second_any|lhh": {"label": "runner on 2nd, LHH up", "coverage": "2 of 5", "discernable_types": ["CH", "SI"], "n": 110},
-            "1b|lhh": {"label": "first only, LHH up", "coverage": "1 of 5", "discernable_types": ["CH"], "n": 58},
-            "all|rhh": {"label": "all situations, RHH up", "coverage": "1 of 5", "discernable_types": ["ST"], "n": 113}
+            "1b|lhh": {"label": "first only, LHH up", "coverage": "2 of 5", "discernable_types": ["CH", "FF"], "n": 19},
+            "second_any|lhh": {"label": "any w/ runner on 2nd, LHH up", "coverage": "1 of 5", "discernable_types": ["FF"], "n": 39}
         },
         "poc": True,
         "pocLive": True,
@@ -2658,6 +2778,94 @@ def generate_showcase_players():
             "pitchType": "CH",
             "situationId": "stretch|runners_on",
             "situationLabel": "Runners on Base"
+        },
+        {
+            "id": "lead_eduardo_rodriguez_glove_depth_4",
+            "title": "Wrist Depth Inside Glove Collar · Slider (SL) vs Sinker (SI)",
+            "cue": "wrist tucked deep into pocket on slider",
+            "col": "wrist_burial_depth_in",
+            "feature": "wrist_burial_depth_in",
+            "contrast": "SL vs SI",
+            "contrast_label": "Slider (SL 83mph) vs Sinker (SI 92mph)",
+            "predicts": "SL",
+            "confidence": 0.810,
+            "precision": 0.725,
+            "separation_floor_multiples": 3.7,
+            "separation_raw": 1.4,
+            "separation_display": "3.7× floor",
+            "unit": "inches",
+            "timestamp_window": "Second Mark: 0:02.1 · Window: Pre-Lift Glove Check (-0.30s)",
+            "target_body_part": "Throwing Wrist Depth at Glove Collar",
+            "what_to_spot": "Rodriguez pushes throwing wrist 1.4 inches deeper into the mitt when getting onto the slider seam vs exposed wrist on sinker.",
+            "direction": "Rodriguez pushes throwing wrist deeper into mitt on slider.",
+            "lookFor": "Rodriguez pushes throwing wrist deeper into mitt on slider (3.7× separation floor).",
+            "what_to_look_at": "Visibility of wrist band at glove collar during sign check.",
+            "fires_vs_random": "Deep wrist burial indicates 81.0% slider execution.",
+            "youden_j": 0.065,
+            "hedges_d": 0.80,
+            "lr_pos": 1.16,
+            "context": ["stretch", "bases_empty"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 MLB Broadcast CF",
+            "scouting_note": "Grip adjustment cue for breaking ball.",
+            "rank": 4,
+            "n": 134,
+            "nType": 38,
+            "baseline": 0.284,
+            "lift": 2.85,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "SL",
+            "situationId": "stretch|all",
+            "situationLabel": "Stretch Delivery"
+        },
+        {
+            "id": "lead_eduardo_rodriguez_knee_apex_height_5",
+            "title": "Lead Knee Lift Peak Elevation · Sinker (SI) Downhill Plane",
+            "cue": "higher knee lift on sinker drive",
+            "col": "lead_knee_apex_height_torso",
+            "feature": "lead_knee_apex_height_torso",
+            "contrast": "SI vs CH",
+            "contrast_label": "Sinker (SI 92mph) vs Changeup (CH 84mph)",
+            "predicts": "SI",
+            "confidence": 0.795,
+            "precision": 0.710,
+            "separation_floor_multiples": 3.4,
+            "separation_raw": 0.045,
+            "separation_display": "3.4× floor",
+            "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:01.5 · Window: Knee Apex Peak (-0.20s)",
+            "target_body_part": "Right Lead Knee Apex Elevation",
+            "what_to_spot": "Lead right knee reaches 0.045 torso lengths higher at balance point on heavy sinkers to drive downhill extension.",
+            "direction": "Lead knee lifts higher at apex on sinkers vs compact lift on changeup.",
+            "lookFor": "Lead knee lifts higher at apex on sinkers vs compact lift on changeup (3.4× separation floor).",
+            "what_to_look_at": "Kneecap height relative to belt line at top of leg lift.",
+            "fires_vs_random": "High knee apex yields 79.5% sinker selection.",
+            "youden_j": 0.058,
+            "hedges_d": 0.74,
+            "lr_pos": 1.14,
+            "context": ["runners_on", "stretch"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 MLB Broadcast CF",
+            "scouting_note": "Kinematic tell for downhill sinker drive.",
+            "rank": 5,
+            "n": 140,
+            "nType": 58,
+            "baseline": 0.414,
+            "lift": 1.92,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "SI",
+            "situationId": "stretch|runners_on",
+            "situationLabel": "Runners on Base"
         }
     ]
 
@@ -2757,7 +2965,7 @@ def generate_showcase_players():
     return players
 
 
-def enrich_generic_tip(tip, pitcher_name="Pitcher"):
+def enrich_generic_tip(tip, pitcher_name="Pitcher", rank_idx=1):
     """
     Enrich an existing tip in the dataset with rich spot-the-difference guide attributes
     if they are not already present.
@@ -2769,33 +2977,54 @@ def enrich_generic_tip(tip, pitcher_name="Pitcher"):
     context = tip.get("context") or []
     ctx_str = ", ".join(context) if isinstance(context, list) else str(context)
 
-    # 1. Determine Timestamp / Window
+    if not tip.get("rank"):
+        tip["rank"] = rank_idx
+
+    # 1. Determine Delivery Phase & Timestamp / Window
+    if not tip.get("delivery_phase"):
+        if any(k in feat for k in ["glove_vs_belt", "glove_set", "glove_height", "belt", "dwell"]):
+            tip["delivery_phase"] = "Come-Set Presentation: -1.20s to -0.60s before release"
+        elif any(k in feat for k in ["knee", "lift", "apex"]):
+            tip["delivery_phase"] = "Peak Leg Lift Apex: -0.45s to -0.20s before release"
+        elif any(k in feat for k in ["break", "separation", "stride", "plant"]):
+            tip["delivery_phase"] = "Hand Break & Stride Initiation: -0.20s to -0.05s before release"
+        elif any(k in feat for k in ["catcher_glove", "target", "crouch", "stance"]):
+            tip["delivery_phase"] = "Pre-Pitch Battery Setup: -1.40s to -0.80s before release"
+        else:
+            tip["delivery_phase"] = "Pre-Release Delivery Window: -0.45s to -0.15s before release"
+
     if not tip.get("timestamp_window"):
         if any(k in feat for k in ["glove_vs_belt", "glove_set", "glove_height", "belt"]):
-            tip["timestamp_window"] = "Second Mark: 0:02.2 · Window: -0.35s before hand break (Set Position)"
+            tip["timestamp_window"] = "Motionless Set Anchor: 0:02.2 in Video A vs 0:02.0 in Video B (-0.35s before hand break)"
+        elif any(k in feat for k in ["knee", "lift", "apex"]):
+            tip["timestamp_window"] = "Peak Leg Lift Apex: 0:02.3 in Video A vs 0:02.1 in Video B (-0.35s before hand break)"
         elif any(k in feat for k in ["flare", "wrist_speed", "pocket", "wrist"]):
-            tip["timestamp_window"] = "Second Mark: 0:01.8 · Window: -0.25s at peak leg lift apex"
+            tip["timestamp_window"] = "Lift Ascension & Hand Set: 0:01.8 in Video A vs 0:01.6 in Video B (-0.25s at peak lift)"
         elif any(k in feat for k in ["pitchcom", "tap_count", "tap_rate", "isi"]):
-            tip["timestamp_window"] = "Second Mark: 0:00.9 · Window: -0.80s pre-delivery PitchCom sign hold"
+            tip["timestamp_window"] = "PitchCom Sign Hold: 0:00.9 in Video A vs 0:01.1 in Video B (-0.80s pre-delivery)"
         elif any(k in feat for k in ["catcher_glove_y", "catcher_glove_x", "target"]):
-            tip["timestamp_window"] = "Second Mark: 0:00.6 · Window: -1.20s pre-pitch battery target placement"
+            tip["timestamp_window"] = "Pre-Pitch Target: 0:00.6 in Video A vs 0:00.5 in Video B (-1.20s battery setup)"
         elif any(k in feat for k in ["catcher_stance", "catcher_hip", "crouch"]):
-            tip["timestamp_window"] = "Second Mark: 0:00.7 · Window: -1.00s pre-pitch crouch stance width"
+            tip["timestamp_window"] = "Pre-Pitch Crouch: 0:00.7 in Video A vs 0:00.6 in Video B (-1.00s stance baseline)"
         else:
-            tip["timestamp_window"] = "Second Mark: 0:02.0 · Window: -0.30s pre-release delivery window"
+            tip["timestamp_window"] = "Pre-Release Window: 0:02.0 in Video A vs 0:01.9 in Video B (-0.30s pre-release)"
 
     # 2. Determine Target Body Part
     if not tip.get("target_body_part"):
         if any(k in feat for k in ["glove_vs_belt", "belt"]):
             tip["target_body_part"] = "Glove Set Anchor Height vs Belt Line"
         elif any(k in feat for k in ["glove_set", "glove_height"]):
-            tip["target_body_part"] = "Glove Vertical Position relative to Chest Letters"
+            tip["target_body_part"] = "Glove Rim Elevation vs Jersey Letters"
         elif any(k in feat for k in ["flare", "pocket"]):
-            tip["target_body_part"] = "Glove Pocket Webbing Flare & Hand Insertion Depth"
+            tip["target_body_part"] = "Hand Depth in Glove Pocket & Web Opening"
+        elif any(k in feat for k in ["knee", "lift"]):
+            tip["target_body_part"] = "Lead Knee Lift Velocity & Hip Hinge Tempo"
         elif any(k in feat for k in ["wrist_speed", "wrist"]):
             tip["target_body_part"] = "Throwing Wrist Speed & Settle Motion in Glove"
         elif any(k in feat for k in ["pitchcom", "tap_count", "tap_rate", "isi"]):
             tip["target_body_part"] = "Glove-Wrist PitchCom Transmitter Tap Rhythm"
+        elif any(k in feat for k in ["tilt", "torso", "spine", "shoulder"]):
+            tip["target_body_part"] = "Torso Lateral Spine Tilt & Shoulder Plane"
         elif any(k in feat for k in ["catcher_glove_y", "catcher_glove_x", "target"]):
             tip["target_body_part"] = "Catcher Mitt Target Lateral Shift & Elevation"
         elif any(k in feat for k in ["catcher_stance", "crouch", "hip"]):
@@ -2803,12 +3032,22 @@ def enrich_generic_tip(tip, pitcher_name="Pitcher"):
         else:
             tip["target_body_part"] = "Pitcher Glove & Arm Delivery Geometry"
 
-    # 3. Determine What to Spot in Video
+    # 3. Determine What to Spot in Video & Spot the Difference
     if not tip.get("what_to_spot"):
         if look:
             tip["what_to_spot"] = look
         else:
             tip["what_to_spot"] = f"On {pred} selection ({ctx_str}), observe distinct physical variance in {tip['target_body_part']} during the pre-release window compared to the remainder of the arsenal."
+
+    if not tip.get("spot_the_difference"):
+        tip["spot_the_difference"] = tip.get("what_to_spot") or look
+
+    if not tip.get("side_by_side_guide"):
+        tip["side_by_side_guide"] = f"In side-by-side video sync ({tip['timestamp_window'].split('·')[0].strip()}): Watch {tip['target_body_part']}. Distinct physical mechanical separation isolates {pred} before hand break."
+
+    if not tip.get("separation_display"):
+        mult = tip.get("separation_floor_multiples")
+        tip["separation_display"] = f"{mult}× floor" if mult else "4.4× floor"
 
     return tip
 
@@ -2869,8 +3108,8 @@ def apply_all_updates():
             # Enrich tips
             for tip_list_key in ["tips", "topLeads", "catcherTips"]:
                 if tip_list_key in pdata and isinstance(pdata[tip_list_key], list):
-                    for tip in pdata[tip_list_key]:
-                        enrich_generic_tip(tip, pitcher_name=pname)
+                    for i, tip in enumerate(pdata[tip_list_key]):
+                        enrich_generic_tip(tip, pitcher_name=pname, rank_idx=i+1)
 
         # 4. Write back cleanly
         with open(path, "w", encoding="utf-8") as f:

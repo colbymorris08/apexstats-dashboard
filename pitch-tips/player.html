@@ -42,65 +42,157 @@
           <strong>Operational Scouting Context:</strong> These signals represent measured mechanical variance isolated by automated computer vision tracking from broadcast Center-Field (CF) footage. While broadcast footage operates at fixed camera angles and ~30 fps, club-provided multi-angle 4K60 video feeds (open dugout, tight CF, high-home) elevate these exact mechanical cues into high-certainty operational alerts for advance scouting and pitching development.
         </div>
 
-        <div class="detection-stage" id="detection-stage" aria-label="Computer vision detection stage" hidden>
-          <div class="eyebrow" style="color: var(--accent);">Real Broadcast Delivery Comparison &amp; Visual Guides</div>
-          <div id="video-spot-guide" class="video-spot-guide-header" hidden>
-            <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; margin-bottom: 0.45rem; font-size: 0.84rem;">
-              <div><span style="color: var(--accent); font-weight: 600; font-family: var(--mono);">⏱ Timestamp:</span> <span id="visual-timestamp" style="color: #fff;">—</span></div>
-              <div><span style="color: var(--accent); font-weight: 600; font-family: var(--mono);">🎯 Target Body Part:</span> <span id="visual-body-part" style="color: #fff;">—</span></div>
+        <div class="detection-stage" id="detection-stage" aria-label="Synchronized Computer Vision Delivery Scrubber">
+          <div class="sync-stage-header">
+            <div class="eyebrow" style="color: var(--accent); margin-bottom: 0.25rem;">CV · Synchronized Delivery Scrubber</div>
+            <p class="sync-stage-subtitle">
+              Synchronized Delivery Scrubber: Compare pitch types side-by-side. Select a mechanical tell from the dropdown to automatically align both clips to the exact physical discrepancy window.
+            </p>
+          </div>
+
+          <!-- Mechanical Tell Selector Dropdown & Quick-Pick Buttons -->
+          <div class="sync-tell-selector-bar">
+            <div class="sync-dropdown-group">
+              <label for="sync-tip-dropdown" class="sync-dropdown-label">
+                <span class="sync-icon">🎯</span> Select Mechanical Tell to Compare:
+              </label>
+              <select id="sync-tip-dropdown" class="sync-tip-dropdown" aria-label="Select mechanical tell to align delivery clips"></select>
             </div>
-            <div style="font-size: 0.86rem; color: var(--text); line-height: 1.48;">
-              <span style="color: #ffc450; font-weight: 600;">🔍 Difference to Spot:</span> <span id="visual-difference">—</span>
+            <div class="sync-quick-pills" id="sync-quick-pills"></div>
+          </div>
+
+          <!-- Body-Part Focus Banner -->
+          <div id="sync-focus-banner" class="sync-focus-banner">
+            <div class="sync-focus-top">
+              <div class="sync-focus-target">
+                <span class="sync-focus-label">🎯 Focus Target:</span>
+                <strong id="sync-target-body-part" class="sync-focus-value">—</strong>
+                <span id="sync-separation-badge" class="badge hot">+5.4× Separation Floor</span>
+              </div>
+              <div class="sync-pitch-contrast-badge" id="sync-pitch-contrast">
+                PITCH A vs PITCH B
+              </div>
+            </div>
+            <div class="sync-focus-desc" id="sync-focus-desc">
+              <span class="sync-diff-label">🔍 Observed Discrepancy:</span>
+              <span id="sync-difference-text" class="sync-diff-text">—</span>
+            </div>
+            <div class="sync-meta-ribbon">
+              <div class="sync-meta-item">
+                <span class="sync-meta-k">⏱ Tell Anchor Window:</span>
+                <span class="sync-meta-v" id="sync-meta-window">t = -0.38s (Set Position)</span>
+              </div>
+              <div class="sync-meta-item">
+                <span class="sync-meta-k">📹 Angle / Source:</span>
+                <span class="sync-meta-v" id="sync-meta-angle">Broadcast Center-Field (CF)</span>
+              </div>
+              <div class="sync-meta-item">
+                <span class="sync-meta-k">📊 Model Sample:</span>
+                <span class="sync-meta-v" id="sync-meta-sample">n=243 pitches · Zero Leakage</span>
+              </div>
             </div>
           </div>
-          <div class="video-shell video-shell--still video-shell--compare" id="detection-still">
-            <div class="overlay-label">CV · DELIVERY &amp; GLOVE COMPARE</div>
-            
-            <!-- Video Comparison Container for Real MP4 Clips -->
-            <div class="video-compare-container" id="video-compare-container" hidden>
-              <div class="glove-compare-labels">
-                <span id="video-label-left">PITCH A (FASTBALL)</span>
-                <span id="video-label-right">PITCH B (SLIDER)</span>
-              </div>
-              <div class="video-compare-pair" id="video-compare-pair" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0 0.55rem;">
-                <div class="video-pane">
-                  <video id="video-compare-left" controls playsinline loop muted style="width: 100%; border-radius: 4px; background: #000; display: block;"></video>
+
+          <!-- Dual Video / Telemetry Compare Stage -->
+          <div class="sync-compare-stage" id="sync-compare-stage">
+            <div class="sync-pane-wrapper">
+              <!-- PANE A (Pitch A) -->
+              <div class="sync-pane" id="sync-pane-a">
+                <div class="sync-pane-header">
+                  <div class="sync-pane-pitch-info">
+                    <span class="sync-pane-tag a-tag">PITCH A</span>
+                    <strong id="sync-label-a" class="sync-pane-title">FASTBALL (FF)</strong>
+                  </div>
+                  <div class="sync-time-readout" id="sync-time-readout-a">
+                    <span class="sync-time-dot"></span>
+                    <span id="sync-time-a">0:02.40s</span>
+                  </div>
                 </div>
-                <div class="video-pane">
-                  <video id="video-compare-right" controls playsinline loop muted style="width: 100%; border-radius: 4px; background: #000; display: block;"></video>
+
+                <div class="sync-media-box" id="sync-media-box-a">
+                  <video id="sync-video-a" playsinline loop muted preload="auto" class="sync-video-element" style="display:none;"></video>
+                  <img id="sync-img-a" alt="Pitch A delivery still" class="sync-img-element" style="display:none;" />
+                  <canvas id="sync-canvas-a" class="sync-canvas-element" width="480" height="360"></canvas>
+                </div>
+              </div>
+
+              <!-- PANE B (Pitch B) -->
+              <div class="sync-pane" id="sync-pane-b">
+                <div class="sync-pane-header">
+                  <div class="sync-pane-pitch-info">
+                    <span class="sync-pane-tag b-tag">PITCH B</span>
+                    <strong id="sync-label-b" class="sync-pane-title">SECONDARY (SL / CH)</strong>
+                  </div>
+                  <div class="sync-time-readout" id="sync-time-readout-b">
+                    <span class="sync-time-dot"></span>
+                    <span id="sync-time-b">0:02.10s</span>
+                  </div>
+                </div>
+
+                <div class="sync-media-box" id="sync-media-box-b">
+                  <video id="sync-video-b" playsinline loop muted preload="auto" class="sync-video-element" style="display:none;"></video>
+                  <img id="sync-img-b" alt="Pitch B delivery still" class="sync-img-element" style="display:none;" />
+                  <canvas id="sync-canvas-b" class="sync-canvas-element" width="480" height="360"></canvas>
                 </div>
               </div>
             </div>
 
-            <!-- Stills Comparison Container for Real Extracted Photo Stills -->
-            <div class="glove-compare" id="glove-compare" hidden>
-              <div class="glove-compare-labels">
-                <span id="glove-label-left">PITCH A</span>
-                <span id="glove-label-right">PITCH B</span>
+            <!-- ONE Synchronized Scrubber Controller -->
+            <div class="sync-scrubber-panel">
+              <div class="sync-controls-row">
+                <div class="sync-btn-group">
+                  <button type="button" class="sync-ctrl-btn" id="sync-play-btn" aria-label="Play or Pause Synchronized Playback">
+                    <span id="sync-play-icon">▶</span> <span id="sync-play-text">Play Sync</span>
+                  </button>
+                  <button type="button" class="sync-ctrl-btn secondary" id="sync-step-back-btn" aria-label="Step back 0.1 seconds">◀ -0.1s</button>
+                  <button type="button" class="sync-ctrl-btn secondary" id="sync-step-fwd-btn" aria-label="Step forward 0.1 seconds">+0.1s ▶</button>
+                </div>
+
+                <button type="button" class="sync-apex-btn" id="sync-snap-apex-btn" aria-label="Snap to Tip Apex Keyframe">
+                  <span class="apex-star">★</span> Snap to Tip Apex (Key Frame)
+                </button>
               </div>
-              <div class="glove-compare-pair" id="glove-compare-pair">
-                <figure class="glove-pane" id="glove-pane-left">
-                  <img id="glove-compare-left" alt="Pitch A delivery still" />
-                </figure>
-                <figure class="glove-pane" id="glove-pane-right">
-                  <img id="glove-compare-right" alt="Pitch B delivery still" />
-                </figure>
+
+              <!-- Scrubber Track with 50% Apex Marker -->
+              <div class="sync-slider-container">
+                <div class="sync-slider-track-wrap">
+                  <div class="sync-slider-progress" id="sync-slider-progress" style="width: 50%;"></div>
+                  <div class="sync-apex-marker" id="sync-apex-marker" style="left: 50%;" title="Tip Apex Anchor Point (Exact Discrepancy Moment)">
+                    <div class="sync-apex-pin"></div>
+                    <div class="sync-apex-tag" id="sync-apex-tag">★ KEY FRAME APEX</div>
+                  </div>
+                  <input
+                    type="range"
+                    class="sync-scrub-slider"
+                    id="sync-scrub-slider"
+                    min="0"
+                    max="100"
+                    step="0.1"
+                    value="50"
+                    aria-label="Synchronized delivery time scrubber"
+                  />
+                </div>
+                <div class="sync-slider-labels">
+                  <span class="sync-lbl-start" id="sync-lbl-start">Set Initiation (-1.5s)</span>
+                  <span class="sync-lbl-apex" id="sync-lbl-apex">★ DISCREPANCY APEX (SYNCED)</span>
+                  <span class="sync-lbl-end" id="sync-lbl-end">Ball Release (+1.5s)</span>
+                </div>
               </div>
-              <label class="glove-compare-scrub">
-                <span class="glove-compare-scrub-label">Slide · Pitch A ↔ Pitch B</span>
-                <input
-                  type="range"
-                  class="glove-compare-slider"
-                  id="glove-compare-slider"
-                  min="0"
-                  max="100"
-                  value="50"
-                  aria-label="Slide emphasis between pitch types"
-                />
-              </label>
+
+              <!-- Live Readout Footer Bar -->
+              <div class="sync-telemetry-footer">
+                <div class="sync-telem-left">
+                  <span>Video A: <strong id="sync-telem-a" class="sync-val-mono">0:02.40</strong></span>
+                </div>
+                <div class="sync-telem-center">
+                  <span id="sync-telem-phase" class="sync-phase-pill">PHASE: COME-SET / GLOVE ANCHOR</span>
+                  <span id="sync-telem-delta" class="sync-delta-pill">Δt = +0.30s (Aligned)</span>
+                </div>
+                <div class="sync-telem-right">
+                  <span>Video B: <strong id="sync-telem-b" class="sync-val-mono">0:02.10</strong></span>
+                </div>
+              </div>
             </div>
-            <img id="detection-frame" alt="Pre-release delivery still" hidden />
-            <div class="detection-caption" id="detection-caption"></div>
           </div>
         </div>
 
@@ -124,18 +216,29 @@
         </div>
 
         <div class="panel" id="situation-coverage-panel" style="margin-top: 1.5rem">
-          <h3>Arsenal coverage by situation</h3>
+          <h3>Game Situation &amp; Pitch Arsenal Breakdown</h3>
           <p class="note" id="situation-coverage-note">
-            Mechanical distinction and pitch separation across distinct situational states (runners on base × batter handedness).
+            Pitch arsenal mechanical separation across distinct situational states (runners on base &times; batter handedness). Computer vision isolates physical mechanical variance across pre-release delivery windows.
           </p>
+
+          <div class="signal-floor-explainer-card">
+            <div class="signal-floor-explainer-header">
+              <span class="signal-floor-badge-icon">ℹ️</span>
+              <strong>What "Signal Floor (e.g. 2 of 5)" Means</strong>
+            </div>
+            <p class="signal-floor-explainer-text">
+              The <strong>Signal Floor</strong> measures how many pitches in the arsenal exhibit physical mechanical separation that is statistically distinct from random delivery jitter (clearing &ge;75% empirical discrimination). For example, <em>"2 of 5"</em> means 2 pitches in his 5-pitch mix (e.g., Fastball and Changeup) can be isolated with high physical certainty before release.
+            </p>
+          </div>
+
           <div class="table-wrap">
-            <table>
+            <table class="table">
               <thead>
                 <tr>
                   <th>Situation</th>
-                  <th>Sample n</th>
-                  <th>Mechanical Coverage</th>
-                  <th>Distinguishable Types</th>
+                  <th>Pitches Scored</th>
+                  <th>Signal Floor <span class="th-info-tooltip" title="Number of pitch types in arsenal clearing &ge;75% mechanical separation floor">ⓘ</span></th>
+                  <th>Discernable Pitches</th>
                 </tr>
               </thead>
               <tbody id="situation-coverage-body"></tbody>
