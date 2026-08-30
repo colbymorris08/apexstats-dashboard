@@ -42,13 +42,37 @@
           <strong>Operational Scouting Context:</strong> These signals represent measured mechanical variance isolated by automated computer vision tracking from broadcast Center-Field (CF) footage. While broadcast footage operates at fixed camera angles and ~30 fps, club-provided multi-angle 4K60 video feeds (open dugout, tight CF, high-home) elevate these exact mechanical cues into high-certainty operational alerts for advance scouting and pitching development.
         </div>
 
-        <div class="detection-stage" aria-label="Computer vision detection stage">
-          <div class="eyebrow">Detection &amp; Tracking Stage</div>
-          <p class="lede" id="detection-lede">
-            Pre-release anatomical tracking and pitch-to-pitch difference cards. Drag the slider to compare delivery geometry between pitch types. Landmark boxes isolate the pitcher's glove, forearm, torso angle, and release timing.
-          </p>
+        <div class="detection-stage" id="detection-stage" aria-label="Computer vision detection stage" hidden>
+          <div class="eyebrow" style="color: var(--accent);">Real Broadcast Delivery Comparison &amp; Visual Guides</div>
+          <div id="video-spot-guide" class="video-spot-guide-header" hidden>
+            <div style="display: flex; flex-wrap: wrap; gap: 1.25rem; margin-bottom: 0.45rem; font-size: 0.84rem;">
+              <div><span style="color: var(--accent); font-weight: 600; font-family: var(--mono);">⏱ Timestamp:</span> <span id="visual-timestamp" style="color: #fff;">—</span></div>
+              <div><span style="color: var(--accent); font-weight: 600; font-family: var(--mono);">🎯 Target Body Part:</span> <span id="visual-body-part" style="color: #fff;">—</span></div>
+            </div>
+            <div style="font-size: 0.86rem; color: var(--text); line-height: 1.48;">
+              <span style="color: #ffc450; font-weight: 600;">🔍 Difference to Spot:</span> <span id="visual-difference">—</span>
+            </div>
+          </div>
           <div class="video-shell video-shell--still video-shell--compare" id="detection-still">
             <div class="overlay-label">CV · DELIVERY &amp; GLOVE COMPARE</div>
+            
+            <!-- Video Comparison Container for Real MP4 Clips -->
+            <div class="video-compare-container" id="video-compare-container" hidden>
+              <div class="glove-compare-labels">
+                <span id="video-label-left">PITCH A (FASTBALL)</span>
+                <span id="video-label-right">PITCH B (SLIDER)</span>
+              </div>
+              <div class="video-compare-pair" id="video-compare-pair" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0 0.55rem;">
+                <div class="video-pane">
+                  <video id="video-compare-left" controls playsinline loop muted style="width: 100%; border-radius: 4px; background: #000; display: block;"></video>
+                </div>
+                <div class="video-pane">
+                  <video id="video-compare-right" controls playsinline loop muted style="width: 100%; border-radius: 4px; background: #000; display: block;"></video>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stills Comparison Container for Real Extracted Photo Stills -->
             <div class="glove-compare" id="glove-compare" hidden>
               <div class="glove-compare-labels">
                 <span id="glove-label-left">PITCH A</span>
@@ -75,7 +99,7 @@
                 />
               </label>
             </div>
-            <img id="detection-frame" alt="Pre-release detection still with landmark boxes" />
+            <img id="detection-frame" alt="Pre-release delivery still" hidden />
             <div class="detection-caption" id="detection-caption"></div>
           </div>
         </div>

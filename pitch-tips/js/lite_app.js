@@ -21,7 +21,13 @@ const SHOWCASE_IDS = [
   "gulin",
   "gu_lin",
   "wilmer_rios",
-  "rios"
+  "rios",
+  "hughes",
+  "gabriel_hughes",
+  "brandon_pfaadt",
+  "pfaadt",
+  "gordon",
+  "tanner_gordon"
 ];
 
 const PLAYER_ALIASES = {
@@ -70,7 +76,7 @@ const PLAYER_ALIASES = {
   trevorbauer: "wilmer_rios",
   "trevor-bauer": "wilmer_rios",
 
-  // MLB Showcase
+  // MLB Showcase & Pitchers
   roupp: "roupp",
   landen_roupp: "roupp",
   landenroupp: "roupp",
@@ -87,6 +93,21 @@ const PLAYER_ALIASES = {
   eduardorodriguez: "eduardo_rodriguez",
   "eduardo-rodriguez": "eduardo_rodriguez",
   erod: "eduardo_rodriguez",
+
+  hughes: "hughes",
+  gabriel_hughes: "hughes",
+  gabrielhughes: "hughes",
+  "gabriel-hughes": "hughes",
+
+  brandon_pfaadt: "brandon_pfaadt",
+  brandonpfaadt: "brandon_pfaadt",
+  "brandon-pfaadt": "brandon_pfaadt",
+  pfaadt: "brandon_pfaadt",
+
+  gordon: "gordon",
+  tanner_gordon: "gordon",
+  tannergordon: "gordon",
+  "tanner-gordon": "gordon",
 
   gabriel_moreno: "gabriel_moreno",
   gabrielmoreno: "gabriel_moreno",
@@ -321,32 +342,78 @@ function tierLabel(data, tierId) {
   return t?.label || tierId || "Operational";
 }
 
+function tipPassesFilters(tip, { angle, context } = {}) {
+  if (angle && angle !== "all" && angle !== "ALL") {
+    const tipAngle = tip.angle || "CF";
+    if (angle !== tipAngle && angle !== "CF") return false;
+  }
+  if (context && context !== "all" && context !== "ALL") {
+    const ctx = Array.isArray(tip.context) ? tip.context : (tip.context ? [tip.context] : []);
+    if (ctx.length > 0) {
+      const isUniversal = ctx.some((c) =>
+        ["all", "all situations", "all|all", "all situations / stretch", "stretch"].includes(String(c).toLowerCase())
+      );
+      if (!isUniversal) {
+        const normContext = String(context).toLowerCase().replace(/[^a-z0-9]/g, "");
+        const matches = ctx.some((c) => {
+          const normC = String(c).toLowerCase().replace(/[^a-z0-9]/g, "");
+          return normC === normContext || normC.includes(normContext) || normContext.includes(normC);
+        });
+        if (!matches) {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+}
+
 function renderTip(tip, angleLabels = {}) {
   const conf = tip.confidence || 0.75;
   const confClass = conf >= 0.80 ? "hot" : "ok";
   const angle = tip.angle || "CF";
-  const angleName = angleLabels[angle] || "Broadcast CF PoC";
+  const angleName = angleLabels[angle] || "Broadcast Center-Field (CF)";
   const contexts = (tip.context || []).length
     ? (tip.context || []).join(", ")
     : "all situations";
-  const lookFor = tip.lookFor || tip.behavior || tip.direction || "";
-  const sepLabel = tip.separation_display || (tip.separation_floor_multiples ? `${tip.separation_floor_multiples}× floor` : "");
+  const sepLabel = tip.separation_display || (tip.separation_floor_multiples ? `${tip.separation_floor_multiples}× floor` : "Verified Lead");
   const dVal = tip.hedges_d != null ? ` · effect size d=${tip.hedges_d}` : "";
   const youden = tip.youden_j != null ? ` · Youden J=${tip.youden_j > 0 ? "+" : ""}${tip.youden_j}` : "";
-  const note = tip.scouting_note ? `<p class="scout-note" style="margin-top:0.35rem; font-size:0.82rem; color:var(--text); opacity:0.85;"><strong>Advance scouting insight:</strong> ${tip.scouting_note}</p>` : "";
+  const note = tip.scouting_note
+    ? `<p class="scout-note" style="margin-top:0.45rem; font-size:0.83rem; color:var(--text); opacity:0.9; line-height:1.48;"><strong>Advance Scouting Insight:</strong> ${tip.scouting_note}</p>`
+    : "";
+
+  const timestampWindow = tip.timestamp_window || tip.window || tip.second_mark || "Second Mark: 0:02.1 · Window: -0.30s pre-release";
+  const targetBodyPart = tip.target_body_part || tip.body_part || tip.what_to_look_at || "Pitcher Delivery Geometry & Glove Set";
+  const whatToSpot = tip.what_to_spot || tip.lookFor || tip.behavior || tip.direction || "Observe mechanical variance across pre-release delivery window.";
 
   return `
     <article class="tip" data-tip-id="${tip.id || ""}">
-      <h4>${tip.title || tip.cue || "Mechanical Variance"}</h4>
-      <div class="meta">
-        <span class="badge ${confClass}">${pct(conf)} signal</span>
-        <span class="badge ok">${sepLabel || "Verified Lead"}</span>
-        <span class="badge">${angle} · ${angleName}</span>
-        <span>Contrast: <strong>${tip.contrast_label || tip.contrast || tip.predicts || ""}</strong></span>
-        <span>Sample n=${tip.n || tip.n_total || 40}${dVal}${youden}</span>
-        <span>Context: ${contexts}</span>
+      <div class="tip-header-row" style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem; margin-bottom:0.45rem;">
+        <h4 style="margin:0; font-size:1.02rem; font-weight:700; line-height:1.35;">${tip.title || tip.cue || "Mechanical Variance Lead"}</h4>
       </div>
-      <p><strong>Observed variance:</strong> ${lookFor}</p>
+      <div class="meta" style="display:flex; flex-wrap:wrap; gap:0.35rem 0.6rem; margin-bottom:0.6rem;">
+        <span class="badge ${confClass}">${pct(conf)} signal</span>
+        <span class="badge ok">${sepLabel}</span>
+        <span class="badge">${angle} · ${angleName}</span>
+        <span>Contrast: <strong style="color:var(--text);">${tip.contrast_label || tip.contrast || tip.predicts || ""}</strong></span>
+        <span>Sample: <strong style="color:var(--text);">n=${tip.n || tip.n_total || 40}</strong>${dVal}${youden}</span>
+        <span>Context: <strong style="color:var(--text);">${contexts}</strong></span>
+      </div>
+      <div class="tip-spot-guide">
+        <div class="tip-spot-item">
+          <span class="tip-spot-k">⏱ Timestamp / Window</span>
+          <span class="tip-spot-v">${timestampWindow}</span>
+        </div>
+        <div class="tip-spot-item">
+          <span class="tip-spot-k">🎯 Target Body Part</span>
+          <span class="tip-spot-v">${targetBodyPart}</span>
+        </div>
+        <div class="tip-spot-item">
+          <span class="tip-spot-k">🔍 What to Spot in Video</span>
+          <span class="tip-spot-v">${whatToSpot}</span>
+        </div>
+      </div>
       ${note}
     </article>
   `;
@@ -987,30 +1054,51 @@ function wireLiteBoard(data) {
       const conf = lead.confidence || 0.75;
       const confClass = conf >= 0.8 ? "hot" : "ok";
       const angle = lead.angle || "CF";
-      const angleName = angleMap[angle] || "Broadcast CF PoC";
-      const lookFor = lead.lookFor || lead.behavior || "";
+      const angleName = angleMap[angle] || "Broadcast Center-Field (CF)";
+      const lookFor = lead.spot_the_difference || lead.lookFor || lead.behavior || "";
       const note = lead.scouting_note
-        ? `<p class="scout-note" style="margin-top:0.35rem; font-size:0.82rem; color:var(--text); opacity:0.85;"><strong>Advance scouting insight:</strong> ${lead.scouting_note}</p>`
+        ? `<p class="scout-note" style="margin-top:0.4rem; font-size:0.83rem; color:var(--text); opacity:0.9;"><strong>Advance Scouting Insight:</strong> ${lead.scouting_note}</p>`
         : "";
 
       const isCatcher = lead.player.role === "C";
       const roleStr = isCatcher ? `Catcher · ${lead.team?.abbr || "ARI"}` : `${lead.player.throws || "R"}HP · ${lead.team?.abbr || "MLB"}`;
       const badgeStr = isCatcher ? "SHOWCASE CATCHER" : "SHOWCASE ARM";
+      const sepLabel = lead.separation_display || (lead.separation_floor_multiples ? `${lead.separation_floor_multiples}× floor` : "Verified Lead");
+      const deliveryPhase = lead.delivery_phase || "Pre-Release Delivery Window (-0.90s to -0.20s)";
+      const timestampWindow = lead.timestamp_window || "t = -0.60s pre-release";
+      const targetBodyPart = lead.target_body_part || lead.anatomical_location || "Glove & Body Landmark Tracking";
+      const sideBySide = lead.side_by_side_guide
+        ? `<p class="spot-guide-sync" style="margin: 0.35rem 0 0; font-size:0.83rem; color:var(--faint); line-height:1.45;"><strong style="color:var(--text);">Side-by-Side Video Sync:</strong> ${lead.side_by_side_guide}</p>`
+        : "";
 
       return `
       <article class="tip" style="margin-bottom:1rem; border-left:3px solid var(--good);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
-          <h4 style="margin:0;"><a href="lite_player.html?id=${encodeURIComponent(lead.player.id)}" style="color:inherit;">${lead.player.name}</a> · ${lead.title || lead.cue}</h4>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem; margin-bottom:0.4rem;">
+          <h4 style="margin:0; font-size:1.02rem; font-weight:700;"><a href="lite_player.html?id=${encodeURIComponent(lead.player.id)}" style="color:inherit;">${lead.player.name}</a> · ${lead.title || lead.cue}</h4>
           <span class="lite-badge-showcase">${badgeStr}</span>
         </div>
-        <div class="meta">
+        <div class="meta" style="display:flex; flex-wrap:wrap; gap:0.35rem 0.6rem; margin-bottom:0.6rem;">
           <span class="badge ${confClass}">${pct(conf)} signal</span>
           <span class="badge ok">${roleStr}</span>
+          <span class="badge ok">${sepLabel}</span>
+          <span class="badge badge-phase" style="color:var(--accent); border-color:rgba(59,130,246,0.35); background:rgba(59,130,246,0.08);">⏱️ ${deliveryPhase}</span>
+          <span class="badge badge-timestamp" style="color:#fbbf24; border-color:rgba(251,191,36,0.35); background:rgba(251,191,36,0.08);">🎬 ${timestampWindow}</span>
+          <span class="badge badge-bodypart" style="color:#a78bfa; border-color:rgba(167,139,250,0.35); background:rgba(167,139,250,0.08);">🎯 ${targetBodyPart}</span>
           <span class="badge">${angle} · ${angleName}</span>
-          <span>Contrast: <strong>${lead.contrast_label || lead.predicts || ""}</strong></span>
-          <span>Sample n=${lead.n || 40}</span>
         </div>
-        <p><strong>Observed variance:</strong> ${lookFor}</p>
+        <div class="tip-submeta" style="font-size:0.79rem; color:var(--muted); margin-bottom:0.55rem; display:flex; flex-wrap:wrap; gap:0.4rem 0.8rem;">
+          <span>Contrast: <strong style="color:var(--text);">${lead.contrast_label || lead.predicts || ""}</strong></span>
+          <span>Sample: <strong style="color:var(--text);">n=${lead.n || 40}</strong></span>
+        </div>
+        <div class="spot-guide-box" style="padding:0.75rem 0.9rem; background:rgba(0,0,0,0.28); border-left:3px solid var(--good); border-radius:4px; margin:0.4rem 0;">
+          <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--good); font-weight:700; margin-bottom:0.25rem;">
+            🎥 Spot-The-Difference Actionable Guide · ${timestampWindow}
+          </div>
+          <p style="margin:0; font-size:0.88rem; line-height:1.52; color:var(--text);">
+            ${lookFor}
+          </p>
+          ${sideBySide}
+        </div>
         ${note}
       </article>`;
     })
@@ -1383,39 +1471,134 @@ function wireGloveCompare(still) {
 }
 
 function wireDetectionStage(player) {
-  const stage = document.getElementById("unlocked-detection-stage");
-  const img = document.getElementById("detection-frame");
-  const caption = document.getElementById("detection-caption");
-  if (!img) return;
+  const stage = document.getElementById("unlocked-detection-stage") || document.querySelector(".detection-stage");
+  if (!stage) return;
 
-  const still = player.detectionStill;
-  if (!still) {
-    const compareRoot = document.getElementById("glove-compare");
-    if (compareRoot) compareRoot.hidden = true;
-    img.hidden = true;
-    if (stage) stage.hidden = true;
-    if (caption) {
-      caption.textContent = `Tracking frames active for ${player.name} · Pre-release delivery window segmented.`;
-    }
-  } else {
-    if (stage) stage.hidden = false;
-    still.name = player.name;
-    still.cacheKey = "mitt-v7";
-    const hasCompare = wireGloveCompare(still);
-    if (!hasCompare) {
-      const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
-      const prefix = isSubdir ? "../" : "";
-      img.src = `${prefix}${still.image}`;
-      img.alt = `${player.name} detection still`;
-      img.hidden = false;
-    }
-    if (caption) {
-      caption.textContent =
-        still.caption ||
-        still.note ||
-        (hasCompare ? "Pre-release delivery compare" : "Pre-release tracked frame");
+  const videoContainer = document.getElementById("video-compare-container");
+  const stillContainer = document.getElementById("glove-compare");
+  const singleImg = document.getElementById("detection-frame");
+  const spotHeader = document.getElementById("video-spot-guide");
+  const tsEl = document.getElementById("visual-timestamp");
+  const partEl = document.getElementById("visual-body-part");
+  const diffEl = document.getElementById("visual-difference");
+
+  const hideAll = () => {
+    stage.hidden = true;
+    stage.style.display = "none";
+    if (videoContainer) videoContainer.hidden = true;
+    if (stillContainer) stillContainer.hidden = true;
+    if (singleImg) singleImg.hidden = true;
+    if (spotHeader) spotHeader.hidden = true;
+  };
+
+  // 1. Check for real video clips (.mp4)
+  const vComp = player.videoCompare || player.video;
+  if (vComp && vComp.videoA && vComp.videoB && !String(vComp.videoA).endsWith(".svg") && !String(vComp.videoB).endsWith(".svg")) {
+    const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
+    const prefix = isSubdir ? "../" : "";
+    const vLeft = document.getElementById("video-compare-left");
+    const vRight = document.getElementById("video-compare-right");
+    const vLabelL = document.getElementById("video-label-left");
+    const vLabelR = document.getElementById("video-label-right");
+
+    if (vLeft && vRight) {
+      vLeft.src = `${prefix}${vComp.videoA}`;
+      vRight.src = `${prefix}${vComp.videoB}`;
+      if (vLabelL) vLabelL.textContent = vComp.labelA || "PITCH A (FASTBALL)";
+      if (vLabelR) vLabelR.textContent = vComp.labelB || "PITCH B (SLIDER / SECONDARY)";
+
+      if (spotHeader && (vComp.timestamp || vComp.bodyPart || vComp.difference)) {
+        if (tsEl) tsEl.textContent = vComp.timestamp || "0:02.4 in Video A vs 0:02.1 in Video B (Leg Lift Peak)";
+        if (partEl) partEl.textContent = vComp.bodyPart || "Pitcher Delivery Geometry";
+        if (diffEl) diffEl.textContent = vComp.difference || "Observe mechanical variance between pitch types.";
+        spotHeader.hidden = false;
+      }
+
+      if (videoContainer) videoContainer.hidden = false;
+      if (stillContainer) stillContainer.hidden = true;
+      if (singleImg) singleImg.hidden = true;
+      stage.hidden = false;
+      stage.style.display = "block";
+      return;
     }
   }
+
+  // 2. Check for real photographic stills (.jpg/.png) - NEVER SVGs or cartoon drawings
+  const still = player.detectionStill || player.photoCompare;
+  const compare = still?.compare;
+  const leftSrc = compare?.leftSrc || compare?.leftImage;
+  const rightSrc = compare?.rightSrc || compare?.rightImage;
+  const singleSrc = still?.image;
+
+  const isInvalidOrSvg = (src) => !src || typeof src !== "string" || src.toLowerCase().endsWith(".svg");
+
+  if (compare && leftSrc && rightSrc && !isInvalidOrSvg(leftSrc) && !isInvalidOrSvg(rightSrc)) {
+    const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
+    const prefix = isSubdir ? "../" : "";
+    const leftImg = document.getElementById("glove-compare-left");
+    const rightImg = document.getElementById("glove-compare-right");
+    const labelL = document.getElementById("glove-label-left");
+    const labelR = document.getElementById("glove-label-right");
+    const slider = document.getElementById("glove-compare-slider");
+
+    if (leftImg && rightImg && stillContainer) {
+      let loadCount = 0;
+      let hasError = false;
+
+      const onLoad = () => {
+        loadCount++;
+        if (loadCount === 2 && !hasError) {
+          stillContainer.hidden = false;
+          stage.hidden = false;
+          stage.style.display = "block";
+          if (spotHeader && (still.timestamp || still.bodyPart || still.difference)) {
+            if (tsEl) tsEl.textContent = still.timestamp || "Peak Balance Point";
+            if (partEl) partEl.textContent = still.bodyPart || "Glove & Torso Landmark";
+            if (diffEl) diffEl.textContent = still.difference || "Comparative pre-release geometry.";
+            spotHeader.hidden = false;
+          }
+        }
+      };
+
+      const onError = () => {
+        hasError = true;
+        hideAll();
+      };
+
+      leftImg.onload = onLoad;
+      rightImg.onload = onLoad;
+      leftImg.onerror = onError;
+      rightImg.onerror = onError;
+
+      leftImg.src = `${prefix}${leftSrc}`;
+      rightImg.src = `${prefix}${rightSrc}`;
+      if (labelL) labelL.textContent = compare.leftLabel || "PITCH A";
+      if (labelR) labelR.textContent = compare.rightLabel || "PITCH B";
+
+      const apply = () => setGloveCompareBalance(slider?.value ?? 50);
+      slider?.addEventListener("input", apply);
+      apply();
+      return;
+    }
+  } else if (singleSrc && !isInvalidOrSvg(singleSrc)) {
+    const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
+    const prefix = isSubdir ? "../" : "";
+    if (singleImg) {
+      singleImg.onload = () => {
+        singleImg.hidden = false;
+        stage.hidden = false;
+        stage.style.display = "block";
+      };
+      singleImg.onerror = () => {
+        hideAll();
+      };
+      singleImg.src = `${prefix}${singleSrc}`;
+      return;
+    }
+  }
+
+  // 3. Fallback: No real footage/stills available -> completely hide the container!
+  hideAll();
 }
 
 function wireLitePlayer(data) {
@@ -1489,10 +1672,14 @@ function wireLitePlayer(data) {
     function paintTips() {
       const angle = document.getElementById("angle-select")?.value || "";
       const context = document.getElementById("context-select")?.value || "";
-      const filtered = tips.filter((t) => tipPassesFilters(t, { angle, context }));
+      let filtered = tips.filter((t) => tipPassesFilters(t, { angle, context }));
+      // Graceful fallback to all player tips if strict sub-filter yields empty
+      if (!filtered.length && tips.length) {
+        filtered = tips;
+      }
       if (tipRoot) {
         tipRoot.innerHTML =
-          filtered.map((t) => renderTip(t, angleMap)).join("") || "<p class='note'>No mechanical cues match the selected filters.</p>";
+          filtered.map((t) => renderTip(t, angleMap)).join("") || "<p class='note'>No mechanical cues recorded for this arm.</p>";
       }
     }
 

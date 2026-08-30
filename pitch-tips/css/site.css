@@ -430,6 +430,59 @@ a.tile:hover {
   font-size: 0.88rem;
 }
 
+.tip-spot-guide {
+  margin-top: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  background: rgba(10, 15, 22, 0.75);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.tip-spot-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+@media (min-width: 640px) {
+  .tip-spot-item {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+}
+
+.tip-spot-k {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.tip-spot-v {
+  color: var(--text);
+  line-height: 1.48;
+}
+
+.video-spot-guide-header {
+  margin-bottom: 0.85rem;
+  background: #0c141d;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+}
+
+.video-compare-container {
+  width: 100%;
+  background: #0a0e14;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -447,6 +500,42 @@ a.tile:hover {
   color: var(--good);
   border-color: rgba(62, 207, 142, 0.35);
   background: var(--good-dim);
+}
+
+.badge.badge-phase {
+  color: var(--accent);
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.badge.badge-timestamp {
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.badge.badge-bodypart {
+  color: #a78bfa;
+  border-color: rgba(167, 139, 250, 0.35);
+  background: rgba(167, 139, 250, 0.08);
+}
+
+.spot-guide-box {
+  margin: 0.5rem 0 0.4rem;
+  padding: 0.8rem 1rem;
+  background: rgba(8, 14, 22, 0.85);
+  border: 1px solid rgba(62, 207, 142, 0.3);
+  border-left: 3px solid var(--good);
+  border-radius: 4px;
+}
+
+.spot-guide-sync {
+  margin-top: 0.4rem;
+  padding-top: 0.35rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  font-size: 0.83rem;
+  color: var(--faint);
+  line-height: 1.45;
 }
 
 .badge.ok {

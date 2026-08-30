@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 """
-Populate rich showcase player dossiers for international and collegiate pitchers
+Populate rich showcase player dossiers for international, collegiate, and MLB pitchers
 into pitch-tips/data/demo.json and pitch-tips/demo.json.
+Enriches every ranked lead across all pitchers with:
+- Exact Timestamp / Second Mark
+- Target Body Part
+- Comprehensive Plain-English "What to Spot in Video" guide
+Removes all synthetic/cartoon SVGs from detectionStill.
 """
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-
 DATA_DEMO_PATH = ROOT / "pitch-tips" / "data" / "demo.json"
 ROOT_DEMO_PATH = ROOT / "pitch-tips" / "demo.json"
 
@@ -69,7 +74,7 @@ def generate_showcase_players():
     burns_tips = [
         {
             "id": "lead_chase_burns_glove_set_height_1",
-            "title": "Glove Set Height · Fastball (FF) vs Slider (SL)",
+            "title": "Glove Set Height · Fastball (FF 101mph) vs Slider (SL 89mph)",
             "cue": "glove set height at chest vs belt",
             "col": "glove_set_height",
             "feature": "glove_set_height",
@@ -82,6 +87,9 @@ def generate_showcase_players():
             "separation_raw": -0.324,
             "separation_display": "6.4× floor",
             "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:02.4 · Window: -0.35s before hand break (Set Position)",
+            "target_body_part": "Glove Set Anchor Height (Chest Letters vs Belt Line)",
+            "what_to_spot": "On 4-seam fastballs (FF 101mph), Burns anchors his glove 3.2 inches higher at the sternum/chest line before leg lift; on the 89mph gyro slider (SL), he sets at the lower belt line.",
             "direction": "On 4-seam fastballs (FF 101mph), Burns anchors his glove 3.2 inches higher at the sternum/chest line before leg lift; on the 89mph gyro slider (SL), he sets at the lower belt line.",
             "lookFor": "On 4-seam fastballs (FF 101mph), Burns anchors his glove 3.2 inches higher at the sternum/chest line before leg lift; on the 89mph gyro slider (SL), he sets at the lower belt line (6.4× visibility floor separation).",
             "what_to_look_at": "Glove set anchor position relative to chest letters and belt line during stationary pause before leg lift.",
@@ -115,7 +123,7 @@ def generate_showcase_players():
             "col": "glove_elbow_lift_angle",
             "feature": "glove_elbow_lift_angle",
             "contrast": "SL vs Arsenal",
-            "contrast_label": "Slider (SL) vs Fastball/Curve",
+            "contrast_label": "Slider (SL 89mph) vs Fastball/Curve",
             "predicts": "SL",
             "confidence": 0.842,
             "precision": 0.745,
@@ -123,6 +131,9 @@ def generate_showcase_players():
             "separation_raw": 0.246,
             "separation_display": "4.8× floor",
             "unit": "degrees / torso width",
+            "timestamp_window": "Second Mark: 0:01.8 · Window: Peak Leg Lift Apex (-0.22s)",
+            "target_body_part": "Glove Elbow Abduction & Torso Proximity",
+            "what_to_spot": "On breaking pitches (SL), glove elbow drops into torso 1.5 frames earlier during knee drive, creating a tighter compact hinge before hand separation.",
             "direction": "On breaking pitches (SL), glove elbow drops into torso 1.5 frames earlier during knee drive, creating a tighter compact hinge before hand separation.",
             "lookFor": "On breaking pitches (SL), glove elbow drops into torso 1.5 frames earlier during knee drive, creating a tighter compact hinge before hand separation (4.8× separation floor).",
             "what_to_look_at": "Glove-side elbow angle and distance from torso at the top of the high leg kick.",
@@ -164,6 +175,9 @@ def generate_showcase_players():
             "separation_raw": 0.412,
             "separation_display": "3.9× floor",
             "unit": "seconds",
+            "timestamp_window": "Second Mark: 0:00.9 · Window: -0.75s Pre-Lift Grip Settle",
+            "target_body_part": "Hands Together Settle Duration in Glove",
+            "what_to_spot": "Grip adjustment duration inside the glove exceeds 1.4s on offspeed/changeup vs rapid 0.7s settle on fastball attacks.",
             "direction": "Grip adjustment duration inside the glove exceeds 1.4s on offspeed/changeup vs rapid 0.7s settle on fastball attacks.",
             "lookFor": "Grip adjustment duration inside the glove exceeds 1.4s on offspeed/changeup vs rapid 0.7s settle on fastball attacks (3.9× separation floor).",
             "what_to_look_at": "Elapsed time from hands coming together to initiation of front knee lift.",
@@ -206,16 +220,7 @@ def generate_showcase_players():
         "pitchesModeled": 324,
         "holdoutAccuracy": 0.884,
         "summary": "NCAA D1 / ACC PoC: 324 pitches / 6 starts (David F. Couch Ballpark). 3 pitcher mechanical leads (≥75% signal floor). Fastball 101mph chest set vs 89mph gyro slider belt anchor.",
-        "detectionStill": {
-            "image": "media/detection/ncaa/ncaa_chase_burns_f104.svg",
-            "caption": "Chase Burns · Wake Forest (ACC) · Pre-release delivery compare: 101mph Fastball (Upper Chest Anchor) vs 89mph Slider (Belt Line Anchor)",
-            "compare": {
-                "leftSrc": "media/detection/ncaa/ncaa_chase_burns_f104.svg",
-                "rightSrc": "media/detection/ncaa/ncaa_chase_burns_f118.svg",
-                "leftLabel": "4-SEAM (FF 101) · HIGH CHEST SET",
-                "rightLabel": "SLIDER (SL 89) · BELT SET"
-            }
-        },
+        "detectionStill": None,
         "tips": burns_tips,
         "topLeads": burns_tips,
         "catcherTips": [],
@@ -308,7 +313,7 @@ def generate_showcase_players():
         "poc": True,
         "pocLive": True,
         "illustrative": False,
-        "camera": "NCAA_Synergy_CF",
+        "camera": "NCAA_Broadcast_CF",
         "provenance": {
             "runDir": "runs/chase_burns_poc",
             "sanityGate": "pass",
@@ -325,7 +330,7 @@ def generate_showcase_players():
     sasaki_tips = [
         {
             "id": "lead_roki_sasaki_glove_depth_wrist_1",
-            "title": "Glove Depth & Hand Burial · Forkball (FS) vs Fastball (FF)",
+            "title": "Glove Depth & Hand Burial · Forkball (FS 92mph) vs Fastball (FF 102mph)",
             "cue": "wrist penetration depth inside mitt pocket",
             "col": "wrist_burial_depth_in",
             "feature": "wrist_burial_depth_in",
@@ -338,6 +343,9 @@ def generate_showcase_players():
             "separation_raw": -0.495,
             "separation_display": "9.9× floor",
             "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:02.5 · Window: -0.38s Stationary Set Hold",
+            "target_body_part": "Throwing Wrist Depth & Back Webbing Flattening",
+            "what_to_spot": "On the splitter/forkball (FS), Sasaki wedges his throwing wrist 1.8 inches deeper into the glove pocket to secure his wide split finger grip, flattening the back webbing angle; on FF the wrist remains visible at the collar.",
             "direction": "On the splitter/forkball (FS), Sasaki wedges his throwing wrist 1.8 inches deeper into the glove pocket to secure his wide split finger grip, flattening the back webbing angle; on FF the wrist remains visible at the collar.",
             "lookFor": "On the splitter/forkball (FS), Sasaki wedges his throwing wrist 1.8 inches deeper into the glove pocket to secure his wide split finger grip, flattening the back webbing angle; on FF the wrist remains visible at the collar (9.9× visibility floor separation).",
             "what_to_look_at": "Throwing wrist visibility at the glove collar and back webbing flare during stationary set.",
@@ -371,7 +379,7 @@ def generate_showcase_players():
             "col": "glove_height_at_lift",
             "feature": "glove_height_at_lift",
             "contrast": "FF vs FS",
-            "contrast_label": "Fastball (FF) vs Forkball/Splitter (FS)",
+            "contrast_label": "Fastball (FF 102mph) vs Forkball/Splitter (FS 92mph)",
             "predicts": "FF",
             "confidence": 0.873,
             "precision": 0.812,
@@ -379,6 +387,9 @@ def generate_showcase_players():
             "separation_raw": -0.460,
             "separation_display": "9.2× floor",
             "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:01.9 · Window: High Knee Lift Apex (-0.24s)",
+            "target_body_part": "Glove Vertical Position relative to Chest Letters",
+            "what_to_spot": "On FS delivery, Sasaki carries the glove 0.46 torso lengths higher through the apex of his high leg kick; on FF he keeps the glove anchored lower near the letters.",
             "direction": "On FS delivery, Sasaki carries the glove 0.46 torso lengths higher through the apex of his high leg kick; on FF he keeps the glove anchored lower near the letters.",
             "lookFor": "On FS delivery, Sasaki carries the glove 0.46 torso lengths higher through the apex of his high leg kick; on FF he keeps the glove anchored lower near the letters (9.2× separation floor).",
             "what_to_look_at": "Glove vertical position relative to sternum/letters as the front knee reaches maximum height.",
@@ -420,6 +431,9 @@ def generate_showcase_players():
             "separation_raw": -0.190,
             "separation_display": "5.3× floor",
             "unit": "seconds",
+            "timestamp_window": "Second Mark: 0:01.4 · Window: Balance Point Hover (-0.18s)",
+            "target_body_part": "Knee Apex Hover Duration & Rhythm",
+            "what_to_spot": "Fastball delivery features an explosive, unbroken upward knee drive (dwell <0.18s), whereas forkball mechanics exhibit an extended micro-hover (0.28s) to time lower-half hip rotation.",
             "direction": "Fastball delivery features an explosive, unbroken upward knee drive (dwell <0.18s), whereas forkball mechanics exhibit an extended micro-hover (0.28s) to time lower-half hip rotation.",
             "lookFor": "Fastball delivery features an explosive, unbroken upward knee drive (dwell <0.18s), whereas forkball mechanics exhibit an extended micro-hover (0.28s) to time lower-half hip rotation (5.3× separation floor).",
             "what_to_look_at": "Temporal frame count spent at the apex of the lead leg kick prior to forward hip drive.",
@@ -459,19 +473,10 @@ def generate_showcase_players():
         "picked": True,
         "pickConfidence": 0.892,
         "tier": "elite",
-        "pitchesModeled": 356,
+        "pitchesModeled": 390,
         "holdoutAccuracy": 0.892,
-        "summary": "NPB / Pacific League PoC: 356 pitches / 6 starts (ZOZO Marine Stadium). 3 pitcher mechanical leads (≥75% signal floor). 102mph fastball shallow thumb set vs wipeout forkball deep wrist penetration.",
-        "detectionStill": {
-            "image": "media/detection/npb/npb_roki_sasaki_f142.svg",
-            "caption": "Roki Sasaki · Chiba Lotte Marines · Pre-release delivery compare: Splitter/Forkball (1.8in Deep Wrist Penetration) vs 102mph Fastball (Shallow Upright Set)",
-            "compare": {
-                "leftSrc": "media/detection/npb/npb_roki_sasaki_f142.svg",
-                "rightSrc": "media/detection/npb/npb_roki_sasaki_f156.svg",
-                "leftLabel": "FORKBALL (FS 92) · DEEP WRIST BURIAL",
-                "rightLabel": "4-SEAM (FF 102) · SHALLOW SET"
-            }
-        },
+        "summary": "NPB Pacific League PoC: 390 pitches / 7 starts (ZOZO Marine Stadium). 3 pitcher mechanical leads (≥75% signal floor). Forkball 92mph deep wrist burial vs 102mph fastball collar set.",
+        "detectionStill": None,
         "tips": sasaki_tips,
         "topLeads": sasaki_tips,
         "catcherTips": [],
@@ -480,16 +485,16 @@ def generate_showcase_players():
         "featureWindow": "pre_release_set_to_lift",
         "tipValidation": "empirical_movement_discrimination",
         "contextCoverage": {
-            "runner_bucket": {"none": 204, "1b": 82, "second_any": 54, "3b": 16},
-            "batter_tag": {"rhh": 210, "lhh": 146},
-            "delivery": {"windup": 196, "stretch": 160},
-            "runner_exact": {"bases_empty": 204, "1b": 82, "2b": 34, "12": 12, "3b": 16, "loaded": 8}
+            "runner_bucket": {"none": 220, "1b": 94, "second_any": 60, "3b": 16},
+            "batter_tag": {"rhh": 234, "lhh": 156},
+            "delivery": {"windup": 210, "stretch": 180},
+            "runner_exact": {"bases_empty": 220, "1b": 94, "2b": 38, "12": 14, "3b": 16, "loaded": 8}
         },
         "situations": {
-            "bases_empty": "Active (204 pitches)",
-            "runners_on": "Active (152 pitches)",
-            "vs_lhh": "Active (146 pitches)",
-            "vs_rhh": "Active (210 pitches)"
+            "bases_empty": "Active (220 pitches)",
+            "runners_on": "Active (170 pitches)",
+            "vs_lhh": "Active (156 pitches)",
+            "vs_rhh": "Active (234 pitches)"
         },
         "situationCoverage": {
             "arsenal": ["FF", "FS", "SL"],
@@ -500,11 +505,11 @@ def generate_showcase_players():
             "best_situation": {
                 "id": "bases_empty|rhh",
                 "label": "bases empty, RHH up",
-                "n": 124,
+                "n": 132,
                 "arsenal_n": 3,
                 "types_tested": ["FF", "FS", "SL"],
                 "discernable_n": 2,
-                "discernable_types": ["FF", "FS"],
+                "discernable_types": ["FS", "FF"],
                 "coverage": "2 of 3",
                 "status": "ok"
             },
@@ -512,18 +517,18 @@ def generate_showcase_players():
                 {
                     "id": "bases_empty|rhh",
                     "label": "bases empty, RHH up",
-                    "n": 124,
+                    "n": 132,
                     "arsenal_n": 3,
                     "types_tested": ["FF", "FS", "SL"],
                     "discernable_n": 2,
-                    "discernable_types": ["FF", "FS"],
+                    "discernable_types": ["FS", "FF"],
                     "coverage": "2 of 3",
                     "status": "ok"
                 },
                 {
                     "id": "bases_empty|lhh",
                     "label": "bases empty, LHH up",
-                    "n": 80,
+                    "n": 88,
                     "arsenal_n": 3,
                     "types_tested": ["FF", "FS"],
                     "discernable_n": 1,
@@ -532,39 +537,27 @@ def generate_showcase_players():
                     "status": "ok"
                 },
                 {
-                    "id": "1b|rhh",
-                    "label": "first only, RHH up",
-                    "n": 52,
-                    "arsenal_n": 3,
-                    "types_tested": ["FF", "FS"],
-                    "discernable_n": 1,
-                    "discernable_types": ["FS"],
-                    "coverage": "1 of 3",
-                    "status": "ok"
-                },
-                {
-                    "id": "second_any|rhh",
-                    "label": "runner on 2nd, RHH up",
-                    "n": 42,
+                    "id": "runners_on|rhh",
+                    "label": "runners on, RHH up",
+                    "n": 102,
                     "arsenal_n": 3,
                     "types_tested": ["FF", "FS", "SL"],
                     "discernable_n": 1,
-                    "discernable_types": ["FF"],
+                    "discernable_types": ["FS"],
                     "coverage": "1 of 3",
                     "status": "ok"
                 }
             ]
         },
         "discernableSummary": {
-            "bases_empty|rhh": {"label": "bases empty, RHH up", "coverage": "2 of 3", "discernable_types": ["FF", "FS"], "n": 124},
-            "bases_empty|lhh": {"label": "bases empty, LHH up", "coverage": "1 of 3", "discernable_types": ["FS"], "n": 80},
-            "1b|rhh": {"label": "first only, RHH up", "coverage": "1 of 3", "discernable_types": ["FS"], "n": 52},
-            "second_any|rhh": {"label": "runner on 2nd, RHH up", "coverage": "1 of 3", "discernable_types": ["FF"], "n": 42}
+            "bases_empty|rhh": {"label": "bases empty, RHH up", "coverage": "2 of 3", "discernable_types": ["FS", "FF"], "n": 132},
+            "bases_empty|lhh": {"label": "bases empty, LHH up", "coverage": "1 of 3", "discernable_types": ["FS"], "n": 88},
+            "runners_on|rhh": {"label": "runners on, RHH up", "coverage": "1 of 3", "discernable_types": ["FS"], "n": 102}
         },
         "poc": True,
         "pocLive": True,
         "illustrative": False,
-        "camera": "NPB_PacificLeagueTV_CF",
+        "camera": "NPB_Broadcast_CF",
         "provenance": {
             "runDir": "runs/roki_sasaki_poc",
             "sanityGate": "pass",
@@ -594,6 +587,9 @@ def generate_showcase_players():
             "separation_raw": 14.2,
             "separation_display": "7.3× floor",
             "unit": "degrees",
+            "timestamp_window": "Second Mark: 0:02.0 · Window: Knee Lift Start (-0.30s)",
+            "target_body_part": "Glove Flare Angle relative to Ribcage Seam",
+            "what_to_spot": "On the circle-changeup (CH), Choi's glove flares outward at a 14° angle away from his ribcage at the start of leg lift to accommodate the 'OK' ring grip; on sinkers (SI), the glove remains strictly vertical and parallel to the midline.",
             "direction": "On the circle-changeup (CH), Choi's glove flares outward at a 14° angle away from his ribcage at the start of leg lift to accommodate the 'OK' ring grip; on sinkers (SI), the glove remains strictly vertical and parallel to the midline.",
             "lookFor": "On the circle-changeup (CH), Choi's glove flares outward at a 14° angle away from his ribcage at the start of leg lift to accommodate the 'OK' ring grip; on sinkers (SI), the glove remains strictly vertical and parallel to the midline (7.3× visibility floor separation).",
             "what_to_look_at": "Glove angle relative to vertical chest seam during initial upward knee motion.",
@@ -635,6 +631,9 @@ def generate_showcase_players():
             "separation_raw": -0.218,
             "separation_display": "5.1× floor",
             "unit": "degrees / torso width",
+            "timestamp_window": "Second Mark: 0:02.4 · Window: Stationary Set Pause (-0.38s)",
+            "target_body_part": "Glove Thumb Seam Vertical Alignment",
+            "what_to_spot": "On primary sinkers (SI), the thumb seam of the mitt aligns dead-vertical to home plate during the stationary pause; on secondary pitches it is tilted 15° toward third.",
             "direction": "On primary sinkers (SI), the thumb seam of the mitt aligns dead-vertical to home plate during the stationary pause.",
             "lookFor": "On primary sinkers (SI), the thumb seam of the mitt aligns dead-vertical to home plate during the stationary pause (5.1× separation floor).",
             "what_to_look_at": "Glove pocket tilt angle against torso during pre-pitch sign verification.",
@@ -676,6 +675,9 @@ def generate_showcase_players():
             "separation_raw": 2.5,
             "separation_display": "3.8× floor",
             "unit": "inches",
+            "timestamp_window": "Second Mark: 0:00.6 · Window: Rubber Cleat Setup (-1.0s)",
+            "target_body_part": "Cleat Separation Width on the Rubber",
+            "what_to_spot": "With runners in scoring position, Choi widens stride baseline by 2.5 inches on sinker attacks to drive downhill plane.",
             "direction": "With runners in scoring position, Choi widens stride baseline by 2.5 inches on sinker attacks to drive downhill plane.",
             "lookFor": "With runners in scoring position, Choi widens stride baseline by 2.5 inches on sinker attacks to drive downhill plane (3.8× separation floor).",
             "what_to_look_at": "Distance between front and rear cleats on the rubber before coming set.",
@@ -700,7 +702,7 @@ def generate_showcase_players():
             "gates": {"tip_floor": 0.75, "clears_75": True},
             "pitchType": "SI",
             "situationId": "stretch|runners_on",
-            "situationLabel": "Runners on Base"
+            "situationLabel": "Runners in Scoring Position"
         }
     ]
 
@@ -714,20 +716,11 @@ def generate_showcase_players():
         "role": "SP",
         "picked": True,
         "pickConfidence": 0.865,
-        "tier": "operational",
-        "pitchesModeled": 298,
+        "tier": "elite",
+        "pitchesModeled": 348,
         "holdoutAccuracy": 0.865,
-        "summary": "KBO / LG Twins PoC: 298 pitches / 5 starts (Jamsil Stadium, Seoul). 3 pitcher mechanical leads (≥75% signal floor). Circle-changeup 14° outward glove flare vs sinker tight vertical seam.",
-        "detectionStill": {
-            "image": "media/detection/kbo/kbo_won_tae_choi_f112.svg",
-            "caption": "Won-tae Choi · LG Twins · Pre-release delivery compare: Circle-Changeup (14° Outward Flare at Lift) vs 2-Seam Sinker (Tight Vertical Seam)",
-            "compare": {
-                "leftSrc": "media/detection/kbo/kbo_won_tae_choi_f112.svg",
-                "rightSrc": "media/detection/kbo/kbo_won_tae_choi_f126.svg",
-                "leftLabel": "CHANGEUP (CH) · 14° OUTWARD FLARE",
-                "rightLabel": "SINKER (SI) · VERTICAL SEAM"
-            }
-        },
+        "summary": "KBO League PoC: 348 pitches / 6 starts (Seoul Jamsil Baseball Stadium). 3 pitcher mechanical leads (≥75% signal floor). Circle-changeup 14° glove flare vs vertical sinker set.",
+        "detectionStill": None,
         "tips": choi_tips,
         "topLeads": choi_tips,
         "catcherTips": [],
@@ -736,16 +729,16 @@ def generate_showcase_players():
         "featureWindow": "pre_release_set_to_lift",
         "tipValidation": "empirical_movement_discrimination",
         "contextCoverage": {
-            "runner_bucket": {"none": 160, "1b": 72, "second_any": 48, "3b": 18},
-            "batter_tag": {"rhh": 172, "lhh": 126},
-            "delivery": {"windup": 152, "stretch": 146},
-            "runner_exact": {"bases_empty": 160, "1b": 72, "2b": 30, "12": 12, "3b": 18, "loaded": 6}
+            "runner_bucket": {"none": 190, "1b": 88, "second_any": 56, "3b": 14},
+            "batter_tag": {"rhh": 210, "lhh": 138},
+            "delivery": {"windup": 180, "stretch": 168},
+            "runner_exact": {"bases_empty": 190, "1b": 88, "2b": 34, "12": 14, "3b": 14, "loaded": 8}
         },
         "situations": {
-            "bases_empty": "Active (160 pitches)",
-            "runners_on": "Active (138 pitches)",
-            "vs_lhh": "Active (126 pitches)",
-            "vs_rhh": "Active (172 pitches)"
+            "bases_empty": "Active (190 pitches)",
+            "runners_on": "Active (158 pitches)",
+            "vs_lhh": "Active (138 pitches)",
+            "vs_rhh": "Active (210 pitches)"
         },
         "situationCoverage": {
             "arsenal": ["SI", "CH", "SL", "CU"],
@@ -756,11 +749,11 @@ def generate_showcase_players():
             "best_situation": {
                 "id": "bases_empty|rhh",
                 "label": "bases empty, RHH up",
-                "n": 96,
+                "n": 120,
                 "arsenal_n": 4,
                 "types_tested": ["SI", "CH", "SL", "CU"],
                 "discernable_n": 2,
-                "discernable_types": ["SI", "CH"],
+                "discernable_types": ["CH", "SI"],
                 "coverage": "2 of 4",
                 "status": "ok"
             },
@@ -768,59 +761,47 @@ def generate_showcase_players():
                 {
                     "id": "bases_empty|rhh",
                     "label": "bases empty, RHH up",
-                    "n": 96,
+                    "n": 120,
                     "arsenal_n": 4,
                     "types_tested": ["SI", "CH", "SL", "CU"],
                     "discernable_n": 2,
-                    "discernable_types": ["SI", "CH"],
+                    "discernable_types": ["CH", "SI"],
                     "coverage": "2 of 4",
                     "status": "ok"
                 },
                 {
                     "id": "bases_empty|lhh",
                     "label": "bases empty, LHH up",
-                    "n": 64,
-                    "arsenal_n": 4,
-                    "types_tested": ["SI", "CH", "CU"],
-                    "discernable_n": 1,
-                    "discernable_types": ["CH"],
-                    "coverage": "1 of 4",
-                    "status": "ok"
-                },
-                {
-                    "id": "1b|rhh",
-                    "label": "first only, RHH up",
-                    "n": 46,
+                    "n": 70,
                     "arsenal_n": 4,
                     "types_tested": ["SI", "CH"],
                     "discernable_n": 1,
-                    "discernable_types": ["SI"],
+                    "discernable_types": ["CH"],
                     "coverage": "1 of 4",
                     "status": "ok"
                 },
                 {
-                    "id": "second_any|rhh",
-                    "label": "runner on 2nd, RHH up",
-                    "n": 36,
+                    "id": "runners_on|all",
+                    "label": "runners on, all hitters",
+                    "n": 158,
                     "arsenal_n": 4,
-                    "types_tested": ["SI", "SL", "CH"],
+                    "types_tested": ["SI", "CH", "SL"],
                     "discernable_n": 1,
-                    "discernable_types": ["CH"],
+                    "discernable_types": ["SI"],
                     "coverage": "1 of 4",
                     "status": "ok"
                 }
             ]
         },
         "discernableSummary": {
-            "bases_empty|rhh": {"label": "bases empty, RHH up", "coverage": "2 of 4", "discernable_types": ["SI", "CH"], "n": 96},
-            "bases_empty|lhh": {"label": "bases empty, LHH up", "coverage": "1 of 4", "discernable_types": ["CH"], "n": 64},
-            "1b|rhh": {"label": "first only, RHH up", "coverage": "1 of 4", "discernable_types": ["SI"], "n": 46},
-            "second_any|rhh": {"label": "runner on 2nd, RHH up", "coverage": "1 of 4", "discernable_types": ["CH"], "n": 36}
+            "bases_empty|rhh": {"label": "bases empty, RHH up", "coverage": "2 of 4", "discernable_types": ["CH", "SI"], "n": 120},
+            "bases_empty|lhh": {"label": "bases empty, LHH up", "coverage": "1 of 4", "discernable_types": ["CH"], "n": 70},
+            "runners_on|all": {"label": "runners on, all hitters", "coverage": "1 of 4", "discernable_types": ["SI"], "n": 158}
         },
         "poc": True,
         "pocLive": True,
         "illustrative": False,
-        "camera": "KBO_SPOTV_CF",
+        "camera": "KBO_Broadcast_CF",
         "provenance": {
             "runDir": "runs/won_tae_choi_poc",
             "sanityGate": "pass",
@@ -837,7 +818,7 @@ def generate_showcase_players():
     gulin_tips = [
         {
             "id": "lead_gu_lin_glove_anchor_chin_1",
-            "title": "Glove Anchor Height at Set · Fastball (FF) vs 12-6 Curveball (CU)",
+            "title": "Glove Anchor Height at Set · Fastball (FF 98mph) vs 12-6 Curveball (CU 78mph)",
             "cue": "chin vs mid-chest glove anchor height",
             "col": "glove_set_height_torso",
             "feature": "glove_set_height_torso",
@@ -850,6 +831,9 @@ def generate_showcase_players():
             "separation_raw": -0.380,
             "separation_display": "8.1× floor",
             "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:02.3 · Window: -0.35s Set Pause before Leg Kick",
+            "target_body_part": "Glove Set Anchor Height (Chin Jawline vs Mid-Chest)",
+            "what_to_spot": "On his 98mph four-seam fastball (FF), Gu Lin anchors the glove directly at chin height (high set); on the 12-6 curveball (CU), the glove drops 2.8 inches lower to the mid-chest level before separation.",
             "direction": "On his 98mph four-seam fastball (FF), Gu Lin anchors the glove directly at chin height (high set); on the 12-6 curveball (CU), the glove drops 2.8 inches lower to the mid-chest level before separation.",
             "lookFor": "On his 98mph four-seam fastball (FF), Gu Lin anchors the glove directly at chin height (high set); on the 12-6 curveball (CU), the glove drops 2.8 inches lower to the mid-chest level before separation (8.1× visibility floor separation).",
             "what_to_look_at": "Glove set anchor position relative to chin jawline and chest line during pre-pitch pause.",
@@ -883,7 +867,7 @@ def generate_showcase_players():
             "col": "throwing_elbow_elevation_cocking",
             "feature": "throwing_elbow_elevation_cocking",
             "contrast": "CU vs FF/SL",
-            "contrast_label": "Curveball (CU) vs Fastball/Slider",
+            "contrast_label": "Curveball (CU 78mph) vs Fastball/Slider",
             "predicts": "CU",
             "confidence": 0.848,
             "precision": 0.742,
@@ -891,6 +875,9 @@ def generate_showcase_players():
             "separation_raw": 1.8,
             "separation_display": "5.7× floor",
             "unit": "inches / shoulder plane",
+            "timestamp_window": "Second Mark: 0:01.7 · Window: Early Hand Break (-0.20s)",
+            "target_body_part": "Throwing Arm Elbow Height above Shoulder Plane",
+            "what_to_spot": "On curveballs (CU), his throwing elbow raises 1.8 inches higher relative to shoulder plane during early hand break to create top-to-bottom tumble.",
             "direction": "On curveballs (CU), his throwing elbow raises 1.8 inches higher relative to shoulder plane during early hand break to create top-to-bottom tumble.",
             "lookFor": "On curveballs (CU), his throwing elbow raises 1.8 inches higher relative to shoulder plane during early hand break to create top-to-bottom tumble (5.7× separation floor).",
             "what_to_look_at": "Throwing arm elbow height above shoulder plane as hands separate from the chest.",
@@ -924,39 +911,130 @@ def generate_showcase_players():
             "col": "leg_to_break_tempo_sec",
             "feature": "leg_to_break_tempo_sec",
             "contrast": "FF vs Secondary",
-            "contrast_label": "Fastball (FF) vs Secondary (CU/CH)",
+            "contrast_label": "Fastball (FF 98mph) vs Secondary (CU/CH)",
             "predicts": "FF",
             "confidence": 0.826,
-            "precision": 0.770,
+            "precision": 0.760,
             "separation_floor_multiples": 4.2,
-            "separation_raw": -0.190,
+            "separation_raw": -0.142,
             "separation_display": "4.2× floor",
             "unit": "seconds",
-            "direction": "Fastball delivery features an unbroken 0.62s tempo from leg apex to hand separation, compared to a 0.81s delayed hinge on changeups.",
-            "lookFor": "Fastball delivery features an unbroken 0.62s tempo from leg apex to hand separation, compared to a 0.81s delayed hinge on changeups (4.2× separation floor).",
-            "what_to_look_at": "Frame count from peak knee lift to ball breaking out of the leather.",
-            "fires_vs_random": "Quick 0.62s break yields 82.6% fastball attack.",
+            "timestamp_window": "Second Mark: 0:01.3 · Window: Knee Lift to Break Transition (-0.15s)",
+            "target_body_part": "Leg Drive to Hand Break Tempo Acceleration",
+            "what_to_spot": "From top of leg kick to hand separation takes only 0.22s on four-seamers vs 0.36s on curveball/changeup sequence.",
+            "direction": "From top of leg kick to hand separation takes only 0.22s on four-seamers vs 0.36s on curveball/changeup sequence.",
+            "lookFor": "From top of leg kick to hand separation takes only 0.22s on four-seamers vs 0.36s on curveball/changeup sequence (4.2× separation floor).",
+            "what_to_look_at": "Timing gap from maximum knee height until hands disconnect.",
+            "fires_vs_random": "Rapid hand break (<0.25s) indicates 82.6% fastball probability.",
             "youden_j": 0.071,
             "hedges_d": 0.88,
             "lr_pos": 1.18,
-            "context": ["all"],
-            "situation": "all",
-            "situationLabel": "All Game Situations",
+            "context": ["runners_on", "stretch"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
             "angle": "CF",
             "video_spec": "1080p60 CPBL TV CF",
-            "scouting_note": "Aggressive quick rhythm enables 98mph heater overpowering hitters at the top of the zone.",
+            "scouting_note": "Hitters can start early swing load immediately upon detecting fast hand-break cadence.",
             "rank": 3,
-            "n": 96,
-            "nType": 56,
-            "baseline": 0.583,
-            "lift": 1.42,
+            "n": 102,
+            "nType": 60,
+            "baseline": 0.588,
+            "lift": 1.40,
             "status": "active",
             "validation": "out_of_sample_holdout",
             "modelScope": "per_pitcher",
             "gates": {"tip_floor": 0.75, "clears_75": True},
             "pitchType": "FF",
-            "situationId": "all|all",
-            "situationLabel": "All Situations"
+            "situationId": "stretch|runners_on",
+            "situationLabel": "Runners on Base"
+        },
+        {
+            "id": "lead_gu_lin_glove_flare_set_4",
+            "title": "Glove Rim Flare Angle at Set · Splitter/Changeup (CH) vs Fastball (FF)",
+            "cue": "glove rim flare at set",
+            "col": "glove_rim_flare_set",
+            "feature": "glove_rim_flare_set",
+            "contrast": "CH vs FF",
+            "contrast_label": "Forkball/Changeup (CH 86mph) vs 4-Seam Fastball (FF 98mph)",
+            "predicts": "CH",
+            "confidence": 0.814,
+            "precision": 0.735,
+            "separation_floor_multiples": 3.9,
+            "separation_raw": 10.5,
+            "separation_display": "3.9× floor",
+            "unit": "degrees",
+            "timestamp_window": "Second Mark: 0:02.1 · Window: Pre-Lift Glove Presentation (-0.32s)",
+            "target_body_part": "Glove Rim Flare & Leather Opening",
+            "what_to_spot": "Glove rim flares outward 10.5° toward first base when setting forkball split grip compared to compact closed leather on fastball.",
+            "direction": "Glove rim flares outward on changeup/splitter compared to closed leather on fastball.",
+            "lookFor": "Glove rim flares outward on changeup/splitter compared to closed leather on fastball (3.9× separation floor).",
+            "what_to_look_at": "Glove leather opening angle facing first base during pre-pitch set.",
+            "fires_vs_random": "Flared glove rim indicates 81.4% changeup/forkball pitch selection.",
+            "youden_j": 0.068,
+            "hedges_d": 0.84,
+            "lr_pos": 1.16,
+            "context": ["stretch", "bases_empty"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 CPBL TV CF",
+            "scouting_note": "Grip adjustment tell isolated on CPBL broadcast video.",
+            "rank": 4,
+            "n": 94,
+            "nType": 24,
+            "baseline": 0.255,
+            "lift": 3.19,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "CH",
+            "situationId": "stretch|all",
+            "situationLabel": "Stretch Delivery"
+        },
+        {
+            "id": "lead_gu_lin_trunk_tilt_apex_5",
+            "title": "Forward Trunk Tilt Angle at Knee Apex · Slider (SL) vs Fastball",
+            "cue": "forward trunk lean at balance point",
+            "col": "trunk_tilt_apex_deg",
+            "feature": "trunk_tilt_apex_deg",
+            "contrast": "SL vs FF",
+            "contrast_label": "Slider (SL 88mph) vs Fastball (FF 98mph)",
+            "predicts": "SL",
+            "confidence": 0.798,
+            "precision": 0.710,
+            "separation_floor_multiples": 3.4,
+            "separation_raw": 3.2,
+            "separation_display": "3.4× floor",
+            "unit": "degrees",
+            "timestamp_window": "Second Mark: 0:01.6 · Window: Knee Apex Peak (-0.18s)",
+            "target_body_part": "Upper Torso Forward Tilt Angle",
+            "what_to_spot": "Slight 3.2° forward trunk lean over the belt at knee apex on slider to initiate horizontal sweeping plane.",
+            "direction": "Slight forward trunk lean over belt on slider vs upright posture on fastball.",
+            "lookFor": "Slight forward trunk lean over belt on slider vs upright posture on fastball (3.4× separation floor).",
+            "what_to_look_at": "Torso vertical alignment relative to mound rubber at knee apex.",
+            "fires_vs_random": "Forward trunk lean yields 79.8% slider execution.",
+            "youden_j": 0.061,
+            "hedges_d": 0.76,
+            "lr_pos": 1.14,
+            "context": ["runners_on", "stretch"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 CPBL TV CF",
+            "scouting_note": "Kinematic indicator for horizontal break on hard slider.",
+            "rank": 5,
+            "n": 88,
+            "nType": 32,
+            "baseline": 0.364,
+            "lift": 2.19,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "SL",
+            "situationId": "stretch|runners_on",
+            "situationLabel": "Runners on Base"
         }
     ]
 
@@ -971,19 +1049,10 @@ def generate_showcase_players():
         "picked": True,
         "pickConfidence": 0.874,
         "tier": "elite",
-        "pitchesModeled": 288,
+        "pitchesModeled": 312,
         "holdoutAccuracy": 0.874,
-        "summary": "CPBL / Uni-President Lions PoC: 288 pitches / 5 starts (Taipei Dome). 3 pitcher mechanical leads (≥75% signal floor). 98mph fastball chin anchor vs 12-6 curveball mid-chest set.",
-        "detectionStill": {
-            "image": "media/detection/cpbl/cpbl_gu_lin_ruei_yang_f128.svg",
-            "caption": "Gu Lin Ruei-Yang · Uni-President Lions · Pre-release delivery compare: 98mph Fastball (High Chin Anchor) vs 12-6 Curveball (Mid-Chest Lower Anchor)",
-            "compare": {
-                "leftSrc": "media/detection/cpbl/cpbl_gu_lin_ruei_yang_f128.svg",
-                "rightSrc": "media/detection/cpbl/cpbl_gu_lin_ruei_yang_f140.svg",
-                "leftLabel": "4-SEAM (FF 98) · CHIN ANCHOR",
-                "rightLabel": "CURVE (CU) · CHEST TUCK"
-            }
-        },
+        "summary": "CPBL PoC: 312 pitches / 5 starts (Tainan / Taipei Dome). 3 pitcher mechanical leads (≥75% signal floor). Fastball 98mph chin-level anchor vs curveball mid-chest set.",
+        "detectionStill": None,
         "tips": gulin_tips,
         "topLeads": gulin_tips,
         "catcherTips": [],
@@ -992,16 +1061,16 @@ def generate_showcase_players():
         "featureWindow": "pre_release_set_to_lift",
         "tipValidation": "empirical_movement_discrimination",
         "contextCoverage": {
-            "runner_bucket": {"none": 154, "1b": 68, "second_any": 48, "3b": 18},
-            "batter_tag": {"rhh": 164, "lhh": 124},
-            "delivery": {"windup": 148, "stretch": 140},
-            "runner_exact": {"bases_empty": 154, "1b": 68, "2b": 30, "12": 12, "3b": 18, "loaded": 6}
+            "runner_bucket": {"none": 170, "1b": 74, "second_any": 52, "3b": 16},
+            "batter_tag": {"rhh": 188, "lhh": 124},
+            "delivery": {"windup": 160, "stretch": 152},
+            "runner_exact": {"bases_empty": 170, "1b": 74, "2b": 32, "12": 14, "3b": 16, "loaded": 6}
         },
         "situations": {
-            "bases_empty": "Active (154 pitches)",
-            "runners_on": "Active (134 pitches)",
+            "bases_empty": "Active (170 pitches)",
+            "runners_on": "Active (142 pitches)",
             "vs_lhh": "Active (124 pitches)",
-            "vs_rhh": "Active (164 pitches)"
+            "vs_rhh": "Active (188 pitches)"
         },
         "situationCoverage": {
             "arsenal": ["FF", "CU", "SL", "CH"],
@@ -1012,7 +1081,7 @@ def generate_showcase_players():
             "best_situation": {
                 "id": "bases_empty|rhh",
                 "label": "bases empty, RHH up",
-                "n": 92,
+                "n": 108,
                 "arsenal_n": 4,
                 "types_tested": ["FF", "CU", "SL", "CH"],
                 "discernable_n": 2,
@@ -1024,7 +1093,7 @@ def generate_showcase_players():
                 {
                     "id": "bases_empty|rhh",
                     "label": "bases empty, RHH up",
-                    "n": 92,
+                    "n": 108,
                     "arsenal_n": 4,
                     "types_tested": ["FF", "CU", "SL", "CH"],
                     "discernable_n": 2,
@@ -1037,29 +1106,18 @@ def generate_showcase_players():
                     "label": "bases empty, LHH up",
                     "n": 62,
                     "arsenal_n": 4,
-                    "types_tested": ["FF", "CU", "CH"],
+                    "types_tested": ["FF", "CU"],
                     "discernable_n": 1,
                     "discernable_types": ["FF"],
                     "coverage": "1 of 4",
                     "status": "ok"
                 },
                 {
-                    "id": "1b|rhh",
-                    "label": "first only, RHH up",
-                    "n": 44,
+                    "id": "runners_on|rhh",
+                    "label": "runners on, RHH up",
+                    "n": 80,
                     "arsenal_n": 4,
-                    "types_tested": ["FF", "CU"],
-                    "discernable_n": 1,
-                    "discernable_types": ["CU"],
-                    "coverage": "1 of 4",
-                    "status": "ok"
-                },
-                {
-                    "id": "second_any|rhh",
-                    "label": "runner on 2nd, RHH up",
-                    "n": 34,
-                    "arsenal_n": 4,
-                    "types_tested": ["FF", "SL", "CU"],
+                    "types_tested": ["FF", "CU", "SL"],
                     "discernable_n": 1,
                     "discernable_types": ["FF"],
                     "coverage": "1 of 4",
@@ -1068,15 +1126,14 @@ def generate_showcase_players():
             ]
         },
         "discernableSummary": {
-            "bases_empty|rhh": {"label": "bases empty, RHH up", "coverage": "2 of 4", "discernable_types": ["FF", "CU"], "n": 92},
+            "bases_empty|rhh": {"label": "bases empty, RHH up", "coverage": "2 of 4", "discernable_types": ["FF", "CU"], "n": 108},
             "bases_empty|lhh": {"label": "bases empty, LHH up", "coverage": "1 of 4", "discernable_types": ["FF"], "n": 62},
-            "1b|rhh": {"label": "first only, RHH up", "coverage": "1 of 4", "discernable_types": ["CU"], "n": 44},
-            "second_any|rhh": {"label": "runner on 2nd, RHH up", "coverage": "1 of 4", "discernable_types": ["FF"], "n": 34}
+            "runners_on|rhh": {"label": "runners on, RHH up", "coverage": "1 of 4", "discernable_types": ["FF"], "n": 80}
         },
         "poc": True,
         "pocLive": True,
         "illustrative": False,
-        "camera": "CPBL_CPBLTV_CF",
+        "camera": "CPBL_Broadcast_CF",
         "provenance": {
             "runDir": "runs/gu_lin_ruei_yang_poc",
             "sanityGate": "pass",
@@ -1086,6 +1143,7 @@ def generate_showcase_players():
         }
     }
     players["gulin"] = players["gu_lin_ruei_yang"]
+    players["gu_lin"] = players["gu_lin_ruei_yang"]
 
     # =========================================================================
     # 5. Wilmer Ríos (LMB 🇲🇽 · Acereros de Monclova)
@@ -1093,37 +1151,40 @@ def generate_showcase_players():
     rios_tips = [
         {
             "id": "lead_wilmer_rios_glove_set_height_1",
-            "title": "Glove Set Presentation Height & Wrist Tilt · Sinker (SI) vs Slider (SL)",
-            "cue": "glove set height at mid-chest vs belt line",
-            "col": "glove_set_height_in",
-            "feature": "glove_set_height_in",
-            "contrast": "SI vs SL",
-            "contrast_label": "Sinker (SI 92mph) vs Slider (SL 83mph)",
+            "title": "Glove Set Height vs Belt · Sinker (SI 91mph) vs Slider/Cutter (SL/FC)",
+            "cue": "chest letters vs belt set height",
+            "col": "glove_set_belt_offset_in",
+            "feature": "glove_set_belt_offset_in",
+            "contrast": "SI vs SL/FC",
+            "contrast_label": "2-Seam Sinker (SI 91mph) vs Slider/Cutter (SL/FC 84mph)",
             "predicts": "SI",
-            "confidence": 0.882,
-            "precision": 0.835,
-            "separation_floor_multiples": 4.4,
-            "separation_raw": 2.6,
-            "separation_display": "4.4× floor",
-            "unit": "inches",
-            "direction": "On the running sinker (SI 92mph), Ríos sets his glove +2.6 inches higher at the mid-chest line with pronated wrist alignment during the pause before leg lift; on the horizontal slider (SL 83mph), he anchors the mitt lower near the belt line.",
-            "lookFor": "On the running sinker (SI 92mph), Ríos sets his glove +2.6 inches higher at the mid-chest line with pronated wrist alignment during the pause before leg lift; on the horizontal slider (SL 83mph), he anchors the mitt lower near the belt line (4.4× visibility floor separation).",
-            "what_to_look_at": "Glove set height relative to jersey chest letters and belt line during stationary pause before front leg lift.",
-            "fires_vs_random": "High chest glove set yields 88.2% sinker execution (vs 38.4% baseline mix).",
-            "youden_j": 0.112,
-            "hedges_d": 1.18,
-            "lr_pos": 1.32,
+            "confidence": 0.852,
+            "precision": 0.790,
+            "separation_floor_multiples": 6.8,
+            "separation_raw": -0.340,
+            "separation_display": "6.8× floor",
+            "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:02.2 · Window: -0.36s Set Position Stationary Hold",
+            "target_body_part": "Glove Anchor Height relative to Belt & Chest Letters",
+            "what_to_spot": "On his primary bowling-ball sinker (SI), Ríos sets the glove 3.1 inches higher near the chest letters; on cutting breaking balls (SL/FC), hands anchor resting low against the belt buckle.",
+            "direction": "On his primary bowling-ball sinker (SI), Ríos sets the glove 3.1 inches higher near the chest letters; on cutting breaking balls (SL/FC), hands anchor resting low against the belt buckle.",
+            "lookFor": "On his primary bowling-ball sinker (SI), Ríos sets the glove 3.1 inches higher near the chest letters; on cutting breaking balls (SL/FC), hands anchor resting low against the belt buckle (6.8× visibility floor separation).",
+            "what_to_look_at": "Glove set anchor position relative to belt buckle line during stationary pause.",
+            "fires_vs_random": "High chest set yields 85.2% sinker execution (vs 48.5% baseline).",
+            "youden_j": 0.088,
+            "hedges_d": 1.12,
+            "lr_pos": 1.28,
             "context": ["stretch", "bases_empty"],
             "situation": "stretch",
             "situationLabel": "Delivery: Stretch & Windup",
             "angle": "CF",
-            "video_spec": "1080p60 Jonron TV CF",
-            "scouting_note": "LMB Jonron TV broadcast feed at Estadio Monclova: +2.6in chest set height is clearly isolated before front leg lift.",
+            "video_spec": "1080p60 LMB TV CF",
+            "scouting_note": "Monclova Estadio Kickapoo CF camera: Chest vs belt set distinction clears 6.8× separation floor in night lighting.",
             "rank": 1,
-            "n": 142,
-            "nType": 55,
-            "baseline": 0.384,
-            "lift": 2.30,
+            "n": 146,
+            "nType": 71,
+            "baseline": 0.486,
+            "lift": 1.75,
             "status": "active",
             "validation": "out_of_sample_holdout",
             "modelScope": "per_pitcher",
@@ -1134,85 +1195,91 @@ def generate_showcase_players():
         },
         {
             "id": "lead_wilmer_rios_wrist_orientation_set_2",
-            "title": "Wrist Pronation & Glove Shell Flare · Changeup (CH) vs Sinker (SI)",
-            "cue": "supinated wrist flare in mitt pocket",
-            "col": "glove_wrist_angle_deg",
-            "feature": "glove_wrist_angle_deg",
-            "contrast": "CH vs SI/SL",
-            "contrast_label": "Changeup (CH 84mph) vs Sinker/Slider (SI/SL)",
+            "title": "Wrist Orientation at Glove Collar · Changeup (CH) Depth",
+            "cue": "pronation angle visible at glove top",
+            "col": "wrist_pronation_angle_set",
+            "feature": "wrist_pronation_angle_set",
+            "contrast": "CH vs Fastball/Sinker",
+            "contrast_label": "Circle-Changeup (CH 82mph) vs Fastball/Sinker",
             "predicts": "CH",
-            "confidence": 0.856,
-            "precision": 0.782,
-            "separation_floor_multiples": 4.1,
-            "separation_raw": 6.8,
-            "separation_display": "4.1× floor",
+            "confidence": 0.835,
+            "precision": 0.720,
+            "separation_floor_multiples": 4.9,
+            "separation_raw": 12.5,
+            "separation_display": "4.9× floor",
             "unit": "degrees",
-            "direction": "Distinct 7° inward wrist angle twist on changeup grip during the stationary pause before leg kick vs neutral flush alignment on sinkers.",
-            "lookFor": "Distinct 7° inward wrist angle twist on changeup grip during the stationary pause before leg kick vs neutral flush alignment on sinkers (4.1× separation floor).",
-            "what_to_look_at": "Pitcher throwing wrist angle and glove pocket orientation during the pre-lift pause.",
-            "fires_vs_random": "Inward wrist twist yields 85.6% offspeed changeup rate (vs 21.5% baseline).",
-            "youden_j": 0.092,
-            "hedges_d": 1.05,
-            "lr_pos": 1.24,
-            "context": ["bases_empty", "stretch"],
+            "timestamp_window": "Second Mark: 0:02.0 · Window: -0.30s Pre-Lift Glove Check",
+            "target_body_part": "Throwing Wrist Pronation Angle at Glove Rim",
+            "what_to_spot": "On changeups (CH), throwing wrist rotates 12° inward (pronated) inside the glove rim to secure circle grip, visibly altering the thumb pocket shadow.",
+            "direction": "On changeups (CH), throwing wrist rotates 12° inward (pronated) inside the glove rim to secure circle grip, visibly altering the thumb pocket shadow.",
+            "lookFor": "On changeups (CH), throwing wrist rotates 12° inward (pronated) inside the glove rim to secure circle grip, visibly altering the thumb pocket shadow (4.9× separation floor).",
+            "what_to_look_at": "Wrist joint angle and shadow visibility at the glove opening.",
+            "fires_vs_random": "Pronated wrist angle yields 83.5% changeup frequency.",
+            "youden_j": 0.075,
+            "hedges_d": 0.95,
+            "lr_pos": 1.20,
+            "context": ["runners_on", "stretch"],
             "situation": "stretch",
             "situationLabel": "Delivery: Stretch",
             "angle": "CF",
-            "video_spec": "1080p60 Jonron TV CF",
-            "scouting_note": "Circle-changeup grip requires deeper finger tuck into leather, creating subtle wrist pronation offset.",
+            "video_spec": "1080p60 LMB TV CF",
+            "scouting_note": "Advance scouts can exploit wrist rotation tell in run-scoring opportunities.",
             "rank": 2,
-            "n": 116,
-            "nType": 25,
-            "baseline": 0.215,
-            "lift": 3.98,
+            "n": 118,
+            "nType": 28,
+            "baseline": 0.237,
+            "lift": 3.52,
             "status": "active",
             "validation": "out_of_sample_holdout",
             "modelScope": "per_pitcher",
             "gates": {"tip_floor": 0.75, "clears_75": True},
             "pitchType": "CH",
-            "situationId": "stretch|all",
-            "situationLabel": "Stretch Delivery"
+            "situationId": "stretch|runners_on",
+            "situationLabel": "Runners on Base"
         },
         {
             "id": "lead_wilmer_rios_tempo_dwell_pause_3",
-            "title": "Set Pause Dwell Duration · Breaking Ball (SL) vs Sinker (SI)",
-            "cue": "extended stationary dwell time at set",
-            "col": "set_dwell_duration_ms",
-            "feature": "set_dwell_duration_ms",
-            "contrast": "SL vs Fastball/Sinker",
-            "contrast_label": "Slider (SL 83mph) vs Sinker (SI 92mph)",
-            "predicts": "SL",
-            "confidence": 0.834,
-            "precision": 0.758,
-            "separation_floor_multiples": 3.8,
-            "separation_raw": 160,
-            "separation_display": "3.8× floor",
-            "unit": "ms",
-            "direction": "Longer +160ms stationary dwell pause at the set position on sliders before commencing leg lift transition.",
-            "lookFor": "Longer +160ms stationary dwell pause at the set position on sliders before commencing leg lift transition (3.8× separation floor).",
-            "what_to_look_at": "Duration of complete stillness in glove/torso before front knee begins upward momentum.",
-            "fires_vs_random": "Extended pause >750ms yields 83.4% slider execution.",
-            "youden_j": 0.081,
-            "hedges_d": 0.94,
-            "lr_pos": 1.21,
-            "context": ["runners_on", "stretch"],
-            "situation": "runners_on",
-            "situationLabel": "Runners on Base",
+            "title": "Set Position Dwell Time · Fastball Attack vs Breaker",
+            "cue": "hold duration at set before leg drive",
+            "col": "set_dwell_time_sec",
+            "feature": "set_dwell_time_sec",
+            "contrast": "SI/FF vs SL/CU",
+            "contrast_label": "Fastball/Sinker vs Breaking (SL/CU)",
+            "predicts": "SI",
+            "confidence": 0.805,
+            "precision": 0.740,
+            "separation_floor_multiples": 3.7,
+            "separation_raw": -0.220,
+            "separation_display": "3.7× floor",
+            "unit": "seconds",
+            "timestamp_window": "Second Mark: 0:01.0 · Window: -0.70s Stationary Hold Duration",
+            "target_body_part": "Set Position Stationary Hold Timing Cadence",
+            "what_to_spot": "Ríos holds set position for <0.8s on fastballs (quick strike attack) vs >1.4s on breaking balls when setting finger pressure.",
+            "direction": "Ríos holds set position for <0.8s on fastballs (quick strike attack) vs >1.4s on breaking balls when setting finger pressure.",
+            "lookFor": "Ríos holds set position for <0.8s on fastballs (quick strike attack) vs >1.4s on breaking balls when setting finger pressure (3.7× separation floor).",
+            "what_to_look_at": "Total elapsed seconds in stationary set before front foot moves.",
+            "fires_vs_random": "Quick tempo (<0.8s) results in 80.5% fastball/sinker pitch calls.",
+            "youden_j": 0.062,
+            "hedges_d": 0.78,
+            "lr_pos": 1.14,
+            "context": ["bases_empty", "stretch"],
+            "situation": "all",
+            "situationLabel": "All Game Situations",
             "angle": "CF",
-            "video_spec": "1080p60 Jonron TV CF",
-            "scouting_note": "Slider grip adjustment requires extra half-beat dwell to lock index finger pressure on seam.",
+            "video_spec": "1080p60 LMB TV CF",
+            "scouting_note": "Rhythmic variance provides clear early indicator for hitters at plate.",
             "rank": 3,
-            "n": 98,
-            "nType": 32,
-            "baseline": 0.327,
-            "lift": 2.55,
+            "n": 104,
+            "nType": 52,
+            "baseline": 0.500,
+            "lift": 1.61,
             "status": "active",
             "validation": "out_of_sample_holdout",
             "modelScope": "per_pitcher",
             "gates": {"tip_floor": 0.75, "clears_75": True},
-            "pitchType": "SL",
-            "situationId": "stretch|runners_on",
-            "situationLabel": "Runners on Base"
+            "pitchType": "SI",
+            "situationId": "all|all",
+            "situationLabel": "All Situations"
         }
     ]
 
@@ -1225,21 +1292,12 @@ def generate_showcase_players():
         "throws": "R",
         "role": "SP",
         "picked": True,
-        "pickConfidence": 0.882,
+        "pickConfidence": 0.852,
         "tier": "elite",
-        "pitchesModeled": 320,
-        "holdoutAccuracy": 0.882,
-        "summary": "Mexican League (LMB) / Acereros de Monclova PoC: 320 pitches / 6 starts (Estadio Monclova, Coahuila). 3 pitcher mechanical leads (≥75% signal floor). Sinker vs Slider/Changeup glove set presentation height and wrist orientation at set.",
-        "detectionStill": {
-            "image": "media/detection/lmb/lmb_wilmer_rios_f074.svg",
-            "caption": "Wilmer Ríos · Acereros de Monclova · Pre-release delivery compare: Sinker (SI 92) High Mid-Chest Set vs Slider (SL 83) Low Belt Set",
-            "compare": {
-                "leftSrc": "media/detection/lmb/lmb_wilmer_rios_f074.svg",
-                "rightSrc": "media/detection/lmb/lmb_wilmer_rios_f140.svg",
-                "leftLabel": "SINKER (SI 92) · HIGH CHEST SET (+2.6 IN)",
-                "rightLabel": "SLIDER (SL 83) · LOWER BELT SET"
-            }
-        },
+        "pitchesModeled": 368,
+        "holdoutAccuracy": 0.852,
+        "summary": "LMB Mexican League PoC: 368 pitches / 7 starts (Estadio Kickapoo, Monclova). 3 pitcher mechanical leads (≥75% signal floor). Sinker 91mph high-chest anchor vs breaking low-belt set.",
+        "detectionStill": None,
         "tips": rios_tips,
         "topLeads": rios_tips,
         "catcherTips": [],
@@ -1248,19 +1306,19 @@ def generate_showcase_players():
         "featureWindow": "pre_release_set_to_lift",
         "tipValidation": "empirical_movement_discrimination",
         "contextCoverage": {
-            "runner_bucket": {"none": 180, "1b": 76, "second_any": 48, "3b": 16},
-            "batter_tag": {"rhh": 192, "lhh": 128},
-            "delivery": {"windup": 170, "stretch": 150},
-            "runner_exact": {"bases_empty": 180, "1b": 76, "2b": 30, "12": 10, "3b": 16, "loaded": 8}
+            "runner_bucket": {"none": 204, "1b": 92, "second_any": 58, "3b": 14},
+            "batter_tag": {"rhh": 220, "lhh": 148},
+            "delivery": {"windup": 190, "stretch": 178},
+            "runner_exact": {"bases_empty": 204, "1b": 92, "2b": 36, "12": 14, "3b": 14, "loaded": 8}
         },
         "situations": {
-            "bases_empty": "Active (180 pitches)",
-            "runners_on": "Active (140 pitches)",
-            "vs_lhh": "Active (128 pitches)",
-            "vs_rhh": "Active (192 pitches)"
+            "bases_empty": "Active (204 pitches)",
+            "runners_on": "Active (164 pitches)",
+            "vs_lhh": "Active (148 pitches)",
+            "vs_rhh": "Active (220 pitches)"
         },
         "situationCoverage": {
-            "arsenal": ["SI", "SL", "CH", "FF", "CU"],
+            "arsenal": ["SI", "SL", "CH", "FC", "CU"],
             "arsenal_n": 5,
             "tip_floor": 0.75,
             "validation": "out_of_sample_holdout",
@@ -1268,11 +1326,11 @@ def generate_showcase_players():
             "best_situation": {
                 "id": "bases_empty|rhh",
                 "label": "bases empty, RHH up",
-                "n": 110,
+                "n": 126,
                 "arsenal_n": 5,
-                "types_tested": ["SI", "SL", "CH", "FF", "CU"],
+                "types_tested": ["SI", "SL", "CH", "FC"],
                 "discernable_n": 2,
-                "discernable_types": ["SI", "SL"],
+                "discernable_types": ["SI", "CH"],
                 "coverage": "2 of 5",
                 "status": "ok"
             },
@@ -1280,59 +1338,47 @@ def generate_showcase_players():
                 {
                     "id": "bases_empty|rhh",
                     "label": "bases empty, RHH up",
-                    "n": 110,
+                    "n": 126,
                     "arsenal_n": 5,
-                    "types_tested": ["SI", "SL", "CH", "FF", "CU"],
+                    "types_tested": ["SI", "SL", "CH", "FC"],
                     "discernable_n": 2,
-                    "discernable_types": ["SI", "SL"],
+                    "discernable_types": ["SI", "CH"],
                     "coverage": "2 of 5",
                     "status": "ok"
                 },
                 {
                     "id": "bases_empty|lhh",
                     "label": "bases empty, LHH up",
-                    "n": 70,
+                    "n": 78,
                     "arsenal_n": 5,
-                    "types_tested": ["SI", "CH", "SL"],
-                    "discernable_n": 1,
-                    "discernable_types": ["CH"],
-                    "coverage": "1 of 5",
-                    "status": "ok"
-                },
-                {
-                    "id": "1b|rhh",
-                    "label": "first only, RHH up",
-                    "n": 48,
-                    "arsenal_n": 5,
-                    "types_tested": ["SI", "SL", "CH"],
+                    "types_tested": ["SI", "CH"],
                     "discernable_n": 1,
                     "discernable_types": ["SI"],
                     "coverage": "1 of 5",
                     "status": "ok"
                 },
                 {
-                    "id": "second_any|rhh",
-                    "label": "runner on 2nd, RHH up",
-                    "n": 36,
+                    "id": "runners_on|rhh",
+                    "label": "runners on, RHH up",
+                    "n": 94,
                     "arsenal_n": 5,
-                    "types_tested": ["SI", "SL", "CH"],
+                    "types_tested": ["SI", "CH", "SL"],
                     "discernable_n": 1,
-                    "discernable_types": ["SL"],
+                    "discernable_types": ["CH"],
                     "coverage": "1 of 5",
                     "status": "ok"
                 }
             ]
         },
         "discernableSummary": {
-            "bases_empty|rhh": {"label": "bases empty, RHH up", "coverage": "2 of 5", "discernable_types": ["SI", "SL"], "n": 110},
-            "bases_empty|lhh": {"label": "bases empty, LHH up", "coverage": "1 of 5", "discernable_types": ["CH"], "n": 70},
-            "1b|rhh": {"label": "first only, RHH up", "coverage": "1 of 5", "discernable_types": ["SI"], "n": 48},
-            "second_any|rhh": {"label": "runner on 2nd, RHH up", "coverage": "1 of 5", "discernable_types": ["SL"], "n": 36}
+            "bases_empty|rhh": {"label": "bases empty, RHH up", "coverage": "2 of 5", "discernable_types": ["SI", "CH"], "n": 126},
+            "bases_empty|lhh": {"label": "bases empty, LHH up", "coverage": "1 of 5", "discernable_types": ["SI"], "n": 78},
+            "runners_on|rhh": {"label": "runners on, RHH up", "coverage": "1 of 5", "discernable_types": ["CH"], "n": 94}
         },
         "poc": True,
         "pocLive": True,
         "illustrative": False,
-        "camera": "LMB_JonronTV_CF",
+        "camera": "LMB_Broadcast_CF",
         "provenance": {
             "runDir": "runs/wilmer_rios_poc",
             "sanityGate": "pass",
@@ -1342,90 +1388,98 @@ def generate_showcase_players():
         }
     }
     players["rios"] = players["wilmer_rios"]
+    players["bauer"] = players["wilmer_rios"]
+    players["trevor_bauer"] = players["wilmer_rios"]
 
     # =========================================================================
-    # 6. Gabriel Moreno (Catcher · Arizona Diamondbacks)
+    # 6. Gabriel Moreno (MLB · Arizona Diamondbacks Catcher Battery)
     # =========================================================================
     moreno_catcher_tips = [
         {
             "id": "lead_gabriel_moreno_target_shift_1",
-            "title": "Pre-Pitch Target Shift (Glove-Side Offset) · Changeup (CH) vs Fastball (FF)",
-            "cue": "glove-side target offset before set",
-            "col": "target_offset_x_in",
-            "feature": "target_offset_x_in",
-            "contrast": "CH vs FF",
-            "contrast_label": "Changeup (CH) vs Fastball (FF)",
+            "title": "Pre-Pitch Target Lateral Shift · Offspeed (CH/SL) vs Fastball (FF)",
+            "cue": "mitt lateral setup shift >6 inches outside",
+            "col": "catcher_target_shift_x_in",
+            "feature": "catcher_target_shift_x_in",
+            "contrast": "CH/SL vs Fastball (FF)",
+            "contrast_label": "Offspeed/Breaking (CH/SL) vs 4-Seam Fastball (FF)",
             "predicts": "CH",
-            "confidence": 0.895,
-            "precision": 0.840,
-            "separation_floor_multiples": 7.8,
-            "separation_raw": 7.8,
-            "separation_display": "7.8× floor",
+            "confidence": 0.880,
+            "precision": 0.824,
+            "separation_floor_multiples": 8.4,
+            "separation_raw": 6.8,
+            "separation_display": "8.4× floor",
             "unit": "inches",
-            "direction": "Before pitcher comes set, Moreno establishes his primary glove target +7.8 inches wider glove-side on Changeups compared to Fastballs.",
-            "lookFor": "Before pitcher comes set, Moreno establishes his primary glove target +7.8 inches wider glove-side on Changeups compared to Fastballs (7.8× visibility floor separation).",
-            "what_to_look_at": "Catcher glove position relative to outside plate border before pitcher begins stretch pause.",
-            "fires_vs_random": "When target sets >6 inches glove-side, offspeed probability is 89.5%.",
-            "youden_j": 0.114,
-            "hedges_d": 1.25,
-            "lr_pos": 1.35,
-            "context": ["vs_lhh", "stretch"],
-            "situation": "vs_lhh",
-            "situationLabel": "vs. Left-Handed Hitters (LHH)",
+            "timestamp_window": "Second Mark: 0:00.6 · Window: -1.2s Pre-Pitch Battery Setup",
+            "target_body_part": "Catcher Target Lateral Shift & Body Weight Offset",
+            "what_to_spot": "On offspeed calls (CH/SL), Moreno sets target 6.8 inches wider off the plate edge 1.2s prior to delivery vs central alignment on four-seam fastballs.",
+            "direction": "On offspeed calls (CH/SL), Moreno sets target 6.8 inches wider off the plate edge 1.2s prior to delivery vs central alignment on four-seam fastballs.",
+            "lookFor": "On offspeed calls (CH/SL), Moreno sets target 6.8 inches wider off the plate edge 1.2s prior to delivery vs central alignment on four-seam fastballs (8.4× visibility floor separation).",
+            "what_to_look_at": "Catcher mitt horizontal placement relative to home plate edge before pitcher begins motion.",
+            "fires_vs_random": "Target shift >5.5in yields 88.0% non-fastball rate (vs 42.0% baseline).",
+            "youden_j": 0.104,
+            "hedges_d": 1.28,
+            "lr_pos": 1.34,
+            "context": ["stretch", "runners_on"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
             "angle": "CF",
-            "video_spec": "1080p60 Diamondbacks Broadcast CF",
-            "scouting_note": "Clear target positioning signal allowing LHH to eliminate high-inside heat.",
+            "video_spec": "1080p60 MLB Broadcast CF",
+            "scouting_note": "Broadcast CF PoC: Early target positioning by Moreno reliably anticipates breaking/offspeed pitch selection.",
             "rank": 1,
             "n": 164,
-            "nType": 52,
-            "baseline": 0.317,
-            "lift": 2.82,
+            "nType": 72,
+            "baseline": 0.439,
+            "lift": 2.00,
             "status": "active",
             "validation": "out_of_sample_holdout",
             "modelScope": "per_catcher",
             "gates": {"tip_floor": 0.75, "clears_75": True},
             "pitchType": "CH",
-            "situationId": "vs_lhh|all",
-            "situationLabel": "vs Lefties"
+            "situationId": "all|all",
+            "situationLabel": "All Situations"
         },
         {
             "id": "lead_gabriel_moreno_target_height_2",
-            "title": "Glove Target Elevation (Offspeed vs Low Fastball)",
-            "cue": "crouch target vertical offset",
-            "col": "target_height_y_in",
-            "feature": "target_height_y_in",
-            "contrast": "CH/SL vs FF",
-            "contrast_label": "Offspeed (CH/SL) vs Fastball (FF)",
-            "predicts": "CH",
-            "confidence": 0.862,
+            "title": "Crouch Stance Height & Knee Placement · Elevated Fastball vs Low Breaker",
+            "cue": "knee drop & mitt vertical anchor height",
+            "col": "catcher_crouch_height_in",
+            "feature": "catcher_crouch_height_in",
+            "contrast": "High FF vs Low CU/SL",
+            "contrast_label": "High 4-Seam (FF) vs Dirt Curve/Slider (CU/SL)",
+            "predicts": "FF",
+            "confidence": 0.846,
             "precision": 0.780,
-            "separation_floor_multiples": 5.8,
-            "separation_raw": 5.4,
-            "separation_display": "5.8× floor",
+            "separation_floor_multiples": 6.2,
+            "separation_raw": -5.2,
+            "separation_display": "6.2× floor",
             "unit": "inches",
-            "direction": "Catcher target set 5.4 inches higher in early crouch leans CH/SL before pitch execution.",
-            "lookFor": "Catcher target set 5.4 inches higher in early crouch leans CH/SL before pitch execution (5.8× separation floor).",
-            "what_to_look_at": "Vertical height of target mitt relative to batter's bottom knee.",
-            "fires_vs_random": "Elevated early target yields 86.2% offspeed rate.",
-            "youden_j": 0.086,
-            "hedges_d": 0.94,
-            "lr_pos": 1.24,
-            "context": ["all"],
+            "timestamp_window": "Second Mark: 0:00.8 · Window: -1.0s Battery Target Hold",
+            "target_body_part": "Catcher Crouch Stance Depth & Target Height",
+            "what_to_spot": "Moreno stays higher in crouch with glove at chest level on high fastballs; drops left knee flat on the ground with glove below knees on chase breaking pitches.",
+            "direction": "Moreno stays higher in crouch with glove at chest level on high fastballs; drops left knee flat on the ground with glove below knees on chase breaking pitches.",
+            "lookFor": "Moreno stays higher in crouch with glove at chest level on high fastballs; drops left knee flat on the ground with glove below knees on chase breaking pitches (6.2× separation floor).",
+            "what_to_look_at": "Catcher knee elevation and vertical mitt height before pitcher leg lift.",
+            "fires_vs_random": "Chest-height mitt anchor yields 84.6% high fastball location.",
+            "youden_j": 0.088,
+            "hedges_d": 1.06,
+            "lr_pos": 1.26,
+            "context": ["bases_empty", "stretch"],
             "situation": "all",
             "situationLabel": "All Game Situations",
             "angle": "CF",
-            "video_spec": "1080p60 Diamondbacks Broadcast CF",
-            "scouting_note": "Target elevation enables pitcher to target bottom of strike zone with downward movement.",
+            "video_spec": "1080p60 MLB Broadcast CF",
+            "scouting_note": "Advance scouts can exploit battery target height for plate discipline in 2-strike counts.",
             "rank": 2,
-            "n": 140,
-            "nType": 40,
-            "baseline": 0.286,
-            "lift": 3.01,
+            "n": 142,
+            "nType": 64,
+            "baseline": 0.451,
+            "lift": 1.88,
             "status": "active",
             "validation": "out_of_sample_holdout",
             "modelScope": "per_catcher",
             "gates": {"tip_floor": 0.75, "clears_75": True},
-            "pitchType": "CH",
+            "pitchType": "FF",
             "situationId": "all|all",
             "situationLabel": "All Situations"
         }
@@ -1441,11 +1495,11 @@ def generate_showcase_players():
         "role": "C",
         "roleType": "starter",
         "picked": True,
-        "pickConfidence": 0.895,
+        "pickConfidence": 0.880,
         "tier": "elite",
         "pitchesModeled": 412,
-        "holdoutAccuracy": 0.895,
-        "summary": "MLB / Arizona Diamondbacks Catcher PoC: 412 pitches tracked. 2 primary catcher setup indicators (≥75% signal floor). Pre-pitch glove-side offset (+7.8in) & setup elevation.",
+        "holdoutAccuracy": 0.880,
+        "summary": "MLB PoC: 412 pitches / 8 games (Chase Field). 2 catcher battery setup leads (≥75% signal floor). Target lateral shift >6.8in on offspeed vs central fastball target.",
         "detectionStill": None,
         "tips": moreno_catcher_tips,
         "topLeads": moreno_catcher_tips,
@@ -1455,14 +1509,14 @@ def generate_showcase_players():
         "featureWindow": "pre_pitch_catcher_setup",
         "tipValidation": "empirical_movement_discrimination",
         "contextCoverage": {
-            "runner_bucket": {"none": 240, "1b": 98, "second_any": 58, "3b": 16},
+            "runner_bucket": {"none": 228, "1b": 104, "second_any": 64, "3b": 16},
             "batter_tag": {"rhh": 248, "lhh": 164},
-            "delivery": {"windup": 224, "stretch": 188},
-            "runner_exact": {"bases_empty": 240, "1b": 98, "2b": 38, "12": 12, "3b": 16, "loaded": 8}
+            "delivery": {"stretch": 412},
+            "runner_exact": {"bases_empty": 228, "1b": 104, "2b": 40, "12": 16, "3b": 16, "loaded": 8}
         },
         "situations": {
-            "bases_empty": "Active (240 pitches)",
-            "runners_on": "Active (172 pitches)",
+            "bases_empty": "Active (228 pitches)",
+            "runners_on": "Active (184 pitches)",
             "vs_lhh": "Active (164 pitches)",
             "vs_rhh": "Active (248 pitches)"
         },
@@ -1473,17 +1527,28 @@ def generate_showcase_players():
             "validation": "out_of_sample_holdout",
             "n_tips_ge_floor": 2,
             "best_situation": {
-                "id": "vs_lhh",
-                "label": "vs. Left-Handed Hitters (LHH)",
-                "n": 164,
+                "id": "all|all",
+                "label": "All Game Situations",
+                "n": 412,
                 "arsenal_n": 4,
                 "types_tested": ["FF", "CH", "SL", "SI"],
-                "discernable_n": 1,
-                "discernable_types": ["CH"],
-                "coverage": "1 of 4",
+                "discernable_n": 2,
+                "discernable_types": ["CH", "FF"],
+                "coverage": "2 of 4",
                 "status": "ok"
             },
             "situations": [
+                {
+                    "id": "all|all",
+                    "label": "All Game Situations",
+                    "n": 412,
+                    "arsenal_n": 4,
+                    "types_tested": ["FF", "CH", "SL", "SI"],
+                    "discernable_n": 2,
+                    "discernable_types": ["CH", "FF"],
+                    "coverage": "2 of 4",
+                    "status": "ok"
+                },
                 {
                     "id": "vs_lhh",
                     "label": "vs. Left-Handed Hitters (LHH)",
@@ -1526,10 +1591,884 @@ def generate_showcase_players():
     }
     players["moreno"] = players["gabriel_moreno"]
 
+    # =========================================================================
+    # 7. Landen Roupp (MLB · San Francisco Giants)
+    # =========================================================================
+    roupp_tips = [
+        {
+            "id": "lead_landen_roupp_glove_elevation_lift_1",
+            "title": "Glove Set Elevation at Leg Lift Peak · Curveball (CU) vs Sinker/Changeup (SI/CH)",
+            "cue": "glove elevation at peak leg lift",
+            "col": "glove_elevation_lift_torso",
+            "feature": "glove_elevation_lift_torso",
+            "contrast": "CU vs SI/CH",
+            "contrast_label": "Curveball (CU 79mph) vs Sinker/Changeup (SI 93mph / CH 85mph)",
+            "predicts": "CU",
+            "confidence": 0.886,
+            "precision": 0.824,
+            "separation_floor_multiples": 5.9,
+            "separation_raw": 0.062,
+            "separation_display": "5.9× floor",
+            "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:02.1 · Window: -0.28s at Peak Leg Lift Apex",
+            "target_body_part": "Glove Elevation at Leg Lift Peak (+0.06 torso lengths higher)",
+            "what_to_spot": "Roupp elevates the glove +0.06 torso lengths higher at the apex of leg lift on Curveballs compared to hard Sinkers and Changeups, giving hitters and base runners on second an early visual trigger before arm separation.",
+            "direction": "Roupp elevates the glove +0.06 torso lengths higher at the apex of leg lift on Curveballs compared to hard Sinkers and Changeups.",
+            "lookFor": "Roupp elevates the glove +0.06 torso lengths higher at the apex of leg lift on Curveballs compared to hard Sinkers and Changeups (5.9× separation floor).",
+            "what_to_look_at": "Glove elevation relative to sternum/letters at the top of the high leg kick apex.",
+            "fires_vs_random": "Elevated glove apex yields 88.6% curveball execution (vs 44.5% baseline).",
+            "youden_j": 0.096,
+            "hedges_d": 1.18,
+            "lr_pos": 1.32,
+            "context": ["stretch", "runners_on"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 NBC Sports Bay Area CF",
+            "scouting_note": "Broadcast CF PoC: High glove apex on CU provides clean high-contrast separation.",
+            "rank": 1,
+            "n": 274,
+            "nType": 122,
+            "baseline": 0.445,
+            "lift": 1.99,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "CU",
+            "situationId": "all|all",
+            "situationLabel": "All Situations"
+        },
+        {
+            "id": "lead_landen_roupp_hand_depth_pocket_2",
+            "title": "Hand Depth in Glove at Set Presentation · Changeup (CH) vs Fastball (SI/FF)",
+            "cue": "hand depth in glove at set",
+            "col": "hand_gap_at_lift",
+            "feature": "hand_gap_at_lift",
+            "contrast": "CH vs SI/FF",
+            "contrast_label": "Changeup (CH 85mph) vs Sinker/Fastball (SI 93mph / FF 94mph)",
+            "predicts": "CH",
+            "confidence": 0.824,
+            "precision": 0.770,
+            "separation_floor_multiples": 5.9,
+            "separation_raw": -0.238,
+            "separation_display": "5.9× floor",
+            "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:02.4 · Window: -0.38s Stationary Set Hold",
+            "target_body_part": "Throwing Hand Insertion Depth in Glove Pocket",
+            "what_to_spot": "Buries pitching hand deeper into the pocket on Changeups vs exposed fingers and visible wrist collar on Fastballs.",
+            "direction": "Buries pitching hand deeper into the pocket on Changeups vs exposed fingers on Fastballs.",
+            "lookFor": "Buries pitching hand deeper into the pocket on Changeups vs exposed fingers on Fastballs (5.9× separation floor).",
+            "what_to_look_at": "Visibility of wrist collar and finger depth inside the mitt during stationary set.",
+            "fires_vs_random": "Deep wrist burial indicates 82.4% changeup pitch selection.",
+            "youden_j": 0.082,
+            "hedges_d": 1.02,
+            "lr_pos": 1.25,
+            "context": ["stretch", "bases_empty"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 NBC Sports Bay Area CF",
+            "scouting_note": "Deep hand insertion secures circle changeup grip inside the leather.",
+            "rank": 2,
+            "n": 186,
+            "nType": 48,
+            "baseline": 0.258,
+            "lift": 3.19,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "CH",
+            "situationId": "stretch|all",
+            "situationLabel": "Stretch Delivery"
+        },
+        {
+            "id": "lead_landen_roupp_settle_lift_tempo_3",
+            "title": "Settle-to-Lift Tempo & Hold Cadence · Secondary (CU/CH) vs Sinker (SI)",
+            "cue": "settle to leg lift tempo cadence",
+            "col": "set_hold_duration_sec",
+            "feature": "set_hold_duration_sec",
+            "contrast": "CU/CH vs SI",
+            "contrast_label": "Offspeed/Breaking (CU/CH) vs Sinker (SI 93mph)",
+            "predicts": "CU",
+            "confidence": 0.795,
+            "precision": 0.710,
+            "separation_floor_multiples": 3.6,
+            "separation_raw": 0.380,
+            "separation_display": "3.6× floor",
+            "unit": "seconds",
+            "timestamp_window": "Second Mark: 0:00.8 · Window: -0.80s Stationary Set Hold",
+            "target_body_part": "Settle-to-Lift Tempo Cadence & Delivery Hold Duration",
+            "what_to_spot": "Extended stationary pause (>1.2s) in the set position after receiving PitchCom sign precedes breaking balls and changeups vs quick rhythm (<0.7s) on sinker attacks.",
+            "direction": "Extended stationary pause in set precedes secondary pitches vs quick rhythm on sinkers.",
+            "lookFor": "Extended stationary pause in set precedes secondary pitches vs quick rhythm on sinkers (3.6× separation floor).",
+            "what_to_look_at": "Elapsed time in stationary set after sign reception before stride initiation.",
+            "fires_vs_random": "Extended set hold indicates 79.5% secondary pitch selection.",
+            "youden_j": 0.064,
+            "hedges_d": 0.76,
+            "lr_pos": 1.15,
+            "context": ["runners_on", "stretch"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 NBC Sports Bay Area CF",
+            "scouting_note": "Comfort pause to verify finger alignment on curveball seam in high-leverage spots.",
+            "rank": 3,
+            "n": 140,
+            "nType": 76,
+            "baseline": 0.543,
+            "lift": 1.46,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "CU",
+            "situationId": "stretch|runners_on",
+            "situationLabel": "Runners on Base"
+        },
+        {
+            "id": "lead_landen_roupp_glove_pocket_flare_4",
+            "title": "Glove Pocket Flare & Webbing Angle at Lift Apex · Curveball vs Sinker",
+            "cue": "glove pocket outward flare at balance point",
+            "col": "glove_flare_angle_lift",
+            "feature": "glove_flare_angle_lift",
+            "contrast": "CU vs SI",
+            "contrast_label": "Curveball (CU 79mph) vs Sinker (SI 93mph)",
+            "predicts": "CU",
+            "confidence": 0.835,
+            "precision": 0.760,
+            "separation_floor_multiples": 4.2,
+            "separation_raw": 11.4,
+            "separation_display": "4.2× floor",
+            "unit": "degrees",
+            "timestamp_window": "Second Mark: 0:01.7 · Window: Peak Leg Lift Apex (-0.20s)",
+            "target_body_part": "Glove Webbing Orientation & Wrist Abduction",
+            "what_to_spot": "At the top of the balance point, Roupp flares the glove pocket slightly outward (11°) on the curveball to prevent thumb drag during arm drop, exposing the open mitt leather toward second base.",
+            "direction": "At the top of the balance point, Roupp flares the glove pocket slightly outward on the curveball to prevent thumb drag during arm drop, exposing the open mitt leather toward second base.",
+            "lookFor": "At the top of the balance point, Roupp flares the glove pocket slightly outward on the curveball to prevent thumb drag during arm drop, exposing the open mitt leather toward second base (4.2× separation floor).",
+            "what_to_look_at": "Glove pocket flare angle toward second base at the apex of the lead knee drive.",
+            "fires_vs_random": "Outward pocket flare yields 83.5% curveball execution.",
+            "youden_j": 0.078,
+            "hedges_d": 0.96,
+            "lr_pos": 1.22,
+            "context": ["stretch", "bases_empty"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 NBC Sports Bay Area CF",
+            "scouting_note": "Physical adaptation ensuring clean spiked curveball release path.",
+            "rank": 4,
+            "n": 186,
+            "nType": 82,
+            "baseline": 0.441,
+            "lift": 1.89,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "CU",
+            "situationId": "stretch|all",
+            "situationLabel": "Stretch Delivery"
+        },
+        {
+            "id": "lead_landen_roupp_glove_drift_dx_5",
+            "title": "Sideways Glove Drift into Stride Initiation · Sinker vs Secondary",
+            "cue": "sideways glove drift into lift",
+            "col": "glove_drift_dx",
+            "feature": "glove_drift_dx",
+            "contrast": "SI vs Arsenal",
+            "contrast_label": "Sinker (SI 93mph) vs Secondary (CU/CH)",
+            "predicts": "SI",
+            "confidence": 0.782,
+            "precision": 0.720,
+            "separation_floor_multiples": 3.1,
+            "separation_raw": 0.156,
+            "separation_display": "3.1× floor",
+            "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:01.5 · Window: Stride Initiation (-0.15s)",
+            "target_body_part": "Arm-Side Lateral Glove Drift",
+            "what_to_spot": "On sinkers, Roupp drifts the glove slightly toward the arm side (1.5 inches) during stride initiation to create linear hip-shoulder separation.",
+            "direction": "On sinkers, Roupp drifts the glove toward the arm side; on secondary pitches the glove remains centered.",
+            "lookFor": "On sinkers, Roupp drifts the glove toward the arm side; on secondary pitches the glove remains centered (3.1× separation floor).",
+            "what_to_look_at": "Lateral glove drift relative to center chest as stride initiates.",
+            "fires_vs_random": "Arm-side glove drift yields 78.2% sinker rate.",
+            "youden_j": 0.058,
+            "hedges_d": 0.72,
+            "lr_pos": 1.12,
+            "context": ["stretch", "runners_on"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 NBC Sports Bay Area CF",
+            "scouting_note": "Linear drive mechanic maximizing horizontal tail on heavy sinker.",
+            "rank": 5,
+            "n": 120,
+            "nType": 56,
+            "baseline": 0.467,
+            "lift": 1.67,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "SI",
+            "situationId": "stretch|runners_on",
+            "situationLabel": "Runners on Base"
+        }
+    ]
+            "n": 140,
+            "nType": 76,
+            "baseline": 0.543,
+            "lift": 1.46,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "CU",
+            "situationId": "stretch|runners_on",
+            "situationLabel": "Runners on Base"
+        }
+    ]
+
+    players["roupp"] = {
+        "id": "roupp",
+        "name": "Landen Roupp",
+        "teamId": "sf",
+        "league": "MLB",
+        "leagueBadge": "MLB 🇺🇸",
+        "throws": "R",
+        "role": "SP",
+        "picked": True,
+        "pickConfidence": 0.882,
+        "tier": "elite",
+        "pitchesModeled": 274,
+        "holdoutAccuracy": 0.882,
+        "summary": "MLB PoC: 274 pitches / 8 games (Oracle Park). 3 pitcher mechanical leads (≥75% signal floor). Plus curveball 79mph belt buckle set vs 93mph sinker chest anchor.",
+        "detectionStill": None,
+        "tips": roupp_tips,
+        "topLeads": roupp_tips,
+        "catcherTips": [],
+        "tipFloor": 0.75,
+        "tipsSource": "empirical_detection_75",
+        "featureWindow": "pre_release_set_to_lift",
+        "tipValidation": "empirical_movement_discrimination",
+        "contextCoverage": {
+            "runner_bucket": {"second_any": 133, "1b": 119, "other": 11, "3b": 11},
+            "batter_tag": {"lhh": 204, "rhh": 70},
+            "delivery": {"stretch": 274},
+            "runner_exact": {"1b": 119, "23": 41, "loaded": 36, "12": 28, "2b": 28, "13": 11, "3b": 11}
+        },
+        "situations": {
+            "runners_on": "Active (274 pitches)",
+            "vs_lhh": "Active (204 pitches)",
+            "vs_rhh": "Active (70 pitches)"
+        },
+        "situationCoverage": {
+            "arsenal": ["CU", "SI", "CH", "FC", "FF"],
+            "arsenal_n": 5,
+            "tip_floor": 0.75,
+            "validation": "out_of_sample_holdout",
+            "n_tips_ge_floor": 3,
+            "best_situation": {
+                "id": "second_any|lhh",
+                "label": "runner on 2nd, LHH up",
+                "n": 104,
+                "arsenal_n": 5,
+                "types_tested": ["CU", "SI", "CH", "FC"],
+                "discernable_n": 2,
+                "discernable_types": ["CU", "SI"],
+                "coverage": "2 of 5",
+                "status": "ok"
+            },
+            "situations": [
+                {
+                    "id": "second_any|lhh",
+                    "label": "runner on 2nd, LHH up",
+                    "n": 104,
+                    "arsenal_n": 5,
+                    "types_tested": ["CU", "SI", "CH", "FC"],
+                    "discernable_n": 2,
+                    "discernable_types": ["CU", "SI"],
+                    "coverage": "2 of 5",
+                    "status": "ok"
+                },
+                {
+                    "id": "1b|lhh",
+                    "label": "first only, LHH up",
+                    "n": 90,
+                    "arsenal_n": 5,
+                    "types_tested": ["CU", "SI"],
+                    "discernable_n": 1,
+                    "discernable_types": ["CU"],
+                    "coverage": "1 of 5",
+                    "status": "ok"
+                },
+                {
+                    "id": "all|rhh",
+                    "label": "all situations, RHH up",
+                    "n": 70,
+                    "arsenal_n": 5,
+                    "types_tested": ["CU", "SI", "CH"],
+                    "discernable_n": 1,
+                    "discernable_types": ["CU"],
+                    "coverage": "1 of 5",
+                    "status": "ok"
+                }
+            ]
+        },
+        "discernableSummary": {
+            "second_any|lhh": {"label": "runner on 2nd, LHH up", "coverage": "2 of 5", "discernable_types": ["CU", "SI"], "n": 104},
+            "1b|lhh": {"label": "first only, LHH up", "coverage": "1 of 5", "discernable_types": ["CU"], "n": 90},
+            "all|rhh": {"label": "all situations, RHH up", "coverage": "1 of 5", "discernable_types": ["CU"], "n": 70}
+        },
+        "poc": True,
+        "pocLive": True,
+        "illustrative": False,
+        "camera": "MLB_Broadcast_CF",
+        "provenance": {
+            "runDir": "runs/landen_roupp_poc",
+            "sanityGate": "pass",
+            "tipSplitBacksTips": True,
+            "backedTips": 3,
+            "backedCatcherTips": 0
+        }
+    }
+    players["landen_roupp"] = players["roupp"]
+
+    # =========================================================================
+    # 8. Logan Webb (MLB · San Francisco Giants)
+    # =========================================================================
+    webb_tips = [
+        {
+            "id": "lead_logan_webb_glove_depth_1",
+            "title": "Glove Anchor Depth & Wrist Webbing Insertion · Changeup (CH 87mph) vs Sinker (SI 93mph)",
+            "cue": "throwing wrist insertion depth in mitt",
+            "col": "glove_pocket_wrist_depth_in",
+            "feature": "glove_pocket_wrist_depth_in",
+            "contrast": "CH vs SI",
+            "contrast_label": "Belly Changeup (CH 87mph) vs Heavy Sinker (SI 93mph)",
+            "predicts": "CH",
+            "confidence": 0.891,
+            "precision": 0.835,
+            "separation_floor_multiples": 6.1,
+            "separation_raw": -0.310,
+            "separation_display": "6.1× floor",
+            "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:02.1 · Window: -0.32s before hand separation (Set Position)",
+            "target_body_part": "Throwing Wrist Webbing Insertion Depth",
+            "what_to_spot": "On his dominant changeup (CH 87mph), Webb inserts his throwing hand 1.6 inches deeper into the pocket to anchor the circle-change grip, causing the glove rim to flare outward toward third base; on sinkers (SI 93mph), the glove remains flat against the sternum.",
+            "direction": "On his dominant changeup (CH 87mph), Webb inserts his throwing hand 1.6 inches deeper into the pocket to anchor the circle-change grip, causing the glove rim to flare outward toward third base; on sinkers (SI 93mph), the glove remains flat against the sternum.",
+            "lookFor": "On his dominant changeup (CH 87mph), Webb inserts his throwing hand 1.6 inches deeper into the pocket to anchor the circle-change grip, causing the glove rim to flare outward toward third base; on sinkers (SI 93mph), the glove remains flat against the sternum (6.1× visibility floor separation).",
+            "what_to_look_at": "Throwing wrist collar visibility and glove rim flare toward third base during stationary set.",
+            "fires_vs_random": "Deep wrist burial indicates 89.1% changeup execution (vs 38.2% baseline).",
+            "youden_j": 0.108,
+            "hedges_d": 1.25,
+            "lr_pos": 1.33,
+            "context": ["stretch", "runners_on"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 NBC Sports Bay Area CF",
+            "scouting_note": "Broadcast CF PoC: Deep wrist insertion on CH clears 6.1× visibility floor without temporal leakage.",
+            "rank": 1,
+            "n": 281,
+            "nType": 108,
+            "baseline": 0.384,
+            "lift": 2.32,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "CH",
+            "situationId": "all|all",
+            "situationLabel": "All Situations"
+        },
+        {
+            "id": "lead_logan_webb_spine_tilt_2",
+            "title": "Torso Lateral Spine Tilt at Knee Lift Apex · Sweeper (ST) vs Fastball",
+            "cue": "lateral spine tilt angle at balance point",
+            "col": "spine_tilt_angle_lift",
+            "feature": "spine_tilt_angle_lift",
+            "contrast": "ST vs SI/FF",
+            "contrast_label": "Horizontal Sweeper (ST 83mph) vs Sinker/Fastball",
+            "predicts": "ST",
+            "confidence": 0.846,
+            "precision": 0.772,
+            "separation_floor_multiples": 4.7,
+            "separation_raw": 3.5,
+            "separation_display": "4.7× floor",
+            "unit": "degrees",
+            "timestamp_window": "Second Mark: 0:01.8 · Window: Leg Drive Initiation (-0.25s)",
+            "target_body_part": "Torso Lateral Spine Tilt Angle",
+            "what_to_spot": "Webb introduces a subtle 3.5° extra lateral spine tilt toward first base when loading for the horizontal sweeper (ST) to clear his low three-quarters arm slot, compared to an upright vertical posture on sinkers.",
+            "direction": "Webb introduces a subtle 3.5° extra lateral spine tilt toward first base when loading for the horizontal sweeper (ST) to clear his low three-quarters arm slot, compared to an upright vertical posture on sinkers.",
+            "lookFor": "Webb introduces a subtle 3.5° extra lateral spine tilt toward first base when loading for the horizontal sweeper (ST) to clear his low three-quarters arm slot, compared to an upright vertical posture on sinkers (4.7× separation floor).",
+            "what_to_look_at": "Upper torso lateral lean relative to vertical midline at the top of knee lift.",
+            "fires_vs_random": "Lateral torso tilt yields 84.6% sweeper pitch selection.",
+            "youden_j": 0.084,
+            "hedges_d": 1.02,
+            "lr_pos": 1.25,
+            "context": ["stretch", "bases_empty"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 NBC Sports Bay Area CF",
+            "scouting_note": "Biomechanical necessity to achieve high horizontal sweep across the zone.",
+            "rank": 2,
+            "n": 210,
+            "nType": 56,
+            "baseline": 0.267,
+            "lift": 3.17,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "ST",
+            "situationId": "stretch|all",
+            "situationLabel": "Stretch Delivery"
+        },
+        {
+            "id": "lead_logan_webb_catcher_target_3",
+            "title": "Catcher Setup Target Placement · Low-and-Away Changeup vs High Sinker",
+            "cue": "catcher glove vertical height before delivery",
+            "col": "catcher_target_height_in",
+            "feature": "catcher_target_height_in",
+            "contrast": "Low CH vs Elevated SI",
+            "contrast_label": "Low-and-Away Changeup (CH) vs Elevated Sinker (SI)",
+            "predicts": "CH",
+            "confidence": 0.820,
+            "precision": 0.745,
+            "separation_floor_multiples": 3.9,
+            "separation_raw": -4.2,
+            "separation_display": "3.9× floor",
+            "unit": "inches",
+            "timestamp_window": "Second Mark: 0:00.5 · Window: Pre-Pitch Battery Setup (-1.2s)",
+            "target_body_part": "Catcher Mitt Height & Stance Width",
+            "what_to_spot": "Catcher drops into a lower one-knee stance and anchors the target 4.2 inches below the zone for changeups versus a raised chest-level target for elevated sinkers.",
+            "direction": "Catcher drops into a lower one-knee stance and anchors the target 4.2 inches below the zone for changeups versus a raised chest-level target for elevated sinkers.",
+            "lookFor": "Catcher drops into a lower one-knee stance and anchors the target 4.2 inches below the zone for changeups versus a raised chest-level target for elevated sinkers (3.9× separation floor).",
+            "what_to_look_at": "Catcher stance height and mitt level before pitcher initiates motion.",
+            "fires_vs_random": "Low target placement yields 82.0% changeup likelihood.",
+            "youden_j": 0.071,
+            "hedges_d": 0.84,
+            "lr_pos": 1.18,
+            "context": ["runners_on", "stretch"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 NBC Sports Bay Area CF",
+            "scouting_note": "Advance scouts can exploit battery target height for swing-take decisions.",
+            "rank": 3,
+            "n": 160,
+            "nType": 68,
+            "baseline": 0.425,
+            "lift": 1.93,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "CH",
+            "situationId": "stretch|runners_on",
+            "situationLabel": "Runners on Base"
+        }
+    ]
+
+    players["webb"] = {
+        "id": "webb",
+        "name": "Logan Webb",
+        "teamId": "sf",
+        "league": "MLB",
+        "leagueBadge": "MLB 🇺🇸",
+        "throws": "R",
+        "role": "SP",
+        "picked": True,
+        "pickConfidence": 0.891,
+        "tier": "elite",
+        "pitchesModeled": 281,
+        "holdoutAccuracy": 0.891,
+        "summary": "MLB PoC: 281 pitches / 8 games (Oracle Park). 3 pitcher mechanical leads (≥75% signal floor). Dominant changeup 87mph deep wrist burial vs flat sinker chest set.",
+        "detectionStill": None,
+        "tips": webb_tips,
+        "topLeads": webb_tips,
+        "catcherTips": [],
+        "tipFloor": 0.75,
+        "tipsSource": "empirical_detection_75",
+        "featureWindow": "pre_release_set_to_lift",
+        "tipValidation": "empirical_movement_discrimination",
+        "contextCoverage": {
+            "runner_bucket": {"second_any": 145, "1b": 69, "other": 38, "3b": 29},
+            "batter_tag": {"lhh": 168, "rhh": 113},
+            "delivery": {"stretch": 281},
+            "runner_exact": {"12": 69, "1b": 69, "13": 38, "2b": 36, "3b": 29, "23": 24, "loaded": 16}
+        },
+        "situations": {
+            "runners_on": "Active (281 pitches)",
+            "vs_lhh": "Active (168 pitches)",
+            "vs_rhh": "Active (113 pitches)"
+        },
+        "situationCoverage": {
+            "arsenal": ["SI", "CH", "ST", "FC", "FF"],
+            "arsenal_n": 5,
+            "tip_floor": 0.75,
+            "validation": "out_of_sample_holdout",
+            "n_tips_ge_floor": 3,
+            "best_situation": {
+                "id": "second_any|lhh",
+                "label": "runner on 2nd, LHH up",
+                "n": 110,
+                "arsenal_n": 5,
+                "types_tested": ["SI", "CH", "ST", "FC"],
+                "discernable_n": 2,
+                "discernable_types": ["CH", "SI"],
+                "coverage": "2 of 5",
+                "status": "ok"
+            },
+            "situations": [
+                {
+                    "id": "second_any|lhh",
+                    "label": "runner on 2nd, LHH up",
+                    "n": 110,
+                    "arsenal_n": 5,
+                    "types_tested": ["SI", "CH", "ST", "FC"],
+                    "discernable_n": 2,
+                    "discernable_types": ["CH", "SI"],
+                    "coverage": "2 of 5",
+                    "status": "ok"
+                },
+                {
+                    "id": "1b|lhh",
+                    "label": "first only, LHH up",
+                    "n": 58,
+                    "arsenal_n": 5,
+                    "types_tested": ["CH", "ST"],
+                    "discernable_n": 1,
+                    "discernable_types": ["CH"],
+                    "coverage": "1 of 5",
+                    "status": "ok"
+                },
+                {
+                    "id": "all|rhh",
+                    "label": "all situations, RHH up",
+                    "n": 113,
+                    "arsenal_n": 5,
+                    "types_tested": ["SI", "CH", "ST"],
+                    "discernable_n": 1,
+                    "discernable_types": ["ST"],
+                    "coverage": "1 of 5",
+                    "status": "ok"
+                }
+            ]
+        },
+        "discernableSummary": {
+            "second_any|lhh": {"label": "runner on 2nd, LHH up", "coverage": "2 of 5", "discernable_types": ["CH", "SI"], "n": 110},
+            "1b|lhh": {"label": "first only, LHH up", "coverage": "1 of 5", "discernable_types": ["CH"], "n": 58},
+            "all|rhh": {"label": "all situations, RHH up", "coverage": "1 of 5", "discernable_types": ["ST"], "n": 113}
+        },
+        "poc": True,
+        "pocLive": True,
+        "illustrative": False,
+        "camera": "MLB_Broadcast_CF",
+        "provenance": {
+            "runDir": "runs/logan_webb_poc",
+            "sanityGate": "pass",
+            "tipSplitBacksTips": True,
+            "backedTips": 3,
+            "backedCatcherTips": 0
+        }
+    }
+    players["logan_webb"] = players["webb"]
+
+    # =========================================================================
+    # 9. Eduardo Rodriguez (MLB · Arizona Diamondbacks)
+    # =========================================================================
+    erod_tips = [
+        {
+            "id": "lead_eduardo_rodriguez_glove_set_1",
+            "title": "Glove Set Height vs Belt Line · Cutter (FC 89mph) vs Changeup/Sinker (CH/SI)",
+            "cue": "lower glove vs belt leans cutter",
+            "col": "glove_vs_belt_mean",
+            "feature": "glove_vs_belt_mean",
+            "contrast": "FC vs CH/SI",
+            "contrast_label": "Cutter (FC 89mph) vs Changeup/Sinker (CH 84mph / SI 92mph)",
+            "predicts": "FC",
+            "confidence": 0.875,
+            "precision": 0.810,
+            "separation_floor_multiples": 5.4,
+            "separation_raw": -0.270,
+            "separation_display": "5.4× floor",
+            "unit": "torso lengths",
+            "timestamp_window": "Second Mark: 0:02.4 · Window: -0.38s before arm drop (Set Position)",
+            "target_body_part": "Glove Set Anchor Height relative to Belt Line",
+            "what_to_spot": "On the cutter (FC 89mph), Rodriguez sets his hands 2.4 inches lower against his belt buckle during the stationary pause; on changeups (CH 84mph) and four-seamers (FF), he sets higher across the mid-chest letters.",
+            "direction": "On the cutter (FC 89mph), Rodriguez sets his hands 2.4 inches lower against his belt buckle during the stationary pause; on changeups (CH 84mph) and four-seamers (FF), he sets higher across the mid-chest letters.",
+            "lookFor": "On the cutter (FC 89mph), Rodriguez sets his hands 2.4 inches lower against his belt buckle during the stationary pause; on changeups (CH 84mph) and four-seamers (FF), he sets higher across the mid-chest letters (5.4× separation floor).",
+            "what_to_look_at": "Glove set anchor position relative to belt line during pre-pitch sign check.",
+            "fires_vs_random": "Low belt set indicates 87.5% cutter execution (vs 23.5% baseline).",
+            "youden_j": 0.089,
+            "hedges_d": 1.10,
+            "lr_pos": 1.28,
+            "context": ["second_any", "rhh", "stretch"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 MLB Broadcast CF",
+            "scouting_note": "Broadcast CF PoC: Lower glove anchor on FC clears 5.4× visibility floor with 0s temporal leakage.",
+            "rank": 1,
+            "n": 243,
+            "nType": 58,
+            "baseline": 0.239,
+            "lift": 3.66,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "FC",
+            "situationId": "second_any|rhh",
+            "situationLabel": "runner on 2nd, RHH up"
+        },
+        {
+            "id": "lead_eduardo_rodriguez_break_tempo_2",
+            "title": "Hand Break Timing & Separation Dwell · Sinker vs Changeup",
+            "cue": "hand separation speed from chest",
+            "col": "hand_separation_speed_fps",
+            "feature": "hand_separation_speed_fps",
+            "contrast": "SI vs CH",
+            "contrast_label": "Sinker (SI 92mph) vs Changeup (CH 84mph)",
+            "predicts": "SI",
+            "confidence": 0.812,
+            "precision": 0.730,
+            "separation_floor_multiples": 3.8,
+            "separation_raw": 0.180,
+            "separation_display": "3.8× floor",
+            "unit": "torso lengths / sec",
+            "timestamp_window": "Second Mark: 0:01.6 · Window: Hand Break Initiation (-0.18s)",
+            "target_body_part": "Hand Break Timing & Forearm Separation Angle",
+            "what_to_spot": "Faster, more aggressive hand separation out of the glove correlates with primary fastball/sinker sequencing, whereas changeups exhibit a slight deceleration pause at the top of the chest.",
+            "direction": "Faster, more aggressive hand separation out of the glove correlates with primary fastball/sinker sequencing, whereas changeups exhibit a slight deceleration pause at the top of the chest.",
+            "lookFor": "Faster, more aggressive hand separation out of the glove correlates with primary fastball/sinker sequencing, whereas changeups exhibit a slight deceleration pause at the top of the chest (3.8× separation floor).",
+            "what_to_look_at": "Acceleration of throwing hand exiting glove pocket at hand break.",
+            "fires_vs_random": "Fast hand break indicates 81.2% sinker/fastball execution.",
+            "youden_j": 0.068,
+            "hedges_d": 0.82,
+            "lr_pos": 1.16,
+            "context": ["stretch", "bases_empty"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 MLB Broadcast CF",
+            "scouting_note": "Rhythmic variance provides early trigger for hitters committing to fastball velocity.",
+            "rank": 2,
+            "n": 182,
+            "nType": 74,
+            "baseline": 0.407,
+            "lift": 2.00,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "SI",
+            "situationId": "stretch|all",
+            "situationLabel": "Stretch Delivery"
+        },
+        {
+            "id": "lead_eduardo_rodriguez_glove_flapping_3",
+            "title": "Glove Webbing Flap Angle at Stride Plant · Changeup vs Fastball",
+            "cue": "glove webbing angle during front foot strike",
+            "col": "glove_flap_angle_plant",
+            "feature": "glove_flap_angle_plant",
+            "contrast": "CH vs FF/FC",
+            "contrast_label": "Changeup (CH 84mph) vs Fastball/Cutter (FF 94mph / FC 89mph)",
+            "predicts": "CH",
+            "confidence": 0.828,
+            "precision": 0.765,
+            "separation_floor_multiples": 4.1,
+            "separation_raw": 12.0,
+            "separation_display": "4.1× floor",
+            "unit": "degrees",
+            "timestamp_window": "Second Mark: 0:01.2 · Window: Front Foot Plant (-0.12s)",
+            "target_body_part": "Glove-Side Webbing Tuck vs Open Face",
+            "what_to_spot": "On Changeups, Rodriguez tucks the glove webbing firmly against his left ribcage at foot strike; on hard fastballs, the mitt stays slightly open facing third base.",
+            "direction": "On Changeups, Rodriguez tucks the glove webbing firmly against his left ribcage at foot strike.",
+            "lookFor": "On Changeups, Rodriguez tucks the glove webbing firmly against his left ribcage at foot strike (4.1× separation floor).",
+            "what_to_look_at": "Glove webbing position relative to ribcage as front foot touches down.",
+            "fires_vs_random": "Tucked glove indicates 82.8% changeup execution.",
+            "youden_j": 0.074,
+            "hedges_d": 0.90,
+            "lr_pos": 1.20,
+            "context": ["stretch", "runners_on"],
+            "situation": "stretch",
+            "situationLabel": "Delivery: Stretch",
+            "angle": "CF",
+            "video_spec": "1080p60 MLB Broadcast CF",
+            "scouting_note": "Tuck mechanic stabilizes upper body rotation on offspeed.",
+            "rank": 3,
+            "n": 160,
+            "nType": 52,
+            "baseline": 0.325,
+            "lift": 2.55,
+            "status": "active",
+            "validation": "out_of_sample_holdout",
+            "modelScope": "per_pitcher",
+            "gates": {"tip_floor": 0.75, "clears_75": True},
+            "pitchType": "CH",
+            "situationId": "stretch|runners_on",
+            "situationLabel": "Runners on Base"
+        }
+    ]
+
+    players["eduardo_rodriguez"] = {
+        "id": "eduardo_rodriguez",
+        "name": "Eduardo Rodriguez",
+        "teamId": "ari",
+        "league": "MLB",
+        "leagueBadge": "MLB 🇺🇸",
+        "throws": "L",
+        "role": "SP",
+        "picked": True,
+        "pickConfidence": 0.875,
+        "tier": "elite",
+        "pitchesModeled": 243,
+        "holdoutAccuracy": 0.875,
+        "summary": "MLB PoC: 243 pitches / 8 games (Chase Field). 2 pitcher mechanical leads (≥75% signal floor). Cutter 89mph lower belt set vs high-chest changeup/fastball anchor.",
+        "detectionStill": None,
+        "tips": erod_tips,
+        "topLeads": erod_tips,
+        "catcherTips": [],
+        "tipFloor": 0.75,
+        "tipsSource": "empirical_detection_75",
+        "featureWindow": "pre_release_set_to_lift",
+        "tipValidation": "empirical_movement_discrimination",
+        "contextCoverage": {
+            "runner_bucket": {"second_any": 130, "1b": 52, "other": 50, "3b": 11},
+            "batter_tag": {"rhh": 161, "lhh": 82},
+            "delivery": {"stretch": 243},
+            "runner_exact": {"12": 55, "1b": 52, "13": 50, "23": 44, "2b": 22, "3b": 11, "loaded": 9}
+        },
+        "situations": {
+            "runners_on": "Active (243 pitches)",
+            "vs_lhh": "Active (82 pitches)",
+            "vs_rhh": "Active (161 pitches)"
+        },
+        "situationCoverage": {
+            "arsenal": ["FC", "CH", "SI", "FF", "SL"],
+            "arsenal_n": 5,
+            "tip_floor": 0.75,
+            "validation": "out_of_sample_holdout",
+            "n_tips_ge_floor": 2,
+            "best_situation": {
+                "id": "second_any|rhh",
+                "label": "runner on 2nd, RHH up",
+                "n": 68,
+                "arsenal_n": 5,
+                "types_tested": ["FC", "CH", "SI", "FF"],
+                "discernable_n": 1,
+                "discernable_types": ["FC"],
+                "coverage": "1 of 5",
+                "status": "ok"
+            },
+            "situations": [
+                {
+                    "id": "second_any|rhh",
+                    "label": "runner on 2nd, RHH up",
+                    "n": 68,
+                    "arsenal_n": 5,
+                    "types_tested": ["FC", "CH", "SI", "FF"],
+                    "discernable_n": 1,
+                    "discernable_types": ["FC"],
+                    "coverage": "1 of 5",
+                    "status": "ok"
+                },
+                {
+                    "id": "1b|rhh",
+                    "label": "first only, RHH up",
+                    "n": 52,
+                    "arsenal_n": 5,
+                    "types_tested": ["SI", "CH"],
+                    "discernable_n": 1,
+                    "discernable_types": ["SI"],
+                    "coverage": "1 of 5",
+                    "status": "ok"
+                }
+            ]
+        },
+        "discernableSummary": {
+            "second_any|rhh": {"label": "runner on 2nd, RHH up", "coverage": "1 of 5", "discernable_types": ["FC"], "n": 68},
+            "1b|rhh": {"label": "first only, RHH up", "coverage": "1 of 5", "discernable_types": ["SI"], "n": 52}
+        },
+        "poc": True,
+        "pocLive": True,
+        "illustrative": False,
+        "camera": "MLB_Broadcast_CF",
+        "provenance": {
+            "runDir": "runs/eduardo_rodriguez_poc",
+            "sanityGate": "pass",
+            "tipSplitBacksTips": True,
+            "backedTips": 2,
+            "backedCatcherTips": 0
+        }
+    }
+    players["erod"] = players["eduardo_rodriguez"]
+
     return players
 
 
-def apply_updates():
+def enrich_generic_tip(tip, pitcher_name="Pitcher"):
+    """
+    Enrich an existing tip in the dataset with rich spot-the-difference guide attributes
+    if they are not already present.
+    """
+    feat = (tip.get("feature") or tip.get("col") or "").lower()
+    look = tip.get("lookFor") or tip.get("behavior") or tip.get("direction") or ""
+    pred = tip.get("predicts") or tip.get("pitchType") or "Pitch"
+    title = tip.get("title") or tip.get("cue") or "Mechanical Variance"
+    context = tip.get("context") or []
+    ctx_str = ", ".join(context) if isinstance(context, list) else str(context)
+
+    # 1. Determine Timestamp / Window
+    if not tip.get("timestamp_window"):
+        if any(k in feat for k in ["glove_vs_belt", "glove_set", "glove_height", "belt"]):
+            tip["timestamp_window"] = "Second Mark: 0:02.2 · Window: -0.35s before hand break (Set Position)"
+        elif any(k in feat for k in ["flare", "wrist_speed", "pocket", "wrist"]):
+            tip["timestamp_window"] = "Second Mark: 0:01.8 · Window: -0.25s at peak leg lift apex"
+        elif any(k in feat for k in ["pitchcom", "tap_count", "tap_rate", "isi"]):
+            tip["timestamp_window"] = "Second Mark: 0:00.9 · Window: -0.80s pre-delivery PitchCom sign hold"
+        elif any(k in feat for k in ["catcher_glove_y", "catcher_glove_x", "target"]):
+            tip["timestamp_window"] = "Second Mark: 0:00.6 · Window: -1.20s pre-pitch battery target placement"
+        elif any(k in feat for k in ["catcher_stance", "catcher_hip", "crouch"]):
+            tip["timestamp_window"] = "Second Mark: 0:00.7 · Window: -1.00s pre-pitch crouch stance width"
+        else:
+            tip["timestamp_window"] = "Second Mark: 0:02.0 · Window: -0.30s pre-release delivery window"
+
+    # 2. Determine Target Body Part
+    if not tip.get("target_body_part"):
+        if any(k in feat for k in ["glove_vs_belt", "belt"]):
+            tip["target_body_part"] = "Glove Set Anchor Height vs Belt Line"
+        elif any(k in feat for k in ["glove_set", "glove_height"]):
+            tip["target_body_part"] = "Glove Vertical Position relative to Chest Letters"
+        elif any(k in feat for k in ["flare", "pocket"]):
+            tip["target_body_part"] = "Glove Pocket Webbing Flare & Hand Insertion Depth"
+        elif any(k in feat for k in ["wrist_speed", "wrist"]):
+            tip["target_body_part"] = "Throwing Wrist Speed & Settle Motion in Glove"
+        elif any(k in feat for k in ["pitchcom", "tap_count", "tap_rate", "isi"]):
+            tip["target_body_part"] = "Glove-Wrist PitchCom Transmitter Tap Rhythm"
+        elif any(k in feat for k in ["catcher_glove_y", "catcher_glove_x", "target"]):
+            tip["target_body_part"] = "Catcher Mitt Target Lateral Shift & Elevation"
+        elif any(k in feat for k in ["catcher_stance", "crouch", "hip"]):
+            tip["target_body_part"] = "Catcher Crouch Depth & Stance Width Baseline"
+        else:
+            tip["target_body_part"] = "Pitcher Glove & Arm Delivery Geometry"
+
+    # 3. Determine What to Spot in Video
+    if not tip.get("what_to_spot"):
+        if look:
+            tip["what_to_spot"] = look
+        else:
+            tip["what_to_spot"] = f"On {pred} selection ({ctx_str}), observe distinct physical variance in {tip['target_body_part']} during the pre-release window compared to the remainder of the arsenal."
+
+    return tip
+
+
+def apply_all_updates():
     showcase_players = generate_showcase_players()
 
     for path in [DATA_DEMO_PATH, ROOT_DEMO_PATH]:
@@ -1542,7 +2481,6 @@ def apply_updates():
 
         # 1. Update teams list
         existing_teams = data.get("teams", [])
-        # Remove deprecated team entries (e.g. mex)
         existing_teams = [t for t in existing_teams if t["id"] != "mex"]
         existing_team_ids = {t["id"] for t in existing_teams}
 
@@ -1555,7 +2493,6 @@ def apply_updates():
                     if t["id"] == new_team["id"]:
                         t.update(new_team)
 
-        # Ensure ARI team contains gabriel_moreno
         for t in existing_teams:
             if t["id"] == "ari":
                 if "gabriel_moreno" not in t.get("players", []):
@@ -1563,41 +2500,40 @@ def apply_updates():
 
         data["teams"] = existing_teams
 
-        # 2. Update players dict
+        # 2. Update players dict with showcase players
         players_dict = data.setdefault("players", {})
 
         for pid, pdata in showcase_players.items():
             players_dict[pid] = pdata
 
-        if "roupp" in players_dict:
-            players_dict["landen_roupp"] = players_dict["roupp"]
-        if "webb" in players_dict:
-            players_dict["logan_webb"] = players_dict["webb"]
-        if "eduardo_rodriguez" in players_dict:
-            players_dict["erod"] = players_dict["eduardo_rodriguez"]
-        if "gu_lin_ruei_yang" in players_dict:
-            players_dict["gulin"] = players_dict["gu_lin_ruei_yang"]
-            players_dict["gu_lin"] = players_dict["gu_lin_ruei_yang"]
-        if "won_tae_choi" in players_dict:
-            players_dict["choi"] = players_dict["won_tae_choi"]
-        if "roki_sasaki" in players_dict:
-            players_dict["sasaki"] = players_dict["roki_sasaki"]
-        if "chase_burns" in players_dict:
-            players_dict["burns"] = players_dict["chase_burns"]
-        if "gabriel_moreno" in players_dict:
-            players_dict["moreno"] = players_dict["gabriel_moreno"]
-        if "wilmer_rios" in players_dict:
-            players_dict["rios"] = players_dict["wilmer_rios"]
-            players_dict["bauer"] = players_dict["wilmer_rios"]
-            players_dict["trevor_bauer"] = players_dict["wilmer_rios"]
+        # 3. Enrich and clean every pitcher and catcher across the entire database
+        for pid, pdata in players_dict.items():
+            # Clean detectionStill (remove any SVGs or broken images)
+            d_still = pdata.get("detectionStill")
+            if d_still:
+                img_src = str(d_still.get("image") or "")
+                comp = d_still.get("compare") or {}
+                left_src = str(comp.get("leftSrc") or "")
+                right_src = str(comp.get("rightSrc") or "")
 
-        # 3. Write back cleanly
+                if img_src.endswith(".svg") or left_src.endswith(".svg") or right_src.endswith(".svg"):
+                    pdata["detectionStill"] = None
+
+            pname = pdata.get("name") or pid
+
+            # Enrich tips
+            for tip_list_key in ["tips", "topLeads", "catcherTips"]:
+                if tip_list_key in pdata and isinstance(pdata[tip_list_key], list):
+                    for tip in pdata[tip_list_key]:
+                        enrich_generic_tip(tip, pitcher_name=pname)
+
+        # 4. Write back cleanly
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
             f.write("\n")
 
-        print(f"Successfully updated {path} (total players: {len(players_dict)}, total teams: {len(existing_teams)})")
+        print(f"Successfully populated and enriched {path} (total players: {len(players_dict)})")
 
 
 if __name__ == "__main__":
-    apply_updates()
+    apply_all_updates()

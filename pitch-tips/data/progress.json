@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 61,
-  "remaining": 633,
+  "remaining": 632,
   "sec_per_pitch": 10.0,
   "eta_hours": 518.0,
   "est_total_pitches": 186470,
   "current": {
-    "name": "Anthony Molina",
-    "team": "SF",
-    "message": "pitcher [11/11] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Sandy Alcantara",
+    "team": "OTH",
+    "message": "pitcher [1/638] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -1117,6 +1117,26 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/trent_harris_poc",
       "schema": "rich_72col",
       "n_current_tracks": 152,
+      "ready": false,
+      "state": "tracking"
+    },
+    "683627": {
+      "name": "Anthony Molina",
+      "team": "SF",
+      "n_tracked": 35,
+      "holdout": 0.278,
+      "tips_ge_75": 4,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout",
+        "placement",
+        "volume"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/anthony_molina_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 35,
       "ready": false,
       "state": "tracking"
     }
@@ -2576,9 +2596,9 @@
     },
     "SF": {
       "queued": 11,
-      "done": 10,
-      "pitcher_tips": 24,
-      "catcher_tips": 17
+      "done": 11,
+      "pitcher_tips": 28,
+      "catcher_tips": 20
     },
     "OTH": {
       "queued": 638,
@@ -2595,10 +2615,10 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 157,
-    "catcher_tips": 122
+    "pitcher_tips": 161,
+    "catcher_tips": 125
   },
-  "updated_at": "2026-08-30T00:13:18",
+  "updated_at": "2026-08-30T00:22:52",
   "live": {
     "pitches_done": 30,
     "pitches_target": null

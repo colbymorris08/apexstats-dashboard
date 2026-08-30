@@ -96,42 +96,42 @@ const PREFLIGHT_TRANSLATIONS = {
     
     showcase_card_roupp_title: "Landen Roupp · SF Giants (MLB 🇺🇸)",
     showcase_card_roupp_badge: "MLB SHOWCASE",
-    showcase_card_roupp_desc: "Changeup (CH) vs. Sinker (SI) delivery breakdown. Hand depth in glove (+0.238 torso lengths deeper on CH at lift) and glove rise offset.",
+    showcase_card_roupp_desc: "Curveball (CU) vs Sinker (SI) & Changeup (CH). Peak leg lift glove elevation (+0.06 torso lengths covering jersey letters on CU at -0.35s before hand break) and hand burial depth in pocket at set (-0.80s).",
     showcase_card_roupp_btn: "View Mechanical Breakdown →",
 
     showcase_card_erod_title: "Eduardo Rodriguez · ARI D-backs (MLB 🇺🇸)",
     showcase_card_erod_badge: "MLB SHOWCASE",
-    showcase_card_erod_desc: "Knee rise duration tempo (+11.3% predictive lift on CH vs FC across 40 scored fires) and glove speed variance on FF vs SI.",
+    showcase_card_erod_desc: "Changeup (CH) vs Cutter (FC) & Fastball (FF). Initial knee rise acceleration tempo (+22% faster knee ascent on CH at -0.50s) and sub-belt glove set height on FC.",
     showcase_card_erod_btn: "View Mechanical Breakdown →",
 
     showcase_card_webb_title: "Logan Webb · SF Giants (MLB 🇺🇸)",
     showcase_card_webb_badge: "MLB SHOWCASE",
-    showcase_card_webb_desc: "Changeup delivery speed into leg lift transition vs fastballs/sinkers and glove rise from set presentation.",
+    showcase_card_webb_desc: "Changeup (CH) vs Sinker (SI) & Sweeper (SL). Glove acceleration into leg lift (+18% faster upward snap at -0.45s) and 15° outward glove cant on Sweeper.",
     showcase_card_webb_btn: "View Mechanical Breakdown →",
 
     showcase_card_burns_title: "Chase Burns · Wake Forest (NCAA 🎓)",
     showcase_card_burns_badge: "NCAA SHOWCASE",
-    showcase_card_burns_desc: "4-Seam Fastball (FF) vs. Slider (SL) glove set presentation height (+2.8 in higher set on FF, 88.5% signal floor, d=1.24) in Synergy CF ingest.",
+    showcase_card_burns_desc: "4-Seam Fastball (FF 101mph) vs Slider (SL 89mph). Glove set presentation height (+3.2 in higher set at sternum on FF at -0.80s, 88.4% signal floor, d=1.18) in Synergy CF.",
     showcase_card_burns_btn: "View NCAA Breakdown →",
 
     showcase_card_sasaki_title: "Roki Sasaki · Chiba Lotte (NPB 🇯🇵)",
     showcase_card_sasaki_badge: "NPB SHOWCASE",
-    showcase_card_sasaki_desc: "Forkball (FS) vs. 4-Seam Fastball (FF) set stillness dwell (+180ms longer pause on splitter wedge, 91.2% signal floor, d=1.42) on Pacific League TV 60fps.",
+    showcase_card_sasaki_desc: "Splitter/Forkball (FS 92mph) vs 4-Seam Fastball (FF 102mph). Set stillness dwell (+180ms longer pause on splitter wedge at -0.85s, 91.2% signal floor, d=1.42) on Pacific League TV 60fps.",
     showcase_card_sasaki_btn: "View NPB Breakdown →",
 
     showcase_card_choi_title: "Won-tae Choi · LG Twins (KBO 🇰🇷)",
     showcase_card_choi_badge: "KBO SHOWCASE",
-    showcase_card_choi_desc: "Changeup (CH) vs. 2-Seam Sinker (SI) glove web flare & pre-lift tempo (87.8% signal floor, d=1.18) via SPOTV CF ingest.",
+    showcase_card_choi_desc: "Changeup (CH) vs Sinker (SI). Right wrist crease burial depth (+2.4 in deeper inside pocket at -0.80s, 87.8% signal floor, d=1.26) via SPOTV CF ingest.",
     showcase_card_choi_btn: "View KBO Breakdown →",
 
     showcase_card_gulin_title: "Gu Lin Ruei-Yang · Uni-Lions (CPBL 🇹🇼)",
     showcase_card_gulin_badge: "CPBL SHOWCASE",
-    showcase_card_gulin_desc: "Curveball (CU) vs. 4-Seam Fastball (FF) glove set elevation offset (mid-ribcage on CU vs upper chest on FF, 89.4% signal floor, d=1.31) on CPBL TV 1080p60.",
+    showcase_card_gulin_desc: "4-Seam Fastball (FF 156km/h) vs Forkball (FS 136km/h) & Curveball (CU). Chin-level glove elevation at peak knee apex (-0.32s, 89.5% signal floor, d=1.34) on CPBL TV 60fps.",
     showcase_card_gulin_btn: "View CPBL Breakdown →",
 
     showcase_card_rios_title: "Wilmer Ríos · Acereros de Monclova (LMB 🇲🇽)",
     showcase_card_rios_badge: "LMB SHOWCASE",
-    showcase_card_rios_desc: "Sinker (SI) vs. Slider (SL) / Changeup (CH) glove set presentation height (+2.6 in higher glove set near mid-chest on Sinker with pronated wrist alignment vs. lower belt line set on Slider, 88.2% signal floor, d=1.18) on Jonron TV.",
+    showcase_card_rios_desc: "Changeup (CH) vs Sinker (SI). Right forearm outward abduction flare (+14° angle creating daylight through elbow at -0.80s, 88.6% signal floor, d=1.30) on LMB TV.",
     showcase_card_rios_btn: "View LMB Breakdown →",
 
     roster_eyebrow: "Full Multi-League & Collegiate Coverage",
@@ -251,7 +251,7 @@ const PREFLIGHT_TRANSLATIONS = {
     
     showcase_card_roupp_title: "ランデン・ループ · SFジャイアンツ (MLB 🇺🇸)",
     showcase_card_roupp_badge: "MLB ショーケース",
-    showcase_card_roupp_desc: "チェンジアップ (CH) と シンカー (SI) の動作分析。足上げ時のグラブ内での手の深さの差（チェンジアップで約0.238胴体比深い）とグラブ上昇差。",
+    showcase_card_roupp_desc: "カーブ (CU) vs シンカー (SI) / チェンジアップ (CH) の動作分析。足上げ頂点(-0.35s)でのグラブ上昇（カーブ時にユニフォーム胸文字を覆うほど高位置）およびセット時(-0.80s)のポケット内手首深度差異。",
     showcase_card_roupp_btn: "動作プロファイルを見る →",
 
     showcase_card_erod_title: "エドゥアルド・ロドリゲス · ARI (MLB 🇺🇸)",
@@ -406,7 +406,7 @@ const PREFLIGHT_TRANSLATIONS = {
     
     showcase_card_roupp_title: "랜든 룹 · SF 자이언츠 (MLB 🇺🇸)",
     showcase_card_roupp_badge: "MLB 쇼케이스",
-    showcase_card_roupp_desc: "체인지업(CH) vs 싱커(SI) 투구폼 분석. 레그킥 시 글러브 내 손 깊이 차이(체인지업 시 약 0.238 몸통비율 깊음) 및 글러브 상승량 차이.",
+    showcase_card_roupp_desc: "커브(CU) vs 싱커(SI) 및 체인지업(CH) 투구폼 분석. 레그킥 정점(-0.35s) 시 유니폼 가슴 로고를 덮는 글러브 상승량 차이 및 셋 포지션(-0.80s) 시 손목 삽입 깊이 차이.",
     showcase_card_roupp_btn: "동작 프로파일 보기 →",
 
     showcase_card_erod_title: "에두아르도 로드리게스 · ARI (MLB 🇺🇸)",
@@ -561,7 +561,7 @@ const PREFLIGHT_TRANSLATIONS = {
     
     showcase_card_roupp_title: "Landen Roupp · SF Giants (MLB 🇺🇸)",
     showcase_card_roupp_badge: "MUESTRA MLB",
-    showcase_card_roupp_desc: "Análisis de Cambio (CH) vs Sinker (SI). Profundidad de la mano en el guante (+0.238 torsos más profunda en CH) y elevación del guante.",
+    showcase_card_roupp_desc: "Curva (CU) vs Sinker (SI) y Cambio (CH). Elevación del guante en el ápice de la pierna (-0.35s cubriendo las letras del jersey en CU) y profundidad de muñeca en el guante al set (-0.80s).",
     showcase_card_roupp_btn: "Ver Perfil de Lanzamiento →",
 
     showcase_card_erod_title: "Eduardo Rodriguez · ARI (MLB 🇺🇸)",
@@ -716,7 +716,7 @@ const PREFLIGHT_TRANSLATIONS = {
     
     showcase_card_roupp_title: "Landen Roupp · 舊金山巨人 (MLB 🇺🇸)",
     showcase_card_roupp_badge: "MLB 展示",
-    showcase_card_roupp_desc: "變速球 (CH) 與 伸卡球 (SI) 動作分析。抬腿時手在手套深處的差異（變速球時深約 0.238 軀幹長度）與手套上升幅度差異。",
+    showcase_card_roupp_desc: "曲球 (CU) 與 伸卡球 (SI) / 變速球 (CH) 動作拆解。抬腿頂點(-0.35s)時手套上升幅度（曲球時手套高於球衣胸前文字）以及就位(-0.80s)時手腕深入手套深度差異。",
     showcase_card_roupp_btn: "檢視動作特徵拆解 →",
 
     showcase_card_erod_title: "Eduardo Rodriguez · 響尾蛇 (MLB 🇺🇸)",
