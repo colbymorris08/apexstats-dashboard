@@ -1296,7 +1296,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback) {
   }
   if (normId.includes("webb")) {
     if (p.includes("ch") || p.includes("change")) return "media/video/webb_ch.mp4";
-    if (p.includes("sl") || p.includes("st") || p.includes("sweep")) return "media/video/webb_sl.mp4";
+    if (p.includes("sl") || p.includes("st") || p.includes("sweep") || p.includes("slide")) return "media/video/webb_sl.mp4";
     if (p.includes("fc") || p.includes("cut")) return "media/video/webb_fc.mp4";
     if (p.includes("ff") || p.includes("four") || p.includes("fast")) return "media/video/webb_ff.mp4";
     return "media/video/webb_si.mp4";
@@ -1305,6 +1305,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback) {
     if (p.includes("ch") || p.includes("change")) return "media/video/erod_ch.mp4";
     if (p.includes("fc") || p.includes("cut")) return "media/video/erod_fc.mp4";
     if (p.includes("sl") || p.includes("slide")) return "media/video/erod_sl.mp4";
+    if (p.includes("cu") || p.includes("curve")) return "media/video/erod_cu.mp4";
     if (p.includes("si") || p.includes("sink")) return "media/video/erod_si.mp4";
     return "media/video/erod_ff.mp4";
   }
@@ -1316,7 +1317,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback) {
   }
   if (normId.includes("sasaki")) {
     if (p.includes("fs") || p.includes("split") || p.includes("fork")) return "media/video/sasaki_fs.mp4";
-    if (p.includes("sl") || p.includes("slide")) return "media/video/sasaki_fs.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/sasaki_sl.mp4";
     return "media/video/sasaki_ff.mp4";
   }
   if (normId.includes("choi")) {
@@ -1338,13 +1339,24 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback) {
     return "media/video/rios_si.mp4";
   }
   if (normId.includes("gausman")) {
-    if (p.includes("fs") || p.includes("split")) return "media/video/gausman_fs.mp4";
+    if (p.includes("fs") || p.includes("split") || p.includes("fork")) return "media/video/gausman_fs.mp4";
     if (p.includes("sl") || p.includes("slide")) return "media/video/gausman_sl.mp4";
     return "media/video/gausman_ff.mp4";
   }
   if (normId.includes("pfaadt")) {
-    if (p.includes("st") || p.includes("sl") || p.includes("sweep")) return "media/video/pfaadt_st.mp4";
+    if (p.includes("st") || p.includes("sweep")) return "media/video/pfaadt_st.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/pfaadt_sl.mp4";
+    if (p.includes("ch") || p.includes("change")) return "media/video/pfaadt_ch.mp4";
+    if (p.includes("ff") || p.includes("fast") || p.includes("four")) return "media/video/pfaadt_ff.mp4";
     return "media/video/pfaadt_si.mp4";
+  }
+  if (normId.includes("gordon")) {
+    if (p.includes("sl") || p.includes("slide")) return "media/video/gordon_sl.mp4";
+    return "media/video/gordon_ff.mp4";
+  }
+  if (normId.includes("hughes")) {
+    if (p.includes("sl") || p.includes("slide")) return "media/video/hughes_sl.mp4";
+    return "media/video/hughes_ff.mp4";
   }
   if (normId.includes("moreno")) {
     if (p.includes("ch") || p.includes("change")) return "media/video/moreno_ch.mp4";
@@ -1352,6 +1364,41 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback) {
   }
 
   return defaultFallback || "media/video/roupp_si.mp4";
+}
+
+function formatTipDropdownLabel(t, idx) {
+  const rankNum = idx + 1;
+  const title = t.cue || t.title || `Mechanical Indicator #${rankNum}`;
+  let contrast = "";
+
+  if (t.contrast_clean) {
+    contrast = t.contrast_clean;
+  } else if (t.contrast_label) {
+    contrast = t.contrast_label;
+    if (contrast.includes(" · ")) contrast = contrast.split(" · ")[0].trim();
+  } else if (t.contrast) {
+    contrast = t.contrast;
+  } else if (t.predicts) {
+    contrast = `${t.predicts} vs Arsenal`;
+  }
+
+  let cleanContrast = contrast
+    .replace(/\s*\([^)]*\)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (cleanContrast.includes(" / ")) {
+    const p = cleanContrast.split(" / ");
+    cleanContrast = `${p[0]} vs. ${p.slice(1).join("/")}`;
+  } else if (cleanContrast.includes(" vs ") && !cleanContrast.includes(" vs. ")) {
+    cleanContrast = cleanContrast.replace(" vs ", " vs. ");
+  }
+
+  return `Tip #${rankNum}: ${title}${cleanContrast ? ` · ${cleanContrast}` : ""}`;
+}
+
+function ensureFiveTips(player) {
+  let tips = [...playerTips(player)];
+  return tips.slice(0, 5);
 }
 
 function parseTipTimingsAndLabels(tip, player) {
@@ -1383,19 +1430,22 @@ function parseTipTimingsAndLabels(tip, player) {
     const p = tip.predicts.toUpperCase();
     if (p === "FC") {
       pitchA = "Cutter (FC 89mph)";
-      pitchB = "Changeup / Sinker (CH 84 / SI 92)";
+      pitchB = "Changeup (CH 84mph)";
     } else if (p === "SL") {
       pitchA = "Slider (SL 86mph)";
       pitchB = "Fastball (FF 95mph)";
     } else if (p === "CH") {
       pitchA = "Changeup (CH 84mph)";
-      pitchB = "Fastball (FF 95mph)";
+      pitchB = "Sinker (SI 93mph)";
     } else if (p === "CU") {
-      pitchA = "Curveball (CU 81mph)";
-      pitchB = "Sinker (SI 94mph)";
+      pitchA = "Curveball (CU 79mph)";
+      pitchB = "Sinker (SI 93mph)";
     } else if (p === "SI") {
       pitchA = "Sinker (SI 93mph)";
       pitchB = "Four-Seam (FF 95mph)";
+    } else if (p === "FF") {
+      pitchA = "Four-Seam (FF 95mph)";
+      pitchB = "Curveball (CU 79mph)";
     } else {
       pitchA = `${tip.predicts} (Tell Target)`;
       pitchB = "Arsenal Contrast";
@@ -1409,6 +1459,9 @@ function parseTipTimingsAndLabels(tip, player) {
   if (tip?.anchor_a != null && tip?.anchor_b != null) {
     tA = Number(tip.anchor_a);
     tB = Number(tip.anchor_b);
+  } else if (tip?.tA != null && tip?.tB != null) {
+    tA = Number(tip.tA);
+    tB = Number(tip.tB);
   } else {
     const rawTimeStr = `${tip?.timestamp_window || ""} ${tip?.second_mark || ""} ${tip?.timestamp || ""}`;
     const matchA = rawTimeStr.match(/(?:0:)?0?([0-9])\.([0-9]{1,2})/);
@@ -1428,7 +1481,7 @@ function parseTipTimingsAndLabels(tip, player) {
   return { pitchA, pitchB, tA, tB, videoA, videoB, stillA, stillB };
 }
 
-function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex, hasVideo = false }) {
+function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex }) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -1437,263 +1490,86 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
   const h = canvas.height;
   ctx.clearRect(0, 0, w, h);
 
-  if (!hasVideo) {
-    // High contrast pitch dark background
-    ctx.fillStyle = "#06090e";
-    ctx.fillRect(0, 0, w, h);
-
-    // Subtle telemetry grid
-    ctx.strokeStyle = "rgba(61, 139, 253, 0.08)";
-    ctx.lineWidth = 1;
-    const gridSize = 32;
-    for (let x = 0; x < w; x += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, h);
-      ctx.stroke();
-    }
-    for (let y = 0; y < h; y += gridSize) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.stroke();
-    }
-
-    // Mound line & rubber
-    const groundY = h * 0.86;
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(w * 0.08, groundY);
-    ctx.lineTo(w * 0.92, groundY);
-    ctx.stroke();
-
-    // Rubber
-    ctx.fillStyle = "#e8eef4";
-    const rubberW = 44;
-    const rubberH = 5;
-    const rubberX = w * 0.5 - rubberW / 2;
-    ctx.fillRect(rubberX, groundY - rubberH, rubberW, rubberH);
-
-    // Camera centerline
-    ctx.strokeStyle = "rgba(61, 139, 253, 0.12)";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(w * 0.5, 30);
-    ctx.lineTo(w * 0.5, groundY);
-    ctx.stroke();
-  }
-
-  const groundY = h * 0.86;
-  const rubberH = 5;
-
   // Color scheme
   const primaryColor = isPitchA ? "#3d8bfd" : "#3ecf8e";
-  const accentColor = isPitchA ? "#70aeff" : "#64e3a8";
   const tellHighlightColor = "#ffc450";
 
-  // Kinematic parameters based on progress (0 to 1)
-  const p = progressPct / 100;
-  const cx = w * 0.5;
-
-  let hipX = cx;
-  let hipY = groundY - 85;
-  let torsoTopX = cx;
-  let torsoTopY = hipY - 65;
-  let headX = cx;
-  let headY = torsoTopY - 24;
-  let headR = 14;
-
-  let leftFootX = cx - 12;
-  let leftFootY = groundY - rubberH;
-  let rightFootX = cx + 12;
-  let rightFootY = groundY - rubberH;
-  let leadKneeX = cx - 14;
-  let leadKneeY = hipY + 45;
-
-  let gloveX = cx - 8;
-  const isGloveTell = (tip?.target_body_part || tip?.what_to_look_at || "").toLowerCase().includes("glove");
-  const gloveOffset = isGloveTell ? (isPitchA ? 20 : -14) : (isPitchA ? 10 : -8);
-  let gloveY = torsoTopY + 28 + gloveOffset;
-  let ballHandX = cx + 8;
-  let ballHandY = gloveY + 2;
-
-  if (p < 0.25) {
-    // 1. Set Position
-    const u = p / 0.25;
-    hipX = cx + Math.sin(u * 2) * 2;
-  } else if (p < 0.50) {
-    // 2. Leg Lift Initiation to Apex
-    const u = (p - 0.25) / 0.25;
-    leadKneeY = hipY + 45 - u * 54;
-    leadKneeX = cx - 14 - u * 12;
-    leftFootX = leadKneeX + 4;
-    leftFootY = leadKneeY + 30;
-    torsoTopX = cx + (isPitchA ? u * 6 : u * 12);
-  } else if (p < 0.75) {
-    // 3. Hand Separation & Stride
-    const u = (p - 0.50) / 0.25;
-    leadKneeY = hipY + 15 + u * 25;
-    leadKneeX = cx - 26 - u * 45;
-    leftFootX = leadKneeX - 10 - u * 35;
-    leftFootY = groundY - 4;
-    hipX = cx - u * 25;
-    torsoTopX = cx - u * 20;
-    gloveX = torsoTopX - 35 - u * 25;
-    gloveY = torsoTopY + 15 + u * 10;
-    ballHandX = torsoTopX + 35 + u * 20;
-    ballHandY = torsoTopY - 10 - u * 20;
-  } else {
-    // 4. Arm Acceleration & Release
-    const u = (p - 0.75) / 0.25;
-    hipX = cx - 25 - u * 15;
-    torsoTopX = cx - 20 - u * 25;
-    torsoTopY = hipY - 55 + u * 15;
-    leftFootX = cx - 110;
-    leftFootY = groundY - 4;
-    gloveX = torsoTopX - 50;
-    gloveY = torsoTopY + 30;
-    ballHandX = torsoTopX + 30 - u * 65;
-    ballHandY = torsoTopY - 35 + u * 45;
-  }
-
-  if (!hasVideo) {
-    // Draw Skeleton Limbs
-    ctx.strokeStyle = primaryColor;
-    ctx.lineWidth = 4;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-
-    // Back Leg
-    ctx.beginPath();
-    ctx.moveTo(hipX, hipY);
-    ctx.lineTo(rightFootX, rightFootY);
-    ctx.stroke();
-
-    // Lead Leg
-    ctx.beginPath();
-    ctx.moveTo(hipX, hipY);
-    ctx.lineTo(leadKneeX, leadKneeY);
-    ctx.lineTo(leftFootX, leftFootY);
-    ctx.stroke();
-
-    // Spine & Torso
-    ctx.beginPath();
-    ctx.moveTo(hipX, hipY);
-    ctx.lineTo(torsoTopX, torsoTopY);
-    ctx.stroke();
-
-    // Head
-    ctx.fillStyle = primaryColor;
-    ctx.beginPath();
-    ctx.arc(headX, headY, headR, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Shoulders & Arms
-    ctx.beginPath();
-    ctx.moveTo(torsoTopX - 14, torsoTopY);
-    ctx.lineTo((torsoTopX + gloveX) / 2 - 8, (torsoTopY + gloveY) / 2);
-    ctx.lineTo(gloveX, gloveY);
-    ctx.moveTo(torsoTopX + 14, torsoTopY);
-    ctx.lineTo((torsoTopX + ballHandX) / 2 + 8, (torsoTopY + ballHandY) / 2);
-    ctx.lineTo(ballHandX, ballHandY);
-    ctx.stroke();
-
-    // Joint Nodes
-    ctx.fillStyle = "#ffffff";
-    const joints = [
-      [leadKneeX, leadKneeY],
-      [hipX, hipY],
-      [torsoTopX, torsoTopY],
-      [gloveX, gloveY],
-      [ballHandX, ballHandY]
-    ];
-    for (const [jx, jy] of joints) {
-      ctx.beginPath();
-      ctx.arc(jx, jy, 3.5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  // Landmark Bounding Box on Target Body Part
-  const boxW = 54;
-  const boxH = 48;
-  let targetX = gloveX;
-  let targetY = gloveY;
-
-  if (tip?.target_body_part?.toLowerCase().includes("torso") || tip?.target_body_part?.toLowerCase().includes("lean")) {
-    targetX = torsoTopX;
-    targetY = torsoTopY;
-  } else if (tip?.target_body_part?.toLowerCase().includes("leg") || tip?.target_body_part?.toLowerCase().includes("knee")) {
-    targetX = leadKneeX;
-    targetY = leadKneeY;
-  }
-
-  const boxX = targetX - boxW / 2;
-  const boxY = targetY - boxH / 2;
-
+  // Top HUD Overlay Pill / Badges
   ctx.save();
-  if (isApex) {
-    ctx.strokeStyle = tellHighlightColor;
-    ctx.lineWidth = 2.5;
-    ctx.shadowColor = tellHighlightColor;
-    ctx.shadowBlur = 10;
-    ctx.fillStyle = "rgba(255, 196, 80, 0.12)";
-    ctx.fillRect(boxX, boxY, boxW, boxH);
-  } else {
-    ctx.strokeStyle = accentColor;
-    ctx.lineWidth = 1.5;
-    ctx.fillStyle = "rgba(61, 139, 253, 0.05)";
-    ctx.fillRect(boxX, boxY, boxW, boxH);
-  }
-
-  // Draw corner brackets
-  const cornerLen = 10;
-  ctx.beginPath();
-  ctx.moveTo(boxX, boxY + cornerLen);
-  ctx.lineTo(boxX, boxY);
-  ctx.lineTo(boxX + cornerLen, boxY);
-
-  ctx.moveTo(boxX + boxW - cornerLen, boxY);
-  ctx.lineTo(boxX + boxW, boxY);
-  ctx.lineTo(boxX + boxW, boxY + cornerLen);
-
-  ctx.moveTo(boxX, boxY + boxH - cornerLen);
-  ctx.lineTo(boxX, boxY + boxH);
-  ctx.lineTo(boxX + cornerLen, boxY + boxH);
-
-  ctx.moveTo(boxX + boxW - cornerLen, boxY + boxH);
-  ctx.lineTo(boxX + boxW, boxY + boxH);
-  ctx.lineTo(boxX + boxW, boxY + boxH - cornerLen);
-  ctx.stroke();
-  ctx.restore();
-
-  // Landmark Label Tag
-  ctx.font = "600 10px 'IBM Plex Mono', monospace";
-  ctx.fillStyle = isApex ? tellHighlightColor : accentColor;
-  const tagText = isApex ? (isPitchA ? "TELL ANCHOR A" : "TELL ANCHOR B") : "CV LANDMARK";
-  ctx.fillText(tagText, boxX - 4, boxY - 6);
-
-  if (isApex) {
-    const sepText = isPitchA ? "Anchor Y = 38.2 in" : "Anchor Y = 44.6 in (+6.4\")";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText(sepText, boxX - 4, boxY + boxH + 14);
-  }
-
-  // Top HUD Overlay
-  ctx.fillStyle = "rgba(10, 16, 24, 0.85)";
+  ctx.fillStyle = "rgba(10, 16, 24, 0.75)";
   ctx.fillRect(10, 10, w - 20, 26);
   ctx.strokeStyle = "rgba(255, 255, 255, 0.12)";
   ctx.strokeRect(10, 10, w - 20, 26);
 
   ctx.font = "700 10px 'IBM Plex Mono', monospace";
   ctx.fillStyle = primaryColor;
-  ctx.fillText(isPitchA ? "● PITCH A TRACKING" : "● PITCH B TRACKING", 18, 26);
+  ctx.fillText(isPitchA ? "● PITCH A BROADCAST" : "● PITCH B BROADCAST", 18, 26);
 
   ctx.fillStyle = "#ffffff";
-  ctx.fillText(`FRAME #${Math.round(timeVal * 30)} · ${formatSec(timeVal)}`, w - 160, 26);
+  ctx.fillText(`FRAME #${Math.round(timeVal * 30)} · ${formatSec(timeVal)}s`, w - 170, 26);
+  ctx.restore();
+
+  // If Apex Keyframe (Tell Window), draw subtle corner brackets around focal target zone
+  if (isApex) {
+    const boxW = 84;
+    const boxH = 74;
+    let boxX = w * 0.5 - boxW / 2;
+    let boxY = h * 0.42 - boxH / 2;
+
+    const part = (tip?.target_body_part || tip?.what_to_look_at || "").toLowerCase();
+    if (part.includes("glove") || part.includes("pocket") || part.includes("hand") || part.includes("wrist")) {
+      boxX = w * 0.48 - boxW / 2 + (isPitchA ? -10 : 10);
+      boxY = h * 0.38 - boxH / 2;
+    } else if (part.includes("knee") || part.includes("leg") || part.includes("lift")) {
+      boxX = w * 0.50 - boxW / 2;
+      boxY = h * 0.55 - boxH / 2;
+    } else if (part.includes("tempo") || part.includes("settle") || part.includes("pause")) {
+      boxX = w * 0.50 - boxW / 2;
+      boxY = h * 0.45 - boxH / 2;
+    }
+
+    ctx.save();
+    ctx.strokeStyle = tellHighlightColor;
+    ctx.lineWidth = 2.5;
+    ctx.shadowColor = tellHighlightColor;
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = "rgba(255, 196, 80, 0.08)";
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+
+    // Subtle corner brackets
+    const cornerLen = 12;
+    ctx.beginPath();
+    ctx.moveTo(boxX, boxY + cornerLen);
+    ctx.lineTo(boxX, boxY);
+    ctx.lineTo(boxX + cornerLen, boxY);
+
+    ctx.moveTo(boxX + boxW - cornerLen, boxY);
+    ctx.lineTo(boxX + boxW, boxY);
+    ctx.lineTo(boxX + boxW, boxY + cornerLen);
+
+    ctx.moveTo(boxX, boxY + boxH - cornerLen);
+    ctx.lineTo(boxX, boxY + boxH);
+    ctx.lineTo(boxX + cornerLen, boxY + boxH);
+
+    ctx.moveTo(boxX + boxW - cornerLen, boxY + boxH);
+    ctx.lineTo(boxX + boxW, boxY + boxH);
+    ctx.lineTo(boxX + boxW, boxY + boxH - cornerLen);
+    ctx.stroke();
+
+    // Focal Reticle Tag
+    ctx.font = "700 10px 'IBM Plex Mono', monospace";
+    ctx.fillStyle = tellHighlightColor;
+    const tagText = isPitchA ? "★ TELL ANCHOR A" : "★ TELL ANCHOR B";
+    ctx.fillText(tagText, boxX, boxY - 6);
+
+    const anchorVal = isPitchA ? (tip?.anchor_a != null ? Number(tip.anchor_a).toFixed(2) : formatSec(timeVal)) : (tip?.anchor_b != null ? Number(tip.anchor_b).toFixed(2) : formatSec(timeVal));
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(`Anchor: ${anchorVal}s`, boxX, boxY + boxH + 15);
+    ctx.restore();
+  }
 
   // Bottom HUD
+  ctx.save();
   ctx.font = "600 11px 'Manrope', sans-serif";
   ctx.fillStyle = "#e4edf6";
   ctx.fillText(pitchName, 14, h - 14);
@@ -1703,6 +1579,7 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
     ctx.font = "700 10px 'IBM Plex Mono', monospace";
     ctx.fillText("★ KEY FRAME APEX", w - 140, h - 14);
   }
+  ctx.restore();
 }
 
 function wireSynchronizedDeliveryScrubber(player) {
@@ -2180,6 +2057,14 @@ function wireSynchronizedDeliveryScrubber(player) {
       startPlay();
     }
   });
+
+  // Global Tip Selection Handler
+  window.selectScrubberTip = function(idx) {
+    applyTipSelection(idx);
+    if (stage) {
+      stage.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
 
   // Initialize with first tip
   applyTipSelection(0);
