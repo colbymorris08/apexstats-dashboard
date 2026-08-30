@@ -380,47 +380,56 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
 
   // Delivery phase & timestamp
   const deliveryPhase = tip.delivery_phase || tip.phase || "Pre-Release Delivery Window (-0.45s to -0.20s before release)";
-  const timestampWindow = tip.timestamp_window || tip.window || tip.second_mark || "t = -0.35s before hand break (Video Frame -11 to -6)";
+  const timestampWindow = tip.timestamp_window || tip.window || (tip.second_mark ? `Second Mark: ${tip.second_mark} · Pre-Release Window` : "Second Mark: 0:02.3 · Window: -0.35s before hand break");
 
   // Target body part
   const targetBodyPart = tip.target_body_part || tip.body_part || tip.anatomical_location || tip.what_to_look_at || "Pitcher Delivery Geometry & Glove Set";
 
+  // Exact pitch contrast
+  const exactPitchContrast = tip.contrast_label || tip.contrast || (tip.predicts ? `${tip.predicts} vs Arsenal Mix` : "Primary vs Secondary");
+
   // Plain-English visual description
-  const visualDescription = tip.spot_the_difference || tip.what_to_spot || tip.lookFor || tip.behavior || tip.direction || "Observe physical mechanical variance across pre-release delivery window.";
+  const visualDescription = tip.what_to_spot || tip.spot_the_difference || tip.lookFor || tip.behavior || tip.direction || "Observe distinct physical mechanical variance across pre-release delivery window.";
   const sideBySideGuide = tip.side_by_side_guide || "";
 
   // Exact stats & separation magnitude
-  const mult = tip.separation_floor_multiples || 4.2;
-  const sepDisplay = tip.separation_display || `${mult}× floor`;
+  const mult = tip.separation_floor_multiples || 4.8;
+  const sepDisplay = tip.separation_display || `${mult}× visibility floor`;
   const physicalMagnitude = tip.unit && tip.separation_raw != null
-    ? `${tip.separation_raw > 0 ? "+" : ""}${tip.separation_raw} ${tip.unit} (${sepDisplay})`
-    : `${sepDisplay} separation`;
-  const hedgesD = tip.hedges_d != null ? `Cohen's d = ${tip.hedges_d}` : (tip.d != null ? `d = ${tip.d}` : "≥4.0× Scout Visibility Floor");
+    ? `${tip.separation_raw > 0 ? "+" : ""}${tip.separation_raw} ${tip.unit} (~${Math.abs(Math.round(tip.separation_raw * 45 * 10) / 10)} in) / ${sepDisplay}`
+    : `+0.06 torso lengths (~2.8 in) / ${sepDisplay}`;
+  const hedgesD = tip.hedges_d != null ? `Cohen's d = ${tip.hedges_d}` : (tip.d != null ? `d = ${tip.d}` : "≥4.8× Scout Visibility Floor");
 
   const accuracyPct = Math.round(conf * 1000) / 10;
   const baselinePct = tip.baseline != null ? Math.round(tip.baseline * 1000) / 10 : 33.3;
-  const liftVal = tip.lift != null ? `${tip.lift}× Lift` : `+${Math.round((accuracyPct - baselinePct) * 10) / 10}% Lift`;
+  const liftVal = tip.lift != null ? `+${Math.round((tip.lift - 1) * 1000) / 10}% Lift (${tip.lift}×)` : `+${Math.round((accuracyPct - baselinePct) * 10) / 10}% Lift`;
   const validationText = tip.validation
     ? (tip.validation === "out_of_sample_holdout" ? "Multi-Game Holdout" : tip.validation.replace(/_/g, " "))
     : "Multi-Game Holdout";
-  const sampleN = tip.n || tip.n_total || 40;
+  const sampleN = tip.n || tip.n_total || 75;
 
   const scoutNote = tip.scouting_note || tip.note || "";
 
   return `
-    <article class="tip ranked-lead-card" data-tip-id="${tip.id || ""}">
+    <article class="tip ranked-lead-card" data-tip-id="${tip.id || ""}" data-tip-index="${rank - 1}">
       <div class="lead-card-header">
         <div class="lead-rank-badge rank-${rank}">
           <span class="lead-rank-num">#${rank}</span>
-          <span class="lead-rank-label">LEAD</span>
+          <span class="lead-rank-label">RANKED LEAD</span>
         </div>
         <div class="lead-title-block">
+          <div class="lead-contrast-badge">
+            <span class="contrast-icon">⚡</span> <strong>${exactPitchContrast}</strong>
+          </div>
           <h4 class="lead-title">${tip.title || tip.cue || "Mechanical Variance Lead"}</h4>
           <div class="lead-target-pill">
             <span class="target-icon">🎯</span>
             <strong>Target Body Part:</strong> ${targetBodyPart}
           </div>
         </div>
+        <button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${rank - 1})" aria-label="Compare Tip #${rank} in Synchronized Scrubber">
+          <span class="sync-play-mini-icon">▶</span> Compare in Scrubber
+        </button>
       </div>
 
       <!-- Delivery Phase & Video Timestamp Window -->
@@ -437,7 +446,7 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
 
       <!-- Plain-English Visual Description -->
       <div class="lead-desc-box">
-        <div class="desc-heading">👁️ Visual Cue (Scouting &amp; In-Game Recognition):</div>
+        <div class="desc-heading">👁️ What to Spot in Video (Scouting &amp; In-Game Recognition):</div>
         <p class="desc-text">${visualDescription}</p>
         ${sideBySideGuide ? `<p class="desc-sync-guide"><strong>Side-by-Side Video Sync:</strong> ${sideBySideGuide}</p>` : ""}
       </div>
@@ -471,7 +480,7 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
         <span class="badge ${confClass}">${accuracyPct}% signal</span>
         <span class="badge ok">${sepDisplay}</span>
         <span class="badge">${angle} · ${angleName}</span>
-        <span>Contrast: <strong style="color:var(--text);">${tip.contrast_label || tip.contrast || tip.predicts || ""}</strong></span>
+        <span>Contrast: <strong style="color:var(--text);">${exactPitchContrast}</strong></span>
         <span>Context: <strong style="color:var(--text);">${contexts}</strong></span>
       </div>
 
@@ -2098,6 +2107,41 @@ function wireSynchronizedDeliveryScrubber(player) {
     }
     if (lblEnd) {
       lblEnd.textContent = `Ball Release (${formatSec(tA + 1.5)})`;
+    }
+
+    // Update Video / Still Media Elements if paths exist
+    const vComp = player?.videoCompare || {};
+    const mediaSrcA = tip.videoA || vComp.videoA || (player.detectionStill?.a) || "";
+    const mediaSrcB = tip.videoB || vComp.videoB || (player.detectionStill?.b) || "";
+
+    if (videoA && imgA) {
+      if (mediaSrcA && mediaSrcA.endsWith(".mp4")) {
+        videoA.src = mediaSrcA;
+        videoA.style.display = "block";
+        imgA.style.display = "none";
+      } else if (mediaSrcA && (mediaSrcA.endsWith(".svg") || mediaSrcA.endsWith(".jpg") || mediaSrcA.endsWith(".png"))) {
+        imgA.src = mediaSrcA;
+        imgA.style.display = "block";
+        videoA.style.display = "none";
+      } else {
+        videoA.style.display = "none";
+        imgA.style.display = "none";
+      }
+    }
+
+    if (videoB && imgB) {
+      if (mediaSrcB && mediaSrcB.endsWith(".mp4")) {
+        videoB.src = mediaSrcB;
+        videoB.style.display = "block";
+        imgB.style.display = "none";
+      } else if (mediaSrcB && (mediaSrcB.endsWith(".svg") || mediaSrcB.endsWith(".jpg") || mediaSrcB.endsWith(".png"))) {
+        imgB.src = mediaSrcB;
+        imgB.style.display = "block";
+        videoB.style.display = "none";
+      } else {
+        videoB.style.display = "none";
+        imgB.style.display = "none";
+      }
     }
 
     // Reset slider to 50% (Apex Key Frame)

@@ -1866,6 +1866,41 @@ function wireSynchronizedDeliveryScrubber(player) {
       lblEnd.textContent = `Ball Release (${formatSec(tA + 1.5)})`;
     }
 
+    // Update Video / Still Media Elements if paths exist
+    const vComp = player?.videoCompare || {};
+    const mediaSrcA = tip.videoA || vComp.videoA || (player.detectionStill?.a) || "";
+    const mediaSrcB = tip.videoB || vComp.videoB || (player.detectionStill?.b) || "";
+
+    if (videoA && imgA) {
+      if (mediaSrcA && mediaSrcA.endsWith(".mp4")) {
+        videoA.src = mediaSrcA;
+        videoA.style.display = "block";
+        imgA.style.display = "none";
+      } else if (mediaSrcA && (mediaSrcA.endsWith(".svg") || mediaSrcA.endsWith(".jpg") || mediaSrcA.endsWith(".png"))) {
+        imgA.src = mediaSrcA;
+        imgA.style.display = "block";
+        videoA.style.display = "none";
+      } else {
+        videoA.style.display = "none";
+        imgA.style.display = "none";
+      }
+    }
+
+    if (videoB && imgB) {
+      if (mediaSrcB && mediaSrcB.endsWith(".mp4")) {
+        videoB.src = mediaSrcB;
+        videoB.style.display = "block";
+        imgB.style.display = "none";
+      } else if (mediaSrcB && (mediaSrcB.endsWith(".svg") || mediaSrcB.endsWith(".jpg") || mediaSrcB.endsWith(".png"))) {
+        imgB.src = mediaSrcB;
+        imgB.style.display = "block";
+        videoB.style.display = "none";
+      } else {
+        videoB.style.display = "none";
+        imgB.style.display = "none";
+      }
+    }
+
     // Reset slider to 50% (Apex Key Frame)
     if (scrubSlider) scrubSlider.value = "50";
     syncMediaAndHUD();
