@@ -2618,9 +2618,9 @@
     "pitcher_tips": 161,
     "catcher_tips": 125
   },
-  "updated_at": "2026-08-30T00:39:57",
+  "updated_at": "2026-08-30T00:43:27",
   "live": {
-    "pitches_done": 100,
+    "pitches_done": 110,
     "pitches_target": null
   },
   "heartbeat": true

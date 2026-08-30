@@ -1344,7 +1344,7 @@ function parseTipTimingsAndLabels(tip, player) {
   return { pitchA, pitchB, tA, tB };
 }
 
-function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex }) {
+function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex, hasVideo = false }) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -1353,50 +1353,55 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
   const h = canvas.height;
   ctx.clearRect(0, 0, w, h);
 
-  // High contrast pitch dark background
-  ctx.fillStyle = "#06090e";
-  ctx.fillRect(0, 0, w, h);
+  if (!hasVideo) {
+    // High contrast pitch dark background
+    ctx.fillStyle = "#06090e";
+    ctx.fillRect(0, 0, w, h);
 
-  // Subtle telemetry grid
-  ctx.strokeStyle = "rgba(61, 139, 253, 0.08)";
-  ctx.lineWidth = 1;
-  const gridSize = 32;
-  for (let x = 0; x < w; x += gridSize) {
+    // Subtle telemetry grid
+    ctx.strokeStyle = "rgba(61, 139, 253, 0.08)";
+    ctx.lineWidth = 1;
+    const gridSize = 32;
+    for (let x = 0; x < w; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
+      ctx.stroke();
+    }
+    for (let y = 0; y < h; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+
+    // Mound line & rubber
+    const groundY = h * 0.86;
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, h);
+    ctx.moveTo(w * 0.08, groundY);
+    ctx.lineTo(w * 0.92, groundY);
+    ctx.stroke();
+
+    // Rubber
+    ctx.fillStyle = "#e8eef4";
+    const rubberW = 44;
+    const rubberH = 5;
+    const rubberX = w * 0.5 - rubberW / 2;
+    ctx.fillRect(rubberX, groundY - rubberH, rubberW, rubberH);
+
+    // Camera centerline
+    ctx.strokeStyle = "rgba(61, 139, 253, 0.12)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(w * 0.5, 30);
+    ctx.lineTo(w * 0.5, groundY);
     ctx.stroke();
   }
-  for (let y = 0; y < h; y += gridSize) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(w, y);
-    ctx.stroke();
-  }
 
-  // Mound line & rubber
   const groundY = h * 0.86;
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(w * 0.08, groundY);
-  ctx.lineTo(w * 0.92, groundY);
-  ctx.stroke();
-
-  // Rubber
-  ctx.fillStyle = "#e8eef4";
-  const rubberW = 44;
   const rubberH = 5;
-  const rubberX = w * 0.5 - rubberW / 2;
-  ctx.fillRect(rubberX, groundY - rubberH, rubberW, rubberH);
-
-  // Camera centerline
-  ctx.strokeStyle = "rgba(61, 139, 253, 0.12)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(w * 0.5, 30);
-  ctx.lineTo(w * 0.5, groundY);
-  ctx.stroke();
 
   // Color scheme
   const primaryColor = isPitchA ? "#3d8bfd" : "#3ecf8e";
@@ -1468,60 +1473,62 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
     ballHandY = torsoTopY - 35 + u * 45;
   }
 
-  // Draw Skeleton Limbs
-  ctx.strokeStyle = primaryColor;
-  ctx.lineWidth = 4;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
+  if (!hasVideo) {
+    // Draw Skeleton Limbs
+    ctx.strokeStyle = primaryColor;
+    ctx.lineWidth = 4;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
 
-  // Back Leg
-  ctx.beginPath();
-  ctx.moveTo(hipX, hipY);
-  ctx.lineTo(rightFootX, rightFootY);
-  ctx.stroke();
-
-  // Lead Leg
-  ctx.beginPath();
-  ctx.moveTo(hipX, hipY);
-  ctx.lineTo(leadKneeX, leadKneeY);
-  ctx.lineTo(leftFootX, leftFootY);
-  ctx.stroke();
-
-  // Spine & Torso
-  ctx.beginPath();
-  ctx.moveTo(hipX, hipY);
-  ctx.lineTo(torsoTopX, torsoTopY);
-  ctx.stroke();
-
-  // Head
-  ctx.fillStyle = primaryColor;
-  ctx.beginPath();
-  ctx.arc(headX, headY, headR, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Shoulders & Arms
-  ctx.beginPath();
-  ctx.moveTo(torsoTopX - 14, torsoTopY);
-  ctx.lineTo((torsoTopX + gloveX) / 2 - 8, (torsoTopY + gloveY) / 2);
-  ctx.lineTo(gloveX, gloveY);
-  ctx.moveTo(torsoTopX + 14, torsoTopY);
-  ctx.lineTo((torsoTopX + ballHandX) / 2 + 8, (torsoTopY + ballHandY) / 2);
-  ctx.lineTo(ballHandX, ballHandY);
-  ctx.stroke();
-
-  // Joint Nodes
-  ctx.fillStyle = "#ffffff";
-  const joints = [
-    [leadKneeX, leadKneeY],
-    [hipX, hipY],
-    [torsoTopX, torsoTopY],
-    [gloveX, gloveY],
-    [ballHandX, ballHandY]
-  ];
-  for (const [jx, jy] of joints) {
+    // Back Leg
     ctx.beginPath();
-    ctx.arc(jx, jy, 3.5, 0, Math.PI * 2);
+    ctx.moveTo(hipX, hipY);
+    ctx.lineTo(rightFootX, rightFootY);
+    ctx.stroke();
+
+    // Lead Leg
+    ctx.beginPath();
+    ctx.moveTo(hipX, hipY);
+    ctx.lineTo(leadKneeX, leadKneeY);
+    ctx.lineTo(leftFootX, leftFootY);
+    ctx.stroke();
+
+    // Spine & Torso
+    ctx.beginPath();
+    ctx.moveTo(hipX, hipY);
+    ctx.lineTo(torsoTopX, torsoTopY);
+    ctx.stroke();
+
+    // Head
+    ctx.fillStyle = primaryColor;
+    ctx.beginPath();
+    ctx.arc(headX, headY, headR, 0, Math.PI * 2);
     ctx.fill();
+
+    // Shoulders & Arms
+    ctx.beginPath();
+    ctx.moveTo(torsoTopX - 14, torsoTopY);
+    ctx.lineTo((torsoTopX + gloveX) / 2 - 8, (torsoTopY + gloveY) / 2);
+    ctx.lineTo(gloveX, gloveY);
+    ctx.moveTo(torsoTopX + 14, torsoTopY);
+    ctx.lineTo((torsoTopX + ballHandX) / 2 + 8, (torsoTopY + ballHandY) / 2);
+    ctx.lineTo(ballHandX, ballHandY);
+    ctx.stroke();
+
+    // Joint Nodes
+    ctx.fillStyle = "#ffffff";
+    const joints = [
+      [leadKneeX, leadKneeY],
+      [hipX, hipY],
+      [torsoTopX, torsoTopY],
+      [gloveX, gloveY],
+      [ballHandX, ballHandY]
+    ];
+    for (const [jx, jy] of joints) {
+      ctx.beginPath();
+      ctx.arc(jx, jy, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 
   // Landmark Bounding Box on Target Body Part
@@ -1793,6 +1800,9 @@ function wireSynchronizedDeliveryScrubber(player) {
     }
 
     // Draw HUD Canvases
+    const hasVidA = !!(videoA && videoA.src && videoA.style.display !== "none");
+    const hasVidB = !!(videoB && videoB.src && videoB.style.display !== "none");
+
     if (canvasA) {
       drawDeliveryTelemetryCanvas(canvasA, {
         pitchName: pitchA,
@@ -1800,7 +1810,8 @@ function wireSynchronizedDeliveryScrubber(player) {
         progressPct: p,
         isPitchA: true,
         tip,
-        isApex
+        isApex,
+        hasVideo: hasVidA
       });
     }
     if (canvasB) {
@@ -1810,7 +1821,8 @@ function wireSynchronizedDeliveryScrubber(player) {
         progressPct: p,
         isPitchA: false,
         tip,
-        isApex
+        isApex,
+        hasVideo: hasVidB
       });
     }
   }
@@ -1868,8 +1880,8 @@ function wireSynchronizedDeliveryScrubber(player) {
 
     // Update Video / Still Media Elements if paths exist
     const vComp = player?.videoCompare || {};
-    const mediaSrcA = tip.videoA || vComp.videoA || (player.detectionStill?.a) || "";
-    const mediaSrcB = tip.videoB || vComp.videoB || (player.detectionStill?.b) || "";
+    const mediaSrcA = tip.videoA || player.videoA || vComp.videoA || (player.detectionStill?.a) || "";
+    const mediaSrcB = tip.videoB || player.videoB || vComp.videoB || (player.detectionStill?.b) || "";
 
     if (videoA && imgA) {
       if (mediaSrcA && mediaSrcA.endsWith(".mp4")) {

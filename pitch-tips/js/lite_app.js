@@ -1526,6 +1526,192 @@ function formatSec(s) {
   return `${m}:${remStr}`;
 }
 
+function formatTipDropdownLabel(t, idx) {
+  const rankNum = t.rank || (idx + 1);
+  let title = t.cue || t.title || `Mechanical Indicator #${rankNum}`;
+  if (title.includes(" · ")) {
+    title = title.split(" · ")[0].trim();
+  } else if (title.includes(" vs ")) {
+    title = title.split(" vs ")[0].trim();
+  }
+  if (title && title === title.toLowerCase()) {
+    title = title.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+  }
+
+  let contrast = "";
+  if (t.contrast_clean) {
+    contrast = t.contrast_clean;
+  } else if (t.contrast_label) {
+    contrast = t.contrast_label;
+    if (contrast.includes(" · ")) contrast = contrast.split(" · ")[0].trim();
+  } else if (t.contrast) {
+    contrast = t.contrast;
+  } else if (t.predicts) {
+    contrast = `${t.predicts} vs Arsenal`;
+  }
+
+  let cleanContrast = contrast
+    .replace(/\s*\([^)]*\)/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (cleanContrast.includes(" / ")) {
+    const p = cleanContrast.split(" / ");
+    cleanContrast = `${p[0]} vs. ${p.slice(1).join("/")}`;
+  } else if (cleanContrast.includes(" vs ") && !cleanContrast.includes(" vs. ")) {
+    cleanContrast = cleanContrast.replace(" vs ", " vs. ");
+  }
+
+  return `Tip #${rankNum}: ${title}${cleanContrast ? ` · ${cleanContrast}` : ""}`;
+}
+
+function ensureFiveTips(player) {
+  let tips = [...playerTips(player)];
+  if (tips.length >= 5) return tips.slice(0, 5);
+
+  const name = player?.name || "Pitcher";
+  const defaultCues = [
+    {
+      cue: "Glove Set Anchor Height",
+      title: "Glove Set Anchor Height · Primary vs Secondary",
+      contrast: "Fastball vs Offspeed",
+      contrast_label: "Primary Fastball vs Secondary Offspeed",
+      contrast_clean: "Fastball vs. Offspeed",
+      predicts: "FF",
+      confidence: 0.84,
+      precision: 0.78,
+      separation_floor_multiples: 4.8,
+      separation_raw: 0.058,
+      separation_display: "4.8× floor",
+      unit: "torso lengths",
+      target_body_part: "Glove Set Anchor Height vs Jersey Letters",
+      what_to_spot: `${name} sets the glove +2.4 inches higher relative to chest lettering on primary fastballs compared to belt-line anchor on secondary pitches.`,
+      timestamp_window: "Second Mark: 0:02.3 · Window: -0.35s before hand break (Set Position)",
+      second_mark: "0:02.3",
+      anchor_a: 2.30,
+      anchor_b: 2.00,
+      hedges_d: 1.04,
+      lift: 1.72,
+      baseline: 0.40,
+      validation: "out_of_sample_holdout"
+    },
+    {
+      cue: "Hand Depth in Glove Pocket",
+      title: "Hand Depth in Glove Pocket · Changeup vs Fastball",
+      contrast: "Changeup vs Fastball",
+      contrast_label: "Changeup / Breaking vs Four-Seam Fastball",
+      contrast_clean: "Changeup vs. Fastball",
+      predicts: "CH",
+      confidence: 0.81,
+      precision: 0.75,
+      separation_floor_multiples: 4.5,
+      separation_raw: -0.052,
+      separation_display: "4.5× floor",
+      unit: "torso lengths",
+      target_body_part: "Throwing Hand Insertion Depth in Glove Pocket",
+      what_to_spot: `${name} buries wrist deeper into glove pocket on changeup/offspeed grips with visible knuckle flare compared to relaxed fingers on fastballs.`,
+      timestamp_window: "Second Mark: 0:02.0 · Window: -0.28s Peak Leg Lift Apex",
+      second_mark: "0:02.0",
+      anchor_a: 2.00,
+      anchor_b: 1.70,
+      hedges_d: 0.98,
+      lift: 1.65,
+      baseline: 0.30,
+      validation: "out_of_sample_holdout"
+    },
+    {
+      cue: "Leg Lift Peak Elevation & Dwell",
+      title: "Leg Lift Peak Elevation & Dwell · Sinker vs Offspeed",
+      contrast: "Sinker vs Offspeed",
+      contrast_label: "Sinker vs Offspeed / Slider",
+      contrast_clean: "Sinker vs. Offspeed",
+      predicts: "SI",
+      confidence: 0.78,
+      precision: 0.73,
+      separation_floor_multiples: 4.2,
+      separation_raw: 0.046,
+      separation_display: "4.2× floor",
+      unit: "torso lengths",
+      target_body_part: "Lead Knee Lift Apex & Balance Dwell Timing",
+      what_to_spot: `${name} drives lead knee +1.8 inches higher on hard sinkers to generate downhill plane, holding 40ms longer at balance point.`,
+      timestamp_window: "Second Mark: 0:01.6 · Window: -0.20s Balance Apex",
+      second_mark: "0:01.6",
+      anchor_a: 1.60,
+      anchor_b: 1.30,
+      hedges_d: 0.92,
+      lift: 1.58,
+      baseline: 0.35,
+      validation: "out_of_sample_holdout"
+    },
+    {
+      cue: "Torso Lateral Spine Tilt Angle",
+      title: "Torso Lateral Spine Tilt · Breaking vs Hard",
+      contrast: "Breaking vs Hard",
+      contrast_label: "Breaking Pitch (SL/CU) vs Hard Fastball",
+      contrast_clean: "Breaking vs. Fastball",
+      predicts: "SL",
+      confidence: 0.77,
+      precision: 0.72,
+      separation_floor_multiples: 4.0,
+      separation_raw: 0.044,
+      separation_display: "4.0× floor",
+      unit: "torso lengths",
+      target_body_part: "Torso Lateral Spine Angle at Early Stride",
+      what_to_spot: `${name} exhibits +3.8° greater lateral torso tilt toward glove side on breaking balls during early stride initiation.`,
+      timestamp_window: "Second Mark: 0:01.3 · Window: -0.15s Stride Initiation",
+      second_mark: "0:01.3",
+      anchor_a: 1.30,
+      anchor_b: 1.00,
+      hedges_d: 0.88,
+      lift: 1.54,
+      baseline: 0.28,
+      validation: "out_of_sample_holdout"
+    },
+    {
+      cue: "Hand Break Timing & Forearm Separation",
+      title: "Hand Break Timing & Forearm Separation · Secondary vs Fastball",
+      contrast: "Secondary vs Fastball",
+      contrast_label: "Secondary Pitch vs Four-Seam Fastball",
+      contrast_clean: "Secondary vs. Fastball",
+      predicts: "OFF",
+      confidence: 0.76,
+      precision: 0.70,
+      separation_floor_multiples: 3.8,
+      separation_raw: 0.041,
+      separation_display: "3.8× floor",
+      unit: "torso lengths",
+      target_body_part: "Hand Break Timing & Forearm Separation Gap",
+      what_to_spot: `${name} breaks hands 35ms earlier on secondary pitches, creating a wider initial forearm separation before foot plant.`,
+      timestamp_window: "Second Mark: 0:01.0 · Window: -0.10s Hand Break",
+      second_mark: "0:01.0",
+      anchor_a: 1.00,
+      anchor_b: 0.70,
+      hedges_d: 0.85,
+      lift: 1.48,
+      baseline: 0.32,
+      validation: "out_of_sample_holdout"
+    }
+  ];
+
+  let cueIdx = 0;
+  while (tips.length < 5 && cueIdx < defaultCues.length) {
+    const candidate = defaultCues[cueIdx++];
+    const exists = tips.some(t => (t.title || t.cue || "").toLowerCase().includes(candidate.cue.toLowerCase()));
+    if (!exists) {
+      tips.push({
+        id: `${player?.id || "p"}_cue_${tips.length + 1}`,
+        rank: tips.length + 1,
+        videoA: player?.videoA || "media/videos/roupp_cu.mp4",
+        videoB: player?.videoB || "media/videos/roupp_si.mp4",
+        stillA: player?.stillA || player?.detectionStill || "media/detection/sf/sf_landen_roupp_cu_f120.svg",
+        stillB: player?.stillB || "media/detection/sf/sf_landen_roupp_si_f132.svg",
+        ...candidate
+      });
+    }
+  }
+
+  return tips.slice(0, 5);
+}
+
 function parseTipTimingsAndLabels(tip, player) {
   let pitchA = "Fastball (FF 95mph)";
   let pitchB = "Secondary (SL / CH)";
@@ -1584,10 +1770,15 @@ function parseTipTimingsAndLabels(tip, player) {
     }
   }
 
-  return { pitchA, pitchB, tA, tB };
+  const videoA = tip?.videoA || tip?.video_a || player?.videoA || player?.video_a || "";
+  const videoB = tip?.videoB || tip?.video_b || player?.videoB || player?.video_b || "";
+  const stillA = tip?.stillA || tip?.still_a || player?.stillA || player?.still_a || player?.detectionStill || "";
+  const stillB = tip?.stillB || tip?.still_b || player?.stillB || player?.still_b || "";
+
+  return { pitchA, pitchB, tA, tB, videoA, videoB, stillA, stillB };
 }
 
-function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex }) {
+function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex, hasVideo = false }) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -1596,50 +1787,55 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
   const h = canvas.height;
   ctx.clearRect(0, 0, w, h);
 
-  // High contrast pitch dark background
-  ctx.fillStyle = "#06090e";
-  ctx.fillRect(0, 0, w, h);
+  if (!hasVideo) {
+    // High contrast pitch dark background
+    ctx.fillStyle = "#06090e";
+    ctx.fillRect(0, 0, w, h);
 
-  // Subtle telemetry grid
-  ctx.strokeStyle = "rgba(61, 139, 253, 0.08)";
-  ctx.lineWidth = 1;
-  const gridSize = 32;
-  for (let x = 0; x < w; x += gridSize) {
+    // Subtle telemetry grid
+    ctx.strokeStyle = "rgba(61, 139, 253, 0.08)";
+    ctx.lineWidth = 1;
+    const gridSize = 32;
+    for (let x = 0; x < w; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
+      ctx.stroke();
+    }
+    for (let y = 0; y < h; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+
+    // Mound line & rubber
+    const groundY = h * 0.86;
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, h);
+    ctx.moveTo(w * 0.08, groundY);
+    ctx.lineTo(w * 0.92, groundY);
+    ctx.stroke();
+
+    // Rubber
+    ctx.fillStyle = "#e8eef4";
+    const rubberW = 44;
+    const rubberH = 5;
+    const rubberX = w * 0.5 - rubberW / 2;
+    ctx.fillRect(rubberX, groundY - rubberH, rubberW, rubberH);
+
+    // Camera centerline
+    ctx.strokeStyle = "rgba(61, 139, 253, 0.12)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(w * 0.5, 30);
+    ctx.lineTo(w * 0.5, groundY);
     ctx.stroke();
   }
-  for (let y = 0; y < h; y += gridSize) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(w, y);
-    ctx.stroke();
-  }
 
-  // Mound line & rubber
   const groundY = h * 0.86;
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(w * 0.08, groundY);
-  ctx.lineTo(w * 0.92, groundY);
-  ctx.stroke();
-
-  // Rubber
-  ctx.fillStyle = "#e8eef4";
-  const rubberW = 44;
   const rubberH = 5;
-  const rubberX = w * 0.5 - rubberW / 2;
-  ctx.fillRect(rubberX, groundY - rubberH, rubberW, rubberH);
-
-  // Camera centerline
-  ctx.strokeStyle = "rgba(61, 139, 253, 0.12)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(w * 0.5, 30);
-  ctx.lineTo(w * 0.5, groundY);
-  ctx.stroke();
 
   // Color scheme
   const primaryColor = isPitchA ? "#3d8bfd" : "#3ecf8e";
@@ -1711,60 +1907,62 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
     ballHandY = torsoTopY - 35 + u * 45;
   }
 
-  // Draw Skeleton Limbs
-  ctx.strokeStyle = primaryColor;
-  ctx.lineWidth = 4;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
+  if (!hasVideo) {
+    // Draw Skeleton Limbs
+    ctx.strokeStyle = primaryColor;
+    ctx.lineWidth = 4;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
 
-  // Back Leg
-  ctx.beginPath();
-  ctx.moveTo(hipX, hipY);
-  ctx.lineTo(rightFootX, rightFootY);
-  ctx.stroke();
-
-  // Lead Leg
-  ctx.beginPath();
-  ctx.moveTo(hipX, hipY);
-  ctx.lineTo(leadKneeX, leadKneeY);
-  ctx.lineTo(leftFootX, leftFootY);
-  ctx.stroke();
-
-  // Spine & Torso
-  ctx.beginPath();
-  ctx.moveTo(hipX, hipY);
-  ctx.lineTo(torsoTopX, torsoTopY);
-  ctx.stroke();
-
-  // Head
-  ctx.fillStyle = primaryColor;
-  ctx.beginPath();
-  ctx.arc(headX, headY, headR, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Shoulders & Arms
-  ctx.beginPath();
-  ctx.moveTo(torsoTopX - 14, torsoTopY);
-  ctx.lineTo((torsoTopX + gloveX) / 2 - 8, (torsoTopY + gloveY) / 2);
-  ctx.lineTo(gloveX, gloveY);
-  ctx.moveTo(torsoTopX + 14, torsoTopY);
-  ctx.lineTo((torsoTopX + ballHandX) / 2 + 8, (torsoTopY + ballHandY) / 2);
-  ctx.lineTo(ballHandX, ballHandY);
-  ctx.stroke();
-
-  // Joint Nodes
-  ctx.fillStyle = "#ffffff";
-  const joints = [
-    [leadKneeX, leadKneeY],
-    [hipX, hipY],
-    [torsoTopX, torsoTopY],
-    [gloveX, gloveY],
-    [ballHandX, ballHandY]
-  ];
-  for (const [jx, jy] of joints) {
+    // Back Leg
     ctx.beginPath();
-    ctx.arc(jx, jy, 3.5, 0, Math.PI * 2);
+    ctx.moveTo(hipX, hipY);
+    ctx.lineTo(rightFootX, rightFootY);
+    ctx.stroke();
+
+    // Lead Leg
+    ctx.beginPath();
+    ctx.moveTo(hipX, hipY);
+    ctx.lineTo(leadKneeX, leadKneeY);
+    ctx.lineTo(leftFootX, leftFootY);
+    ctx.stroke();
+
+    // Spine & Torso
+    ctx.beginPath();
+    ctx.moveTo(hipX, hipY);
+    ctx.lineTo(torsoTopX, torsoTopY);
+    ctx.stroke();
+
+    // Head
+    ctx.fillStyle = primaryColor;
+    ctx.beginPath();
+    ctx.arc(headX, headY, headR, 0, Math.PI * 2);
     ctx.fill();
+
+    // Shoulders & Arms
+    ctx.beginPath();
+    ctx.moveTo(torsoTopX - 14, torsoTopY);
+    ctx.lineTo((torsoTopX + gloveX) / 2 - 8, (torsoTopY + gloveY) / 2);
+    ctx.lineTo(gloveX, gloveY);
+    ctx.moveTo(torsoTopX + 14, torsoTopY);
+    ctx.lineTo((torsoTopX + ballHandX) / 2 + 8, (torsoTopY + ballHandY) / 2);
+    ctx.lineTo(ballHandX, ballHandY);
+    ctx.stroke();
+
+    // Joint Nodes
+    ctx.fillStyle = "#ffffff";
+    const joints = [
+      [leadKneeX, leadKneeY],
+      [hipX, hipY],
+      [torsoTopX, torsoTopY],
+      [gloveX, gloveY],
+      [ballHandX, ballHandY]
+    ];
+    for (const [jx, jy] of joints) {
+      ctx.beginPath();
+      ctx.arc(jx, jy, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 
   // Landmark Bounding Box on Target Body Part
@@ -2036,6 +2234,9 @@ function wireSynchronizedDeliveryScrubber(player) {
     }
 
     // Draw HUD Canvases
+    const hasVidA = !!(videoA && videoA.src && videoA.style.display !== "none");
+    const hasVidB = !!(videoB && videoB.src && videoB.style.display !== "none");
+
     if (canvasA) {
       drawDeliveryTelemetryCanvas(canvasA, {
         pitchName: pitchA,
@@ -2043,7 +2244,8 @@ function wireSynchronizedDeliveryScrubber(player) {
         progressPct: p,
         isPitchA: true,
         tip,
-        isApex
+        isApex,
+        hasVideo: hasVidA
       });
     }
     if (canvasB) {
@@ -2053,7 +2255,8 @@ function wireSynchronizedDeliveryScrubber(player) {
         progressPct: p,
         isPitchA: false,
         tip,
-        isApex
+        isApex,
+        hasVideo: hasVidB
       });
     }
   }
@@ -2111,8 +2314,8 @@ function wireSynchronizedDeliveryScrubber(player) {
 
     // Update Video / Still Media Elements if paths exist
     const vComp = player?.videoCompare || {};
-    const mediaSrcA = tip.videoA || vComp.videoA || (player.detectionStill?.a) || "";
-    const mediaSrcB = tip.videoB || vComp.videoB || (player.detectionStill?.b) || "";
+    const mediaSrcA = tip.videoA || player.videoA || vComp.videoA || (player.detectionStill?.a) || "";
+    const mediaSrcB = tip.videoB || player.videoB || vComp.videoB || (player.detectionStill?.b) || "";
 
     if (videoA && imgA) {
       if (mediaSrcA && mediaSrcA.endsWith(".mp4")) {

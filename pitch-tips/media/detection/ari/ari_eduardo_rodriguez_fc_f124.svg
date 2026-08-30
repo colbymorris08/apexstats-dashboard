@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" style="background:#0a0e14; font-family:'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;">
+  <defs>
+    <!-- Stadium Lighting Atmosphere -->
+    <radialGradient id="stadiumGlow" cx="50%" cy="15%" r="85%">
+      <stop offset="0%" stop-color="#2a3b52" stop-opacity="0.95"/>
+      <stop offset="45%" stop-color="#141d28" stop-opacity="0.98"/>
+      <stop offset="100%" stop-color="#080c12" stop-opacity="1.0"/>
+    </radialGradient>
+    <linearGradient id="grassStripes" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#19381e"/>
+      <stop offset="50%" stop-color="#132b17"/>
+      <stop offset="100%" stop-color="#0c1d10"/>
+    </linearGradient>
+    <linearGradient id="moundClay" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8a5a36"/>
+      <stop offset="60%" stop-color="#6e4425"/>
+      <stop offset="100%" stop-color="#4a2c14"/>
+    </linearGradient>
+    <linearGradient id="reticleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3d8bfd" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#3d8bfd" stop-opacity="0.3"/>
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 1. STADIUM BACKDROP & FIELD -->
+  <rect width="1280" height="720" fill="url(#stadiumGlow)"/>
+
+  <!-- Outfield Wall & Dugout Silhouette -->
+  <path d="M0,230 Q640,195 1280,230 L1280,330 L0,330 Z" fill="#0c121c" opacity="0.95"/>
+  <rect x="360" y="242" width="560" height="42" rx="4" fill="#141e2e" opacity="0.65" stroke="#25354d" stroke-width="1"/>
+  <text x="640" y="268" fill="#587094" font-size="14" font-weight="700" letter-spacing="3" text-anchor="middle">CHASE FIELD · DBACKS TV 1080p60</text>
+
+  <!-- Outfield Grass & Infield Turf Pattern -->
+  <path d="M0,330 L1280,330 L1280,530 Q640,505 0,530 Z" fill="url(#grassStripes)"/>
+  <!-- Mower striping lines -->
+  <path d="M180,330 L260,528 M380,330 L450,525 M560,330 L620,522 M760,330 L800,522 M960,330 L980,525 M1140,330 L1120,528" stroke="#234a2a" stroke-width="18" opacity="0.35"/>
+
+  <!-- Infield Dirt & Pitching Mound -->
+  <ellipse cx="640" cy="510" rx="360" ry="175" fill="url(#moundClay)"/>
+  <ellipse cx="640" cy="468" rx="160" ry="70" fill="#9e6940" opacity="0.7"/>
+  <!-- Pitcher's Rubber -->
+  <rect x="616" y="460" width="48" height="7" fill="#ffffff" rx="1.5" stroke="#333" stroke-width="0.75"/>
+
+  <!-- Home Plate Area Backdrop (Catcher Silhouette) -->
+  <ellipse cx="738" cy="458" rx="58" ry="24" fill="#4d3019" opacity="0.8"/>
+  <polygon points="730,455 746,455 750,461 738,469 726,461" fill="#ffffff" stroke="#888" stroke-width="1"/>
+  <g opacity="0.85">
+    <ellipse cx="738" cy="415" rx="20" ry="26" fill="#18222f"/>
+    <circle cx="738" cy="386" r="11" fill="#2d3a4d" stroke="#60728c" stroke-width="1"/>
+    <rect x="724" y="432" width="10" height="24" fill="#222c3a" rx="2"/>
+    <rect x="742" y="432" width="10" height="24" fill="#222c3a" rx="2"/>
+    <circle cx="754" cy="410" r="10" fill="#442a18" stroke="#4ade80" stroke-width="1.5"/>
+  </g>
+
+  <!-- 2. PITCHER / CATCHER REALISTIC ANATOMY -->
+  <g id="athlete-pose">
+    <!-- Mound Shadow -->
+    <ellipse cx="640" cy="466" rx="46" ry="14" fill="#000000" opacity="0.5"/>
+
+    <!-- Lower Body / Pants / Cleats -->
+    <line x1="630" y1="416" x2="628" y2="460" stroke="#181818" stroke-width="11" stroke-linecap="round"/>
+    <line x1="650" y1="416" x2="636" y2="452" stroke="#181818" stroke-width="11" stroke-linecap="round"/>
+    <ellipse cx="628" cy="460" rx="9" ry="4" fill="#111111"/>
+    <ellipse cx="636" cy="452" rx="9" ry="4" fill="#111111"/>
+    
+    <!-- Pants / Uniform -->
+    <polygon points="620,392 660,392 656,428 624,428" fill="#ffffff" stroke="#666666" stroke-width="1"/>
+    <rect x="622" y="390" width="36" height="5" fill="#111111" rx="1"/>
+
+    <!-- Torso / Team Jersey -->
+    <path d="M616,346 L664,346 L660,392 L620,392 Z" fill="#a71930" stroke="#e3d4ad" stroke-width="2"/>
+    
+    <!-- Head & Cap -->
+    <circle cx="640" cy="298" r="15" fill="#d49c74"/>
+    <path d="M624,292 Q640,274 656,292 L662,294 Z" fill="#a71930" stroke="#111111" stroke-width="1.5"/>
+    
+    <!-- Throwing Arm -->
+    <line x1="658" y1="352" x2="650" y2="388" stroke="#a71930" stroke-width="8" stroke-linecap="round"/>
+    <line x1="650" y1="388" x2="646" y2="382" stroke="#a71930" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="646" cy="382" r="6.5" fill="#d49c74" stroke="#885533" stroke-width="1.5"/>
+
+    <!-- Glove Arm & Glove Structure -->
+    <line x1="622" y1="352" x2="630" y2="388" stroke="#a71930" stroke-width="8" stroke-linecap="round"/>
+    <line x1="630" y1="388" x2="636" y2="380" stroke="#a71930" stroke-width="7" stroke-linecap="round"/>
+    <!-- Glove Leather Pocket -->
+    <path d="M624,364 C620,398 658,402 660,370 C654,362 636,360 624,364 Z" fill="#4a2e18" stroke="#221105" stroke-width="2.5"/>
+    <circle cx="640" cy="380" r="5" fill="#3d8bfd" opacity="0.6"/>
+  </g>
+
+  <!-- 3. COMPUTER VISION LANDMARK TRACKING & TELEMETRY OVERLAY -->
+  <!-- Optical Horizon Level -->
+  <line x1="120" y1="380" x2="1160" y2="380" stroke="#3d8bfd" stroke-opacity="0.35" stroke-dasharray="6,4" stroke-width="1.2"/>
+  <line x1="640" y1="180" x2="640" y2="580" stroke="#3d8bfd" stroke-opacity="0.35" stroke-dasharray="6,4" stroke-width="1.2"/>
+
+  <!-- Skeletal Landmark Tracking Wireframe -->
+  <g opacity="0.85">
+    <line x1="640" y1="310" x2="622" y2="352" stroke="#3ecf8e" stroke-width="1.8" stroke-dasharray="3,3"/>
+    <line x1="640" y1="310" x2="658" y2="352" stroke="#3ecf8e" stroke-width="1.8" stroke-dasharray="3,3"/>
+    <line x1="622" y1="352" x2="630" y2="388" stroke="#3ecf8e" stroke-width="1.8"/>
+    <line x1="658" y1="352" x2="650" y2="388" stroke="#3ecf8e" stroke-width="1.8"/>
+    <line x1="630" y1="388" x2="640" y2="380" stroke="#3ecf8e" stroke-width="1.8"/>
+    <line x1="650" y1="388" x2="646" y2="382" stroke="#3ecf8e" stroke-width="1.8"/>
+    
+    <!-- Anatomical Keypoint Nodes -->
+    <circle cx="640" cy="310" r="3.5" fill="#3ecf8e"/>
+    <circle cx="622" cy="352" r="3.5" fill="#3ecf8e"/>
+    <circle cx="658" cy="352" r="3.5" fill="#3ecf8e"/>
+    <circle cx="630" cy="388" r="3.5" fill="#3ecf8e"/>
+    <circle cx="650" cy="388" r="3.5" fill="#3ecf8e"/>
+  </g>
+
+  <!-- Bounding Box around Tracked Feature -->
+  <rect x="602" y="348" width="76" height="66" fill="#3d8bfd" fill-opacity="0.12" stroke="#3d8bfd" stroke-width="2.2" rx="4" filter="url(#softGlow)"/>
+  
+  <!-- Corner Reticle Brackets -->
+  <path d="M598,360 L598,344 L614,344" stroke="#3d8bfd" stroke-width="3" fill="none"/>
+  <path d="M682,360 L682,344 L666,344" stroke="#3d8bfd" stroke-width="3" fill="none"/>
+  <path d="M598,402 L598,418 L614,418" stroke="#3d8bfd" stroke-width="3" fill="none"/>
+  <path d="M682,402 L682,418 L666,418" stroke="#3d8bfd" stroke-width="3" fill="none"/>
+
+  <!-- Centroid Crosshair -->
+  <circle cx="640" cy="380" r="4" fill="#3d8bfd"/>
+  <line x1="630" y1="380" x2="650" y2="380" stroke="#3d8bfd" stroke-width="1.8"/>
+  <line x1="640" y1="370" x2="640" y2="390" stroke="#3d8bfd" stroke-width="1.8"/>
+
+  <!-- Telemetry Callout Card connected to Bounding Box -->
+  <g transform="translate(694, 336)">
+    <rect width="260" height="92" rx="6" fill="#0b131e" fill-opacity="0.92" stroke="#3d8bfd" stroke-width="1.5" filter="url(#softGlow)"/>
+    <text x="12" y="20" fill="#3d8bfd" font-size="10.5" font-weight="800" font-family="'IBM Plex Mono', monospace" letter-spacing="1">LANDMARK DETECTED: [GLOVE]</text>
+    <text x="12" y="38" fill="#ffffff" font-size="12" font-weight="700">CHEST SET ELEVATION</text>
+    <text x="12" y="56" fill="#3d8bfd" font-size="11.5" font-weight="700" font-family="'IBM Plex Mono', monospace">Y = 0.412 · MID-BELT LINE</text>
+    <text x="12" y="74" fill="#ffb454" font-size="10.5" font-weight="600" font-family="'IBM Plex Mono', monospace">Δ -3.5 INCHES vs CHANGEUP</text>
+    <line x1="0" y1="36" x2="-16" y2="36" stroke="#3d8bfd" stroke-width="1.5"/>
+  </g>
+
+  <!-- 4. TELEVISION BROADCAST HEADER & SCOREBUG -->
+  <!-- Top-Left Live Camera Bug -->
+  <g transform="translate(32, 28)">
+    <rect width="360" height="46" rx="6" fill="#080e18" fill-opacity="0.94" stroke="#25354d" stroke-width="1.2"/>
+    <circle cx="20" cy="23" r="6" fill="#ef4444"/>
+    <text x="34" y="27" fill="#ffffff" font-size="13" font-weight="700" letter-spacing="0.5">LIVE · CF CAMERA PoC [1080p60 HDR]</text>
+    <text x="340" y="27" fill="#3ecf8e" font-size="11" font-weight="700" font-family="'IBM Plex Mono', monospace" text-anchor="end">T -0.420s</text>
+  </g>
+
+  <!-- Top-Right Pitch ID & Analysis Badge -->
+  <g transform="translate(860, 28)">
+    <rect width="388" height="46" rx="6" fill="#080e18" fill-opacity="0.94" stroke="#25354d" stroke-width="1.2"/>
+    <rect x="0" y="0" width="8" height="46" rx="2" fill="#3d8bfd"/>
+    <text x="20" y="20" fill="#94a3b8" font-size="10" font-weight="800" letter-spacing="1" font-family="'IBM Plex Mono', monospace">ARI D-BACKS · F#124</text>
+    <text x="20" y="38" fill="#ffffff" font-size="13.5" font-weight="800">CUTTER / SINKER · FC 89 MPH</text>
+  </g>
+
+  <!-- Bottom Telemetry HUD Bar -->
+  <g transform="translate(32, 642)">
+    <rect width="1216" height="52" rx="6" fill="#080e18" fill-opacity="0.94" stroke="#25354d" stroke-width="1.2"/>
+    <text x="20" y="24" fill="#64748b" font-size="10.5" font-weight="800" letter-spacing="1" font-family="'IBM Plex Mono', monospace">ATHLETE &amp; PHASE</text>
+    <text x="20" y="42" fill="#ffffff" font-size="13" font-weight="700">Eduardo Rodriguez · PRE-PITCH SET POSITION</text>
+
+    <line x1="380" y1="10" x2="380" y2="42" stroke="#25354d" stroke-width="1"/>
+    
+    <text x="400" y="24" fill="#64748b" font-size="10.5" font-weight="800" letter-spacing="1" font-family="'IBM Plex Mono', monospace">MEASURED SEPARATION</text>
+    <text x="400" y="42" fill="#3d8bfd" font-size="13" font-weight="700" font-family="'IBM Plex Mono', monospace">86.2% SIGNAL · 8.4× FLOOR</text>
+
+    <line x1="720" y1="10" x2="720" y2="42" stroke="#25354d" stroke-width="1"/>
+
+    <text x="740" y="24" fill="#64748b" font-size="10.5" font-weight="800" letter-spacing="1" font-family="'IBM Plex Mono', monospace">CV MODEL PIPELINE</text>
+    <text x="740" y="42" fill="#38bdf8" font-size="12" font-weight="600" font-family="'IBM Plex Mono', monospace">PRE-RELEASE TEMPORAL WINDOW · 0s LEAKAGE</text>
+
+    <rect x="1080" y="12" width="120" height="28" rx="4" fill="#3d8bfd" fill-opacity="0.15" stroke="#3d8bfd" stroke-width="1"/>
+    <text x="1140" y="30" fill="#3d8bfd" font-size="11" font-weight="800" font-family="'IBM Plex Mono', monospace" text-anchor="middle">TRACKED</text>
+  </g>
+</svg>

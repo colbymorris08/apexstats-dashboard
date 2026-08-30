@@ -14,7 +14,6 @@ venv/
 # Large datasets and media files
 *.pt
 *.onnx
-*.mp4
 *.avi
 *.mov
 *.xlsx
@@ -37,8 +36,21 @@ pitch-tips/media/detection/*
 !pitch-tips/media/detection/cpbl/**
 !pitch-tips/media/detection/lmb/
 !pitch-tips/media/detection/lmb/**
+!pitch-tips/media/detection/sf/
+!pitch-tips/media/detection/sf/**
+!pitch-tips/media/detection/ari/
+!pitch-tips/media/detection/ari/**
 !pitch-tips/media/detection/*.json
+!pitch-tips/media/video/
+!pitch-tips/media/video/**
+!pitch-tips/media/videos/
+!pitch-tips/media/videos/**
 pitch-tips/data/tracks/
 pitch-tips/cv/preflight/runs/
 pitch-tips/cv/preflight/models/*.pt
+apex_dashboard_preview_*.json
+biodata/
+client_lists/.knct_college_pitch_cache.json
+mlb_draft_headshots_*/
+tigres-licey/
 

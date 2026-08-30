@@ -31,13 +31,21 @@ Thumbs.db
 !cv/preflight/models/README.txt
 
 # Large Video Files & Media
-*.mp4
 *.avi
 *.mov
 *.mkv
 *.webm
 
+# Tracked showcase MP4 assets for live delivery compare player
+!pitch-tips/media/video/*.mp4
+!pitch-tips/media/videos/*.mp4
+
 # Large pipeline runs, logs, and scratch directories
 runs/
 pitch-tips/runs/
 *.log
+apex_dashboard_preview_*.json
+biodata/
+client_lists/.knct_college_pitch_cache.json
+mlb_draft_headshots_*/
+tigres-licey/
