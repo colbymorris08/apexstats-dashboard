@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 61,
-  "remaining": 624,
+  "remaining": 623,
   "sec_per_pitch": 10.0,
-  "eta_hours": 518.0,
-  "est_total_pitches": 186470,
+  "eta_hours": 501.9,
+  "est_total_pitches": 180670,
   "current": {
-    "name": "Tanner Bibee",
-    "team": "OTH",
-    "message": "pitcher [9/638] last 8 games \u00b7 set + coming-set tracks"
+    "name": "David Morgan",
+    "team": "SD",
+    "message": "pitcher [13/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -1281,6 +1281,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/sean_burke_poc",
       "schema": "rich_72col",
       "n_current_tracks": 297,
+      "ready": true,
+      "state": "complete"
+    },
+    "676440": {
+      "name": "Tanner Bibee",
+      "team": "OTH",
+      "n_tracked": 295,
+      "holdout": 0.162,
+      "tips_ge_75": 7,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 7,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tanner_bibee_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 320,
       "ready": false,
       "state": "tracking"
     }
@@ -2746,9 +2764,9 @@
     },
     "OTH": {
       "queued": 638,
-      "done": 8,
-      "pitcher_tips": 44,
-      "catcher_tips": 34
+      "done": 9,
+      "pitcher_tips": 51,
+      "catcher_tips": 37
     },
     "CHC": {
       "queued": 0,
@@ -2759,12 +2777,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 205,
-    "catcher_tips": 159
+    "pitcher_tips": 212,
+    "catcher_tips": 162
   },
-  "updated_at": "2026-08-30T07:07:18",
+  "updated_at": "2026-08-30T07:12:43",
   "live": {
-    "pitches_done": 290,
+    "pitches_done": 11,
     "pitches_target": null
   },
   "heartbeat": true
