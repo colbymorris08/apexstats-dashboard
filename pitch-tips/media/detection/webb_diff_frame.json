@@ -1,0 +1,22 @@
+{
+  "player": "Logan Webb",
+  "play_id": "00409fe1-edd0-3af1-8b64-da3a996b9e8e",
+  "frame_idx": 26,
+  "t_sec": 0.4364,
+  "note": "Pre-release frame where glove/wrist motion separates \u2014 boxes from MediaPipe tracks",
+  "landmarks": [
+    {
+      "label": "pitcher glove",
+      "x": 527,
+      "y": 580,
+      "color": "#3d8bfd"
+    },
+    {
+      "label": "catcher target",
+      "x": 486,
+      "y": 472,
+      "color": "#e87d5f"
+    }
+  ],
+  "image": "media/detection/webb_diff_frame.jpg"
+}

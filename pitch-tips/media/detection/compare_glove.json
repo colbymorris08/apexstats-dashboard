@@ -1,0 +1,31 @@
+{
+  "pitcher": "Eduardo Rodriguez",
+  "left": {
+    "label": "CU · HIGH GLOVE",
+    "pitchType": "CU",
+    "src": "media/detection/eduardo_diff_frame.jpg",
+    "fullSrc": "media/detection/eduardo_diff_frame.jpg",
+    "box": {
+      "cx": 462,
+      "cy": 332,
+      "side": 38
+    },
+    "playId": "c0c7d8fc",
+    "frame": 24
+  },
+  "right": {
+    "label": "FC · LOW GLOVE",
+    "pitchType": "FC",
+    "src": "media/detection/eduardo_diff_frame.jpg",
+    "fullSrc": "media/detection/eduardo_diff_frame.jpg",
+    "box": {
+      "cx": 488,
+      "cy": 410,
+      "side": 44
+    },
+    "playId": "29faa717",
+    "frame": 24
+  },
+  "compareSrc": "media/detection/eduardo_diff_frame.jpg",
+  "caption": "Pre-release glove compare · CU vs FC. Orange box = pitcher mitt."
+}

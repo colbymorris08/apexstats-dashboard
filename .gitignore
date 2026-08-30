@@ -24,7 +24,20 @@ venv/
 
 # Run artifact caches
 pitch-tips/runs/
-pitch-tips/media/
+pitch-tips/media/*
+!pitch-tips/media/detection/
+pitch-tips/media/detection/*
+!pitch-tips/media/detection/ncaa/
+!pitch-tips/media/detection/ncaa/**
+!pitch-tips/media/detection/npb/
+!pitch-tips/media/detection/npb/**
+!pitch-tips/media/detection/kbo/
+!pitch-tips/media/detection/kbo/**
+!pitch-tips/media/detection/cpbl/
+!pitch-tips/media/detection/cpbl/**
+!pitch-tips/media/detection/lmb/
+!pitch-tips/media/detection/lmb/**
+!pitch-tips/media/detection/*.json
 pitch-tips/data/tracks/
 pitch-tips/cv/preflight/runs/
 pitch-tips/cv/preflight/models/*.pt

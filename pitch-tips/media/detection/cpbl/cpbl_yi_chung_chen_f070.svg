@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <radialGradient id="stadiumLights" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="60%" stop-color="#182035" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#182035" stop-opacity="1"/>
+    </radialGradient>
+    <linearGradient id="moundDirt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8c6239"/>
+      <stop offset="70%" stop-color="#604224"/>
+      <stop offset="100%" stop-color="#3d2a17"/>
+    </linearGradient>
+    <linearGradient id="grassGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#173117"/>
+      <stop offset="100%" stop-color="#0a1a0a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky & Stadium Backdrop -->
+  <rect width="1280" height="720" fill="url(#stadiumLights)" />
+  
+  <!-- Outfield wall & crowd silhouette -->
+  <path d="M0,220 Q640,190 1280,220 L1280,310 L0,310 Z" fill="#080c14" opacity="0.95"/>
+  <!-- Warning track & Outfield Grass -->
+  <path d="M0,310 L1280,310 L1280,510 Q640,490 0,510 Z" fill="url(#grassGrad)"/>
+  
+  <!-- Infield & Mound Dirt -->
+  <ellipse cx="640" cy="500" rx="340" ry="170" fill="url(#moundDirt)" />
+  <ellipse cx="640" cy="460" rx="140" ry="65" fill="#a07242" opacity="0.6"/>
+  <!-- Pitcher Rubber Plate -->
+  <rect x="618" y="455" width="44" height="6" fill="#f0f0f0" rx="1"/>
+
+  <!-- Home Plate Region in Background (Catcher & Umpire Base) -->
+  <ellipse cx="731" cy="458" rx="55" ry="22" fill="#50351d" opacity="0.75"/>
+  <!-- Home Plate -->
+  <polygon points="723,455 739,455 743,461 731,469 719,461" fill="#ffffff" stroke="#999" stroke-width="1"/>
+  
+  <!-- Catcher Silhouette & Target -->
+  <g id="catcher-silhouette" opacity="0.88">
+    <!-- Catcher Body -->
+    <ellipse cx="731" cy="413" rx="22" ry="28" fill="#1c2430"/>
+    <!-- Catcher Helmet/Mask -->
+    <circle cx="731" cy="383" r="12" fill="#3a4556" stroke="#c0c0c0" stroke-width="1.5"/>
+    <!-- Catcher Shin Guards -->
+    <rect x="715" y="431" width="12" height="26" fill="#2d3748" rx="3" stroke="#88a0b8" stroke-width="1"/>
+    <rect x="735" y="431" width="12" height="26" fill="#2d3748" rx="3" stroke="#88a0b8" stroke-width="1"/>
+    <!-- Catcher Target Mitt -->
+    <circle cx="749" cy="407" r="11" fill="#4a3728" stroke="#70af5f" stroke-width="2"/>
+    <circle cx="749" cy="407" r="5" fill="#70af5f" opacity="0.6"/>
+  </g>
+
+  <!-- Pitcher Silhouette & Anatomy Representation -->
+  <g id="pitcher-anatomy">
+    <!-- Shadow on Mound -->
+    <ellipse cx="640" cy="460" rx="42" ry="14" fill="#000000" opacity="0.45"/>
+    
+    <!-- Cleats & Lower Legs -->
+    <line x1="630" y1="409" x2="628" y2="455" stroke="#111111" stroke-width="10" stroke-linecap="round"/>
+    <line x1="650" y1="409" x2="634" y2="443" stroke="#111111" stroke-width="10" stroke-linecap="round"/>
+    <ellipse cx="628" cy="455" rx="9" ry="4" fill="#222"/>
+    <ellipse cx="634" cy="443" rx="9" ry="4" fill="#222"/>
+
+    <!-- Pants / Hips (Belt) -->
+    <polygon points="622,389 658,389 654,424 626,424" fill="#e5e5e5" stroke="#999" stroke-width="1"/>
+    <rect x="624" y="387" width="32" height="5" fill="#111" rx="1"/> <!-- Belt -->
+    
+    <!-- Torso / Jersey -->
+    <path d="M618,344 L662,344 L658,389 L622,389 Z" fill="#003b7a" stroke="#000000" stroke-width="1.5"/>
+    
+    <!-- Pitcher Head & Cap -->
+    <circle cx="640" cy="293" r="14" fill="#d9a07a"/> <!-- Face / Cheek -->
+    <path d="M625,287 Q640,269 655,287 L660,289 Z" fill="#003b7a" stroke="#111" stroke-width="1"/> <!-- Cap & Bill -->
+
+    <!-- Throwing Arm & Bare Hand -->
+    <line x1="656" y1="351" x2="653" y2="351" stroke="#003b7a" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="653" cy="351" r="6" fill="#f0c040" stroke="#d9a07a" stroke-width="2"/> <!-- Bare hand inside/near glove -->
+
+    <!-- Glove Arm & Pitcher Glove -->
+    <line x1="624" y1="351" x2="644" y2="348" stroke="#003b7a" stroke-width="8" stroke-linecap="round"/>
+    <!-- Glove Bounding Shape -->
+    <path d="M630,332 C626,358 654,364 660,340 C658,330 644,330 630,332 Z" fill="#6d4218" stroke="#ff8c00" stroke-width="2.5"/>
+    <ellipse cx="644" cy="348" rx="7" ry="9" fill="#ff8c00" opacity="0.35"/>
+  </g>
+
+  <!-- Visual Broadcast Reticle Overlay (CF Optical Horizon) -->
+  <g opacity="0.35">
+    <line x1="0" y1="348" x2="1280" y2="348" stroke="#ff8c00" stroke-dasharray="4,4" stroke-width="1"/>
+    <line x1="644" y1="0" x2="644" y2="720" stroke="#ff8c00" stroke-dasharray="4,4" stroke-width="1"/>
+  </g>
+
+  <!-- Broadcast Scoreboard & Calibration Metadata Bug -->
+  <rect x="24" y="24" width="460" height="96" fill="#080e18" fill-opacity="0.92" rx="6" stroke="#1f2c3f" stroke-width="1.5"/>
+  <rect x="24" y="24" width="8" height="96" fill="#3d8bfd" rx="2"/>
+  
+  <text x="44" y="50" fill="#ffffff" font-family="Manrope, sans-serif" font-size="16" font-weight="700">Yi-Chung Chen</text>
+  <text x="44" y="70" fill="#3ecf8e" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">Fubon Guardians · CPBL · RHP</text>
+  <text x="44" y="90" fill="#a0aec0" font-family="IBM Plex Mono, monospace" font-size="11">Changeup (CH) · Standard CF Broadcast</text>
+  <text x="44" y="108" fill="#e8a23a" font-family="IBM Plex Mono, monospace" font-size="10.5">Mid Chest Set Position · WinPos: 28%</text>
+
+  <!-- Top Right League & Stadium Watermark -->
+  <rect x="980" y="24" width="276" height="68" fill="#080e18" fill-opacity="0.92" rx="6" stroke="#1f2c3f" stroke-width="1.5"/>
+  <text x="1000" y="48" fill="#3d8bfd" font-family="Manrope, sans-serif" font-size="14" font-weight="800">CPBL ADVANCE CALIBRATION</text>
+  <text x="1000" y="68" fill="#718096" font-family="IBM Plex Mono, monospace" font-size="10">Xinzhuang Baseball Stadium</text>
+  <text x="1000" y="82" fill="#4a5568" font-family="IBM Plex Mono, monospace" font-size="9.5">Evening Sunset Glare</text>
+
+  <!-- Actionable Delivery Window Gauge (Bottom Left) -->
+  <rect x="24" y="660" width="360" height="36" fill="#080e18" fill-opacity="0.92" rx="4" stroke="#1f2c3f" stroke-width="1"/>
+  <text x="36" y="682" fill="#a0aec0" font-family="IBM Plex Mono, monospace" font-size="11">Window: Come-Set → Hand Break</text>
+  <rect x="230" y="672" width="140" height="8" fill="#1a2636" rx="3"/>
+  <rect x="230" y="672" width="40" height="8" fill="#3ecf8e" rx="3"/>
+
+</svg>
