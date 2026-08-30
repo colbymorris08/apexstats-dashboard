@@ -1283,6 +1283,77 @@ function formatSec(s) {
   return `${m}:${remStr}`;
 }
 
+function resolveVideoForPitch(playerId, pitchType, defaultFallback) {
+  const normId = (playerId || "").toLowerCase().replace(/[^a-z0-9_]/g, "_");
+  const p = (pitchType || "").toLowerCase();
+  
+  if (normId.includes("roupp")) {
+    if (p.includes("cu") || p.includes("curve")) return "media/video/roupp_cu.mp4";
+    if (p.includes("ch") || p.includes("change")) return "media/video/roupp_ch.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/roupp_sl.mp4";
+    if (p.includes("ff") || p.includes("four") || p.includes("fast")) return "media/video/roupp_ff.mp4";
+    return "media/video/roupp_si.mp4";
+  }
+  if (normId.includes("webb")) {
+    if (p.includes("ch") || p.includes("change")) return "media/video/webb_ch.mp4";
+    if (p.includes("sl") || p.includes("st") || p.includes("sweep")) return "media/video/webb_sl.mp4";
+    if (p.includes("fc") || p.includes("cut")) return "media/video/webb_fc.mp4";
+    if (p.includes("ff") || p.includes("four") || p.includes("fast")) return "media/video/webb_ff.mp4";
+    return "media/video/webb_si.mp4";
+  }
+  if (normId.includes("erod") || normId.includes("eduardo")) {
+    if (p.includes("ch") || p.includes("change")) return "media/video/erod_ch.mp4";
+    if (p.includes("fc") || p.includes("cut")) return "media/video/erod_fc.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/erod_sl.mp4";
+    if (p.includes("si") || p.includes("sink")) return "media/video/erod_si.mp4";
+    return "media/video/erod_ff.mp4";
+  }
+  if (normId.includes("burns")) {
+    if (p.includes("sl") || p.includes("slide")) return "media/video/burns_sl.mp4";
+    if (p.includes("ch") || p.includes("change")) return "media/video/burns_ch.mp4";
+    if (p.includes("cu") || p.includes("cv") || p.includes("curve")) return "media/video/burns_cu.mp4";
+    return "media/video/burns_ff.mp4";
+  }
+  if (normId.includes("sasaki")) {
+    if (p.includes("fs") || p.includes("split") || p.includes("fork")) return "media/video/sasaki_fs.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/sasaki_fs.mp4";
+    return "media/video/sasaki_ff.mp4";
+  }
+  if (normId.includes("choi")) {
+    if (p.includes("ch") || p.includes("change")) return "media/video/choi_ch.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/choi_sl.mp4";
+    if (p.includes("cu") || p.includes("curve")) return "media/video/choi_cu.mp4";
+    if (p.includes("ff") || p.includes("fast")) return "media/video/choi_ff.mp4";
+    return "media/video/choi_si.mp4";
+  }
+  if (normId.includes("gu_lin") || normId.includes("gulin")) {
+    if (p.includes("cu") || p.includes("curve")) return "media/video/gulin_cu.mp4";
+    if (p.includes("ch") || p.includes("change")) return "media/video/gu_lin_ch.mp4";
+    return "media/video/gulin_ff.mp4";
+  }
+  if (normId.includes("rios")) {
+    if (p.includes("ch") || p.includes("change")) return "media/video/rios_ch.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/rios_sl.mp4";
+    if (p.includes("fc") || p.includes("cut")) return "media/video/rios_fc.mp4";
+    return "media/video/rios_si.mp4";
+  }
+  if (normId.includes("gausman")) {
+    if (p.includes("fs") || p.includes("split")) return "media/video/gausman_fs.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/gausman_sl.mp4";
+    return "media/video/gausman_ff.mp4";
+  }
+  if (normId.includes("pfaadt")) {
+    if (p.includes("st") || p.includes("sl") || p.includes("sweep")) return "media/video/pfaadt_st.mp4";
+    return "media/video/pfaadt_si.mp4";
+  }
+  if (normId.includes("moreno")) {
+    if (p.includes("ch") || p.includes("change")) return "media/video/moreno_ch.mp4";
+    return "media/video/moreno_ff.mp4";
+  }
+
+  return defaultFallback || "media/video/roupp_si.mp4";
+}
+
 function parseTipTimingsAndLabels(tip, player) {
   let pitchA = "Fastball (FF 95mph)";
   let pitchB = "Secondary (SL / CH)";
@@ -1300,8 +1371,14 @@ function parseTipTimingsAndLabels(tip, player) {
       pitchB = "Arsenal Baseline";
     }
   } else if (tip?.contrast) {
-    pitchA = tip.contrast;
-    pitchB = "Secondary Mix";
+    const parts = tip.contrast.split(/ vs\.? | \/ | vs /i);
+    if (parts.length >= 2) {
+      pitchA = parts[0].trim();
+      pitchB = parts.slice(1).join(" / ").trim();
+    } else {
+      pitchA = tip.contrast;
+      pitchB = "Secondary Mix";
+    }
   } else if (tip?.predicts) {
     const p = tip.predicts.toUpperCase();
     if (p === "FC") {
@@ -1341,7 +1418,14 @@ function parseTipTimingsAndLabels(tip, player) {
     }
   }
 
-  return { pitchA, pitchB, tA, tB };
+  const pid = player?.id || "";
+  const vComp = player?.videoCompare || {};
+  let videoA = tip?.videoA || tip?.video_a || resolveVideoForPitch(pid, pitchA, player?.videoA || vComp.videoA);
+  let videoB = tip?.videoB || tip?.video_b || resolveVideoForPitch(pid, pitchB, player?.videoB || vComp.videoB);
+  const stillA = tip?.stillA || tip?.still_a || player?.stillA || player?.still_a || player?.detectionStill || "";
+  const stillB = tip?.stillB || tip?.still_b || player?.stillB || player?.still_b || "";
+
+  return { pitchA, pitchB, tA, tB, videoA, videoB, stillA, stillB };
 }
 
 function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex, hasVideo = false }) {
@@ -1762,9 +1846,12 @@ function wireSynchronizedDeliveryScrubber(player) {
     return "PHASE: ARM ACCELERATION & RELEASE";
   }
 
+  let hasVideoA = false;
+  let hasVideoB = false;
+
   function syncMediaAndHUD() {
     const tip = availableTips[currentTipIdx] || availableTips[0];
-    const { pitchA, pitchB, tA, tB } = parseTipTimingsAndLabels(tip, player);
+    const { pitchA, pitchB, tA, tB, videoA: vA, videoB: vB, stillA: sA, stillB: sB } = parseTipTimingsAndLabels(tip, player);
     const p = parseFloat(scrubSlider?.value ?? 50);
 
     const { curA, curB, isApex } = getTimes(p, tA, tB);
@@ -1792,16 +1879,33 @@ function wireSynchronizedDeliveryScrubber(player) {
     }
 
     // Video synchronization
-    if (videoA && videoA.src && !videoA.error) {
-      try { videoA.currentTime = curA; } catch (e) {}
+    if (videoA && hasVideoA && videoA.src && videoA.style.display !== "none") {
+      try {
+        if (videoA.duration && !isNaN(videoA.duration) && videoA.duration > 0) {
+          const targetA = Math.max(0, Math.min(videoA.duration - 0.05, curA));
+          if (Math.abs(videoA.currentTime - targetA) > 0.03) {
+            videoA.currentTime = targetA;
+          }
+        } else {
+          videoA.currentTime = curA;
+        }
+      } catch (e) {}
     }
-    if (videoB && videoB.src && !videoB.error) {
-      try { videoB.currentTime = curB; } catch (e) {}
+    if (videoB && hasVideoB && videoB.src && videoB.style.display !== "none") {
+      try {
+        if (videoB.duration && !isNaN(videoB.duration) && videoB.duration > 0) {
+          const targetB = Math.max(0, Math.min(videoB.duration - 0.05, curB));
+          if (Math.abs(videoB.currentTime - targetB) > 0.03) {
+            videoB.currentTime = targetB;
+          }
+        } else {
+          videoB.currentTime = curB;
+        }
+      } catch (e) {}
     }
 
-    // Draw HUD Canvases
-    const hasVidA = !!(videoA && videoA.src && videoA.style.display !== "none");
-    const hasVidB = !!(videoB && videoB.src && videoB.style.display !== "none");
+    const hasImgA = !!(imgA && imgA.src && imgA.style.display !== "none");
+    const hasImgB = !!(imgB && imgB.src && imgB.style.display !== "none");
 
     if (canvasA) {
       drawDeliveryTelemetryCanvas(canvasA, {
@@ -1811,7 +1915,8 @@ function wireSynchronizedDeliveryScrubber(player) {
         isPitchA: true,
         tip,
         isApex,
-        hasVideo: hasVidA
+        hasVideo: hasVideoA,
+        hasImage: hasImgA
       });
     }
     if (canvasB) {
@@ -1822,7 +1927,8 @@ function wireSynchronizedDeliveryScrubber(player) {
         isPitchA: false,
         tip,
         isApex,
-        hasVideo: hasVidB
+        hasVideo: hasVideoB,
+        hasImage: hasImgB
       });
     }
   }
@@ -1830,7 +1936,7 @@ function wireSynchronizedDeliveryScrubber(player) {
   function applyTipSelection(idx) {
     currentTipIdx = Math.max(0, Math.min(availableTips.length - 1, idx));
     const tip = availableTips[currentTipIdx];
-    const { pitchA, pitchB, tA, tB } = parseTipTimingsAndLabels(tip, player);
+    const { pitchA, pitchB, tA, tB, videoA: vA, videoB: vB, stillA: sA, stillB: sB } = parseTipTimingsAndLabels(tip, player);
 
     // Update Dropdown & Quick Pills
     if (tipDropdown) tipDropdown.value = String(currentTipIdx);
@@ -1878,37 +1984,101 @@ function wireSynchronizedDeliveryScrubber(player) {
       lblEnd.textContent = `Ball Release (${formatSec(tA + 1.5)})`;
     }
 
-    // Update Video / Still Media Elements if paths exist
-    const vComp = player?.videoCompare || {};
-    const mediaSrcA = tip.videoA || player.videoA || vComp.videoA || (player.detectionStill?.a) || "";
-    const mediaSrcB = tip.videoB || player.videoB || vComp.videoB || (player.detectionStill?.b) || "";
-
-    if (videoA && imgA) {
-      if (mediaSrcA && mediaSrcA.endsWith(".mp4")) {
-        videoA.src = mediaSrcA;
+    // Setup Video and Still Elements with reliable source switching and error handlers
+    if (videoA) {
+      if (vA) {
+        hasVideoA = false;
+        const curSrcA = videoA.getAttribute("src") || videoA.src || "";
+        if (!curSrcA.endsWith(vA)) {
+          videoA.src = vA;
+          videoA.load();
+        }
         videoA.style.display = "block";
-        imgA.style.display = "none";
-      } else if (mediaSrcA && (mediaSrcA.endsWith(".svg") || mediaSrcA.endsWith(".jpg") || mediaSrcA.endsWith(".png"))) {
-        imgA.src = mediaSrcA;
-        imgA.style.display = "block";
-        videoA.style.display = "none";
+        videoA.onerror = () => {
+          hasVideoA = false;
+          videoA.style.display = "none";
+          if (imgA && sA) imgA.style.display = "block";
+          syncMediaAndHUD();
+        };
+        videoA.onloadeddata = () => {
+          hasVideoA = true;
+          videoA.style.display = "block";
+          if (imgA) imgA.style.display = "none";
+          syncMediaAndHUD();
+        };
+        videoA.oncanplay = () => {
+          hasVideoA = true;
+          videoA.style.display = "block";
+          if (imgA) imgA.style.display = "none";
+          syncMediaAndHUD();
+        };
+        if (videoA.readyState >= 2) {
+          hasVideoA = true;
+          videoA.style.display = "block";
+          if (imgA) imgA.style.display = "none";
+        }
       } else {
+        hasVideoA = false;
+        videoA.removeAttribute("src");
         videoA.style.display = "none";
+      }
+    }
+
+    if (videoB) {
+      if (vB) {
+        hasVideoB = false;
+        const curSrcB = videoB.getAttribute("src") || videoB.src || "";
+        if (!curSrcB.endsWith(vB)) {
+          videoB.src = vB;
+          videoB.load();
+        }
+        videoB.style.display = "block";
+        videoB.onerror = () => {
+          hasVideoB = false;
+          videoB.style.display = "none";
+          if (imgB && sB) imgB.style.display = "block";
+          syncMediaAndHUD();
+        };
+        videoB.onloadeddata = () => {
+          hasVideoB = true;
+          videoB.style.display = "block";
+          if (imgB) imgB.style.display = "none";
+          syncMediaAndHUD();
+        };
+        videoB.oncanplay = () => {
+          hasVideoB = true;
+          videoB.style.display = "block";
+          if (imgB) imgB.style.display = "none";
+          syncMediaAndHUD();
+        };
+        if (videoB.readyState >= 2) {
+          hasVideoB = true;
+          videoB.style.display = "block";
+          if (imgB) imgB.style.display = "none";
+        }
+      } else {
+        hasVideoB = false;
+        videoB.removeAttribute("src");
+        videoB.style.display = "none";
+      }
+    }
+
+    if (imgA) {
+      if (sA) {
+        imgA.src = sA;
+        if (!vA || !hasVideoA) imgA.style.display = "block";
+      } else {
+        imgA.removeAttribute("src");
         imgA.style.display = "none";
       }
     }
 
-    if (videoB && imgB) {
-      if (mediaSrcB && mediaSrcB.endsWith(".mp4")) {
-        videoB.src = mediaSrcB;
-        videoB.style.display = "block";
-        imgB.style.display = "none";
-      } else if (mediaSrcB && (mediaSrcB.endsWith(".svg") || mediaSrcB.endsWith(".jpg") || mediaSrcB.endsWith(".png"))) {
-        imgB.src = mediaSrcB;
-        imgB.style.display = "block";
-        videoB.style.display = "none";
+    if (imgB) {
+      if (sB) {
+        imgB.src = sB;
+        if (!vB || !hasVideoB) imgB.style.display = "block";
       } else {
-        videoB.style.display = "none";
+        imgB.removeAttribute("src");
         imgB.style.display = "none";
       }
     }

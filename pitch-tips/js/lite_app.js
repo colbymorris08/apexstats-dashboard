@@ -1712,6 +1712,77 @@ function ensureFiveTips(player) {
   return tips.slice(0, 5);
 }
 
+function resolveVideoForPitch(playerId, pitchType, defaultFallback) {
+  const normId = (playerId || "").toLowerCase().replace(/[^a-z0-9_]/g, "_");
+  const p = (pitchType || "").toLowerCase();
+  
+  if (normId.includes("roupp")) {
+    if (p.includes("cu") || p.includes("curve")) return "media/video/roupp_cu.mp4";
+    if (p.includes("ch") || p.includes("change")) return "media/video/roupp_ch.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/roupp_sl.mp4";
+    if (p.includes("ff") || p.includes("four") || p.includes("fast")) return "media/video/roupp_ff.mp4";
+    return "media/video/roupp_si.mp4";
+  }
+  if (normId.includes("webb")) {
+    if (p.includes("ch") || p.includes("change")) return "media/video/webb_ch.mp4";
+    if (p.includes("sl") || p.includes("st") || p.includes("sweep")) return "media/video/webb_sl.mp4";
+    if (p.includes("fc") || p.includes("cut")) return "media/video/webb_fc.mp4";
+    if (p.includes("ff") || p.includes("four") || p.includes("fast")) return "media/video/webb_ff.mp4";
+    return "media/video/webb_si.mp4";
+  }
+  if (normId.includes("erod") || normId.includes("eduardo")) {
+    if (p.includes("ch") || p.includes("change")) return "media/video/erod_ch.mp4";
+    if (p.includes("fc") || p.includes("cut")) return "media/video/erod_fc.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/erod_sl.mp4";
+    if (p.includes("si") || p.includes("sink")) return "media/video/erod_si.mp4";
+    return "media/video/erod_ff.mp4";
+  }
+  if (normId.includes("burns")) {
+    if (p.includes("sl") || p.includes("slide")) return "media/video/burns_sl.mp4";
+    if (p.includes("ch") || p.includes("change")) return "media/video/burns_ch.mp4";
+    if (p.includes("cu") || p.includes("cv") || p.includes("curve")) return "media/video/burns_cu.mp4";
+    return "media/video/burns_ff.mp4";
+  }
+  if (normId.includes("sasaki")) {
+    if (p.includes("fs") || p.includes("split") || p.includes("fork")) return "media/video/sasaki_fs.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/sasaki_fs.mp4";
+    return "media/video/sasaki_ff.mp4";
+  }
+  if (normId.includes("choi")) {
+    if (p.includes("ch") || p.includes("change")) return "media/video/choi_ch.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/choi_sl.mp4";
+    if (p.includes("cu") || p.includes("curve")) return "media/video/choi_cu.mp4";
+    if (p.includes("ff") || p.includes("fast")) return "media/video/choi_ff.mp4";
+    return "media/video/choi_si.mp4";
+  }
+  if (normId.includes("gu_lin") || normId.includes("gulin")) {
+    if (p.includes("cu") || p.includes("curve")) return "media/video/gulin_cu.mp4";
+    if (p.includes("ch") || p.includes("change")) return "media/video/gu_lin_ch.mp4";
+    return "media/video/gulin_ff.mp4";
+  }
+  if (normId.includes("rios")) {
+    if (p.includes("ch") || p.includes("change")) return "media/video/rios_ch.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/rios_sl.mp4";
+    if (p.includes("fc") || p.includes("cut")) return "media/video/rios_fc.mp4";
+    return "media/video/rios_si.mp4";
+  }
+  if (normId.includes("gausman")) {
+    if (p.includes("fs") || p.includes("split")) return "media/video/gausman_fs.mp4";
+    if (p.includes("sl") || p.includes("slide")) return "media/video/gausman_sl.mp4";
+    return "media/video/gausman_ff.mp4";
+  }
+  if (normId.includes("pfaadt")) {
+    if (p.includes("st") || p.includes("sl") || p.includes("sweep")) return "media/video/pfaadt_st.mp4";
+    return "media/video/pfaadt_si.mp4";
+  }
+  if (normId.includes("moreno")) {
+    if (p.includes("ch") || p.includes("change")) return "media/video/moreno_ch.mp4";
+    return "media/video/moreno_ff.mp4";
+  }
+
+  return defaultFallback || "media/video/roupp_si.mp4";
+}
+
 function parseTipTimingsAndLabels(tip, player) {
   let pitchA = "Fastball (FF 95mph)";
   let pitchB = "Secondary (SL / CH)";
@@ -1729,8 +1800,14 @@ function parseTipTimingsAndLabels(tip, player) {
       pitchB = "Arsenal Baseline";
     }
   } else if (tip?.contrast) {
-    pitchA = tip.contrast;
-    pitchB = "Secondary Mix";
+    const parts = tip.contrast.split(/ vs\.? | \/ | vs /i);
+    if (parts.length >= 2) {
+      pitchA = parts[0].trim();
+      pitchB = parts.slice(1).join(" / ").trim();
+    } else {
+      pitchA = tip.contrast;
+      pitchB = "Secondary Mix";
+    }
   } else if (tip?.predicts) {
     const p = tip.predicts.toUpperCase();
     if (p === "FC") {
@@ -1770,15 +1847,17 @@ function parseTipTimingsAndLabels(tip, player) {
     }
   }
 
-  const videoA = tip?.videoA || tip?.video_a || player?.videoA || player?.video_a || "";
-  const videoB = tip?.videoB || tip?.video_b || player?.videoB || player?.video_b || "";
+  const pid = player?.id || "";
+  const vComp = player?.videoCompare || {};
+  let videoA = tip?.videoA || tip?.video_a || resolveVideoForPitch(pid, pitchA, player?.videoA || vComp.videoA);
+  let videoB = tip?.videoB || tip?.video_b || resolveVideoForPitch(pid, pitchB, player?.videoB || vComp.videoB);
   const stillA = tip?.stillA || tip?.still_a || player?.stillA || player?.still_a || player?.detectionStill || "";
   const stillB = tip?.stillB || tip?.still_b || player?.stillB || player?.still_b || "";
 
   return { pitchA, pitchB, tA, tB, videoA, videoB, stillA, stillB };
 }
 
-function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex, hasVideo = false }) {
+function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex, hasVideo = false, hasImage = false }) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -1787,7 +1866,7 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
   const h = canvas.height;
   ctx.clearRect(0, 0, w, h);
 
-  if (!hasVideo) {
+  if (!hasVideo && !hasImage) {
     // High contrast pitch dark background
     ctx.fillStyle = "#06090e";
     ctx.fillRect(0, 0, w, h);
@@ -2038,7 +2117,7 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
 
   ctx.font = "700 10px 'IBM Plex Mono', monospace";
   ctx.fillStyle = primaryColor;
-  ctx.fillText(isPitchA ? "● PITCH A TRACKING" : "● PITCH B TRACKING", 18, 26);
+  ctx.fillText(hasVideo ? (isPitchA ? "● PITCH A BROADCAST" : "● PITCH B BROADCAST") : (isPitchA ? "● PITCH A TRACKING" : "● PITCH B TRACKING"), 18, 26);
 
   ctx.fillStyle = "#ffffff";
   ctx.fillText(`FRAME #${Math.round(timeVal * 30)} · ${formatSec(timeVal)}`, w - 160, 26);
@@ -2159,7 +2238,7 @@ function wireSynchronizedDeliveryScrubber(player) {
 
   function syncMediaAndHUD() {
     const tip = availableTips[currentTipIdx] || availableTips[0];
-    const { pitchA, pitchB, tA, tB } = parseTipTimingsAndLabels(tip, player);
+    const { pitchA, pitchB, tA, tB, videoA: vA, videoB: vB, stillA: sA, stillB: sB } = parseTipTimingsAndLabels(tip, player);
     const p = parseFloat(scrubSlider?.value ?? 50);
 
     const { curA, curB, isApex } = getTimes(p, tA, tB);
@@ -2190,9 +2269,8 @@ function wireSynchronizedDeliveryScrubber(player) {
     if (videoA && hasVideoA && videoA.src && videoA.style.display !== "none") {
       try {
         if (videoA.duration && !isNaN(videoA.duration) && videoA.duration > 0) {
-          const durA = videoA.duration;
-          const targetA = curA % durA;
-          if (Math.abs(videoA.currentTime - targetA) > 0.04) {
+          const targetA = Math.max(0, Math.min(videoA.duration - 0.05, curA));
+          if (Math.abs(videoA.currentTime - targetA) > 0.03) {
             videoA.currentTime = targetA;
           }
         } else {
@@ -2203,9 +2281,8 @@ function wireSynchronizedDeliveryScrubber(player) {
     if (videoB && hasVideoB && videoB.src && videoB.style.display !== "none") {
       try {
         if (videoB.duration && !isNaN(videoB.duration) && videoB.duration > 0) {
-          const durB = videoB.duration;
-          const targetB = curB % durB;
-          if (Math.abs(videoB.currentTime - targetB) > 0.04) {
+          const targetB = Math.max(0, Math.min(videoB.duration - 0.05, curB));
+          if (Math.abs(videoB.currentTime - targetB) > 0.03) {
             videoB.currentTime = targetB;
           }
         } else {
@@ -2213,6 +2290,9 @@ function wireSynchronizedDeliveryScrubber(player) {
         }
       } catch (e) {}
     }
+
+    const hasImgA = !!(imgA && imgA.src && imgA.style.display !== "none");
+    const hasImgB = !!(imgB && imgB.src && imgB.style.display !== "none");
 
     // Draw HUD Canvases
     if (canvasA) {
@@ -2223,7 +2303,8 @@ function wireSynchronizedDeliveryScrubber(player) {
         isPitchA: true,
         tip,
         isApex,
-        hasVideo: hasVideoA
+        hasVideo: hasVideoA,
+        hasImage: hasImgA
       });
     }
     if (canvasB) {
@@ -2234,7 +2315,8 @@ function wireSynchronizedDeliveryScrubber(player) {
         isPitchA: false,
         tip,
         isApex,
-        hasVideo: hasVideoB
+        hasVideo: hasVideoB,
+        hasImage: hasImgB
       });
     }
   }
@@ -2294,7 +2376,11 @@ function wireSynchronizedDeliveryScrubber(player) {
     if (videoA) {
       if (vA) {
         hasVideoA = false;
-        videoA.src = vA;
+        const curSrcA = videoA.getAttribute("src") || videoA.src || "";
+        if (!curSrcA.endsWith(vA)) {
+          videoA.src = vA;
+          videoA.load();
+        }
         videoA.style.display = "block";
         videoA.onerror = () => {
           hasVideoA = false;
@@ -2308,6 +2394,17 @@ function wireSynchronizedDeliveryScrubber(player) {
           if (imgA) imgA.style.display = "none";
           syncMediaAndHUD();
         };
+        videoA.oncanplay = () => {
+          hasVideoA = true;
+          videoA.style.display = "block";
+          if (imgA) imgA.style.display = "none";
+          syncMediaAndHUD();
+        };
+        if (videoA.readyState >= 2) {
+          hasVideoA = true;
+          videoA.style.display = "block";
+          if (imgA) imgA.style.display = "none";
+        }
       } else {
         hasVideoA = false;
         videoA.removeAttribute("src");
@@ -2318,7 +2415,11 @@ function wireSynchronizedDeliveryScrubber(player) {
     if (videoB) {
       if (vB) {
         hasVideoB = false;
-        videoB.src = vB;
+        const curSrcB = videoB.getAttribute("src") || videoB.src || "";
+        if (!curSrcB.endsWith(vB)) {
+          videoB.src = vB;
+          videoB.load();
+        }
         videoB.style.display = "block";
         videoB.onerror = () => {
           hasVideoB = false;
@@ -2332,6 +2433,17 @@ function wireSynchronizedDeliveryScrubber(player) {
           if (imgB) imgB.style.display = "none";
           syncMediaAndHUD();
         };
+        videoB.oncanplay = () => {
+          hasVideoB = true;
+          videoB.style.display = "block";
+          if (imgB) imgB.style.display = "none";
+          syncMediaAndHUD();
+        };
+        if (videoB.readyState >= 2) {
+          hasVideoB = true;
+          videoB.style.display = "block";
+          if (imgB) imgB.style.display = "none";
+        }
       } else {
         hasVideoB = false;
         videoB.removeAttribute("src");
