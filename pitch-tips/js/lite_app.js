@@ -368,6 +368,53 @@ function tipPassesFilters(tip, { angle, context } = {}) {
   return true;
 }
 
+function deriveDeliveryTiming(tip) {
+  const feat = (tip.feature || tip.col || tip.cue || tip.title || "").toLowerCase();
+  
+  let phase = tip.delivery_phase || tip.phase;
+  let window = tip.timestamp_window || tip.window;
+
+  if (!phase) {
+    if (feat.includes("pitchcom") || feat.includes("tap") || feat.includes("isi") || feat.includes("cleat") || feat.includes("stance_width")) {
+      phase = "Pre-Pitch Battery & Rubber Setup (-1.80s to -1.10s before pitch release)";
+    } else if (feat.includes("catcher") || feat.includes("target") || feat.includes("crouch")) {
+      phase = "Catcher Pre-Pitch Target & Battery Setup (-1.80s to -1.10s before pitch release)";
+    } else if (feat.includes("belt") || feat.includes("set_height") || feat.includes("glove_set") || feat.includes("dwell") || feat.includes("set_hold") || feat.includes("seam_tilt") || feat.includes("pronation") || feat.includes("burial") || feat.includes("pocket")) {
+      phase = "Stationary Set Position (-1.20s to -0.65s before hand break)";
+    } else if (feat.includes("flare") || feat.includes("pre_lift") || feat.includes("glove_rim")) {
+      phase = "Leg Lift Initiation & Glove Presentation (-0.55s to -0.35s before hand break)";
+    } else if (feat.includes("knee") || feat.includes("lift") || feat.includes("apex") || feat.includes("balance") || feat.includes("dwell_sec") || feat.includes("coil") || feat.includes("tilt") || feat.includes("glove_apex") || feat.includes("elbow_lift")) {
+      phase = "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)";
+    } else if (feat.includes("break") || feat.includes("separation") || feat.includes("stride") || feat.includes("plant") || feat.includes("drift") || feat.includes("cocking") || feat.includes("forearm") || feat.includes("hip_open") || feat.includes("flap")) {
+      phase = "Hand Separation & Stride Initiation (-0.10s to 0.00s at hand break)";
+    } else {
+      phase = "Pre-Release Delivery Window (-0.45s to -0.15s before release)";
+    }
+  }
+
+  if (!window) {
+    if (tip.second_mark) {
+      window = `Second Mark: ${tip.second_mark} · Pre-Release Window`;
+    } else if (feat.includes("pitchcom") || feat.includes("tap") || feat.includes("isi")) {
+      window = "Second Mark: 0:00.9 · Window: -1.35s PitchCom Rhythm Hold (Video Frames -54 to -33)";
+    } else if (feat.includes("catcher") || feat.includes("target") || feat.includes("crouch")) {
+      window = "Second Mark: 0:00.6 · Window: -1.45s Pre-Pitch Target Shift (Video Frames -54 to -33)";
+    } else if (feat.includes("belt") || feat.includes("set_height") || feat.includes("glove_set") || feat.includes("dwell") || feat.includes("set_hold") || feat.includes("seam_tilt")) {
+      window = "Second Mark: 0:02.4 · Window: -0.85s Set Position Hold (Video Frames -36 to -20)";
+    } else if (feat.includes("flare") || feat.includes("pre_lift") || feat.includes("glove_rim") || feat.includes("pronation") || feat.includes("burial") || feat.includes("pocket")) {
+      window = "Second Mark: 0:02.0 · Window: -0.45s Leg Lift Initiation (Video Frames -16 to -10)";
+    } else if (feat.includes("knee") || feat.includes("lift") || feat.includes("apex") || feat.includes("balance") || feat.includes("coil") || feat.includes("tilt") || feat.includes("glove_apex") || feat.includes("elbow_lift")) {
+      window = "Second Mark: 0:01.7 · Window: -0.22s Peak Leg Lift Apex (Video Frames -9 to -5)";
+    } else if (feat.includes("break") || feat.includes("separation") || feat.includes("stride") || feat.includes("plant") || feat.includes("drift") || feat.includes("cocking") || feat.includes("forearm") || feat.includes("hip_open") || feat.includes("flap")) {
+      window = "Second Mark: 0:01.3 · Window: -0.06s Hand Separation (Video Frames -3 to 0)";
+    } else {
+      window = "Second Mark: 0:01.8 · Window: -0.25s Pre-Release Window (Video Frames -10 to -5)";
+    }
+  }
+
+  return { deliveryPhase: phase, timestampWindow: window };
+}
+
 function renderTip(tip, angleLabels = {}, rankIndex = null) {
   const rank = tip.rank || (rankIndex != null ? rankIndex : 1);
   const conf = tip.confidence || 0.75;
@@ -379,8 +426,7 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
     : "all situations";
 
   // Delivery phase & timestamp
-  const deliveryPhase = tip.delivery_phase || tip.phase || "Pre-Release Delivery Window (-0.45s to -0.20s before release)";
-  const timestampWindow = tip.timestamp_window || tip.window || (tip.second_mark ? `Second Mark: ${tip.second_mark} · Pre-Release Window` : "Second Mark: 0:02.3 · Window: -0.35s before hand break");
+  const { deliveryPhase, timestampWindow } = deriveDeliveryTiming(tip);
 
   // Target body part
   const targetBodyPart = tip.target_body_part || tip.body_part || tip.anatomical_location || tip.what_to_look_at || "Pitcher Delivery Geometry & Glove Set";
@@ -1134,8 +1180,7 @@ function wireLiteBoard(data) {
       const roleStr = isCatcher ? `Catcher · ${lead.team?.abbr || "ARI"}` : `${lead.player.throws || "R"}HP · ${lead.team?.abbr || "MLB"}`;
       const badgeStr = isCatcher ? "SHOWCASE CATCHER" : "SHOWCASE ARM";
       const sepLabel = lead.separation_display || (lead.separation_floor_multiples ? `${lead.separation_floor_multiples}× floor` : "Verified Lead");
-      const deliveryPhase = lead.delivery_phase || "Pre-Release Delivery Window (-0.90s to -0.20s)";
-      const timestampWindow = lead.timestamp_window || lead.window || lead.second_mark || "t = -0.60s pre-release";
+      const { deliveryPhase, timestampWindow } = deriveDeliveryTiming(lead);
       const targetBodyPart = lead.target_body_part || lead.body_part || lead.what_to_look_at || lead.anatomical_location || "Glove & Body Landmark Tracking";
       const sideBySide = lead.side_by_side_guide
         ? `<p class="spot-guide-sync" style="margin: 0.35rem 0 0; font-size:0.83rem; color:var(--faint); line-height:1.45;"><strong style="color:var(--text);">Side-by-Side Video Sync:</strong> ${lead.side_by_side_guide}</p>`
@@ -2245,7 +2290,8 @@ function wireSynchronizedDeliveryScrubber(player) {
       differenceText.textContent = tip.what_to_spot || tip.lookFor || tip.behavior || tip.direction || "Observe mechanical variance between pitch types across pre-release window.";
     }
     if (metaWindow) {
-      metaWindow.textContent = tip.timestamp_window || `Second Mark: ${formatSec(tA)} (Pre-Release Window)`;
+      const { timestampWindow } = deriveDeliveryTiming(tip);
+      metaWindow.textContent = timestampWindow || tip.timestamp_window || `Second Mark: ${formatSec(tA)} (Pre-Release Window)`;
     }
     if (metaAngle) {
       metaAngle.textContent = `${tip.angle || "CF"} · Broadcast Center-Field`;

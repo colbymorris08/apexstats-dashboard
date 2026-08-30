@@ -87,7 +87,8 @@ def generate_showcase_players():
             "separation_raw": -0.324,
             "separation_display": "6.4× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:02.4 · Window: -0.35s before hand break (Set Position)",
+            "timestamp_window": "Second Mark: 0:02.4 · Window: -0.85s Set Position Hold (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Glove Set Anchor Height (Chest Letters vs Belt Line)",
             "what_to_spot": "On 4-seam fastballs (FF 101mph), Burns anchors his glove 3.2 inches higher at the sternum/chest line before leg lift; on the 89mph slider (SL), he sets at the lower belt line.",
             "direction": "On 4-seam fastballs (FF 101mph), Burns anchors his glove 3.2 inches higher at the sternum/chest line before leg lift; on the 89mph slider (SL), he sets at the lower belt line.",
@@ -131,7 +132,8 @@ def generate_showcase_players():
             "separation_raw": 0.246,
             "separation_display": "4.8× floor",
             "unit": "degrees / torso width",
-            "timestamp_window": "Second Mark: 0:01.8 · Window: Peak Leg Lift Apex (-0.22s)",
+            "timestamp_window": "Second Mark: 0:01.8 · Window: -0.22s Peak Leg Lift Apex (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Glove Elbow Abduction & Torso Proximity",
             "what_to_spot": "On breaking pitches (SL), glove elbow drops into torso 1.5 frames earlier during knee drive, creating a tighter compact hinge before hand separation.",
             "direction": "On breaking pitches (SL), glove elbow drops into torso 1.5 frames earlier during knee drive, creating a tighter compact hinge before hand separation.",
@@ -175,7 +177,8 @@ def generate_showcase_players():
             "separation_raw": 0.412,
             "separation_display": "3.9× floor",
             "unit": "seconds",
-            "timestamp_window": "Second Mark: 0:00.9 · Window: -0.75s Pre-Lift Grip Settle",
+            "timestamp_window": "Second Mark: 0:00.9 · Window: -0.75s Pre-Lift Grip Settle (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Hands Together Settle Duration in Glove",
             "what_to_spot": "Grip adjustment duration inside the glove exceeds 1.4s on offspeed/changeup vs rapid 0.7s settle on fastball attacks.",
             "direction": "Grip adjustment duration inside the glove exceeds 1.4s on offspeed/changeup vs rapid 0.7s settle on fastball attacks.",
@@ -219,7 +222,8 @@ def generate_showcase_players():
             "separation_raw": 0.058,
             "separation_display": "3.7× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:01.4 · Window: Peak Leg Lift Apex (-0.20s)",
+            "timestamp_window": "Second Mark: 0:01.4 · Window: -0.20s Peak Leg Lift Apex (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Glove Elevation at Balance Apex",
             "what_to_spot": "Burns elevates glove 0.058 torso lengths higher at balance point on 12-6 curveballs to generate vertical downward tilt.",
             "direction": "Burns elevates glove higher at balance point on curveballs vs fastball.",
@@ -263,7 +267,8 @@ def generate_showcase_players():
             "separation_raw": -3.8,
             "separation_display": "3.4× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:01.0 · Window: Forward Stride Drive (-0.14s)",
+            "timestamp_window": "Second Mark: 0:01.0 · Window: -0.08s Forward Stride Drive (Video Frames -3 to 0)",
+            "delivery_phase": "Hand Separation & Stride Drive (-0.10s to 0.00s at hand break)",
             "target_body_part": "Head and Neck Lateral Tilt",
             "what_to_spot": "Head stays strictly vertical on 101mph fastballs; tilts 3.8° toward 1B side during stride to create sweeping angle on slider.",
             "direction": "Head stays vertical on fastballs vs lateral tilt on slider.",
@@ -431,7 +436,8 @@ def generate_showcase_players():
             "separation_raw": -0.495,
             "separation_display": "9.9× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:02.5 · Window: -0.38s Stationary Set Hold",
+            "timestamp_window": "Second Mark: 0:02.5 · Window: -0.90s Stationary Set Hold (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Throwing Wrist Depth & Back Webbing Flattening",
             "what_to_spot": "On the splitter/forkball (FS), Sasaki wedges his throwing wrist 1.8 inches deeper into the glove pocket to secure his wide split finger grip, flattening the back webbing angle; on FF the wrist remains visible at the collar.",
             "direction": "On the splitter/forkball (FS), Sasaki wedges his throwing wrist 1.8 inches deeper into the glove pocket to secure his wide split finger grip, flattening the back webbing angle; on FF the wrist remains visible at the collar.",
@@ -475,7 +481,8 @@ def generate_showcase_players():
             "separation_raw": -0.460,
             "separation_display": "9.2× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:01.9 · Window: High Knee Lift Apex (-0.24s)",
+            "timestamp_window": "Second Mark: 0:01.9 · Window: -0.24s High Knee Lift Apex (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Glove Vertical Position relative to Chest Letters",
             "what_to_spot": "On FS delivery, Sasaki carries the glove 0.46 torso lengths higher through the apex of his high leg kick; on FF he keeps the glove anchored lower near the letters.",
             "direction": "On FS delivery, Sasaki carries the glove 0.46 torso lengths higher through the apex of his high leg kick; on FF he keeps the glove anchored lower near the letters.",
@@ -519,7 +526,8 @@ def generate_showcase_players():
             "separation_raw": -0.190,
             "separation_display": "5.3× floor",
             "unit": "seconds",
-            "timestamp_window": "Second Mark: 0:01.4 · Window: Balance Point Hover (-0.18s)",
+            "timestamp_window": "Second Mark: 0:01.4 · Window: -0.18s Balance Point Hover (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Knee Apex Hover Duration & Rhythm",
             "what_to_spot": "Fastball delivery features an unbroken upward knee drive (dwell <0.18s), whereas forkball mechanics exhibit an extended micro-hover (0.28s) to time lower-half hip rotation.",
             "direction": "Fastball delivery features an unbroken upward knee drive (dwell <0.18s), whereas forkball mechanics exhibit an extended micro-hover (0.28s) to time lower-half hip rotation.",
@@ -563,7 +571,8 @@ def generate_showcase_players():
             "separation_raw": 11.2,
             "separation_display": "4.0× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:02.1 · Window: Pre-Kick Glove Presentation (-0.30s)",
+            "timestamp_window": "Second Mark: 0:02.1 · Window: -0.45s Pre-Kick Glove Presentation (Video Frames -16 to -10)",
+            "delivery_phase": "Leg Lift Initiation & Glove Presentation (-0.55s to -0.35s before hand break)",
             "target_body_part": "Glove Webbing Opening Angle",
             "what_to_spot": "Glove leather flares 11.2° outward toward 1B dugout when spreading fingers for deep forkball split.",
             "direction": "Glove leather flares outward on forkball split grip compared to compact slider setup.",
@@ -607,7 +616,8 @@ def generate_showcase_players():
             "separation_raw": 6.8,
             "separation_display": "3.6× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:00.9 · Window: Lead Foot Touchdown (-0.10s)",
+            "timestamp_window": "Second Mark: 0:00.9 · Window: -0.05s Lead Foot Touchdown (Video Frames -3 to 0)",
+            "delivery_phase": "Hand Separation & Foot Strike (-0.10s to 0.00s at hand break)",
             "target_body_part": "Throwing Forearm Vertical Angle at Touchdown",
             "what_to_spot": "On 102mph fastballs, forearm achieves near-vertical 88° alignment at landing; on sliders arm angle is 6.8° lower/flatter.",
             "direction": "Forearm is more vertical at foot strike on fastballs vs lower slot on slider.",
@@ -763,7 +773,8 @@ def generate_showcase_players():
             "separation_raw": 14.2,
             "separation_display": "7.3× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:02.0 · Window: Knee Lift Start (-0.30s)",
+            "timestamp_window": "Second Mark: 0:02.0 · Window: -0.45s Knee Lift Start (Video Frames -16 to -10)",
+            "delivery_phase": "Leg Lift Initiation & Glove Flare (-0.55s to -0.35s before hand break)",
             "target_body_part": "Glove Flare Angle relative to Ribcage Seam",
             "what_to_spot": "On the circle-changeup (CH), Choi's glove flares outward at a 14° angle away from his ribcage at the start of leg lift to accommodate the 'OK' ring grip; on sinkers (SI), the glove remains strictly vertical and parallel to the midline.",
             "direction": "On the circle-changeup (CH), Choi's glove flares outward at a 14° angle away from his ribcage at the start of leg lift to accommodate the 'OK' ring grip; on sinkers (SI), the glove remains strictly vertical and parallel to the midline.",
@@ -807,7 +818,8 @@ def generate_showcase_players():
             "separation_raw": -0.218,
             "separation_display": "5.1× floor",
             "unit": "degrees / torso width",
-            "timestamp_window": "Second Mark: 0:02.4 · Window: Stationary Set Pause (-0.38s)",
+            "timestamp_window": "Second Mark: 0:02.4 · Window: -0.85s Stationary Set Pause (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Glove Thumb Seam Vertical Alignment",
             "what_to_spot": "On primary sinkers (SI), the thumb seam of the mitt aligns dead-vertical to home plate during the stationary pause; on secondary pitches it is tilted 15° toward third.",
             "direction": "On primary sinkers (SI), the thumb seam of the mitt aligns dead-vertical to home plate during the stationary pause.",
@@ -851,7 +863,8 @@ def generate_showcase_players():
             "separation_raw": 2.5,
             "separation_display": "3.8× floor",
             "unit": "inches",
-            "timestamp_window": "Second Mark: 0:00.6 · Window: Rubber Cleat Setup (-1.0s)",
+            "timestamp_window": "Second Mark: 0:00.6 · Window: -1.40s Rubber Cleat Setup (Video Frames -54 to -33)",
+            "delivery_phase": "Pre-Pitch Battery & Rubber Setup (-1.80s to -1.10s before pitch release)",
             "target_body_part": "Cleat Separation Width on the Rubber",
             "what_to_spot": "With runners in scoring position, Choi widens stride baseline by 2.5 inches on sinker attacks to drive downhill plane.",
             "direction": "With runners in scoring position, Choi widens stride baseline by 2.5 inches on sinker attacks to drive downhill plane.",
@@ -895,7 +908,8 @@ def generate_showcase_players():
             "separation_raw": 0.052,
             "separation_display": "3.6× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:01.4 · Window: Peak Leg Lift Apex (-0.22s)",
+            "timestamp_window": "Second Mark: 0:01.4 · Window: -0.22s Peak Leg Lift Apex (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Glove Elevation at Balance Point",
             "what_to_spot": "Choi raises glove 0.052 torso lengths higher toward the collarbone at top of leg kick on sliders compared to sinkers.",
             "direction": "Choi raises glove higher toward collarbone at peak leg lift on sliders.",
@@ -939,7 +953,8 @@ def generate_showcase_players():
             "separation_raw": 0.28,
             "separation_display": "3.3× floor",
             "unit": "seconds",
-            "timestamp_window": "Second Mark: 0:02.8 · Window: Stationary Hold Duration (-0.45s)",
+            "timestamp_window": "Second Mark: 0:02.8 · Window: -1.05s Stationary Hold Duration (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Stationary Set Pause Duration",
             "what_to_spot": "Choi holds the set position 0.28 seconds longer on curveballs while adjusting finger seam pressure.",
             "direction": "Choi holds the set position longer before beginning leg kick on curveballs.",
@@ -1095,7 +1110,8 @@ def generate_showcase_players():
             "separation_raw": -0.380,
             "separation_display": "8.1× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:02.3 · Window: -0.35s Set Pause before Leg Kick",
+            "timestamp_window": "Second Mark: 0:02.3 · Window: -0.85s Set Pause before Leg Kick (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Glove Set Anchor Height (Chin Jawline vs Mid-Chest)",
             "what_to_spot": "On his 98mph four-seam fastball (FF), Gu Lin anchors the glove directly at chin height (high set); on the 12-6 curveball (CU), the glove drops 2.8 inches lower to the mid-chest level before separation.",
             "direction": "On his 98mph four-seam fastball (FF), Gu Lin anchors the glove directly at chin height (high set); on the 12-6 curveball (CU), the glove drops 2.8 inches lower to the mid-chest level before separation.",
@@ -1139,7 +1155,8 @@ def generate_showcase_players():
             "separation_raw": 1.8,
             "separation_display": "5.7× floor",
             "unit": "inches / shoulder plane",
-            "timestamp_window": "Second Mark: 0:01.7 · Window: Early Hand Break (-0.20s)",
+            "timestamp_window": "Second Mark: 0:01.7 · Window: -0.08s Early Hand Break (Video Frames -3 to 0)",
+            "delivery_phase": "Hand Separation & Stride Initiation (-0.10s to 0.00s at hand break)",
             "target_body_part": "Throwing Arm Elbow Height above Shoulder Plane",
             "what_to_spot": "On curveballs (CU), his throwing elbow raises 1.8 inches higher relative to shoulder plane during early hand break to create top-to-bottom tumble.",
             "direction": "On curveballs (CU), his throwing elbow raises 1.8 inches higher relative to shoulder plane during early hand break to create top-to-bottom tumble.",
@@ -1183,7 +1200,8 @@ def generate_showcase_players():
             "separation_raw": -0.142,
             "separation_display": "4.2× floor",
             "unit": "seconds",
-            "timestamp_window": "Second Mark: 0:01.3 · Window: Knee Lift to Break Transition (-0.15s)",
+            "timestamp_window": "Second Mark: 0:01.3 · Window: -0.15s Knee Lift to Break Transition (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Leg Drive to Hand Break Tempo Acceleration",
             "what_to_spot": "From top of leg kick to hand separation takes only 0.22s on four-seamers vs 0.36s on curveball/changeup sequence.",
             "direction": "From top of leg kick to hand separation takes only 0.22s on four-seamers vs 0.36s on curveball/changeup sequence.",
@@ -1227,7 +1245,8 @@ def generate_showcase_players():
             "separation_raw": 10.5,
             "separation_display": "3.9× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:02.1 · Window: Pre-Lift Glove Presentation (-0.32s)",
+            "timestamp_window": "Second Mark: 0:02.1 · Window: -0.45s Pre-Lift Glove Presentation (Video Frames -16 to -10)",
+            "delivery_phase": "Leg Lift Initiation & Glove Presentation (-0.55s to -0.35s before hand break)",
             "target_body_part": "Glove Rim Flare & Leather Opening",
             "what_to_spot": "Glove rim flares outward 10.5° toward first base when setting forkball split grip compared to compact closed leather on fastball.",
             "direction": "Glove rim flares outward on changeup/splitter compared to closed leather on fastball.",
@@ -1271,7 +1290,8 @@ def generate_showcase_players():
             "separation_raw": 3.2,
             "separation_display": "3.4× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:01.6 · Window: Knee Apex Peak (-0.18s)",
+            "timestamp_window": "Second Mark: 0:01.6 · Window: -0.18s Knee Apex Peak (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Upper Torso Forward Tilt Angle",
             "what_to_spot": "Slight 3.2° forward trunk lean over the belt at knee apex on slider to initiate horizontal sweeping plane.",
             "direction": "Slight forward trunk lean over belt on slider vs upright posture on fastball.",
@@ -1428,7 +1448,8 @@ def generate_showcase_players():
             "separation_raw": -0.340,
             "separation_display": "6.8× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:02.2 · Window: -0.36s Set Position Stationary Hold",
+            "timestamp_window": "Second Mark: 0:02.2 · Window: -0.85s Set Position Stationary Hold (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Glove Anchor Height relative to Belt & Chest Letters",
             "what_to_spot": "On his primary bowling-ball sinker (SI), Ríos sets the glove 3.1 inches higher near the chest letters; on cutting breaking balls (SL/FC), hands anchor resting low against the belt buckle.",
             "direction": "On his primary bowling-ball sinker (SI), Ríos sets the glove 3.1 inches higher near the chest letters; on cutting breaking balls (SL/FC), hands anchor resting low against the belt buckle.",
@@ -1472,7 +1493,8 @@ def generate_showcase_players():
             "separation_raw": 12.5,
             "separation_display": "4.9× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:02.0 · Window: -0.30s Pre-Lift Glove Check",
+            "timestamp_window": "Second Mark: 0:02.0 · Window: -0.45s Pre-Lift Glove Check (Video Frames -16 to -10)",
+            "delivery_phase": "Leg Lift Initiation & Glove Check (-0.55s to -0.35s before hand break)",
             "target_body_part": "Throwing Wrist Pronation Angle at Glove Rim",
             "what_to_spot": "On changeups (CH), throwing wrist rotates 12° inward (pronated) inside the glove rim to secure circle grip, visibly altering the thumb pocket shadow.",
             "direction": "On changeups (CH), throwing wrist rotates 12° inward (pronated) inside the glove rim to secure circle grip, visibly altering the thumb pocket shadow.",
@@ -1516,7 +1538,8 @@ def generate_showcase_players():
             "separation_raw": -0.220,
             "separation_display": "3.7× floor",
             "unit": "seconds",
-            "timestamp_window": "Second Mark: 0:01.0 · Window: -0.70s Stationary Hold Duration",
+            "timestamp_window": "Second Mark: 0:01.0 · Window: -0.95s Stationary Hold Duration (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Set Position Stationary Hold Timing Cadence",
             "what_to_spot": "Ríos holds set position for <0.8s on fastballs (quick strike attack) vs >1.4s on breaking balls when setting finger pressure.",
             "direction": "Ríos holds set position for <0.8s on fastballs (quick strike attack) vs >1.4s on breaking balls when setting finger pressure.",
@@ -1560,7 +1583,8 @@ def generate_showcase_players():
             "separation_raw": 0.048,
             "separation_display": "3.8× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:01.3 · Window: Early Stride Initiation (-0.20s)",
+            "timestamp_window": "Second Mark: 0:01.3 · Window: -0.08s Early Stride Initiation (Video Frames -3 to 0)",
+            "delivery_phase": "Hand Separation & Stride Initiation (-0.10s to 0.00s at hand break)",
             "target_body_part": "Glove-to-Ribcage Proximity during Stride",
             "what_to_spot": "Ríos pulls glove 0.048 torso lengths closer to his sternum during early stride on slider to create rotational torque.",
             "direction": "Ríos pulls glove closer to sternum during early stride on slider.",
@@ -1604,7 +1628,8 @@ def generate_showcase_players():
             "separation_raw": 5.2,
             "separation_display": "3.4× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:00.8 · Window: Front Cleat Touchdown (-0.10s)",
+            "timestamp_window": "Second Mark: 0:00.8 · Window: -0.05s Front Cleat Touchdown (Video Frames -3 to 0)",
+            "delivery_phase": "Hand Separation & Foot Plant (-0.10s to 0.00s at hand break)",
             "target_body_part": "Pelvis & Lead Hip Rotation Angle",
             "what_to_spot": "Lead hip opens 5.2° sooner toward 3B line on cutter releases to allow arm to cross chest.",
             "direction": "Lead hip opens earlier on cutter releases vs closed hip on sinker.",
@@ -1762,7 +1787,8 @@ def generate_showcase_players():
             "separation_raw": 6.8,
             "separation_display": "8.4× floor",
             "unit": "inches",
-            "timestamp_window": "Second Mark: 0:00.6 · Window: -1.2s Pre-Pitch Battery Setup",
+            "timestamp_window": "Second Mark: 0:00.6 · Window: -1.45s Pre-Pitch Battery Setup (Video Frames -54 to -33)",
+            "delivery_phase": "Catcher Pre-Pitch Target & Battery Setup (-1.80s to -1.10s before pitch release)",
             "target_body_part": "Catcher Target Lateral Shift & Body Weight Offset",
             "what_to_spot": "On offspeed calls (CH/SL), Moreno sets target 6.8 inches wider off the plate edge 1.2s prior to delivery vs central alignment on four-seam fastballs.",
             "direction": "On offspeed calls (CH/SL), Moreno sets target 6.8 inches wider off the plate edge 1.2s prior to delivery vs central alignment on four-seam fastballs.",
@@ -1806,7 +1832,8 @@ def generate_showcase_players():
             "separation_raw": -5.2,
             "separation_display": "6.2× floor",
             "unit": "inches",
-            "timestamp_window": "Second Mark: 0:00.8 · Window: -1.0s Battery Target Hold",
+            "timestamp_window": "Second Mark: 0:00.8 · Window: -1.25s Battery Target Hold (Video Frames -54 to -33)",
+            "delivery_phase": "Catcher Pre-Pitch Target & Battery Setup (-1.80s to -1.10s before pitch release)",
             "target_body_part": "Catcher Crouch Stance Depth & Target Height",
             "what_to_spot": "Moreno stays higher in crouch with glove at chest level on high fastballs; drops left knee flat on the ground with glove below knees on chase breaking pitches.",
             "direction": "Moreno stays higher in crouch with glove at chest level on high fastballs; drops left knee flat on the ground with glove below knees on chase breaking pitches.",
@@ -1962,7 +1989,8 @@ def generate_showcase_players():
             "separation_raw": 0.062,
             "separation_display": "5.9× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:02.1 · Window: -0.28s at Peak Leg Lift Apex",
+            "timestamp_window": "Second Mark: 0:02.1 · Window: -0.28s at Peak Leg Lift Apex (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Glove Elevation at Leg Lift Peak (+0.06 torso lengths higher)",
             "what_to_spot": "Roupp elevates the glove +0.06 torso lengths higher at the apex of leg lift on Curveballs compared to hard Sinkers and Changeups, giving hitters and base runners on second an early visual trigger before arm separation.",
             "direction": "Roupp elevates the glove +0.06 torso lengths higher at the apex of leg lift on Curveballs compared to hard Sinkers and Changeups.",
@@ -2006,7 +2034,8 @@ def generate_showcase_players():
             "separation_raw": -0.238,
             "separation_display": "5.9× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:02.4 · Window: -0.38s Stationary Set Hold",
+            "timestamp_window": "Second Mark: 0:02.4 · Window: -0.85s Stationary Set Hold (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Throwing Hand Insertion Depth in Glove Pocket",
             "what_to_spot": "Buries pitching hand deeper into the pocket on Changeups vs exposed fingers and visible wrist collar on Fastballs.",
             "direction": "Buries pitching hand deeper into the pocket on Changeups vs exposed fingers on Fastballs.",
@@ -2050,7 +2079,8 @@ def generate_showcase_players():
             "separation_raw": 0.380,
             "separation_display": "3.6× floor",
             "unit": "seconds",
-            "timestamp_window": "Second Mark: 0:00.8 · Window: -0.80s Stationary Set Hold",
+            "timestamp_window": "Second Mark: 0:00.8 · Window: -1.05s Stationary Set Hold Duration (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Settle-to-Lift Tempo Cadence & Delivery Hold Duration",
             "what_to_spot": "Extended stationary pause (>1.2s) in the set position after receiving PitchCom sign precedes breaking balls and changeups vs quick rhythm (<0.7s) on sinker attacks.",
             "direction": "Extended stationary pause in set precedes secondary pitches vs quick rhythm on sinkers.",
@@ -2094,8 +2124,8 @@ def generate_showcase_players():
             "separation_raw": 11.4,
             "separation_display": "4.2× floor",
             "unit": "degrees",
-            "delivery_phase": "Peak Leg Lift Apex: -0.45s to -0.20s before release",
-            "timestamp_window": "Peak Leg Lift Apex: 0:01.7 in Video A vs 0:01.5 in Video B (-0.20s before hand break)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
+            "timestamp_window": "Second Mark: 0:01.7 · Window: -0.20s at Peak Leg Lift Apex (Video Frames -9 to -5)",
             "target_body_part": "Glove Webbing Orientation & Wrist Abduction",
             "what_to_spot": "At the top of the balance point, Roupp flares the glove pocket slightly outward (11°) on the curveball to prevent thumb drag during arm drop, exposing the open mitt leather toward second base.",
             "spot_the_difference": "At the apex of leg lift, Roupp flares the glove pocket outward 11° on Curveballs to clear his curveball grip, exposing the inside leather to 2B runners, whereas on Sinkers the glove face stays dead square to home plate.",
@@ -2141,8 +2171,8 @@ def generate_showcase_players():
             "separation_raw": 0.156,
             "separation_display": "3.1× floor",
             "unit": "torso lengths",
-            "delivery_phase": "Stride Initiation & Hand Break: -0.20s to -0.05s before release",
-            "timestamp_window": "Stride Initiation: 0:01.5 in Video A vs 0:01.3 in Video B (-0.15s before hand break)",
+            "delivery_phase": "Hand Separation & Stride Initiation (-0.10s to 0.00s at hand break)",
+            "timestamp_window": "Second Mark: 0:01.5 · Window: -0.08s at Stride Initiation (Video Frames -3 to 0)",
             "target_body_part": "Arm-Side Lateral Glove Drift & Torso Spacing",
             "what_to_spot": "On sinkers, Roupp drifts the glove slightly toward the arm side (1.5 inches) during stride initiation to create linear hip-shoulder separation.",
             "spot_the_difference": "On Sinkers, Roupp drifts his hands +1.5 inches arm-side during stride initiation to build linear torque; on secondary pitches (CU/CH), his hands remain locked on the chest centerline.",
@@ -2299,7 +2329,8 @@ def generate_showcase_players():
             "separation_raw": -0.310,
             "separation_display": "6.1× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:02.1 · Window: -0.32s before hand separation (Set Position)",
+            "timestamp_window": "Second Mark: 0:02.1 · Window: -0.80s Set Position Pause (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Throwing Wrist Webbing Insertion Depth",
             "what_to_spot": "On his changeup (CH 87mph), Webb inserts his throwing hand 1.6 inches deeper into the pocket to anchor the circle-change grip, causing the glove rim to flare outward toward third base; on sinkers (SI 93mph), the glove remains flat against the sternum.",
             "direction": "On his changeup (CH 87mph), Webb inserts his throwing hand 1.6 inches deeper into the pocket to anchor the circle-change grip, causing the glove rim to flare outward toward third base; on sinkers (SI 93mph), the glove remains flat against the sternum.",
@@ -2343,7 +2374,8 @@ def generate_showcase_players():
             "separation_raw": 3.5,
             "separation_display": "4.7× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:01.8 · Window: Leg Drive Initiation (-0.25s)",
+            "timestamp_window": "Second Mark: 0:01.8 · Window: -0.22s Peak Leg Lift Apex (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Torso Lateral Spine Tilt Angle",
             "what_to_spot": "Webb introduces a subtle 3.5° extra lateral spine tilt toward first base when loading for the horizontal sweeper (ST) to clear his low three-quarters arm slot, compared to an upright vertical posture on sinkers.",
             "direction": "Webb introduces a subtle 3.5° extra lateral spine tilt toward first base when loading for the horizontal sweeper (ST) to clear his low three-quarters arm slot, compared to an upright vertical posture on sinkers.",
@@ -2387,7 +2419,8 @@ def generate_showcase_players():
             "separation_raw": -4.2,
             "separation_display": "3.9× floor",
             "unit": "inches",
-            "timestamp_window": "Second Mark: 0:00.5 · Window: Pre-Pitch Battery Setup (-1.2s)",
+            "timestamp_window": "Second Mark: 0:00.5 · Window: -1.45s Pre-Pitch Battery Setup (Video Frames -54 to -33)",
+            "delivery_phase": "Catcher Pre-Pitch Target & Battery Setup (-1.80s to -1.10s before pitch release)",
             "target_body_part": "Catcher Mitt Height & Stance Width",
             "what_to_spot": "Catcher drops into a lower one-knee stance and anchors the target 4.2 inches below the zone for changeups versus a raised chest-level target for elevated sinkers.",
             "direction": "Catcher drops into a lower one-knee stance and anchors the target 4.2 inches below the zone for changeups versus a raised chest-level target for elevated sinkers.",
@@ -2431,7 +2464,8 @@ def generate_showcase_players():
             "separation_raw": 0.046,
             "separation_display": "3.8× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:01.4 · Window: Hand Break Separation (-0.18s)",
+            "timestamp_window": "Second Mark: 0:01.4 · Window: -0.06s Hand Break Separation (Video Frames -3 to 0)",
+            "delivery_phase": "Hand Separation & Stride Initiation (-0.10s to 0.00s at hand break)",
             "target_body_part": "Glove Position at Hand Separation",
             "what_to_spot": "Webb holds glove 0.046 torso lengths higher at chest during hand break on sinkers to drive downward angle.",
             "direction": "Webb holds glove higher at chest during hand break on sinkers.",
@@ -2475,7 +2509,8 @@ def generate_showcase_players():
             "separation_raw": 4.1,
             "separation_display": "3.4× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:01.7 · Window: Peak Leg Lift Coil (-0.22s)",
+            "timestamp_window": "Second Mark: 0:01.7 · Window: -0.22s Peak Leg Lift Coil (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Lead Knee Inward Coil Angle",
             "what_to_spot": "Lead knee coils 4.1° farther inward past the rubber midline on changeups to stay closed longer.",
             "direction": "Lead knee coils farther inward toward 2B on changeups.",
@@ -2662,7 +2697,8 @@ def generate_showcase_players():
             "separation_raw": -0.270,
             "separation_display": "5.4× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:02.4 · Window: -0.38s before arm drop (Set Position)",
+            "timestamp_window": "Second Mark: 0:02.4 · Window: -0.85s Set Position Pause (Video Frames -36 to -20)",
+            "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
             "target_body_part": "Glove Set Anchor Height relative to Belt Line",
             "what_to_spot": "On the cutter (FC 89mph), Rodriguez sets his hands 2.4 inches lower against his belt buckle during the stationary pause; on changeups (CH 84mph) and four-seamers (FF), he sets higher across the mid-chest letters.",
             "direction": "On the cutter (FC 89mph), Rodriguez sets his hands 2.4 inches lower against his belt buckle during the stationary pause; on changeups (CH 84mph) and four-seamers (FF), he sets higher across the mid-chest letters.",
@@ -2706,7 +2742,8 @@ def generate_showcase_players():
             "separation_raw": 0.180,
             "separation_display": "3.8× floor",
             "unit": "torso lengths / sec",
-            "timestamp_window": "Second Mark: 0:01.6 · Window: Hand Break Initiation (-0.18s)",
+            "timestamp_window": "Second Mark: 0:01.6 · Window: -0.06s Hand Break Initiation (Video Frames -3 to 0)",
+            "delivery_phase": "Hand Separation & Stride Initiation (-0.10s to 0.00s at hand break)",
             "target_body_part": "Hand Break Timing & Forearm Separation Angle",
             "what_to_spot": "Faster, more aggressive hand separation out of the glove correlates with primary fastball/sinker sequencing, whereas changeups exhibit a slight deceleration pause at the top of the chest.",
             "direction": "Faster, more aggressive hand separation out of the glove correlates with primary fastball/sinker sequencing, whereas changeups exhibit a slight deceleration pause at the top of the chest.",
@@ -2750,7 +2787,8 @@ def generate_showcase_players():
             "separation_raw": 12.0,
             "separation_display": "4.1× floor",
             "unit": "degrees",
-            "timestamp_window": "Second Mark: 0:01.2 · Window: Front Foot Plant (-0.12s)",
+            "timestamp_window": "Second Mark: 0:01.2 · Window: -0.04s Front Foot Plant (Video Frames -3 to 0)",
+            "delivery_phase": "Hand Separation & Foot Strike (-0.10s to 0.00s at hand break)",
             "target_body_part": "Glove-Side Webbing Tuck vs Open Face",
             "what_to_spot": "On Changeups, Rodriguez tucks the glove webbing firmly against his left ribcage at foot strike; on hard fastballs, the mitt stays slightly open facing third base.",
             "direction": "On Changeups, Rodriguez tucks the glove webbing firmly against his left ribcage at foot strike.",
@@ -2794,7 +2832,8 @@ def generate_showcase_players():
             "separation_raw": 1.4,
             "separation_display": "3.7× floor",
             "unit": "inches",
-            "timestamp_window": "Second Mark: 0:02.1 · Window: Pre-Lift Glove Check (-0.30s)",
+            "timestamp_window": "Second Mark: 0:02.1 · Window: -0.45s Pre-Lift Glove Check (Video Frames -16 to -10)",
+            "delivery_phase": "Leg Lift Initiation & Glove Check (-0.55s to -0.35s before hand break)",
             "target_body_part": "Throwing Wrist Depth at Glove Collar",
             "what_to_spot": "Rodriguez pushes throwing wrist 1.4 inches deeper into the mitt when getting onto the slider seam vs exposed wrist on sinker.",
             "direction": "Rodriguez pushes throwing wrist deeper into mitt on slider.",
@@ -2838,7 +2877,8 @@ def generate_showcase_players():
             "separation_raw": 0.045,
             "separation_display": "3.4× floor",
             "unit": "torso lengths",
-            "timestamp_window": "Second Mark: 0:01.5 · Window: Knee Apex Peak (-0.20s)",
+            "timestamp_window": "Second Mark: 0:01.5 · Window: -0.22s Knee Apex Peak (Video Frames -9 to -5)",
+            "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
             "target_body_part": "Right Lead Knee Apex Elevation",
             "what_to_spot": "Lead right knee reaches 0.045 torso lengths higher at balance point on sinkers to drive downhill extension.",
             "direction": "Lead knee lifts higher at apex on sinkers vs compact lift on changeup.",
@@ -2982,32 +3022,38 @@ def enrich_generic_tip(tip, pitcher_name="Pitcher", rank_idx=1):
 
     # 1. Determine Delivery Phase & Timestamp / Window
     if not tip.get("delivery_phase"):
-        if any(k in feat for k in ["glove_vs_belt", "glove_set", "glove_height", "belt", "dwell"]):
-            tip["delivery_phase"] = "Come-Set Presentation: -1.20s to -0.60s before release"
-        elif any(k in feat for k in ["knee", "lift", "apex"]):
-            tip["delivery_phase"] = "Peak Leg Lift Apex: -0.45s to -0.20s before release"
-        elif any(k in feat for k in ["break", "separation", "stride", "plant"]):
-            tip["delivery_phase"] = "Hand Break & Stride Initiation: -0.20s to -0.05s before release"
-        elif any(k in feat for k in ["catcher_glove", "target", "crouch", "stance"]):
-            tip["delivery_phase"] = "Pre-Pitch Battery Setup: -1.40s to -0.80s before release"
+        if any(k in feat for k in ["pitchcom", "tap_count", "tap_rate", "isi", "stance_width", "cleat"]):
+            tip["delivery_phase"] = "Pre-Pitch Battery & Rubber Setup (-1.80s to -1.10s before pitch release)"
+        elif any(k in feat for k in ["catcher_glove", "target", "crouch", "stance", "catcher_hip"]):
+            tip["delivery_phase"] = "Catcher Pre-Pitch Target & Battery Setup (-1.80s to -1.10s before pitch release)"
+        elif any(k in feat for k in ["glove_vs_belt", "glove_set", "glove_height", "belt", "dwell", "set_hold", "wrist_pronation", "wrist_burial", "pocket", "seam_tilt"]):
+            tip["delivery_phase"] = "Stationary Set Position (-1.20s to -0.65s before hand break)"
+        elif any(k in feat for k in ["knee_start", "flare", "pre_lift", "glove_rim"]):
+            tip["delivery_phase"] = "Leg Lift Initiation & Glove Presentation (-0.55s to -0.35s before hand break)"
+        elif any(k in feat for k in ["knee", "lift", "apex", "balance", "dwell_sec", "coil", "trunk_tilt", "spine_tilt", "glove_apex", "elbow_lift"]):
+            tip["delivery_phase"] = "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)"
+        elif any(k in feat for k in ["break", "separation", "stride", "plant", "drift", "cocking", "forearm", "hip_open", "flap"]):
+            tip["delivery_phase"] = "Hand Separation & Stride Initiation (-0.10s to 0.00s at hand break)"
         else:
-            tip["delivery_phase"] = "Pre-Release Delivery Window: -0.45s to -0.15s before release"
+            tip["delivery_phase"] = "Pre-Release Delivery Window (-0.45s to -0.15s before release)"
 
     if not tip.get("timestamp_window"):
-        if any(k in feat for k in ["glove_vs_belt", "glove_set", "glove_height", "belt"]):
-            tip["timestamp_window"] = "Motionless Set Anchor: 0:02.2 in Video A vs 0:02.0 in Video B (-0.35s before hand break)"
-        elif any(k in feat for k in ["knee", "lift", "apex"]):
-            tip["timestamp_window"] = "Peak Leg Lift Apex: 0:02.3 in Video A vs 0:02.1 in Video B (-0.35s before hand break)"
-        elif any(k in feat for k in ["flare", "wrist_speed", "pocket", "wrist"]):
-            tip["timestamp_window"] = "Lift Ascension & Hand Set: 0:01.8 in Video A vs 0:01.6 in Video B (-0.25s at peak lift)"
+        if any(k in feat for k in ["glove_vs_belt", "glove_set", "glove_height", "belt", "dwell", "set_hold", "seam_tilt"]):
+            tip["timestamp_window"] = "Second Mark: 0:02.4 · Window: -0.85s Set Position Hold (Video Frames -36 to -20)"
+        elif any(k in feat for k in ["flare", "pre_lift", "glove_rim", "wrist_pronation", "wrist_burial", "pocket"]):
+            tip["timestamp_window"] = "Second Mark: 0:02.0 · Window: -0.45s Leg Lift Initiation (Video Frames -16 to -10)"
+        elif any(k in feat for k in ["knee", "lift", "apex", "balance", "coil", "trunk_tilt", "spine_tilt", "glove_apex", "elbow_lift"]):
+            tip["timestamp_window"] = "Second Mark: 0:01.7 · Window: -0.22s Peak Leg Lift Apex (Video Frames -9 to -5)"
+        elif any(k in feat for k in ["break", "separation", "stride", "plant", "drift", "cocking", "forearm", "hip_open", "flap"]):
+            tip["timestamp_window"] = "Second Mark: 0:01.3 · Window: -0.06s Hand Separation (Video Frames -3 to 0)"
         elif any(k in feat for k in ["pitchcom", "tap_count", "tap_rate", "isi"]):
-            tip["timestamp_window"] = "PitchCom Sign Hold: 0:00.9 in Video A vs 0:01.1 in Video B (-0.80s pre-delivery)"
-        elif any(k in feat for k in ["catcher_glove_y", "catcher_glove_x", "target"]):
-            tip["timestamp_window"] = "Pre-Pitch Target: 0:00.6 in Video A vs 0:00.5 in Video B (-1.20s battery setup)"
+            tip["timestamp_window"] = "Second Mark: 0:00.9 · Window: -1.35s PitchCom Rhythm Hold (Video Frames -54 to -33)"
+        elif any(k in feat for k in ["catcher_glove_y", "catcher_glove_x", "target", "catcher_glove"]):
+            tip["timestamp_window"] = "Second Mark: 0:00.6 · Window: -1.45s Pre-Pitch Target Shift (Video Frames -54 to -33)"
         elif any(k in feat for k in ["catcher_stance", "catcher_hip", "crouch"]):
-            tip["timestamp_window"] = "Pre-Pitch Crouch: 0:00.7 in Video A vs 0:00.6 in Video B (-1.00s stance baseline)"
+            tip["timestamp_window"] = "Second Mark: 0:00.7 · Window: -1.25s Catcher Crouch Baseline (Video Frames -54 to -33)"
         else:
-            tip["timestamp_window"] = "Pre-Release Window: 0:02.0 in Video A vs 0:01.9 in Video B (-0.30s pre-release)"
+            tip["timestamp_window"] = "Second Mark: 0:01.8 · Window: -0.25s Pre-Release Window (Video Frames -10 to -5)"
 
     # 2. Determine Target Body Part
     if not tip.get("target_body_part"):

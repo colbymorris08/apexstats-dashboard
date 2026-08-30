@@ -10,9 +10,9 @@
   "eta_hours": 500.2,
   "est_total_pitches": 180090,
   "current": {
-    "name": "COL",
-    "team": "COL",
-    "message": "COL block complete"
+    "name": "SD",
+    "team": "SD",
+    "message": "starting SD block"
   },
   "done": {
     "808963": {
@@ -2816,7 +2816,10 @@
     "pitcher_tips": 224,
     "catcher_tips": 168
   },
-  "updated_at": "2026-08-30T15:18:00",
-  "live": null,
+  "updated_at": "2026-08-30T16:35:14",
+  "live": {
+    "pitches_done": 11,
+    "pitches_target": null
+  },
   "heartbeat": true
 }
