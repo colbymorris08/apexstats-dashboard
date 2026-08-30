@@ -4,15 +4,15 @@
   "season": 2026,
   "games": 8,
   "queue_total": 699,
-  "nlwest_pitchers": 62,
-  "remaining": 644,
+  "nlwest_pitchers": 61,
+  "remaining": 643,
   "sec_per_pitch": 10.0,
-  "eta_hours": 529.2,
-  "est_total_pitches": 190530,
+  "eta_hours": 518.0,
+  "est_total_pitches": 186470,
   "current": {
-    "name": "Mason Miller",
+    "name": "Kyle Hart",
     "team": "SD",
-    "message": "pitcher [10/13] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [11/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -917,8 +917,26 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/bradgley_rodriguez_poc",
       "schema": "rich_72col",
       "n_current_tracks": 127,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
+    },
+    "695243": {
+      "name": "Mason Miller",
+      "team": "SD",
+      "n_tracked": 85,
+      "holdout": 0.143,
+      "tips_ge_75": 3,
+      "catcher_tips": 1,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/mason_miller_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 122,
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -2370,18 +2388,18 @@
     },
     "SD": {
       "queued": 13,
-      "done": 9,
-      "pitcher_tips": 21,
-      "catcher_tips": 23
+      "done": 10,
+      "pitcher_tips": 24,
+      "catcher_tips": 24
     },
     "SF": {
-      "queued": 12,
+      "queued": 11,
       "done": 3,
       "pitcher_tips": 0,
       "catcher_tips": 0
     },
     "OTH": {
-      "queued": 637,
+      "queued": 638,
       "done": 0,
       "pitcher_tips": 0,
       "catcher_tips": 0
@@ -2395,12 +2413,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 114,
-    "catcher_tips": 98
+    "pitcher_tips": 117,
+    "catcher_tips": 99
   },
-  "updated_at": "2026-08-29T17:36:48",
+  "updated_at": "2026-08-29T20:29:19",
   "live": {
-    "pitches_done": 80,
+    "pitches_done": 150,
     "pitches_target": null
   },
   "heartbeat": true
