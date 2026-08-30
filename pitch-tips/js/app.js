@@ -1758,27 +1758,22 @@ function wireSynchronizedDeliveryScrubber(player) {
   let currentTipIdx = 0;
   let isPlaying = false;
   let animReqId = null;
+  let hasVideoA = false;
+  let hasVideoB = false;
 
   function getTimes(progressPct, tA, tB) {
-    const f = Math.max(0, Math.min(100, Number(progressPct) || 0)) / 100;
-    const windowSpan = 1.50; // Lead-in and trail duration
-    let curA = tA;
-    let curB = tB;
-
-    if (f <= 0.5) {
-      const ratio = f / 0.5;
-      curA = (tA - windowSpan) + ratio * windowSpan;
-      curB = (tB - windowSpan) + ratio * windowSpan;
-    } else {
-      const ratio = (f - 0.5) / 0.5;
-      curA = tA + ratio * windowSpan;
-      curB = tB + ratio * windowSpan;
-    }
+    const p = Math.max(0, Math.min(100, Number(progressPct) || 0));
+    // When p == 50, delta is exactly 0s (exact anchor frame)
+    // Total scrub window is 3.0s (±1.50s around the anchor)
+    const windowSpan = 1.50;
+    const delta = ((p - 50) / 50) * windowSpan;
+    const curA = Math.max(0, tA + delta);
+    const curB = Math.max(0, tB + delta);
 
     return {
-      curA: Math.max(0, curA),
-      curB: Math.max(0, curB),
-      isApex: f >= 0.45 && f <= 0.55
+      curA: Math.round(curA * 1000) / 1000,
+      curB: Math.round(curB * 1000) / 1000,
+      isApex: Math.abs(p - 50) < 5.0
     };
   }
 
@@ -1791,12 +1786,25 @@ function wireSynchronizedDeliveryScrubber(player) {
     return "PHASE: ARM ACCELERATION & RELEASE";
   }
 
-  let hasVideoA = false;
-  let hasVideoB = false;
+  function seekVideo(videoEl, targetTime) {
+    if (!videoEl || !videoEl.src || videoEl.style.display === "none") return;
+    try {
+      const duration = videoEl.duration;
+      let safeTarget = targetTime;
+      if (duration && !isNaN(duration) && duration > 0) {
+        safeTarget = Math.max(0, Math.min(duration - 0.02, targetTime));
+      } else {
+        safeTarget = Math.max(0, targetTime);
+      }
+      if (Math.abs(videoEl.currentTime - safeTarget) > 0.01) {
+        videoEl.currentTime = safeTarget;
+      }
+    } catch (e) {}
+  }
 
   function syncMediaAndHUD() {
     const tip = availableTips[currentTipIdx] || availableTips[0];
-    const { pitchA, pitchB, tA, tB, videoA: vA, videoB: vB, stillA: sA, stillB: sB } = parseTipTimingsAndLabels(tip, player);
+    const { pitchA, pitchB, tA, tB } = parseTipTimingsAndLabels(tip, player);
     const p = parseFloat(scrubSlider?.value ?? 50);
 
     const { curA, curB, isApex } = getTimes(p, tA, tB);
@@ -1824,30 +1832,8 @@ function wireSynchronizedDeliveryScrubber(player) {
     }
 
     // Video synchronization
-    if (videoA && hasVideoA && videoA.src && videoA.style.display !== "none") {
-      try {
-        if (videoA.duration && !isNaN(videoA.duration) && videoA.duration > 0) {
-          const targetA = Math.max(0, Math.min(videoA.duration - 0.05, curA));
-          if (Math.abs(videoA.currentTime - targetA) > 0.03) {
-            videoA.currentTime = targetA;
-          }
-        } else {
-          videoA.currentTime = curA;
-        }
-      } catch (e) {}
-    }
-    if (videoB && hasVideoB && videoB.src && videoB.style.display !== "none") {
-      try {
-        if (videoB.duration && !isNaN(videoB.duration) && videoB.duration > 0) {
-          const targetB = Math.max(0, Math.min(videoB.duration - 0.05, curB));
-          if (Math.abs(videoB.currentTime - targetB) > 0.03) {
-            videoB.currentTime = targetB;
-          }
-        } else {
-          videoB.currentTime = curB;
-        }
-      } catch (e) {}
-    }
+    if (videoA && hasVideoA) seekVideo(videoA, curA);
+    if (videoB && hasVideoB) seekVideo(videoB, curB);
 
     const hasImgA = !!(imgA && imgA.src && imgA.style.display !== "none");
     const hasImgB = !!(imgB && imgB.src && imgB.style.display !== "none");
@@ -1933,6 +1919,10 @@ function wireSynchronizedDeliveryScrubber(player) {
     if (videoA) {
       if (vA) {
         hasVideoA = false;
+        videoA.muted = true;
+        videoA.setAttribute("muted", "");
+        videoA.playsInline = true;
+        videoA.setAttribute("playsinline", "");
         const curSrcA = videoA.getAttribute("src") || videoA.src || "";
         if (!curSrcA.endsWith(vA)) {
           videoA.src = vA;
@@ -1945,20 +1935,18 @@ function wireSynchronizedDeliveryScrubber(player) {
           if (imgA && sA) imgA.style.display = "block";
           syncMediaAndHUD();
         };
-        videoA.onloadeddata = () => {
+        const onReadyA = () => {
           hasVideoA = true;
+          try { videoA.pause(); } catch (e) {}
           videoA.style.display = "block";
           if (imgA) imgA.style.display = "none";
           syncMediaAndHUD();
         };
-        videoA.oncanplay = () => {
-          hasVideoA = true;
-          videoA.style.display = "block";
-          if (imgA) imgA.style.display = "none";
-          syncMediaAndHUD();
-        };
+        videoA.onloadeddata = onReadyA;
+        videoA.oncanplay = onReadyA;
         if (videoA.readyState >= 2) {
           hasVideoA = true;
+          try { videoA.pause(); } catch (e) {}
           videoA.style.display = "block";
           if (imgA) imgA.style.display = "none";
         }
@@ -1972,6 +1960,10 @@ function wireSynchronizedDeliveryScrubber(player) {
     if (videoB) {
       if (vB) {
         hasVideoB = false;
+        videoB.muted = true;
+        videoB.setAttribute("muted", "");
+        videoB.playsInline = true;
+        videoB.setAttribute("playsinline", "");
         const curSrcB = videoB.getAttribute("src") || videoB.src || "";
         if (!curSrcB.endsWith(vB)) {
           videoB.src = vB;
@@ -1984,20 +1976,18 @@ function wireSynchronizedDeliveryScrubber(player) {
           if (imgB && sB) imgB.style.display = "block";
           syncMediaAndHUD();
         };
-        videoB.onloadeddata = () => {
+        const onReadyB = () => {
           hasVideoB = true;
+          try { videoB.pause(); } catch (e) {}
           videoB.style.display = "block";
           if (imgB) imgB.style.display = "none";
           syncMediaAndHUD();
         };
-        videoB.oncanplay = () => {
-          hasVideoB = true;
-          videoB.style.display = "block";
-          if (imgB) imgB.style.display = "none";
-          syncMediaAndHUD();
-        };
+        videoB.onloadeddata = onReadyB;
+        videoB.oncanplay = onReadyB;
         if (videoB.readyState >= 2) {
           hasVideoB = true;
+          try { videoB.pause(); } catch (e) {}
           videoB.style.display = "block";
           if (imgB) imgB.style.display = "none";
         }
@@ -2050,6 +2040,10 @@ function wireSynchronizedDeliveryScrubber(player) {
     syncMediaAndHUD();
   });
 
+  scrubSlider?.addEventListener("change", () => {
+    syncMediaAndHUD();
+  });
+
   // Hook Snap to Apex Button
   snapApexBtn?.addEventListener("click", () => {
     if (isPlaying) stopPlay();
@@ -2061,7 +2055,7 @@ function wireSynchronizedDeliveryScrubber(player) {
   stepBackBtn?.addEventListener("click", () => {
     if (isPlaying) stopPlay();
     if (scrubSlider) {
-      scrubSlider.value = String(Math.max(0, parseFloat(scrubSlider.value) - 3.33));
+      scrubSlider.value = String(Math.max(0, parseFloat(scrubSlider.value) - 3.333));
       syncMediaAndHUD();
     }
   });
@@ -2069,7 +2063,7 @@ function wireSynchronizedDeliveryScrubber(player) {
   stepFwdBtn?.addEventListener("click", () => {
     if (isPlaying) stopPlay();
     if (scrubSlider) {
-      scrubSlider.value = String(Math.min(100, parseFloat(scrubSlider.value) + 3.33));
+      scrubSlider.value = String(Math.min(100, parseFloat(scrubSlider.value) + 3.333));
       syncMediaAndHUD();
     }
   });
@@ -2077,15 +2071,33 @@ function wireSynchronizedDeliveryScrubber(player) {
   // Play / Pause Animation Loop
   function stopPlay() {
     isPlaying = false;
-    if (animReqId) cancelAnimationFrame(animReqId);
+    if (animReqId) {
+      cancelAnimationFrame(animReqId);
+      animReqId = null;
+    }
     if (playIcon) playIcon.textContent = "▶";
     if (playText) playText.textContent = "Play Sync";
+    if (playBtn) {
+      playBtn.classList.remove("is-playing");
+      playBtn.setAttribute("aria-label", "Play Synchronized Playback");
+    }
+    if (videoA && !videoA.paused) try { videoA.pause(); } catch (e) {}
+    if (videoB && !videoB.paused) try { videoB.pause(); } catch (e) {}
   }
 
   function startPlay() {
     isPlaying = true;
     if (playIcon) playIcon.textContent = "❚❚";
     if (playText) playText.textContent = "Pause Sync";
+    if (playBtn) {
+      playBtn.classList.add("is-playing");
+      playBtn.setAttribute("aria-label", "Pause Synchronized Playback");
+    }
+
+    if (scrubSlider && parseFloat(scrubSlider.value) >= 99.5) {
+      scrubSlider.value = "0";
+      syncMediaAndHUD();
+    }
 
     let lastTimestamp = performance.now();
     function loop(now) {
@@ -2094,9 +2106,9 @@ function wireSynchronizedDeliveryScrubber(player) {
       lastTimestamp = now;
 
       if (scrubSlider) {
-        let curVal = parseFloat(scrubSlider.value) + elapsed * 33.3; // 3 second cycle
-        if (curVal > 100) curVal = 0;
-        scrubSlider.value = curVal.toFixed(1);
+        let curVal = parseFloat(scrubSlider.value) + (elapsed / 3.0) * 100;
+        if (curVal > 100) curVal = curVal % 100;
+        scrubSlider.value = curVal.toFixed(2);
         syncMediaAndHUD();
       }
       animReqId = requestAnimationFrame(loop);
@@ -2104,11 +2116,40 @@ function wireSynchronizedDeliveryScrubber(player) {
     animReqId = requestAnimationFrame(loop);
   }
 
-  playBtn?.addEventListener("click", () => {
+  function togglePlay() {
     if (isPlaying) {
       stopPlay();
     } else {
       startPlay();
+    }
+  }
+
+  playBtn?.addEventListener("click", togglePlay);
+
+  // Allow clicking on either video element or media box to toggle Play / Pause
+  const boxA = document.getElementById("sync-media-box-a");
+  const boxB = document.getElementById("sync-media-box-b");
+  boxA?.addEventListener("click", togglePlay);
+  boxB?.addEventListener("click", togglePlay);
+  videoA?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    togglePlay();
+  });
+  videoB?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    togglePlay();
+  });
+
+  // Spacebar keyboard shortcut to toggle Play / Pause
+  document.addEventListener("keydown", (e) => {
+    if (e.code === "Space" || e.key === " ") {
+      const activeEl = document.activeElement;
+      const tag = activeEl ? activeEl.tagName.toLowerCase() : "";
+      if (tag === "input" || tag === "textarea" || tag === "select" || activeEl?.isContentEditable) {
+        return;
+      }
+      e.preventDefault();
+      togglePlay();
     }
   });
 
