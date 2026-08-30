@@ -1299,8 +1299,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tanner_bibee_poc",
       "schema": "rich_72col",
       "n_current_tracks": 320,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -2780,7 +2780,7 @@
     "pitcher_tips": 212,
     "catcher_tips": 162
   },
-  "updated_at": "2026-08-30T07:22:27",
+  "updated_at": "2026-08-30T07:33:22",
   "live": {
     "pitches_done": 11,
     "pitches_target": null
