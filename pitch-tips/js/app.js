@@ -1751,7 +1751,8 @@ function wireSynchronizedDeliveryScrubber(player) {
         direction: "On Fastballs (FF 95mph), glove is anchored 2.4 inches higher across mid-chest letters during set pause; on Offspeed pitches (CH/SL), hands rest low against belt buckle.",
         side_by_side_guide: "Pitch A (Fastball - FF): Glove rim covers jersey chest letters before leg lift. Pitch B (Offspeed - CH/SL): Glove rim rests 2.4 inches lower flush against belt buckle.",
         scouting_note: "Higher hand anchor establishes a steeper downward arm swing required to drive fastball plane. Watch glove position right before the front knee begins upward motion.",
-        timestamp_window: "Set Position Pause (0:02.4 into clip / -0.38s before leg lift)",
+        timestamp_window: "Second Mark: 0:02.4 · Window: -0.85s Set Position Hold (Video Frames -36 to -20)",
+        delivery_phase: "Stationary Set Position (-1.20s to -0.65s before hand break)",
         second_mark: "0:02.4",
         anchor_a: 2.40,
         anchor_b: 2.10,
@@ -1774,7 +1775,8 @@ function wireSynchronizedDeliveryScrubber(player) {
         direction: "On Breaking Pitches (SL/CU), throwing wrist is buried deep in glove pocket with stretched laces; on Fastballs (FF), wrist crease is fully exposed outside glove rim.",
         side_by_side_guide: "Pitch A (Breaking - SL/CU): Wrist completely hidden inside glove collar. Pitch B (Fastball - FF): Wrist crease visible 1.5 inches outside glove rim.",
         scouting_note: "Deep pocket insertion allows fingers to hook along the breaking ball seam orientation. Watch the glove opening during the stationary set pause.",
-        timestamp_window: "Peak Balance Point (0:02.1 into clip / -0.25s before hand break)",
+        timestamp_window: "Second Mark: 0:02.1 · Window: -0.22s Peak Balance Point (Video Frames -9 to -5)",
+        delivery_phase: "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
         second_mark: "0:02.1",
         anchor_a: 2.20,
         anchor_b: 1.90,
@@ -1938,7 +1940,8 @@ function wireSynchronizedDeliveryScrubber(player) {
       differenceText.textContent = tip.what_to_spot || tip.lookFor || tip.behavior || tip.direction || "Observe mechanical variance between pitch types across pre-release window.";
     }
     if (metaWindow) {
-      metaWindow.textContent = tip.timestamp_window || `Second Mark: ${formatSec(tA)} (Pre-Release Window)`;
+      const { timestampWindow } = deriveDeliveryTiming(tip);
+      metaWindow.textContent = timestampWindow || tip.timestamp_window || `Second Mark: ${formatSec(tA)} (Pre-Release Window)`;
     }
     if (metaAngle) {
       metaAngle.textContent = `${tip.angle || "CF"} · Broadcast Center-Field`;

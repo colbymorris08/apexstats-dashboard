@@ -96,7 +96,7 @@ const PREFLIGHT_TRANSLATIONS = {
     
     showcase_card_roupp_title: "Landen Roupp · SF Giants (MLB 🇺🇸)",
     showcase_card_roupp_badge: "MLB SHOWCASE",
-    showcase_card_roupp_desc: "Curveball (CU) vs Sinker (SI) & Changeup (CH). Peak leg lift glove elevation (+0.06 torso lengths covering jersey letters on CU at -0.35s before hand break) and hand burial depth in pocket at set (-0.80s).",
+    showcase_card_roupp_desc: "Curveball (CU) vs Sinker (SI) & Changeup (CH). Peak leg lift glove elevation (+0.06 torso lengths covering jersey letters on CU at -0.28s before hand break) and hand burial depth in pocket at set (-0.85s).",
     showcase_card_roupp_btn: "View Mechanical Breakdown →",
 
     showcase_card_erod_title: "Eduardo Rodriguez · ARI D-backs (MLB 🇺🇸)",
@@ -251,7 +251,7 @@ const PREFLIGHT_TRANSLATIONS = {
     
     showcase_card_roupp_title: "ランデン・ループ · SFジャイアンツ (MLB 🇺🇸)",
     showcase_card_roupp_badge: "MLB ショーケース",
-    showcase_card_roupp_desc: "カーブ (CU) vs シンカー (SI) / チェンジアップ (CH) の動作分析。足上げ頂点(-0.35s)でのグラブ上昇（カーブ時にユニフォーム胸文字を覆うほど高位置）およびセット時(-0.80s)のポケット内手首深度差異。",
+    showcase_card_roupp_desc: "カーブ (CU) vs シンカー (SI) / チェンジアップ (CH) の動作分析。足上げ頂点(-0.28s)でのグラブ上昇（カーブ時にユニフォーム胸文字を覆うほど高位置）およびセット時(-0.85s)のポケット内手首深度差異。",
     showcase_card_roupp_btn: "動作プロファイルを見る →",
 
     showcase_card_erod_title: "エドゥアルド・ロドリゲス · ARI (MLB 🇺🇸)",
@@ -406,7 +406,7 @@ const PREFLIGHT_TRANSLATIONS = {
     
     showcase_card_roupp_title: "랜든 룹 · SF 자이언츠 (MLB 🇺🇸)",
     showcase_card_roupp_badge: "MLB 쇼케이스",
-    showcase_card_roupp_desc: "커브(CU) vs 싱커(SI) 및 체인지업(CH) 투구폼 분석. 레그킥 정점(-0.35s) 시 유니폼 가슴 로고를 덮는 글러브 상승량 차이 및 셋 포지션(-0.80s) 시 손목 삽입 깊이 차이.",
+    showcase_card_roupp_desc: "커브(CU) vs 싱커(SI) 및 체인지업(CH) 투구폼 분석. 레그킥 정점(-0.28s) 시 유니폼 가슴 로고를 덮는 글러브 상승량 차이 및 셋 포지션(-0.85s) 시 손목 삽입 깊이 차이.",
     showcase_card_roupp_btn: "동작 프로파일 보기 →",
 
     showcase_card_erod_title: "에두아르도 로드리게스 · ARI (MLB 🇺🇸)",
@@ -561,7 +561,7 @@ const PREFLIGHT_TRANSLATIONS = {
     
     showcase_card_roupp_title: "Landen Roupp · SF Giants (MLB 🇺🇸)",
     showcase_card_roupp_badge: "MUESTRA MLB",
-    showcase_card_roupp_desc: "Curva (CU) vs Sinker (SI) y Cambio (CH). Elevación del guante en el ápice de la pierna (-0.35s cubriendo las letras del jersey en CU) y profundidad de muñeca en el guante al set (-0.80s).",
+    showcase_card_roupp_desc: "Curva (CU) vs Sinker (SI) y Cambio (CH). Elevación del guante en el ápice de la pierna (-0.28s cubriendo las letras del jersey en CU) y profundidad de muñeca en el guante al set (-0.85s).",
     showcase_card_roupp_btn: "Ver Perfil de Lanzamiento →",
 
     showcase_card_erod_title: "Eduardo Rodriguez · ARI (MLB 🇺🇸)",
@@ -716,7 +716,7 @@ const PREFLIGHT_TRANSLATIONS = {
     
     showcase_card_roupp_title: "Landen Roupp · 舊金山巨人 (MLB 🇺🇸)",
     showcase_card_roupp_badge: "MLB 展示",
-    showcase_card_roupp_desc: "曲球 (CU) 與 伸卡球 (SI) / 變速球 (CH) 動作拆解。抬腿頂點(-0.35s)時手套上升幅度（曲球時手套高於球衣胸前文字）以及就位(-0.80s)時手腕深入手套深度差異。",
+    showcase_card_roupp_desc: "曲球 (CU) 與 伸卡球 (SI) / 變速球 (CH) 動作拆解。抬腿頂點(-0.28s)時手套上升幅度（曲球時手套高於球衣胸前文字）以及就位(-0.85s)時手腕深入手套深度差異。",
     showcase_card_roupp_btn: "檢視動作特徵拆解 →",
 
     showcase_card_erod_title: "Eduardo Rodriguez · 響尾蛇 (MLB 🇺🇸)",
