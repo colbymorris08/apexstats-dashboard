@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 61,
-  "remaining": 642,
+  "remaining": 641,
   "sec_per_pitch": 10.0,
   "eta_hours": 518.0,
   "est_total_pitches": 186470,
   "current": {
-    "name": "Yuki Matsui",
+    "name": "David Morgan",
     "team": "SD",
-    "message": "pitcher [12/13] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [13/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -953,6 +953,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kyle_hart_poc",
       "schema": "rich_72col",
       "n_current_tracks": 179,
+      "ready": true,
+      "state": "complete"
+    },
+    "673513": {
+      "name": "Yuki Matsui",
+      "team": "SD",
+      "n_tracked": 176,
+      "holdout": 0.083,
+      "tips_ge_75": 4,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/yuki_matsui_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 186,
       "ready": false,
       "state": "tracking"
     }
@@ -2406,9 +2424,9 @@
     },
     "SD": {
       "queued": 13,
-      "done": 11,
-      "pitcher_tips": 29,
-      "catcher_tips": 27
+      "done": 12,
+      "pitcher_tips": 33,
+      "catcher_tips": 30
     },
     "SF": {
       "queued": 11,
@@ -2431,12 +2449,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 122,
-    "catcher_tips": 102
+    "pitcher_tips": 126,
+    "catcher_tips": 105
   },
-  "updated_at": "2026-08-29T21:00:55",
+  "updated_at": "2026-08-29T21:03:26",
   "live": {
-    "pitches_done": 170,
+    "pitches_done": 10,
     "pitches_target": null
   },
   "heartbeat": true
