@@ -6,10 +6,15 @@ const SHOWCASE_ARM_IDS = new Set([
   "eduardo_rodriguez",
   "gabriel_moreno",
   "chase_burns",
+  "burns",
   "roki_sasaki",
+  "sasaki",
   "won_tae_choi",
+  "choi",
   "gu_lin_ruei_yang",
-  "trevor_bauer"
+  "gulin",
+  "trevor_bauer",
+  "bauer"
 ]);
 
 function checkIsLiteMode() {
@@ -61,7 +66,15 @@ function fillSelect(el, options, { valueKey = "id", labelKey = "label", blank = 
 }
 
 function playerList(data) {
-  return Object.values(data.players || {});
+  const seen = new Set();
+  const list = [];
+  for (const p of Object.values(data.players || {})) {
+    if (p && p.id && !seen.has(p.id)) {
+      seen.add(p.id);
+      list.push(p);
+    }
+  }
+  return list;
 }
 
 function teamById(data, id) {

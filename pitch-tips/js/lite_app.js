@@ -58,7 +58,15 @@ function fillSelect(el, options, { valueKey = "id", labelKey = "label", blank = 
 }
 
 function playerList(data) {
-  return Object.values(data.players || {});
+  const seen = new Set();
+  const list = [];
+  for (const p of Object.values(data.players || {})) {
+    if (p && p.id && !seen.has(p.id)) {
+      seen.add(p.id);
+      list.push(p);
+    }
+  }
+  return list;
 }
 
 function teamById(data, id) {
@@ -735,13 +743,26 @@ function wireLiteBoard(data) {
   const root = document.getElementById("lite-board-leads");
   if (!root) return;
 
-  const showcasePlayers = SHOWCASE_IDS.map((id) => data.players?.[id]).filter(Boolean);
+  const seenPids = new Set();
+  const showcasePlayers = [];
+  for (const id of SHOWCASE_IDS) {
+    const p = data.players?.[id];
+    if (p && p.id && !seenPids.has(p.id)) {
+      seenPids.add(p.id);
+      showcasePlayers.push(p);
+    }
+  }
   const leads = [];
+  const seenLeadIds = new Set();
 
   for (const p of showcasePlayers) {
     const team = teamById(data, p.teamId);
     for (const t of playerTips(p)) {
-      leads.push({ ...t, player: p, team });
+      const leadKey = t.id || `${p.id}_${t.title || t.cue}`;
+      if (!seenLeadIds.has(leadKey)) {
+        seenLeadIds.add(leadKey);
+        leads.push({ ...t, player: p, team });
+      }
     }
   }
 
@@ -1103,6 +1124,88 @@ function wireSituationCoverage(player) {
   }
 }
 
+function setGloveCompareBalance(pct) {
+  const left = document.getElementById("glove-pane-left");
+  const right = document.getElementById("glove-pane-right");
+  const clamped = Math.max(0, Math.min(100, Number(pct) || 0));
+  const leftOp = Math.max(0.28, 1 - clamped / 100);
+  const rightOp = Math.max(0.28, clamped / 100);
+  if (left) left.style.opacity = String(leftOp);
+  if (right) right.style.opacity = String(rightOp);
+}
+
+function wireGloveCompare(still) {
+  const root = document.getElementById("glove-compare");
+  const img = document.getElementById("detection-frame");
+  const leftImg = document.getElementById("glove-compare-left");
+  const rightImg = document.getElementById("glove-compare-right");
+  const slider = document.getElementById("glove-compare-slider");
+  const labelL = document.getElementById("glove-label-left");
+  const labelR = document.getElementById("glove-label-right");
+  const compare = still?.compare;
+  const leftSrc = compare?.leftSrc || compare?.leftImage;
+  const rightSrc = compare?.rightSrc || compare?.rightImage;
+
+  if (!root || !leftImg || !rightImg || !leftSrc || !rightSrc) {
+    if (root) root.hidden = true;
+    if (img) img.hidden = false;
+    return false;
+  }
+
+  const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
+  const prefix = isSubdir ? "../" : "";
+  const bust = `?v=${encodeURIComponent(still.cacheKey || "1")}`;
+  leftImg.src = `${prefix}${leftSrc}${bust}`;
+  rightImg.src = `${prefix}${rightSrc}${bust}`;
+  leftImg.alt = `${still.name || "Pitcher"} · ${compare.leftLabel || "Comparison A"}`;
+  rightImg.alt = `${still.name || "Pitcher"} · ${compare.rightLabel || "Comparison B"}`;
+  if (labelL) labelL.textContent = compare.leftLabel || "PITCH A";
+  if (labelR) labelR.textContent = compare.rightLabel || "PITCH B";
+  root.hidden = false;
+  if (img) img.hidden = true;
+
+  const apply = () => setGloveCompareBalance(slider?.value ?? 50);
+  slider?.addEventListener("input", apply);
+  apply();
+  return true;
+}
+
+function wireDetectionStage(player) {
+  const stage = document.getElementById("unlocked-detection-stage");
+  const img = document.getElementById("detection-frame");
+  const caption = document.getElementById("detection-caption");
+  if (!img) return;
+
+  const still = player.detectionStill;
+  if (!still) {
+    const compareRoot = document.getElementById("glove-compare");
+    if (compareRoot) compareRoot.hidden = true;
+    img.hidden = true;
+    if (stage) stage.hidden = true;
+    if (caption) {
+      caption.textContent = `Tracking frames active for ${player.name} · Pre-release delivery window segmented.`;
+    }
+  } else {
+    if (stage) stage.hidden = false;
+    still.name = player.name;
+    still.cacheKey = "mitt-v7";
+    const hasCompare = wireGloveCompare(still);
+    if (!hasCompare) {
+      const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
+      const prefix = isSubdir ? "../" : "";
+      img.src = `${prefix}${still.image}`;
+      img.alt = `${player.name} detection still`;
+      img.hidden = false;
+    }
+    if (caption) {
+      caption.textContent =
+        still.caption ||
+        still.note ||
+        (hasCompare ? "Pre-release delivery compare" : "Pre-release tracked frame");
+    }
+  }
+}
+
 function wireLitePlayer(data) {
   const id = qs("id") || "eduardo_rodriguez";
   let player = data.players?.[id] || playerList(data).find((p) => p.id === id);
@@ -1179,6 +1282,7 @@ function wireLitePlayer(data) {
       sampleEl.textContent = `${n} Pitches`;
     }
 
+    wireDetectionStage(player);
     wireSituationCoverage(player);
 
     const catcherPanel = document.getElementById("catcher-signals-panel");

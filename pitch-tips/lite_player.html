@@ -96,6 +96,45 @@
             </div>
           </div>
 
+          <!-- Detection Stage & Glove Compare Slider -->
+          <div class="detection-stage" id="unlocked-detection-stage" style="margin-top: 1.5rem;" aria-label="Computer vision detection stage">
+            <div class="eyebrow" style="color: var(--accent);">Computer Vision Landmark Tracking &amp; Delivery Compare</div>
+            <p class="lede" id="detection-lede" style="font-size: 0.88rem; margin-bottom: 0.75rem;">
+              Pre-release anatomical tracking and pitch-to-pitch difference cards. Drag the slider to compare delivery geometry between pitch types. Landmark boxes isolate the pitcher's glove, forearm, torso angle, and release timing.
+            </p>
+            <div class="video-shell video-shell--still video-shell--compare" id="detection-still">
+              <div class="overlay-label">CV · DELIVERY &amp; GLOVE COMPARE</div>
+              <div class="glove-compare" id="glove-compare" hidden>
+                <div class="glove-compare-labels">
+                  <span id="glove-label-left">PITCH A</span>
+                  <span id="glove-label-right">PITCH B</span>
+                </div>
+                <div class="glove-compare-pair" id="glove-compare-pair">
+                  <figure class="glove-pane" id="glove-pane-left">
+                    <img id="glove-compare-left" alt="Pitch A delivery still" />
+                  </figure>
+                  <figure class="glove-pane" id="glove-pane-right">
+                    <img id="glove-compare-right" alt="Pitch B delivery still" />
+                  </figure>
+                </div>
+                <label class="glove-compare-scrub">
+                  <span class="glove-compare-scrub-label">Slide · Pitch A ↔ Pitch B</span>
+                  <input
+                    type="range"
+                    class="glove-compare-slider"
+                    id="glove-compare-slider"
+                    min="0"
+                    max="100"
+                    value="50"
+                    aria-label="Slide emphasis between pitch types"
+                  />
+                </label>
+              </div>
+              <img id="detection-frame" alt="Pre-release detection still with landmark boxes" />
+              <div class="detection-caption" id="detection-caption"></div>
+            </div>
+          </div>
+
           <div class="controls" style="margin-top: 1.5rem">
             <label class="field"
               >Future Camera Angle(s) Available
