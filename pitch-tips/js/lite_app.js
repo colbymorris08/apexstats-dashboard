@@ -2062,7 +2062,7 @@ function wireSynchronizedDeliveryScrubber(player) {
   stage.hidden = false;
   stage.style.display = "block";
 
-  const tipDropdown = document.getElementById("sync-tip-dropdown");
+  const tipDropdown = document.getElementById("sync-tip-dropdown") || document.getElementById("tip-select");
   const quickPills = document.getElementById("sync-quick-pills");
   const targetBodyPartEl = document.getElementById("sync-target-body-part");
   const separationBadge = document.getElementById("sync-separation-badge");
@@ -2103,53 +2103,12 @@ function wireSynchronizedDeliveryScrubber(player) {
   const stepBackBtn = document.getElementById("sync-step-back-btn");
   const stepFwdBtn = document.getElementById("sync-step-fwd-btn");
 
-  const rawTips = playerTips(player);
-  let availableTips = rawTips.slice(0, 5);
-
-  if (!availableTips.length) {
-    availableTips = [
-      {
-        id: "default_tip_1",
-        title: "Glove Set Anchor Height · Fastball vs Offspeed",
-        predicts: "FF vs OFF",
-        confidence: 0.88,
-        separation_display: "5.2× floor",
-        target_body_part: "Glove Anchor vs Jersey Lettering",
-        what_to_spot: "Sets glove 2.4 inches higher across mid-chest on four-seam fastballs compared to low-belt set on offspeed pitches.",
-        timestamp_window: "Second Mark: 0:02.4 · Window: -0.38s (Set Position)",
-        second_mark: "0:02.4",
-        anchor_a: 2.40,
-        anchor_b: 2.10,
-        angle: "CF",
-        pitch_a_label: "Four-Seam Fastball (FF 95mph)",
-        pitch_b_label: "Changeup / Slider (CH 84 / SL 86)"
-      },
-      {
-        id: "default_tip_2",
-        title: "Hand Depth in Glove Pocket at Leg Lift",
-        predicts: "Breaking vs Hard",
-        confidence: 0.84,
-        separation_display: "4.6× floor",
-        target_body_part: "Wrist Depth in Glove Pocket",
-        what_to_spot: "Deep wrist burial with visible knuckle flare on breaking pitches prior to hand break.",
-        timestamp_window: "Second Mark: 0:02.1 · Window: Peak Balance Point",
-        second_mark: "0:02.1",
-        anchor_a: 2.20,
-        anchor_b: 1.90,
-        angle: "CF",
-        pitch_a_label: "Slider / Curve (SL 86 / CU 80)",
-        pitch_b_label: "Fastball (FF 95mph)"
-      }
-    ];
-  }
+  const availableTips = ensureFiveTips(player);
 
   // Populate Dropdown
   if (tipDropdown) {
     tipDropdown.innerHTML = availableTips.map((t, idx) => {
-      const confStr = t.confidence ? `${Math.round(t.confidence * 100)}% signal` : "Lead";
-      const contrastStr = t.contrast_label || t.contrast || t.predicts || "Primary vs Secondary";
-      const titleStr = t.title || t.cue || `Mechanical Indicator #${idx+1}`;
-      return `<option value="${idx}">Tip #${idx+1}: ${titleStr} (${confStr} · ${contrastStr})</option>`;
+      return `<option value="${idx}">${formatTipDropdownLabel(t, idx)}</option>`;
     }).join("");
   }
 
@@ -2163,6 +2122,8 @@ function wireSynchronizedDeliveryScrubber(player) {
   let currentTipIdx = 0;
   let isPlaying = false;
   let animReqId = null;
+  let hasVideoA = false;
+  let hasVideoB = false;
 
   function getTimes(progressPct, tA, tB) {
     const f = Math.max(0, Math.min(100, Number(progressPct) || 0)) / 100;
@@ -2226,17 +2187,34 @@ function wireSynchronizedDeliveryScrubber(player) {
     }
 
     // Video synchronization
-    if (videoA && videoA.src && !videoA.error) {
-      try { videoA.currentTime = curA; } catch (e) {}
+    if (videoA && hasVideoA && videoA.src && videoA.style.display !== "none") {
+      try {
+        if (videoA.duration && !isNaN(videoA.duration) && videoA.duration > 0) {
+          const durA = videoA.duration;
+          const targetA = curA % durA;
+          if (Math.abs(videoA.currentTime - targetA) > 0.04) {
+            videoA.currentTime = targetA;
+          }
+        } else {
+          videoA.currentTime = curA;
+        }
+      } catch (e) {}
     }
-    if (videoB && videoB.src && !videoB.error) {
-      try { videoB.currentTime = curB; } catch (e) {}
+    if (videoB && hasVideoB && videoB.src && videoB.style.display !== "none") {
+      try {
+        if (videoB.duration && !isNaN(videoB.duration) && videoB.duration > 0) {
+          const durB = videoB.duration;
+          const targetB = curB % durB;
+          if (Math.abs(videoB.currentTime - targetB) > 0.04) {
+            videoB.currentTime = targetB;
+          }
+        } else {
+          videoB.currentTime = curB;
+        }
+      } catch (e) {}
     }
 
     // Draw HUD Canvases
-    const hasVidA = !!(videoA && videoA.src && videoA.style.display !== "none");
-    const hasVidB = !!(videoB && videoB.src && videoB.style.display !== "none");
-
     if (canvasA) {
       drawDeliveryTelemetryCanvas(canvasA, {
         pitchName: pitchA,
@@ -2245,7 +2223,7 @@ function wireSynchronizedDeliveryScrubber(player) {
         isPitchA: true,
         tip,
         isApex,
-        hasVideo: hasVidA
+        hasVideo: hasVideoA
       });
     }
     if (canvasB) {
@@ -2256,7 +2234,7 @@ function wireSynchronizedDeliveryScrubber(player) {
         isPitchA: false,
         tip,
         isApex,
-        hasVideo: hasVidB
+        hasVideo: hasVideoB
       });
     }
   }
@@ -2264,7 +2242,7 @@ function wireSynchronizedDeliveryScrubber(player) {
   function applyTipSelection(idx) {
     currentTipIdx = Math.max(0, Math.min(availableTips.length - 1, idx));
     const tip = availableTips[currentTipIdx];
-    const { pitchA, pitchB, tA, tB } = parseTipTimingsAndLabels(tip, player);
+    const { pitchA, pitchB, tA, tB, videoA: vA, videoB: vB, stillA: sA, stillB: sB } = parseTipTimingsAndLabels(tip, player);
 
     // Update Dropdown & Quick Pills
     if (tipDropdown) tipDropdown.value = String(currentTipIdx);
@@ -2312,37 +2290,71 @@ function wireSynchronizedDeliveryScrubber(player) {
       lblEnd.textContent = `Ball Release (${formatSec(tA + 1.5)})`;
     }
 
-    // Update Video / Still Media Elements if paths exist
-    const vComp = player?.videoCompare || {};
-    const mediaSrcA = tip.videoA || player.videoA || vComp.videoA || (player.detectionStill?.a) || "";
-    const mediaSrcB = tip.videoB || player.videoB || vComp.videoB || (player.detectionStill?.b) || "";
-
-    if (videoA && imgA) {
-      if (mediaSrcA && mediaSrcA.endsWith(".mp4")) {
-        videoA.src = mediaSrcA;
+    // Setup Video and Still Elements with Graceful Error Handling
+    if (videoA) {
+      if (vA) {
+        hasVideoA = false;
+        videoA.src = vA;
         videoA.style.display = "block";
-        imgA.style.display = "none";
-      } else if (mediaSrcA && (mediaSrcA.endsWith(".svg") || mediaSrcA.endsWith(".jpg") || mediaSrcA.endsWith(".png"))) {
-        imgA.src = mediaSrcA;
-        imgA.style.display = "block";
-        videoA.style.display = "none";
+        videoA.onerror = () => {
+          hasVideoA = false;
+          videoA.style.display = "none";
+          if (imgA && sA) imgA.style.display = "block";
+          syncMediaAndHUD();
+        };
+        videoA.onloadeddata = () => {
+          hasVideoA = true;
+          videoA.style.display = "block";
+          if (imgA) imgA.style.display = "none";
+          syncMediaAndHUD();
+        };
       } else {
+        hasVideoA = false;
+        videoA.removeAttribute("src");
         videoA.style.display = "none";
+      }
+    }
+
+    if (videoB) {
+      if (vB) {
+        hasVideoB = false;
+        videoB.src = vB;
+        videoB.style.display = "block";
+        videoB.onerror = () => {
+          hasVideoB = false;
+          videoB.style.display = "none";
+          if (imgB && sB) imgB.style.display = "block";
+          syncMediaAndHUD();
+        };
+        videoB.onloadeddata = () => {
+          hasVideoB = true;
+          videoB.style.display = "block";
+          if (imgB) imgB.style.display = "none";
+          syncMediaAndHUD();
+        };
+      } else {
+        hasVideoB = false;
+        videoB.removeAttribute("src");
+        videoB.style.display = "none";
+      }
+    }
+
+    if (imgA) {
+      if (sA) {
+        imgA.src = sA;
+        if (!vA || !hasVideoA) imgA.style.display = "block";
+      } else {
+        imgA.removeAttribute("src");
         imgA.style.display = "none";
       }
     }
 
-    if (videoB && imgB) {
-      if (mediaSrcB && mediaSrcB.endsWith(".mp4")) {
-        videoB.src = mediaSrcB;
-        videoB.style.display = "block";
-        imgB.style.display = "none";
-      } else if (mediaSrcB && (mediaSrcB.endsWith(".svg") || mediaSrcB.endsWith(".jpg") || mediaSrcB.endsWith(".png"))) {
-        imgB.src = mediaSrcB;
-        imgB.style.display = "block";
-        videoB.style.display = "none";
+    if (imgB) {
+      if (sB) {
+        imgB.src = sB;
+        if (!vB || !hasVideoB) imgB.style.display = "block";
       } else {
-        videoB.style.display = "none";
+        imgB.removeAttribute("src");
         imgB.style.display = "none";
       }
     }
@@ -2362,6 +2374,16 @@ function wireSynchronizedDeliveryScrubber(player) {
       applyTipSelection(Number(btn.dataset.tipIdx) || 0);
     });
   });
+
+  // Global Scrubber Tip Selector
+  window.selectScrubberTip = function(idx) {
+    applyTipSelection(idx);
+    if (tipDropdown) tipDropdown.value = String(idx);
+    const targetStage = document.getElementById("unlocked-detection-stage") || document.getElementById("detection-stage") || document.querySelector(".detection-stage");
+    if (targetStage) {
+      targetStage.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   // Hook Slider Scrubber
   scrubSlider?.addEventListener("input", () => {
@@ -2399,6 +2421,8 @@ function wireSynchronizedDeliveryScrubber(player) {
     if (animReqId) cancelAnimationFrame(animReqId);
     if (playIcon) playIcon.textContent = "▶";
     if (playText) playText.textContent = "Play Sync";
+    if (videoA && !videoA.paused) try { videoA.pause(); } catch (e) {}
+    if (videoB && !videoB.paused) try { videoB.pause(); } catch (e) {}
   }
 
   function startPlay() {
