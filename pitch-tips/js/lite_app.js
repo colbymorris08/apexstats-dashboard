@@ -94,6 +94,52 @@ const PLAYER_ALIASES = {
   moreno: "gabriel_moreno",
   gabi: "gabriel_moreno",
 
+  // Catcher Batteries
+  mccann: "james_mccann",
+  james_mccann: "james_mccann",
+  jamesmccann: "james_mccann",
+  "james-mccann": "james_mccann",
+
+  romo: "drew_romo",
+  drew_romo: "drew_romo",
+  drewromo: "drew_romo",
+  "drew-romo": "drew_romo",
+
+  stallings: "jacob_stallings",
+  jacob_stallings: "jacob_stallings",
+  jacobstallings: "jacob_stallings",
+  "jacob-stallings": "jacob_stallings",
+
+  smith: "will_smith",
+  will_smith: "will_smith",
+  willsmith: "will_smith",
+  "will-smith": "will_smith",
+
+  barnes: "austin_barnes",
+  austin_barnes: "austin_barnes",
+  austinbarnes: "austin_barnes",
+  "austin-barnes": "austin_barnes",
+
+  campusano: "luis_campusano",
+  luis_campusano: "luis_campusano",
+  luiscampusano: "luis_campusano",
+  "luis-campusano": "luis_campusano",
+
+  diaz: "elias_diaz",
+  elias_diaz: "elias_diaz",
+  eliasdiaz: "elias_diaz",
+  "elias-diaz": "elias_diaz",
+
+  bailey: "patrick_bailey",
+  patrick_bailey: "patrick_bailey",
+  patrickbailey: "patrick_bailey",
+  "patrick-bailey": "patrick_bailey",
+
+  casali: "curt_casali",
+  curt_casali: "curt_casali",
+  curtcasali: "curt_casali",
+  "curt-casali": "curt_casali",
+
   // Other MLB
   canning: "canning",
   griffin_canning: "canning",

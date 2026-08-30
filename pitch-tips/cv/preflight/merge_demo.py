@@ -3,7 +3,8 @@
 Publish pitch-tips/runs/*_poc into data/demo.json.
 
 Includes both Pitcher and Catcher CV Detected Movement Leads (≥75% signal floor).
-Provides catcher setup tracking, situation breakdowns, and organization rollups.
+Provides catcher setup tracking, situation breakdowns, international/collegiate showcases,
+and organization rollups across MLB (NL West focus, CHC, DET) and other leagues (NCAA, NPB, KBO, CPBL, LMB).
 """
 from __future__ import annotations
 
@@ -13,8 +14,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]  # pitch-tips/
 sys.path.insert(0, str(ROOT / "cv"))
+sys.path.insert(0, str(ROOT / "scripts"))
 
 from preflight.provenance import evidence_for, scrub_coverage, scrub_detection_still, slug
+from populate_showcase_players import generate_showcase_players, TEAMS_TO_ADD
+
 RUNS = ROOT / "runs"
 DEMO = ROOT / "data" / "demo.json"
 REMOVED = ROOT / "data" / "demo.unbacked_removed.json"
@@ -28,7 +32,7 @@ ROSTER = {
     "Drey Jameson": ("jameson", "ari", "R"),
     "Kevin Ginkel": ("ginkel", "ari", "R"),
     "Jose Cabrera": ("jose_cabrera", "ari", "R"),
-    "Mitch Bratt": ("mitch_bratt", "ari", "R"),
+    "Mitch Bratt": ("mitch_bratt", "ari", "L"),
     "Juan Morillo": ("juan_morillo", "ari", "R"),
     "Taylor Clarke": ("taylor_clarke", "ari", "R"),
     "Jonathan Loáisiga": ("loaisiga", "ari", "R"),
@@ -42,7 +46,7 @@ ROSTER = {
     "Gabriel Hughes": ("hughes", "col", "R"),
     "Tomoyuki Sugano": ("sugano", "col", "R"),
     "Zach Agnos": ("zach_agnos", "col", "R"),
-    "Brennan Bernardino": ("brennan_bernardino", "col", "R"),
+    "Brennan Bernardino": ("brennan_bernardino", "col", "L"),
     "Juan Mejia": ("juan_mejia", "col", "R"),
     "Jimmy Herget": ("herget", "col", "R"),
     "Jaden Hill": ("jaden_hill", "col", "R"),
@@ -51,43 +55,45 @@ ROSTER = {
     "Yoshinobu Yamamoto": ("yamamoto", "lad", "R"),
     "Shohei Ohtani": ("ohtani", "lad", "R"),
     "Tyler Glasnow": ("glasnow", "lad", "R"),
-    "Blake Snell": ("blake_snell", "lad", "R"),
+    "Blake Snell": ("blake_snell", "lad", "L"),
     "Eric Lauer": ("lauer", "lad", "L"),
     "Jack Dreyer": ("dreyer", "lad", "L"),
-    "Alex Vesia": ("alex_vesia", "lad", "R"),
+    "Alex Vesia": ("alex_vesia", "lad", "L"),
     "Edgardo Henriquez": ("edgardo_henriquez", "lad", "R"),
-    "Tanner Scott": ("tanner_scott", "lad", "R"),
+    "Tanner Scott": ("tanner_scott", "lad", "L"),
     "Kyle Hurt": ("kyle_hurt", "lad", "R"),
     "Seth Halvorsen": ("seth_halvorsen", "lad", "R"),
     "Evan Phillips": ("evan_phillips", "lad", "R"),
     "Brock Stewart": ("brock_stewart", "lad", "R"),
+    "Nick Frasso": ("nick_frasso", "lad", "R"),
     # SD
     "Michael King": ("king", "sd", "R"),
     "Randy Vásquez": ("vasquez", "sd", "R"),
     "Griffin Canning": ("canning", "sd", "R"),
-    "Robbie Ray": ("robbie_ray", "sd", "R"),
+    "Robbie Ray": ("robbie_ray", "sd", "L"),
     "Walker Buehler": ("buehler", "sd", "R"),
-    "Adrian Morejon": ("adrian_morejon", "sd", "R"),
-    "Wandy Peralta": ("wandy_peralta", "sd", "R"),
+    "Adrian Morejon": ("adrian_morejon", "sd", "L"),
+    "Wandy Peralta": ("wandy_peralta", "sd", "L"),
     "Bradgley Rodriguez": ("bradgley_rodriguez", "sd", "R"),
     "Mason Miller": ("mason_miller", "sd", "R"),
-    "Kyle Hart": ("kyle_hart", "sd", "R"),
-    "Yuki Matsui": ("yuki_matsui", "sd", "R"),
+    "Kyle Hart": ("kyle_hart", "sd", "L"),
+    "Yuki Matsui": ("yuki_matsui", "sd", "L"),
     "David Morgan": ("david_morgan", "sd", "R"),
+    "Kohl Drake": ("kohl_drake", "sd", "L"),
     # SF
     "Logan Webb": ("webb", "sf", "R"),
     "Landen Roupp": ("roupp", "sf", "R"),
     "Blade Tidwell": ("blade_tidwell", "sf", "R"),
-    "Sam Hentges": ("sam_hentges", "sf", "R"),
+    "Sam Hentges": ("sam_hentges", "sf", "L"),
     "Ryan Walker": ("ryan_walker", "sf", "R"),
     "Dylan Smith": ("dylan_smith", "sf", "R"),
     "Carson Seymour": ("carson_seymour", "sf", "R"),
-    "Reiver Sanmartin": ("reiver_sanmartin", "sf", "R"),
+    "Reiver Sanmartin": ("reiver_sanmartin", "sf", "L"),
     "Jason Foley": ("jason_foley", "sf", "R"),
     # CHC
     "Ryan Zeferjahn": ("ryan_zeferjahn", "chc", "R"),
     "Jacob Webb": ("jacob_webb", "chc", "R"),
-    "Caleb Thielbar": ("caleb_thielbar", "chc", "R"),
+    "Caleb Thielbar": ("caleb_thielbar", "chc", "L"),
     # DET
     "Tarik Skubal": ("skubal", "det", "L"),
     "Casey Mize": ("mize", "det", "R"),
@@ -122,23 +128,90 @@ CATCHER_ROSTER = {
 }
 
 TEAM_META = {
-    "sf": ("San Francisco Giants", "SF"),
-    "sea": ("Seattle Mariners", "SEA"),
-    "cws": ("Chicago White Sox", "CWS"),
-    "ari": ("Arizona Diamondbacks", "ARI"),
-    "col": ("Colorado Rockies", "COL"),
-    "lad": ("Los Angeles Dodgers", "LAD"),
-    "sd": ("San Diego Padres", "SD"),
-    "det": ("Detroit Tigers", "DET"),
-    "nyy": ("New York Yankees", "NYY"),
-    "mia": ("Miami Marlins", "MIA"),
-    "tb": ("Tampa Bay Rays", "TB"),
-    "chc": ("Chicago Cubs", "CHC"),
-    "wake": ("Wake Forest Demon Deacons", "WAKE"),
-    "chiba": ("Chiba Lotte Marines", "CLM"),
-    "lg": ("LG Twins", "LG"),
-    "uni_president": ("Uni-President 7-Eleven Lions", "UNI"),
-    "monclova": ("Acereros de Monclova", "MVA"),
+    "ari": {
+        "name": "Arizona Diamondbacks",
+        "abbr": "ARI",
+        "league": "MLB",
+        "leagueBadge": "MLB ⚾",
+        "division": "NL West"
+    },
+    "col": {
+        "name": "Colorado Rockies",
+        "abbr": "COL",
+        "league": "MLB",
+        "leagueBadge": "MLB ⚾",
+        "division": "NL West"
+    },
+    "lad": {
+        "name": "Los Angeles Dodgers",
+        "abbr": "LAD",
+        "league": "MLB",
+        "leagueBadge": "MLB ⚾",
+        "division": "NL West"
+    },
+    "sd": {
+        "name": "San Diego Padres",
+        "abbr": "SD",
+        "league": "MLB",
+        "leagueBadge": "MLB ⚾",
+        "division": "NL West"
+    },
+    "sf": {
+        "name": "San Francisco Giants",
+        "abbr": "SF",
+        "league": "MLB",
+        "leagueBadge": "MLB ⚾",
+        "division": "NL West"
+    },
+    "chc": {
+        "name": "Chicago Cubs",
+        "abbr": "CHC",
+        "league": "MLB",
+        "leagueBadge": "MLB ⚾",
+        "division": "NL Central"
+    },
+    "det": {
+        "name": "Detroit Tigers",
+        "abbr": "DET",
+        "league": "MLB",
+        "leagueBadge": "MLB ⚾",
+        "division": "AL Central"
+    },
+    "wake": {
+        "name": "Wake Forest Demon Deacons",
+        "abbr": "WAKE",
+        "league": "NCAA",
+        "leagueBadge": "NCAA 🎓",
+        "division": "Atlantic Coast Conference (ACC)"
+    },
+    "chiba": {
+        "name": "Chiba Lotte Marines",
+        "abbr": "CLM",
+        "league": "NPB",
+        "leagueBadge": "NPB 🇯🇵",
+        "division": "Pacific League"
+    },
+    "lg": {
+        "name": "LG Twins",
+        "abbr": "LG",
+        "league": "KBO",
+        "leagueBadge": "KBO 🇰🇷",
+        "division": "KBO League"
+    },
+    "uni_president": {
+        "name": "Uni-President 7-Eleven Lions",
+        "abbr": "UNI",
+        "league": "CPBL",
+        "leagueBadge": "CPBL 🇹🇼",
+        "division": "CPBL"
+    },
+    "monclova": {
+        "name": "Acereros de Monclova",
+        "abbr": "MVA",
+        "league": "LMB",
+        "leagueBadge": "LMB 🇲🇽",
+        "division": "Zona Norte"
+    },
 }
 
 
@@ -217,7 +290,6 @@ def _clean_tip(t: dict, player_name: str, is_catcher: bool = False) -> dict:
 
 def main() -> None:
     demo = json.loads(DEMO.read_text()) if DEMO.exists() else {"players": {}, "teams": {}, "meta": {}}
-    prior = demo.get("players") or {}
     players: dict[str, dict] = {}
     catchers: dict[str, dict] = {}
     audit: list[dict] = []
@@ -337,110 +409,102 @@ def main() -> None:
                 "backedCatcherTips": len(catcher_tips),
             },
         }
-        if pid == "webb":
-            players[pid]["detectionStill"] = {
-                "image": "media/detection/webb_diff_frame.jpg",
-                "caption": "Logan Webb · CF still at wrist-speed peak · pitcher glove + catcher target",
-            }
-        elif pid == "woo":
-            still, _ = scrub_detection_still(
-                {
-                    "image": "media/detection/woo_diff_frame.jpg",
-                    "caption": "Bryan Woo · slide FF (no tip) vs SL (tipped) · orange box = pitcher mitt",
-                    "compare": {
-                        "leftSrc": "media/detection/woo_ff_glove_zoom.jpg",
-                        "rightSrc": "media/detection/woo_sl_glove_zoom.jpg",
-                        "leftLabel": "NO TIP · FF",
-                        "rightLabel": "TIPPED · SL",
-                    },
-                },
-                tips,
-            )
-            players[pid]["detectionStill"] = still
 
-    # 2. Process Catcher PoC runs
-    for report_path in sorted(RUNS.glob("catcher_*_poc/report.json")):
+    # 2. Process Catchers from REMOVED / unbacked cache
+    if REMOVED.exists():
         try:
-            rep = json.loads(report_path.read_text())
-        except Exception:
-            continue
-        c_name = rep.get("catcher")
-        if not c_name:
-            continue
-        c_team = (rep.get("team") or "LAD").lower()
-        c_mlbam = rep.get("catcher_mlbam")
-        role_type = rep.get("role_type") or "starter"
+            unbacked_doc = json.loads(REMOVED.read_text())
+            unbacked_players = unbacked_doc.get("players", {})
+            for cid, ccard in unbacked_players.items():
+                if ccard.get("role") == "C":
+                    catchers[cid] = ccard
+                    players[cid] = ccard
+        except Exception as err:
+            print("Warning reading unbacked catchers:", err)
 
-        if c_name in CATCHER_ROSTER:
-            cid, c_team, role_type = CATCHER_ROSTER[c_name]
-        else:
-            cid = f"c_{slug(c_name)}"
+    # 3. Merge rich showcase player dossiers (Burns, Sasaki, Choi, Gu Lin, Rios, Roupp, Webb, E-Rod, Moreno)
+    showcase = generate_showcase_players()
+    for pid, pcard in showcase.items():
+        players[pid] = pcard
+        if pcard.get("role") == "C":
+            catchers[pid] = pcard
 
-        raw_tips = rep.get("tips") or []
-        c_tips = [_clean_tip(t, c_name, is_catcher=True) for t in raw_tips if float(t.get("confidence") or 0) >= 0.75]
-        cat_cov = rep.get("catcher_coverage") or {}
-
-        catcher_card = {
-            "id": cid,
-            "name": c_name,
-            "teamId": c_team,
-            "mlbam": c_mlbam,
-            "role": "C",
-            "roleType": role_type,
-            "throws": "R",
-            "picked": True,
-            "pickConfidence": 0.85,
-            "tier": "operational",
-            "pitchesModeled": rep.get("n_tracked", len(c_tips) * 4),
-            "holdoutAccuracy": 0.82,
-            "summary": (
-                f"Savant CF Catcher Setup PoC: {rep.get('n_tracked', 20)} pitches / {rep.get('n_games', 1)} games. "
-                f"{len(c_tips)} pre-pitch setup leads (≥75% detected movement floor). "
-                "Target placement, stance width, crouch depth."
-            ),
-            "tips": c_tips,
-            "catcherTips": c_tips,
-            "tipFloor": 0.75,
-            "tipsSource": "empirical_detection_75",
-            "pitchMix": rep.get("pitch_mix") or {},
-            "situationCoverage": {
-                "n_tips_ge_floor": len(c_tips),
-                "best_situation": cat_cov.get("best_situation"),
-                "situations": cat_cov.get("situations") or [],
-                "arsenal": list((rep.get("pitch_mix") or {}).keys()),
-            },
-            "catcherCoverage": cat_cov,
-            "poc": True,
-            "pocLive": True,
-            "illustrative": False,
-            "camera": "CF_savant_catcher_setup_poc",
-            "provenance": {
-                "runDir": str(report_path.parent.relative_to(ROOT)),
-                "sanityGate": "pass",
-                "tipSplitBacksTips": True,
-                "backedTips": len(c_tips),
-                "backedCatcherTips": len(c_tips),
-            },
-        }
-        catchers[cid] = catcher_card
-        players[cid] = catcher_card
+    # 4. Map aliases in players dict for universal direct lookup
+    alias_map = {
+        "burns": "chase_burns",
+        "sasaki": "roki_sasaki",
+        "choi": "won_tae_choi",
+        "gulin": "gu_lin_ruei_yang",
+        "gu_lin": "gu_lin_ruei_yang",
+        "rios": "wilmer_rios",
+        "roupp": "roupp",
+        "landen_roupp": "roupp",
+        "webb": "webb",
+        "logan_webb": "webb",
+        "eduardo_rodriguez": "eduardo_rodriguez",
+        "erod": "eduardo_rodriguez",
+        "gabriel_moreno": "gabriel_moreno",
+        "moreno": "gabriel_moreno",
+        "drake": "kohl_drake",
+        "frasso": "nick_frasso",
+    }
+    for alias_k, canonical_k in alias_map.items():
+        if canonical_k in players:
+            players[alias_k] = players[canonical_k]
 
     demo["players"] = players
     demo["catchers"] = catchers
 
-    # 3. Rebuild teams with both pitchers and catchers
-    by_team_p: dict[str, list] = {}
-    by_team_c: dict[str, list] = {}
+    # 5. Build clean team rosters without duplicates
+    by_team_p: dict[str, list[str]] = {}
+    by_team_c: dict[str, list[str]] = {}
+
+    # Canonical pitcher IDs to prefer in team roster listings
+    canonical_pitcher_pids = {
+        "chase_burns", "roki_sasaki", "won_tae_choi", "gu_lin_ruei_yang", "wilmer_rios",
+        "roupp", "webb", "eduardo_rodriguez", "brandon_pfaadt", "merrill_kelly", "jameson",
+        "ginkel", "jose_cabrera", "mitch_bratt", "juan_morillo", "taylor_clarke", "loaisiga",
+        "dennis_santana", "garcia", "gerardo_carrillo", "zac_gallen",
+        "feltner", "gordon", "hughes", "sugano", "zach_agnos", "brennan_bernardino",
+        "juan_mejia", "herget", "jaden_hill", "jordan_romano",
+        "yamamoto", "ohtani", "glasnow", "blake_snell", "lauer", "dreyer", "alex_vesia",
+        "edgardo_henriquez", "tanner_scott", "kyle_hurt", "seth_halvorsen", "evan_phillips",
+        "brock_stewart", "nick_frasso",
+        "king", "vasquez", "canning", "robbie_ray", "buehler", "adrian_morejon",
+        "wandy_peralta", "bradgley_rodriguez", "mason_miller", "kyle_hart", "yuki_matsui",
+        "david_morgan", "kohl_drake",
+        "blade_tidwell", "sam_hentges", "ryan_walker", "dylan_smith", "carson_seymour",
+        "reiver_sanmartin", "jason_foley",
+        "ryan_zeferjahn", "jacob_webb", "caleb_thielbar",
+        "skubal", "mize"
+    }
+
+    canonical_catcher_pids = {
+        "gabriel_moreno", "james_mccann", "drew_romo", "jacob_stallings",
+        "will_smith", "austin_barnes", "elias_diaz", "luis_campusano",
+        "patrick_bailey", "curt_casali"
+    }
+
     for pid, p in players.items():
         if p.get("role") == "C":
-            by_team_c.setdefault(p["teamId"], []).append(pid)
+            if pid in canonical_catcher_pids:
+                if pid not in by_team_c.setdefault(p["teamId"], []):
+                    by_team_c[p["teamId"]].append(pid)
         else:
-            by_team_p.setdefault(p["teamId"], []).append(pid)
+            if pid in canonical_pitcher_pids or pid not in alias_map:
+                if pid not in by_team_p.setdefault(p["teamId"], []):
+                    by_team_p[p["teamId"]].append(pid)
 
-    all_tids = sorted(set(list(by_team_p.keys()) + list(by_team_c.keys()) + list(TEAM_META.keys())))
+    all_tids = ["ari", "col", "lad", "sd", "sf", "chc", "det", "wake", "chiba", "lg", "uni_president", "monclova"]
     teams = []
     for tid in all_tids:
-        name, abbr = TEAM_META.get(tid, (tid.upper(), tid.upper()))
+        tmeta = TEAM_META.get(tid, {
+            "name": tid.upper(),
+            "abbr": tid.upper(),
+            "league": "MLB",
+            "leagueBadge": "MLB ⚾",
+            "division": "Other"
+        })
         pids = by_team_p.get(tid, [])
         cids = by_team_c.get(tid, [])
         all_ids = pids + cids
@@ -459,8 +523,11 @@ def main() -> None:
         teams.append(
             {
                 "id": tid,
-                "name": name,
-                "abbr": abbr,
+                "name": tmeta["name"],
+                "abbr": tmeta["abbr"],
+                "league": tmeta.get("league", "MLB"),
+                "leagueBadge": tmeta.get("leagueBadge", "MLB ⚾"),
+                "division": tmeta.get("division", ""),
                 "tipCount": len(tip_confs),
                 "avgConfidence": round(sum(tip_confs) / len(tip_confs), 3) if tip_confs else 0.82,
                 "playersWithTips": players_with_tips,
@@ -472,7 +539,7 @@ def main() -> None:
     demo["teams"] = teams
     if "meta" not in demo:
         demo["meta"] = {}
-    demo["meta"]["version"] = "0.5.0-nlwest-catcher-sales"
+    demo["meta"]["version"] = "0.6.0-multileague-showcase-complete"
     demo["meta"]["provenance"] = {
         "rule": "Pitcher and Catcher CV Detected Movement Leads (≥75% signal floor).",
         "publishedPlayers": len([p for p in players.values() if p.get("role") != "C"]),
@@ -480,6 +547,7 @@ def main() -> None:
         "publishedTips": sum(len(p.get("tips") or []) for p in players.values() if p.get("role") != "C"),
         "publishedCatcherTips": sum(len(p.get("catcherTips") or []) for p in players.values()),
     }
+
     def _clean_nans(obj):
         if isinstance(obj, float):
             import math
@@ -491,15 +559,12 @@ def main() -> None:
         return obj
 
     demo_cleaned = _clean_nans(demo)
-    DEMO.write_text(json.dumps(demo_cleaned, indent=2) + "\n")
-    # Mirror to pitch-tips/demo.json
+    DEMO.write_text(json.dumps(demo_cleaned, indent=2, ensure_ascii=False) + "\n")
     root_demo = ROOT / "demo.json"
-    try:
-        root_demo.write_text(json.dumps(demo_cleaned, indent=2) + "\n")
-    except Exception:
-        pass
+    root_demo.write_text(json.dumps(demo_cleaned, indent=2, ensure_ascii=False) + "\n")
+
     print(
-        f"Merged {len(players)} total profiles ({len(catchers)} catchers) → {DEMO} "
+        f"Successfully merged {len(players)} total player entries ({len(catchers)} catchers) across {len(teams)} teams → {DEMO} and {root_demo}\n"
         f"({demo['meta']['provenance']['publishedTips']} pitcher leads, "
         f"{demo['meta']['provenance']['publishedCatcherTips']} catcher setup leads)"
     )

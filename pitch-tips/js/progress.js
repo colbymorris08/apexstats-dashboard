@@ -1,7 +1,15 @@
 async function loadProgress() {
-  const res = await fetch("data/progress.json", { cache: "no-store" });
-  if (!res.ok) throw new Error("No progress.json yet");
-  return res.json();
+  const v = Date.now();
+  const candidates = [`data/progress.json?v=${v}`, `progress.json?v=${v}`, `./data/progress.json?v=${v}`];
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.ok) return await res.json();
+    } catch (e) {
+      // try next
+    }
+  }
+  throw new Error("No progress.json yet");
 }
 
 function pct(n, d) {

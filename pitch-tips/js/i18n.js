@@ -50,7 +50,7 @@ const PREFLIGHT_TRANSLATIONS = {
     meta_window_val: "Set Position → Hand Break (0s Leakage)",
 
     filter_all_leagues: "All Leagues (9 Showcase Profiles)",
-    filter_all_orgs: "All Organizations (15)",
+    filter_all_orgs: "All Organizations (12)",
     filter_nlwest: "NL West Focus (5 Clubs)",
     filter_mlb: "MLB 🇺🇸 (NL West)",
     filter_ncaa: "NCAA 🎓 (College D1)",
@@ -205,7 +205,7 @@ const PREFLIGHT_TRANSLATIONS = {
     meta_window_val: "セットポジション → ハンドブレイク (漏洩ゼロ)",
 
     filter_all_leagues: "全リーグ (9選手・バッテリー公開中)",
-    filter_all_orgs: "全球団・チーム (15組織)",
+    filter_all_orgs: "全球団・チーム (12組織)",
     filter_nlwest: "MLB NL West (5球団)",
     filter_mlb: "MLB 🇺🇸 (メジャー)",
     filter_ncaa: "NCAA 🎓 (米大学D1)",
@@ -360,7 +360,7 @@ const PREFLIGHT_TRANSLATIONS = {
     meta_window_val: "세트 포지션 → 핸드 브레이크 (0초 정보 누출)",
 
     filter_all_leagues: "전체 리그 (9개 프로필 공개)",
-    filter_all_orgs: "전체 구단 (15개)",
+    filter_all_orgs: "전체 구단 (12개)",
     filter_nlwest: "MLB NL 서부 (5개)",
     filter_mlb: "MLB 🇺🇸 (메이저리그)",
     filter_ncaa: "NCAA 🎓 (미국 대학 D1)",
@@ -515,7 +515,7 @@ const PREFLIGHT_TRANSLATIONS = {
     meta_window_val: "Posición de Set → Quiebre de Manos (0s Fuga)",
 
     filter_all_leagues: "Todas las Ligas (9 Perfiles Desbloqueados)",
-    filter_all_orgs: "Todas las Organizaciones (15)",
+    filter_all_orgs: "Todas las Organizaciones (12)",
     filter_nlwest: "Enfoque NL Oeste (5 Clubes)",
     filter_mlb: "MLB 🇺🇸 (Grandes Ligas)",
     filter_ncaa: "NCAA 🎓 (Colegial D1)",
@@ -670,7 +670,7 @@ const PREFLIGHT_TRANSLATIONS = {
     meta_window_val: "就位 (Set) → 雙手分開 (0秒洩漏)",
 
     filter_all_leagues: "全部聯賽 (9位已解鎖展示)",
-    filter_all_orgs: "全部球團/學校 (15個組織)",
+    filter_all_orgs: "全部球團/學校 (12個組織)",
     filter_nlwest: "MLB 國聯西區 (5隊)",
     filter_mlb: "MLB 🇺🇸 (美國職棒)",
     filter_ncaa: "NCAA 🎓 (美國大學D1)",

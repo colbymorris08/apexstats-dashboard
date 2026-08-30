@@ -397,13 +397,15 @@ async function main() {
   const set = new URLSearchParams(location.search).get("set") || "multileague";
   highlightActiveDatasetButton(set);
 
+  const v = Date.now();
+  const manifestUrl = (MANIFESTS[set] || MANIFESTS.multileague) + `?v=${v}`;
   try {
-    const res = await fetch(MANIFESTS[set] || MANIFESTS.multileague);
+    const res = await fetch(manifestUrl, { cache: "no-store" });
     if (!res.ok) throw new Error("Manifest load failed");
     state.manifest = await res.json();
   } catch (err) {
     console.warn("Falling back to multileague manifest:", err);
-    const res = await fetch(MANIFESTS.multileague);
+    const res = await fetch(MANIFESTS.multileague + `?v=${v}`, { cache: "no-store" });
     state.manifest = await res.json();
   }
 
