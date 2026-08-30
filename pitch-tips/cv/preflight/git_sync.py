@@ -101,17 +101,25 @@ def sync_findings(player_name: str, context: str = "pitcher") -> bool:
         )
         if split_res.returncode == 0 and split_res.stdout.strip():
             tree_hash = split_res.stdout.strip().splitlines()[-1]
-            push_preflight = subprocess.run(
+            # Push to both main and gh-pages on preflight remote
+            push_preflight_main = subprocess.run(
                 ["git", "push", "preflight", f"{tree_hash}:main", "--force"],
                 cwd=str(WORKSPACE_ROOT),
                 capture_output=True,
                 text=True,
                 timeout=60,
             )
-            if push_preflight.returncode == 0:
-                print(f"  [git sync] Pushed standalone findings for {player_name} to preflight main")
+            push_preflight_gh = subprocess.run(
+                ["git", "push", "preflight", f"{tree_hash}:gh-pages", "--force"],
+                cwd=str(WORKSPACE_ROOT),
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+            if push_preflight_main.returncode == 0:
+                print(f"  [git sync] Pushed standalone findings for {player_name} to preflight main and gh-pages")
             else:
-                print(f"  [git sync] Push to preflight note: {push_preflight.stderr.strip()}")
+                print(f"  [git sync] Push to preflight note: {push_preflight_main.stderr.strip()}")
         return True
 
     except Exception as e:

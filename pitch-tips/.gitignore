@@ -39,6 +39,12 @@ Thumbs.db
 # Tracked showcase MP4 assets for live delivery compare player
 !pitch-tips/media/video/*.mp4
 !pitch-tips/media/videos/*.mp4
+!media/video/*.mp4
+!media/videos/*.mp4
+!media/video/**
+!media/videos/**
+!pitch-tips/media/video/**
+!pitch-tips/media/videos/**
 
 # Large pipeline runs, logs, and scratch directories
 runs/
