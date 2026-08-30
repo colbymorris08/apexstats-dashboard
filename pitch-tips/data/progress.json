@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 61,
-  "remaining": 629,
+  "remaining": 628,
   "sec_per_pitch": 10.0,
   "eta_hours": 518.0,
   "est_total_pitches": 186470,
   "current": {
-    "name": "Gavin Williams",
+    "name": "Andrew Abbott",
     "team": "OTH",
-    "message": "pitcher [4/638] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [5/638] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -1191,6 +1191,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/mackenzie_gore_poc",
       "schema": "rich_72col",
       "n_current_tracks": 265,
+      "ready": true,
+      "state": "complete"
+    },
+    "668909": {
+      "name": "Gavin Williams",
+      "team": "OTH",
+      "n_tracked": 201,
+      "holdout": 0.0,
+      "tips_ge_75": 5,
+      "catcher_tips": 4,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/gavin_williams_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 237,
       "ready": false,
       "state": "tracking"
     }
@@ -2656,9 +2674,9 @@
     },
     "OTH": {
       "queued": 638,
-      "done": 3,
-      "pitcher_tips": 17,
-      "catcher_tips": 11
+      "done": 4,
+      "pitcher_tips": 22,
+      "catcher_tips": 15
     },
     "CHC": {
       "queued": 0,
@@ -2669,12 +2687,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 178,
-    "catcher_tips": 136
+    "pitcher_tips": 183,
+    "catcher_tips": 140
   },
-  "updated_at": "2026-08-30T03:30:02",
+  "updated_at": "2026-08-30T04:13:41",
   "live": {
-    "pitches_done": 190,
+    "pitches_done": 230,
     "pitches_target": null
   },
   "heartbeat": true
