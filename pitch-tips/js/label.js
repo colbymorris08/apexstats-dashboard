@@ -46,8 +46,12 @@ function stampMeta(f) {
     src: f.src,
     pitcher: f.pitcher,
     team: f.team || null,
+    league: f.league || null,
     pitchType: f.pitchType,
     angle: f.angle,
+    stadium: f.stadium || null,
+    lighting: f.lighting || null,
+    delivery: f.delivery || null,
   };
 }
 
@@ -170,21 +174,24 @@ function loadFrameMeta() {
   if (!f) return;
   const labeled = (state.annotations[f.id]?.boxes || []).length;
   const hard =
-    f.gloveConf !== undefined
+    f.gloveConf !== undefined && f.gloveConf > 0
       ? ` · <span style="color:var(--warn)">model conf ${f.gloveConf}</span>`
       : "";
   const hand =
-    f.handConf !== undefined
+    f.handConf !== undefined && f.handConf > 0
       ? ` · <span style="color:var(--warn)">bare_hand ${f.handConf}</span>`
       : "";
-  // Where the frame sits between the set (0) and the window close, peak leg
-  // lift + 5 (1). Burial reads differently early in the kick than at the top.
+  const leagueBadge = f.league ? ` <span class="badge" style="background:rgba(61,139,253,0.22); color:var(--accent); font-weight:700;">${f.league}</span>` : "";
   const pos =
     f.windowPos !== undefined
-      ? `<br><span style="color:var(--faint)">set → lift+5: ${Math.round(f.windowPos * 100)}%${f.liftFrame != null ? ` · lift f${f.liftFrame}` : ""} · frame ${f.frame}</span>`
+      ? `<br><span style="color:var(--faint)">window: come-set → hand break (${Math.round(f.windowPos * 100)}%)${f.delivery ? ` · ${f.delivery}` : ""}${f.liftFrame != null ? ` · lift f${f.liftFrame}` : ""}</span>`
       : "";
+  const locationMeta = (f.stadium || f.lighting)
+    ? `<br><span style="color:var(--faint); font-size:0.8rem;">📍 ${f.stadium || ""}${f.lighting ? ` · ${f.lighting}` : ""}</span>`
+    : "";
+
   $("label-frame-meta").innerHTML =
-    `<strong>${f.pitcher}</strong>${f.team ? ` · ${f.team}` : ""}${f.pitchType && f.pitchType !== "?" ? ` · ${f.pitchType}` : ""}${hard}${hand}${pos}` +
+    `<strong>${f.pitcher}</strong>${leagueBadge}${f.team ? ` · ${f.team}` : ""}${f.pitchType && f.pitchType !== "?" ? ` · ${f.pitchType}` : ""}${hard}${hand}${pos}${locationMeta}` +
     `<br><span style="color:${labeled ? "var(--good)" : "var(--faint)"}">${labeled ? `${labeled} boxes saved` : "unlabeled"}</span>`;
 }
 
@@ -300,11 +307,12 @@ function buildExport() {
 }
 
 function downloadJson() {
+  const set = new URLSearchParams(location.search).get("set") || "multileague";
   const data = buildExport();
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `apex_labels_${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `apex_labels_${set}_${new Date().toISOString().slice(0, 10)}.json`;
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -360,16 +368,45 @@ function goNextUnlabeled() {
 }
 
 const MANIFESTS = {
+  multileague: "data/label_manifest_multileague.json",
+  ncaa: "data/label_manifest_ncaa.json",
+  npb: "data/label_manifest_npb.json",
+  kbo: "data/label_manifest_kbo.json",
+  cpbl: "data/label_manifest_cpbl.json",
+  lmb: "data/label_manifest_lmb.json",
   parts: "data/label_manifest.json",
   gloves: "data/label_manifest_gloves.json",
   hands: "data/label_manifest_hands.json",
 };
 
+function highlightActiveDatasetButton(activeSet) {
+  document.querySelectorAll("[data-set-btn]").forEach((btn) => {
+    const btnSet = btn.getAttribute("data-set-btn");
+    if (btnSet === activeSet) {
+      btn.className = "btn";
+      btn.style.boxShadow = "0 0 0 2px var(--accent)";
+    } else {
+      btn.className = "btn ghost";
+      btn.style.boxShadow = "none";
+    }
+  });
+}
+
 async function main() {
   loadStore();
-  const set = new URLSearchParams(location.search).get("set") || "parts";
-  const res = await fetch(MANIFESTS[set] || MANIFESTS.parts);
-  state.manifest = await res.json();
+  const set = new URLSearchParams(location.search).get("set") || "multileague";
+  highlightActiveDatasetButton(set);
+
+  try {
+    const res = await fetch(MANIFESTS[set] || MANIFESTS.multileague);
+    if (!res.ok) throw new Error("Manifest load failed");
+    state.manifest = await res.json();
+  } catch (err) {
+    console.warn("Falling back to multileague manifest:", err);
+    const res = await fetch(MANIFESTS.multileague);
+    state.manifest = await res.json();
+  }
+
   state.classId = state.manifest.classes[0]?.id || null;
   renderClasses();
   wireCanvas();

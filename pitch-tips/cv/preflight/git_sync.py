@@ -36,6 +36,9 @@ def sync_findings(player_name: str, context: str = "pitcher") -> bool:
             "pitch-tips/data/demo.json",
             "pitch-tips/data/progress.json",
             "pitch-tips/demo.json",
+            "pitch-tips/runs/arm_readiness.json",
+            "pitch-tips/runs/league_progress_2026.json",
+            "pitch-tips/runs/scheduler_status.json",
         ]
         
         # Check if there are changes to stage

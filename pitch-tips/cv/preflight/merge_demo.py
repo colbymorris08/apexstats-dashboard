@@ -8,11 +8,13 @@ Provides catcher setup tracking, situation breakdowns, and organization rollups.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
-from preflight.provenance import evidence_for, scrub_coverage, scrub_detection_still, slug
-
 ROOT = Path(__file__).resolve().parents[2]  # pitch-tips/
+sys.path.insert(0, str(ROOT / "cv"))
+
+from preflight.provenance import evidence_for, scrub_coverage, scrub_detection_still, slug
 RUNS = ROOT / "runs"
 DEMO = ROOT / "data" / "demo.json"
 REMOVED = ROOT / "data" / "demo.unbacked_removed.json"

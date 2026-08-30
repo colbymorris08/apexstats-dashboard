@@ -41,16 +41,27 @@
           get breadth instead of near-duplicate frames of the same arm. Click-drag boxes, then export
           <strong>JSON for training</strong> plus a <strong>PDF packet</strong> to drop in chat.
         </p>
-        <div class="cta-row" style="margin-bottom: 1rem">
-          <a class="btn ghost" href="label.html">All 10 parts</a>
-          <a class="btn ghost" href="label.html?set=gloves">Hard gloves · glove + hand only</a>
-          <a class="btn" href="label.html?set=hands">Hand in glove · at lift</a>
+        <div class="dataset-select-bar" style="margin-bottom: 1.25rem;">
+          <div style="font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); margin-bottom:0.4rem;">
+            Select Calibration &amp; Training Dataset:
+          </div>
+          <div class="cta-row" style="flex-wrap: wrap; gap: 0.45rem;">
+            <a class="btn ghost" data-set-btn="multileague" href="label.html?set=multileague">🌐 Multi-League Calibration (60 Frames)</a>
+            <a class="btn ghost" data-set-btn="ncaa" href="label.html?set=ncaa">🇺🇸 NCAA D1 (12)</a>
+            <a class="btn ghost" data-set-btn="npb" href="label.html?set=npb">🇯🇵 NPB Japan (12)</a>
+            <a class="btn ghost" data-set-btn="kbo" href="label.html?set=kbo">🇰🇷 KBO Korea (12)</a>
+            <a class="btn ghost" data-set-btn="cpbl" href="label.html?set=cpbl">🇹🇼 CPBL Taiwan (12)</a>
+            <a class="btn ghost" data-set-btn="lmb" href="label.html?set=lmb">🇲🇽 LMB Mexico (12)</a>
+            <a class="btn ghost" data-set-btn="parts" href="label.html?set=parts">MLB All 10 Parts</a>
+            <a class="btn ghost" data-set-btn="gloves" href="label.html?set=gloves">Hard Gloves</a>
+            <a class="btn ghost" data-set-btn="hands" href="label.html?set=hands">Hand in Glove</a>
+          </div>
         </div>
         <p class="note">
-          <strong>Model Training &amp; Fine-Tuning:</strong> Labeling trains the computer vision model to identify anatomical markers and equipment bounding boxes across varied camera angles. Fine-tuning requires diverse training samples per camera angle accounting for lighting variations (dark vs light / day vs night), different stadium backgrounds, jersey colors, player complexions, hand positioning, and glove angles to maximize detection accuracy.
+          <strong>Model Training &amp; Fine-Tuning:</strong> Labeling trains the computer vision model to identify anatomical markers and equipment bounding boxes across varied camera angles. Fine-tuning requires diverse training samples per camera angle accounting for lighting variations (dark vs light / day vs night / dome ceiling arrays), stadium backgrounds, jersey colors, player complexions, hand positioning, and glove angles to maximize detection accuracy.
         </p>
         <p class="note">
-          <strong>Hand-in-Glove &amp; Occluded Sets:</strong> Frames captured inside the actionable delivery window (set position through peak leg lift). Annotations train the detector to learn degrees of hand burial and exposure inside the glove based on camera angle. Box the visible portion of the hand even when only peeking out of or through the glove; label glove-only when no hand is visible at all. Both are required to fine-tune detection across stadium lighting, jersey colors, and hand positioning.
+          <strong>Multi-League &amp; Occluded Angle Calibration:</strong> Frames captured inside the actionable delivery window (set presentation through peak leg lift). Annotations train the detector to learn degrees of hand burial, wrist penetration, and glove flare inside the glove across 5 international leagues (NCAA D1, NPB, KBO, CPBL, LMB). Box the visible portion of the hand even when only peeking out of or through the glove; label glove-only when no hand is visible at all.
         </p>
 
         <div class="label-layout">

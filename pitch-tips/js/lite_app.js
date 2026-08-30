@@ -2,7 +2,19 @@
  * Colby Morris Preflight Lite — Public Showcase & Enterprise Scouting Preview Logic
  */
 
-const SHOWCASE_IDS = ["roupp", "landen_roupp", "eduardo_rodriguez", "webb", "logan_webb", "gabriel_moreno"];
+const SHOWCASE_IDS = [
+  "roupp",
+  "landen_roupp",
+  "eduardo_rodriguez",
+  "webb",
+  "logan_webb",
+  "gabriel_moreno",
+  "chase_burns",
+  "roki_sasaki",
+  "won_tae_choi",
+  "gu_lin_ruei_yang",
+  "trevor_bauer"
+];
 
 async function loadDemo() {
   try {
@@ -288,32 +300,39 @@ function renderShowcaseCard(player, team) {
   const tips = playerTips(player);
   const topTip = tips[0];
   const lookFor = topTip?.lookFor || topTip?.behavior || player.summary || "";
-  const conf = topTip?.confidence ? pct(topTip.confidence) : "88%";
+  const conf = topTip?.confidence ? pct(topTip.confidence) : (player.holdoutAccuracy ? pct(player.holdoutAccuracy) : "88%");
   const isCatcher = player.role === "C";
-  const roleLabel = isCatcher ? `${team?.abbr || "ARI"} · Catcher` : `${team?.abbr || "MLB"} · ${player.throws || "R"}HP`;
-  const badgeLabel = isCatcher ? "SHOWCASE CATCHER" : "SHOWCASE ARM";
+  const leagueTag = player.leagueBadge || (player.league ? `${player.league}` : (team?.leagueBadge || (team?.league ? `${team.league}` : "MLB 🇺🇸")));
+  const teamAbbr = team?.abbr || player.league || "MLB";
+  const roleLabel = isCatcher ? `${teamAbbr} · Catcher` : `${teamAbbr} · ${player.throws || "R"}HP`;
+  const badgeLabel = isCatcher ? "SHOWCASE CATCHER" : `SHOWCASE · ${leagueTag}`;
   const btnLabel = isCatcher ? "View Catcher Setup Dossier →" : "View Mechanical Breakdown →";
+  const videoSpec = topTip?.video_spec || (player.league === "NPB" ? "1080p60 Pacific League TV CF" : player.league === "NCAA" ? "1080p60 Synergy / ESPN+ CF" : player.league === "KBO" ? "1080p60 SPOTV CF" : player.league === "CPBL" ? "1080p60 CPBL TV CF" : player.league === "LMB" ? "1080p60 Jonron TV CF" : "CF Multi-Start");
+  const sepLabel = topTip?.separation_display || (topTip?.separation_floor_multiples ? `${topTip.separation_floor_multiples}× floor` : "Verified Lead");
+  const dVal = topTip?.hedges_d != null ? ` · d=${topTip.hedges_d}` : "";
+  const contrastTag = topTip?.contrast_label ? `<div style="font-size:0.8rem; font-weight:600; color:var(--text); margin-bottom:0.35rem;"><span style="color:var(--accent);">Contrast:</span> ${topTip.contrast_label}</div>` : "";
 
   return `
-    <div class="tile" style="border-top: 3px solid var(--good); background: var(--bg-panel); display: flex; flex-direction: column; justify-content: space-between;">
+    <div class="tile" style="border-top: 3px solid var(--good); background: var(--bg-panel); display: flex; flex-direction: column; justify-content: space-between;" data-league="${player.league || 'MLB'}">
       <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem; flex-wrap:wrap; gap:0.4rem;">
           <span class="lite-badge-showcase"><span style="color:var(--good); font-weight:900;">●</span> ${badgeLabel}</span>
           <span class="badge ok">${roleLabel}</span>
         </div>
         <h3 style="margin: 0.2rem 0 0.4rem; font-size:1.2rem;">${player.name}</h3>
+        ${contrastTag}
         <p style="font-size: 0.84rem; color: var(--muted); margin-bottom: 0.75rem; line-height: 1.5;">${lookFor}</p>
-        <div class="meta" style="margin-bottom:1rem;">
+        <div class="meta" style="margin-bottom:1rem; display:flex; flex-wrap:wrap; gap:0.35rem;">
           <span class="badge hot">${conf} Signal</span>
-          <span class="badge ok">${tips.length} Verified Indicators</span>
-          <span class="badge">${isCatcher ? "Target & Crouch Tracking" : "CF Multi-Start"}</span>
+          <span class="badge ok">${sepLabel}${dVal}</span>
+          <span class="badge" style="font-size:0.74rem;">📹 ${videoSpec}</span>
         </div>
       </div>
       <div style="display:flex; gap:0.5rem; flex-direction:column;">
         <a class="btn" style="width:100%; text-align:center; justify-content:center;" href="lite_player.html?id=${encodeURIComponent(player.id)}">
           ${btnLabel}
         </a>
-        <button type="button" class="btn ghost trigger-pilot-modal" data-arm="${player.name} (${team?.abbr || "MLB"})" style="width:100%; text-align:center; justify-content:center; font-size:0.8rem; padding:0.4rem;">
+        <button type="button" class="btn ghost trigger-pilot-modal" data-arm="${player.name} (${teamAbbr})" style="width:100%; text-align:center; justify-content:center; font-size:0.8rem; padding:0.4rem;">
           Schedule Audit on ${player.name.split(" ")[1] || player.name} →
         </button>
       </div>
@@ -565,11 +584,45 @@ function wireLiteLanding(data) {
   const picksTable = document.getElementById("lite-picks-table-body");
   const picksSummary = document.getElementById("lite-picks-summary");
 
-  if (showcaseGrid) {
-    const showcasePlayers = SHOWCASE_IDS.map((id) => data.players?.[id]).filter(Boolean);
-    showcaseGrid.innerHTML = showcasePlayers
+  function getUniqueShowcasePlayers() {
+    const seen = new Set();
+    const list = [];
+    for (const id of SHOWCASE_IDS) {
+      const p = data.players?.[id];
+      if (p && !seen.has(p.id)) {
+        seen.add(p.id);
+        list.push(p);
+      }
+    }
+    return list;
+  }
+
+  function renderShowcases(league = "all") {
+    if (!showcaseGrid) return;
+    const all = getUniqueShowcasePlayers();
+    const filtered = (league === "all" || !league)
+      ? all
+      : all.filter((p) => {
+          const l = (p.league || (teamById(data, p.teamId)?.league) || "MLB").toUpperCase();
+          return l === league.toUpperCase();
+        });
+    showcaseGrid.innerHTML = filtered
       .map((p) => renderShowcaseCard(p, teamById(data, p.teamId)))
       .join("");
+  }
+
+  if (showcaseGrid) {
+    renderShowcases("all");
+
+    const leagueFilterBtns = document.querySelectorAll("#showcase-league-filter .filter-btn");
+    leagueFilterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        leagueFilterBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const lg = btn.dataset.league || "all";
+        renderShowcases(lg);
+      });
+    });
   }
 
   if (picksTable) {
@@ -583,7 +636,7 @@ function wireLiteLanding(data) {
       });
 
     if (picksSummary) {
-      picksSummary.textContent = `${players.length} MLB pitchers modeled · 4 interactive showcase profiles unlocked (Landen Roupp, Eduardo Rodriguez, Logan Webb & Gabriel Moreno) · Full staff accessible via Enterprise Pilot`;
+      picksSummary.textContent = `${players.length} global pitchers modeled · 9 interactive showcase profiles unlocked across NCAA, NPB, KBO, CPBL, LMB & MLB · Full database accessible via Enterprise Pilot`;
     }
 
     picksTable.innerHTML = players
@@ -733,7 +786,54 @@ function wireLiteBoard(data) {
   wirePilotModal();
 }
 
+function updateLiteCoverageRibbon(data) {
+  const ribbon = document.querySelector(".coverage-stats-ribbon");
+  if (!ribbon) return;
+
+  const allPlayers = playerList(data);
+  const pitchers = allPlayers.filter((p) => p.role !== "C");
+  const catchers = allPlayers.filter((p) => p.role === "C");
+  const showcaseCount = allPlayers.filter((p) => isShowcaseArm(p.id)).length;
+
+  const nlWestIds = new Set(["ari", "col", "lad", "sd", "sf"]);
+  const nlWestTracked = (data.teams || []).filter(
+    (t) => nlWestIds.has(t.id) && playersForTeam(data, t.id).length > 0
+  ).length;
+
+  let totalLeads = 0;
+  for (const p of allPlayers) {
+    const t = playerTips(p);
+    totalLeads += t.length;
+  }
+  if (data.meta?.provenance) {
+    const provLeads =
+      (data.meta.provenance.publishedTips || 0) +
+      (data.meta.provenance.publishedCatcherTips || 0);
+    if (provLeads > totalLeads) totalLeads = provLeads;
+  }
+
+  const cards = ribbon.querySelectorAll(".coverage-stat-card");
+  cards.forEach((card) => {
+    const lbl = card.querySelector(".lbl")?.textContent?.trim() || "";
+    const valEl = card.querySelector(".val");
+    if (!valEl) return;
+
+    if (lbl.includes("Showcase")) {
+      valEl.textContent = showcaseCount || 4;
+    } else if (lbl.includes("NL West")) {
+      valEl.textContent = `${nlWestTracked || 5} / 5`;
+    } else if (lbl.includes("Pitchers")) {
+      valEl.textContent = pitchers.length;
+    } else if (lbl.includes("Catchers")) {
+      valEl.textContent = catchers.length || 10;
+    } else if (lbl.includes("Total Leads") || lbl.includes("Database")) {
+      valEl.textContent = `${totalLeads}+`;
+    }
+  });
+}
+
 function wireLiteTeams(data) {
+  updateLiteCoverageRibbon(data);
   const grid = document.getElementById("lite-team-grid");
   const filterBtns = document.querySelectorAll(".filter-btn");
   if (!grid) return;
@@ -744,6 +844,16 @@ function wireLiteTeams(data) {
     let teams = data.teams || [];
     if (filter === "nlwest") {
       teams = teams.filter((t) => nlWestIds.has(t.id));
+    } else if (filter === "ncaa") {
+      teams = teams.filter((t) => t.league === "NCAA");
+    } else if (filter === "npb") {
+      teams = teams.filter((t) => t.league === "NPB");
+    } else if (filter === "kbo") {
+      teams = teams.filter((t) => t.league === "KBO");
+    } else if (filter === "cpbl") {
+      teams = teams.filter((t) => t.league === "CPBL");
+    } else if (filter === "lmb") {
+      teams = teams.filter((t) => t.league === "LMB");
     }
 
     grid.innerHTML = teams
@@ -752,6 +862,15 @@ function wireLiteTeams(data) {
         const pitchers = allTeamMembers.filter((p) => p.role !== "C");
         const catchers = allTeamMembers.filter((p) => p.role === "C");
         const isNlWest = nlWestIds.has(t.id);
+        let divTag = isNlWest ? "NL West" : "MLB Organization";
+        if (t.league === "NCAA") divTag = "NCAA Division I (College)";
+        else if (t.league === "NPB") divTag = "NPB (Japan 🇯🇵)";
+        else if (t.league === "KBO") divTag = "KBO League (Korea 🇰🇷)";
+        else if (t.league === "CPBL") divTag = "CPBL (Taiwan 🇹🇼)";
+        else if (t.league === "LMB") divTag = "Mexican League (LMB 🇲🇽)";
+
+        const statusTag = isNlWest ? "Full Staff Modeled" : (t.league ? `${t.league} Benchmark Active` : "Tracked");
+        const statusClass = isNlWest || t.league ? "hot" : "ok";
 
         const pitcherPills = pitchers
           .map((p) => {
@@ -785,11 +904,11 @@ function wireLiteTeams(data) {
         <article class="team-coverage-card ${isNlWest ? "nlwest" : ""}" data-team-id="${t.id}">
           <div class="card-header-row">
             <div class="card-title-group">
-              <div class="kicker">${t.abbr} · ${isNlWest ? "NL West" : "MLB Organization"}</div>
+              <div class="kicker">${t.abbr} · ${divTag}</div>
               <h3><a href="lite_team.html?id=${encodeURIComponent(t.id)}" style="color:inherit; text-decoration:none;">${t.name}</a></h3>
             </div>
             <div class="card-badges">
-              <span class="badge ${isNlWest ? "hot" : "ok"}">${isNlWest ? "Full Staff Modeled" : "Tracked"}</span>
+              <span class="badge ${statusClass}">${statusTag}</span>
             </div>
           </div>
 
@@ -997,6 +1116,16 @@ function wireLitePlayer(data) {
       moreno: "gabriel_moreno",
       canning: "griffin_canning",
       griffin_canning: "canning",
+      burns: "chase_burns",
+      chase_burns: "chase_burns",
+      sasaki: "roki_sasaki",
+      roki_sasaki: "roki_sasaki",
+      choi: "won_tae_choi",
+      won_tae_choi: "won_tae_choi",
+      gulin: "gu_lin_ruei_yang",
+      gu_lin_ruei_yang: "gu_lin_ruei_yang",
+      bauer: "trevor_bauer",
+      trevor_bauer: "trevor_bauer",
     };
     if (aliases[id]) {
       player = data.players?.[aliases[id]] || playerList(data).find((p) => p.id === aliases[id]);

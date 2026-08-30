@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 62,
-  "remaining": 646,
+  "remaining": 644,
   "sec_per_pitch": 10.0,
   "eta_hours": 529.2,
   "est_total_pitches": 190530,
   "current": {
-    "name": "Wandy Peralta",
+    "name": "Mason Miller",
     "team": "SD",
-    "message": "pitcher [8/13] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [10/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -883,6 +883,40 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/adrian_morejon_poc",
       "schema": "rich_72col",
       "n_current_tracks": 172,
+      "ready": true,
+      "state": "complete"
+    },
+    "593974": {
+      "name": "Wandy Peralta",
+      "team": "SD",
+      "n_tracked": 120,
+      "holdout": 0.231,
+      "tips_ge_75": 4,
+      "catcher_tips": 6,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/wandy_peralta_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 146,
+      "ready": true,
+      "state": "complete"
+    },
+    "699134": {
+      "name": "Bradgley Rodriguez",
+      "team": "SD",
+      "n_tracked": 114,
+      "holdout": 0.111,
+      "tips_ge_75": 0,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/bradgley_rodriguez_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 127,
       "ready": false,
       "state": "tracking"
     }
@@ -2336,9 +2370,9 @@
     },
     "SD": {
       "queued": 13,
-      "done": 7,
-      "pitcher_tips": 17,
-      "catcher_tips": 15
+      "done": 9,
+      "pitcher_tips": 21,
+      "catcher_tips": 23
     },
     "SF": {
       "queued": 12,
@@ -2361,10 +2395,10 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 110,
-    "catcher_tips": 90
+    "pitcher_tips": 114,
+    "catcher_tips": 98
   },
-  "updated_at": "2026-08-29T16:36:09",
+  "updated_at": "2026-08-29T17:35:18",
   "live": {
     "pitches_done": 70,
     "pitches_target": null
