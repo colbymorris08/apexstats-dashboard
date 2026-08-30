@@ -72,19 +72,19 @@
     <path d="M624,288 Q639,270 654,288 L659,290 Z" fill="#003b7a" stroke="#111" stroke-width="1"/> <!-- Cap & Bill -->
 
     <!-- Throwing Arm & Bare Hand -->
-    <line x1="655" y1="352" x2="651" y2="356" stroke="#003b7a" stroke-width="8" stroke-linecap="round"/>
-    <circle cx="651" cy="356" r="6" fill="#f0c040" stroke="#d9a07a" stroke-width="2"/> <!-- Bare hand inside/near glove -->
+    <line x1="655" y1="352" x2="651" y2="380" stroke="#003b7a" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="651" cy="380" r="6" fill="#f0c040" stroke="#d9a07a" stroke-width="2"/> <!-- Bare hand inside/near glove -->
 
     <!-- Glove Arm & Pitcher Glove -->
-    <line x1="623" y1="352" x2="643" y2="352" stroke="#003b7a" stroke-width="8" stroke-linecap="round"/>
+    <line x1="623" y1="352" x2="643" y2="378" stroke="#003b7a" stroke-width="8" stroke-linecap="round"/>
     <!-- Glove Bounding Shape -->
-    <path d="M629,336 C625,362 653,368 659,344 C657,334 643,334 629,336 Z" fill="#6d4218" stroke="#ff8c00" stroke-width="2.5"/>
-    <ellipse cx="643" cy="352" rx="7" ry="9" fill="#ff8c00" opacity="0.35"/>
+    <path d="M629,362 C625,388 653,394 659,370 C657,360 643,360 629,362 Z" fill="#6d4218" stroke="#ff8c00" stroke-width="2.5"/>
+    <ellipse cx="643" cy="378" rx="7" ry="9" fill="#ff8c00" opacity="0.35"/>
   </g>
 
   <!-- Visual Broadcast Reticle Overlay (CF Optical Horizon) -->
   <g opacity="0.35">
-    <line x1="0" y1="352" x2="1280" y2="352" stroke="#ff8c00" stroke-dasharray="4,4" stroke-width="1"/>
+    <line x1="0" y1="378" x2="1280" y2="378" stroke="#ff8c00" stroke-dasharray="4,4" stroke-width="1"/>
     <line x1="643" y1="0" x2="643" y2="720" stroke="#ff8c00" stroke-dasharray="4,4" stroke-width="1"/>
   </g>
 
@@ -94,19 +94,19 @@
   
   <text x="44" y="50" fill="#ffffff" font-family="Manrope, sans-serif" font-size="16" font-weight="700">Wilmer Ríos</text>
   <text x="44" y="70" fill="#3ecf8e" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600">Acereros de Monclova · LMB · RHP</text>
-  <text x="44" y="90" fill="#a0aec0" font-family="IBM Plex Mono, monospace" font-size="11">Sinker (SI 92mph) · Standard CF Broadcast</text>
-  <text x="44" y="108" fill="#e8a23a" font-family="IBM Plex Mono, monospace" font-size="10.5">High Chest Set Pause (+2.6in Higher Set on SI) · WinPos: 26%</text>
+  <text x="44" y="90" fill="#a0aec0" font-family="IBM Plex Mono, monospace" font-size="11">Slider (SL 83mph) · Standard CF Broadcast</text>
+  <text x="44" y="108" fill="#e8a23a" font-family="IBM Plex Mono, monospace" font-size="10.5">Lower Belt Set Stance & Settle · WinPos: 28%</text>
 
   <!-- Top Right League & Stadium Watermark -->
   <rect x="980" y="24" width="276" height="68" fill="#080e18" fill-opacity="0.92" rx="6" stroke="#1f2c3f" stroke-width="1.5"/>
   <text x="1000" y="48" fill="#3d8bfd" font-family="Manrope, sans-serif" font-size="14" font-weight="800">LMB ADVANCE CALIBRATION</text>
   <text x="1000" y="68" fill="#718096" font-family="IBM Plex Mono, monospace" font-size="10">Estadio Monclova</text>
-  <text x="1000" y="82" fill="#4a5568" font-family="IBM Plex Mono, monospace" font-size="9.5">Desert Night Lighting</text>
+  <text x="1000" y="82" fill="#4a5568" font-family="IBM Plex Mono, monospace" font-size="9.5">Coahuila Night Lights</text>
 
   <!-- Actionable Delivery Window Gauge (Bottom Left) -->
   <rect x="24" y="660" width="360" height="36" fill="#080e18" fill-opacity="0.92" rx="4" stroke="#1f2c3f" stroke-width="1"/>
   <text x="36" y="682" fill="#a0aec0" font-family="IBM Plex Mono, monospace" font-size="11">Window: Come-Set → Hand Break</text>
   <rect x="230" y="672" width="140" height="8" fill="#1a2636" rx="3"/>
-  <rect x="230" y="672" width="36" height="8" fill="#3ecf8e" rx="3"/>
+  <rect x="230" y="672" width="39" height="8" fill="#3ecf8e" rx="3"/>
 
 </svg>

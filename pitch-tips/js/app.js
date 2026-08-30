@@ -4,7 +4,9 @@ const SHOWCASE_ARM_IDS = new Set([
   "webb",
   "logan_webb",
   "eduardo_rodriguez",
+  "erod",
   "gabriel_moreno",
+  "moreno",
   "chase_burns",
   "burns",
   "roki_sasaki",
@@ -13,9 +15,112 @@ const SHOWCASE_ARM_IDS = new Set([
   "choi",
   "gu_lin_ruei_yang",
   "gulin",
-  "trevor_bauer",
-  "bauer"
+  "gu_lin",
+  "wilmer_rios",
+  "rios"
 ]);
+
+const PLAYER_ALIASES = {
+  // NCAA
+  burns: "chase_burns",
+  chase_burns: "chase_burns",
+  chaseburns: "chase_burns",
+  wake_burns: "chase_burns",
+
+  // NPB
+  sasaki: "roki_sasaki",
+  roki_sasaki: "roki_sasaki",
+  rokisasaki: "roki_sasaki",
+  roki: "roki_sasaki",
+  chiba_sasaki: "roki_sasaki",
+
+  // KBO
+  choi: "won_tae_choi",
+  won_tae_choi: "won_tae_choi",
+  wontae_choi: "won_tae_choi",
+  wontaechoi: "won_tae_choi",
+  "won-tae-choi": "won_tae_choi",
+  won_tae: "won_tae_choi",
+  wontae: "won_tae_choi",
+  lg_choi: "won_tae_choi",
+
+  // CPBL
+  gulin: "gu_lin_ruei_yang",
+  gu_lin: "gu_lin_ruei_yang",
+  gu_lin_ruei_yang: "gu_lin_ruei_yang",
+  gulin_rueiyang: "gu_lin_ruei_yang",
+  "gu-lin-ruei-yang": "gu_lin_ruei_yang",
+  gulinrueiyang: "gu_lin_ruei_yang",
+  rueiyang: "gu_lin_ruei_yang",
+  uni_gulin: "gu_lin_ruei_yang",
+
+  // LMB
+  wilmer_rios: "wilmer_rios",
+  wilmerrios: "wilmer_rios",
+  "wilmer-rios": "wilmer_rios",
+  wilmer: "wilmer_rios",
+  rios: "wilmer_rios",
+  monclova_rios: "wilmer_rios",
+
+  // MLB Showcase
+  roupp: "roupp",
+  landen_roupp: "roupp",
+  landenroupp: "roupp",
+  "landen-roupp": "roupp",
+  landen: "roupp",
+
+  webb: "webb",
+  logan_webb: "webb",
+  loganwebb: "webb",
+  "logan-webb": "webb",
+  logan: "webb",
+
+  eduardo_rodriguez: "eduardo_rodriguez",
+  eduardorodriguez: "eduardo_rodriguez",
+  "eduardo-rodriguez": "eduardo_rodriguez",
+  erod: "eduardo_rodriguez",
+
+  gabriel_moreno: "gabriel_moreno",
+  gabrielmoreno: "gabriel_moreno",
+  "gabriel-moreno": "gabriel_moreno",
+  moreno: "gabriel_moreno",
+  gabi: "gabriel_moreno",
+
+  // Other MLB
+  canning: "canning",
+  griffin_canning: "canning",
+  pfaadt: "brandon_pfaadt",
+  brandon_pfaadt: "brandon_pfaadt",
+  snell: "blake_snell",
+  blake_snell: "blake_snell",
+  kelly: "merrill_kelly",
+  merrill_kelly: "merrill_kelly",
+  miller: "mason_miller",
+  mason_miller: "mason_miller",
+  skubal: "skubal",
+  tarik_skubal: "skubal",
+  ohtani: "ohtani",
+  shohei_ohtani: "ohtani",
+  glasnow: "glasnow",
+  tyler_glasnow: "glasnow",
+  yamamoto: "yamamoto",
+  yoshinobu_yamamoto: "yamamoto",
+  buehler: "buehler",
+  walker_buehler: "buehler",
+  sugano: "sugano",
+  tomoyuki_sugano: "sugano",
+  ray: "robbie_ray",
+  robbie_ray: "robbie_ray"
+};
+
+function isShowcaseArm(id) {
+  if (!id) return false;
+  const clean = (id || "").trim().toLowerCase().replace(/[\s\-]+/g, "_");
+  if (SHOWCASE_ARM_IDS.has(clean)) return true;
+  const aliased = PLAYER_ALIASES[clean];
+  if (aliased && SHOWCASE_ARM_IDS.has(aliased)) return true;
+  return false;
+}
 
 function checkIsLiteMode() {
   const url = new URL(location.href);
@@ -30,14 +135,23 @@ function checkIsLiteMode() {
 const isLiteMode = checkIsLiteMode();
 
 async function loadDemo() {
+  const v = Date.now();
   const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
-  const dataPath = isSubdir ? "../data/demo.json" : "data/demo.json";
-  let res = await fetch(dataPath);
-  if (!res.ok) {
-    res = await fetch("data/demo.json");
+  const candidates = isSubdir
+    ? [`../data/demo.json?v=${v}`, `../demo.json?v=${v}`, "data/demo.json", "demo.json"]
+    : [`data/demo.json?v=${v}`, `demo.json?v=${v}`, `./data/demo.json?v=${v}`, `./demo.json?v=${v}`, "data/demo.json", "demo.json"];
+
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (e) {
+      // try next candidate
+    }
   }
-  if (!res.ok) throw new Error("Failed to load demo data");
-  return res.json();
+  throw new Error("Failed to load demo data");
 }
 
 function pct(n) {
@@ -46,6 +160,54 @@ function pct(n) {
 
 function qs(name) {
   return new URLSearchParams(location.search).get(name);
+}
+
+function getPlayerIdFromUrl() {
+  const params = new URLSearchParams(location.search);
+  const raw =
+    params.get("id") ||
+    params.get("player") ||
+    params.get("p") ||
+    params.get("pid") ||
+    params.get("name") ||
+    "";
+  return raw.trim().toLowerCase();
+}
+
+function resolvePlayer(data, requestedId) {
+  if (!data || !data.players) return null;
+  const rawId = (requestedId || "").trim().toLowerCase();
+  if (!rawId) return null;
+  const cleanId = rawId.replace(/[\s\-]+/g, "_");
+
+  // 1. Direct hit in data.players
+  if (data.players[cleanId]) return data.players[cleanId];
+  if (data.players[rawId]) return data.players[rawId];
+
+  // 2. Direct alias mapping
+  const aliasedKey = PLAYER_ALIASES[cleanId] || PLAYER_ALIASES[rawId];
+  if (aliasedKey && data.players[aliasedKey]) {
+    return data.players[aliasedKey];
+  }
+
+  // 3. Search by player.id in data.players
+  const allPlayers = Object.values(data.players);
+  let found = allPlayers.find((p) => {
+    if (!p) return false;
+    const pid = (p.id || "").toLowerCase();
+    return pid === cleanId || pid === rawId;
+  });
+  if (found) return found;
+
+  // 4. Search by normalized name match
+  found = allPlayers.find((p) => {
+    if (!p || !p.name) return false;
+    const normName = p.name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+    return normName === cleanId || normName.includes(cleanId) || cleanId.includes(normName);
+  });
+  if (found) return found;
+
+  return null;
 }
 
 function fillSelect(el, options, { valueKey = "id", labelKey = "label", blank = null } = {}) {
@@ -662,7 +824,7 @@ function updateTeamsCoverageRibbon(data) {
     } else if (lbl.includes("Starters & Relievers") || lbl.includes("Pitchers")) {
       valEl.textContent = pitchers.length;
     } else if (lbl.includes("Catchers")) {
-      valEl.textContent = catchers.length || 10;
+      valEl.textContent = catchers.length;
     } else if (lbl.includes("Movement Indicators") || lbl.includes("Leads")) {
       valEl.textContent = `${totalLeads}+`;
     } else if (lbl.includes("NL West CV Modeled") || lbl.includes("Modeled")) {
@@ -935,33 +1097,8 @@ function wireDetectionStage(player) {
 function wirePlayerPage(data) {
   ensureEnterpriseModal();
   ensureLiteBanner();
-  const id = qs("id");
-  let player = data.players?.[id];
-  if (!player && id) {
-    const aliases = {
-      roupp: "landen_roupp",
-      landen_roupp: "roupp",
-      webb: "logan_webb",
-      logan_webb: "webb",
-      erod: "eduardo_rodriguez",
-      moreno: "gabriel_moreno",
-      canning: "griffin_canning",
-      griffin_canning: "canning",
-      burns: "chase_burns",
-      chase_burns: "chase_burns",
-      sasaki: "roki_sasaki",
-      roki_sasaki: "roki_sasaki",
-      choi: "won_tae_choi",
-      won_tae_choi: "won_tae_choi",
-      gulin: "gu_lin_ruei_yang",
-      gu_lin_ruei_yang: "gu_lin_ruei_yang",
-      bauer: "trevor_bauer",
-      trevor_bauer: "trevor_bauer",
-    };
-    if (aliases[id] && data.players?.[aliases[id]]) {
-      player = data.players[aliases[id]];
-    }
-  }
+  const id = getPlayerIdFromUrl() || "eduardo_rodriguez";
+  const player = resolvePlayer(data, id);
   const title = document.getElementById("player-title");
   const lede = document.getElementById("player-lede");
   const tipRoot = document.getElementById("player-tips");
@@ -975,7 +1112,7 @@ function wirePlayerPage(data) {
     return;
   }
 
-  const isShowcase = SHOWCASE_ARM_IDS.has(player.id) || SHOWCASE_ARM_IDS.has(id);
+  const isShowcase = isShowcaseArm(player.id) || isShowcaseArm(id);
   const tips = playerTips(player);
 
   if (title) {
