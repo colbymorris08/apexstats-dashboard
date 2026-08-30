@@ -758,7 +758,7 @@ function wireLiteLanding(data) {
     const seen = new Set();
     const list = [];
     for (const id of SHOWCASE_IDS) {
-      const p = data.players?.[id];
+      const p = resolvePlayer(data, id);
       if (p && !seen.has(p.id)) {
         seen.add(p.id);
         list.push(p);
@@ -908,7 +908,7 @@ function wireLiteBoard(data) {
   const seenPids = new Set();
   const showcasePlayers = [];
   for (const id of SHOWCASE_IDS) {
-    const p = data.players?.[id];
+    const p = resolvePlayer(data, id);
     if (p && p.id && !seenPids.has(p.id)) {
       seenPids.add(p.id);
       showcasePlayers.push(p);
