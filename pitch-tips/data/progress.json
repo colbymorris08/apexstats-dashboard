@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 61,
-  "remaining": 641,
+  "remaining": 640,
   "sec_per_pitch": 10.0,
   "eta_hours": 518.0,
   "est_total_pitches": 186470,
   "current": {
-    "name": "David Morgan",
-    "team": "SD",
-    "message": "pitcher [13/13] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Sam Hentges",
+    "team": "SF",
+    "message": "pitcher [3/11] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -971,6 +971,25 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/yuki_matsui_poc",
       "schema": "rich_72col",
       "n_current_tracks": 186,
+      "ready": false,
+      "state": "tracking"
+    },
+    "688158": {
+      "name": "David Morgan",
+      "team": "SD",
+      "n_tracked": 11,
+      "holdout": 0.333,
+      "tips_ge_75": 7,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 7,
+      "publishable": false,
+      "failed_checks": [
+        "holdout",
+        "volume"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/david_morgan_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 16,
       "ready": false,
       "state": "tracking"
     }
@@ -2424,8 +2443,8 @@
     },
     "SD": {
       "queued": 13,
-      "done": 12,
-      "pitcher_tips": 33,
+      "done": 13,
+      "pitcher_tips": 40,
       "catcher_tips": 30
     },
     "SF": {
@@ -2449,12 +2468,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 126,
+    "pitcher_tips": 133,
     "catcher_tips": 105
   },
-  "updated_at": "2026-08-29T21:03:26",
+  "updated_at": "2026-08-29T21:31:03",
   "live": {
-    "pitches_done": 10,
+    "pitches_done": 150,
     "pitches_target": null
   },
   "heartbeat": true
