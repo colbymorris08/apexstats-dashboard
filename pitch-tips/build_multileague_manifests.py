@@ -985,7 +985,7 @@ LEAGUE_FRAMES = {
             "throws": "RHP",
             "angle": "Standard CF Broadcast",
             "pitchType": "Slider (SL 83mph)",
-            "delivery": "Lower Belt Set Stance & Settle",
+            "delivery": "Lower Belt Set Stance · Settle",
             "windowPos": 0.28,
             "filename": "lmb/lmb_wilmer_rios_f140.svg",
             "gloveX": 643, "gloveY": 378, "handX": 651, "handY": 380,
