@@ -1028,52 +1028,6 @@ function wireLiteLanding(data) {
     });
   }
 
-  if (picksTable) {
-    const players = playerList(data)
-      .filter((p) => p.role !== "C")
-      .sort((a, b) => {
-        const aShow = isShowcaseArm(a.id) ? 1 : 0;
-        const bShow = isShowcaseArm(b.id) ? 1 : 0;
-        if (bShow !== aShow) return bShow - aShow;
-        return playerTips(b).length - playerTips(a).length;
-      });
-
-    if (picksSummary) {
-      picksSummary.textContent = `${players.length} global pitchers modeled · 9 interactive showcase profiles unlocked across NCAA, NPB, KBO, CPBL, LMB & MLB · Full database accessible via Enterprise Pilot`;
-    }
-
-    picksTable.innerHTML = players
-      .map((p) => {
-        const team = teamById(data, p.teamId);
-        const tips = playerTips(p);
-        const topLead = tips[0];
-        const isShow = isShowcaseArm(p.id);
-
-        const badge = isShow
-          ? `<span class="lite-badge-showcase">SHOWCASE</span>`
-          : `<span class="lite-badge-locked">🔒 ENTERPRISE</span>`;
-
-        const actionLink = isShow
-          ? `<a href="lite_player.html?id=${encodeURIComponent(p.id)}"><strong>${p.name}</strong></a>`
-          : `<a href="lite_player.html?id=${encodeURIComponent(p.id)}">${p.name}</a>`;
-
-        const look = isShow
-          ? topLead?.lookFor || p.summary || "Pre-release glove & tempo separation"
-          : `<span style="color:var(--muted); font-style:italic;">Enterprise mechanical cue locked · Available for club scouting</span>`;
-
-        return `<tr>
-          <td>${actionLink} ${badge}</td>
-          <td>${team?.abbr || "—"}</td>
-          <td><span class="badge ${tierBadge(p.tier)}">${tierLabel(data, p.tier)}</span></td>
-          <td>${pct(p.pickConfidence || p.holdoutAccuracy || 0.78)}</td>
-          <td>${(p.pitchesModeled || 0).toLocaleString()}</td>
-          <td><strong>${tips.length}</strong> indicators</td>
-          <td>${look}</td>
-        </tr>`;
-      })
-      .join("");
-  }
-
   const teamSel = document.getElementById("team-select");
   const playerSel = document.getElementById("player-select");
   const goTeam = document.getElementById("go-team");
@@ -1770,10 +1724,10 @@ function ensureFiveTips(player) {
       tips.push({
         id: `${player?.id || "p"}_cue_${tips.length + 1}`,
         rank: tips.length + 1,
-        videoA: player?.videoA || "media/videos/roupp_cu.mp4",
-        videoB: player?.videoB || "media/videos/roupp_si.mp4",
-        stillA: player?.stillA || player?.detectionStill || "media/detection/sf/sf_landen_roupp_cu_f120.svg",
-        stillB: player?.stillB || "media/detection/sf/sf_landen_roupp_si_f132.svg",
+        videoA: player?.videoA || "",
+        videoB: player?.videoB || "",
+        stillA: player?.stillA || player?.detectionStill || "",
+        stillB: player?.stillB || "",
         ...candidate
       });
     }
@@ -1797,8 +1751,35 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   else if (c.includes("windup")) sitSuffix = "_windup";
   else if (c.includes("stretch")) sitSuffix = "_stretch";
 
-  // Landen Roupp
-  if (normId.includes("roupp")) {
+  // Gabriel Hughes (COL) - check first before any fallback
+  if (normId.includes("hughes") || normId.includes("gabriel_hughes")) {
+    let pCode = "ff";
+    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    return `media/video/hughes_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Tanner Gordon (COL)
+  if (normId.includes("gordon") || normId.includes("tanner_gordon")) {
+    let pCode = "ff";
+    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    else if (p.includes("si") || p.includes("sink")) pCode = "si";
+    return `media/video/gordon_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Brandon Pfaadt (ARI)
+  if (normId.includes("pfaadt") || normId.includes("brandon_pfaadt")) {
+    let pCode = "si";
+    if (p.includes("st") || p.includes("sweep")) pCode = "st";
+    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    else if (p.includes("ff") || p.includes("fast") || p.includes("four")) pCode = "ff";
+    return `media/video/pfaadt_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Landen Roupp (SF)
+  if (normId.includes("roupp") || normId.includes("landen_roupp")) {
     let pCode = "si";
     if (p.includes("cu") || p.includes("curve")) pCode = "cu";
     else if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1807,8 +1788,8 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/roupp_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Logan Webb
-  if (normId.includes("webb")) {
+  // Logan Webb (SF)
+  if (normId.includes("webb") || normId.includes("logan_webb")) {
     let pCode = "si";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("sl") || p.includes("st") || p.includes("sweep") || p.includes("slide")) pCode = "sl";
@@ -1817,8 +1798,8 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/webb_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Eduardo Rodriguez
-  if (normId.includes("erod") || normId.includes("eduardo")) {
+  // Eduardo Rodriguez (ARI)
+  if (normId.includes("erod") || normId.includes("eduardo") || normId.includes("eduardo_rodriguez")) {
     let pCode = "ff";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("fc") || p.includes("cut")) pCode = "fc";
@@ -1829,7 +1810,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Chase Burns (NCAA - Wake Forest)
-  if (normId.includes("burns")) {
+  if (normId.includes("burns") || normId.includes("chase_burns")) {
     let pCode = "ff";
     if (p.includes("sl") || p.includes("slide")) pCode = "sl";
     else if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1838,7 +1819,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Roki Sasaki (NPB - Chiba Lotte)
-  if (normId.includes("sasaki")) {
+  if (normId.includes("sasaki") || normId.includes("roki_sasaki")) {
     let pCode = "ff";
     if (p.includes("fs") || p.includes("split") || p.includes("fork")) pCode = "fs";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
@@ -1846,7 +1827,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Won-tae Choi (KBO - LG Twins)
-  if (normId.includes("choi")) {
+  if (normId.includes("choi") || normId.includes("won_tae_choi")) {
     let pCode = "si";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
@@ -1856,7 +1837,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Gu Lin Ruei-Yang (CPBL - Uni-President)
-  if (normId.includes("gu_lin") || normId.includes("gulin")) {
+  if (normId.includes("gu_lin") || normId.includes("gulin") || normId.includes("gu-lin") || normId.includes("ruei_yang")) {
     let pCode = "ff";
     if (p.includes("cu") || p.includes("curve")) pCode = "cu";
     else if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1864,7 +1845,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Wilmer Ríos (LMB - Monclova)
-  if (normId.includes("rios") || normId.includes("bauer")) {
+  if (normId.includes("rios") || normId.includes("wilmer") || normId.includes("bauer")) {
     let pCode = "si";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
@@ -1873,49 +1854,35 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Kevin Gausman (TOR)
-  if (normId.includes("gausman")) {
+  if (normId.includes("gausman") || normId.includes("kevin_gausman")) {
     let pCode = "ff";
     if (p.includes("fs") || p.includes("split") || p.includes("fork")) pCode = "fs";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
     return `media/video/gausman_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Brandon Pfaadt (ARI)
-  if (normId.includes("pfaadt")) {
-    let pCode = "si";
-    if (p.includes("st") || p.includes("sweep")) pCode = "st";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("ff") || p.includes("fast") || p.includes("four")) pCode = "ff";
-    return `media/video/pfaadt_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Tanner Gordon (COL)
-  if (normId.includes("gordon")) {
-    let pCode = "ff";
-    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("si") || p.includes("sink")) pCode = "si";
-    return `media/video/gordon_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Gabriel Hughes (COL)
-  if (normId.includes("hughes")) {
-    let pCode = "ff";
-    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    return `media/video/hughes_${pCode}${sitSuffix}.mp4`;
-  }
-
   // Gabriel Moreno (Catcher - ARI)
-  if (normId.includes("moreno")) {
+  if (normId.includes("moreno") || normId.includes("gabriel_moreno")) {
     let pCode = "ff";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("kc") || p.includes("curve")) pCode = "kc";
     return `media/video/moreno_${pCode}${sitSuffix}.mp4`;
   }
 
-  return defaultFallback || "media/video/roupp_si.mp4";
+  // For any other pitcher, NEVER fall back to another pitcher's clip (e.g. Webb or Roupp).
+  if (defaultFallback && (defaultFallback.includes(normId) || defaultFallback.includes(playerId))) {
+    return defaultFallback;
+  }
+  if (normId) {
+    let pCode = "ff";
+    if (p.includes("sl") || p.includes("st") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    else if (p.includes("cu") || p.includes("curve")) pCode = "cu";
+    else if (p.includes("si") || p.includes("sink")) pCode = "si";
+    return `media/video/${normId}_${pCode}${sitSuffix}.mp4`;
+  }
+  return "";
 }
 
 function parseTipTimingsAndLabels(tip, player, contextFilter = "") {

@@ -313,29 +313,50 @@
         </div>
       </section>
 
+      <!-- MLB Roster Coverage Inventory Table -->
       <section class="section">
-        <h2>Tracked Pitchers &amp; Mechanical Indicators</h2>
+        <div class="eyebrow">Tracked Inventory</div>
+        <h2>MLB Roster Coverage Inventory (Public Showcase vs. Enterprise)</h2>
         <p class="lede" id="picks-summary">
-          Pitchers under active computer vision tracking with ranked physical variance indicators.
+          Pitchers under active computer vision tracking. Showcase arms are fully unlocked with multi-angle CV breakdowns; complete staff models available via club pilot.
         </p>
+
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Pitcher</th>
                 <th>Club</th>
-                <th>Status</th>
-                <th>Holdout Baseline</th>
-                <th>Pitches Tracked</th>
-                <th>Indicators Isolated</th>
-                <th>Top Measurable Discrepancy</th>
+                <th>Validation Tier</th>
+                <th>Signal Floor</th>
+                <th>Pitches Modeled</th>
+                <th>Physical Indicators</th>
+                <th>Primary Cue Preview</th>
               </tr>
             </thead>
             <tbody id="picks-table-body"></tbody>
           </table>
         </div>
-        <p class="note">
-          <span class="badge ok">live PoC</span> = Computer vision tracking active on broadcast CF. Every pitcher dossier includes top ranked mechanical differences, anatomical landmark overlays, and situation breakdowns.
+
+        <div class="jump" style="margin-top: 1.75rem;">
+          <form class="jump-form" onsubmit="return false;">
+            <label class="field">
+              <span>Jump to team</span>
+              <select id="team-select"></select>
+            </label>
+            <button class="btn ghost" id="go-team" type="button">Go to team</button>
+            <label class="field">
+              <span>Jump to pitcher</span>
+              <select id="player-select"></select>
+            </label>
+            <button class="btn" id="go-player" type="button">Open dossier</button>
+          </form>
+        </div>
+        <p class="note" style="margin-top: 1.25rem;">
+          <span class="badge hot">✨ Showcase</span> = Full interactive multi-angle &amp; landmark dossier unlocked. <span class="badge">🔒 Enterprise</span> = Complete staff tracking and 4K camera ingest available via club pilot.
+        </p>
+        <p id="boot-fail" class="note" hidden>
+          Unable to load <code>data/demo.json</code>.
         </p>
       </section>
 
@@ -359,28 +380,6 @@
             <tbody id="catcher-picks-body"></tbody>
           </table>
         </div>
-      </section>
-
-      <section class="section">
-        <h2>Pitcher &amp; Organization Workspace</h2>
-        <p class="lede">Select a club or pitcher to open their dedicated scouting dossier.</p>
-        <div class="controls">
-          <label class="field"
-            >Organization
-            <select id="team-select"></select>
-          </label>
-          <label class="field"
-            >Pitcher
-            <select id="player-select"></select>
-          </label>
-        </div>
-        <div class="cta-row">
-          <a class="btn" id="go-team" href="teams.html">Organization Summary</a>
-          <a class="btn ghost" id="go-player" href="#">Pitcher Dossier</a>
-        </div>
-        <p id="boot-fail" class="note" hidden>
-          Unable to load <code>data/demo.json</code>.
-        </p>
       </section>
 
       <section class="section">

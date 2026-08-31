@@ -253,6 +253,37 @@ a {
   margin-bottom: 1.1rem;
 }
 
+.jump {
+  margin: 1.25rem 0;
+}
+
+.jump-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.85rem;
+  background: var(--bg-card, rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--line);
+  padding: 1.15rem 1.25rem;
+  border-radius: var(--radius);
+}
+
+.jump-form .field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.jump-form select {
+  width: 100%;
+}
+
+.jump-form .btn {
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 label.field {
   display: grid;
   gap: 0.4rem;

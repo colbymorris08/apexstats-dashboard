@@ -758,64 +758,229 @@ function teamTipStats(data, team) {
   };
 }
 
+const FEATURE_LABEL_MAP = {
+  glove_elevation_lift_torso: "Glove Set Elevation at Lift",
+  glove_pocket_wrist_depth_in: "Glove Anchor Depth & Wrist Insertion",
+  glove_vs_belt_mean: "Glove Set Height vs Belt",
+  glove_vs_belt_std: "Glove Anchor Vertical Variance",
+  glove_flare_mean: "Glove Flare Angle at Set",
+  glove_flare_std: "Glove Flare Variance at Set",
+  wrist_speed_mean: "Pre-Pitch Wrist Motion Speed",
+  wrist_speed_p90: "Peak Pre-Pitch Wrist Speed",
+  pitchcom_mean_isi: "PitchCom Tap Interval Cadence",
+  pitchcom_tap_rate: "PitchCom Button Tap Tempo",
+  pitchcom_tap_count: "PitchCom Signal Tap Count",
+  pitchcom_latency_s: "Sign-to-Set Pause Duration",
+  set_hold_duration_sec: "Set Position Hold Duration",
+  set_dwell_time_sec: "Pre-Delivery Settle Dwell",
+  grip_settle_duration_sec: "Pocket Grip Settle Duration",
+  wrist_burial_depth_in: "Throwing Hand Burial Depth",
+  wrist_pronation_angle_set: "Wrist Pronation Angle at Set",
+  lead_knee_apex_height_torso: "Lead Knee Apex Height",
+  lead_knee_coil_deg: "Lead Hip/Knee Coil Angle",
+  glove_break_elevation_torso: "Glove Elevation at Hand Break",
+  glove_tuck_distance_torso: "Glove Tuck Distance to Chest",
+  forearm_plant_angle_deg: "Forearm Angle at Foot Plant",
+  spine_tilt_angle_lift: "Spine Tilt Angle at Lift",
+  trunk_tilt_apex_deg: "Trunk Lateral Tilt at Apex",
+  head_tilt_angle_stride: "Head Tilt Angle at Stride",
+  stretch_stance_width_in: "Stretch Stance Foot Width",
+  balance_apex_dwell_sec: "Leg Lift Balance Apex Dwell",
+  hand_separation_speed_fps: "Hand Separation Speed"
+};
+
+function formatFeatureName(feat) {
+  if (!feat) return "Pre-Release Glove & Set Dynamics";
+  if (FEATURE_LABEL_MAP[feat]) return FEATURE_LABEL_MAP[feat];
+  return feat
+    .replace(/_/g, " ")
+    .replace(/\b[a-z]/g, (c) => c.toUpperCase());
+}
+
+function getSignalFloorDisplay(p) {
+  const sitCov = p.situationCoverage;
+  const bestSit = sitCov && typeof sitCov === "object" ? sitCov.best_situation : null;
+  const discSummary = p.discernableSummary;
+
+  // 1. If best_situation has discernable pitch types
+  if (bestSit && bestSit.discernable_n > 0 && bestSit.discernable_types && bestSit.discernable_types.length > 0) {
+    const cov = bestSit.coverage || `${bestSit.discernable_n} of ${bestSit.arsenal_n || 5}`;
+    return `${cov} (${bestSit.discernable_types.join(", ")})`;
+  }
+
+  // 2. Scan discernableSummary for situation with most discernable types
+  if (discSummary && typeof discSummary === "object") {
+    let maxTypes = [];
+    let maxCov = "";
+    for (const v of Object.values(discSummary)) {
+      if (v && v.discernable_types && v.discernable_types.length > maxTypes.length) {
+        maxTypes = v.discernable_types;
+        maxCov = v.coverage || "";
+      }
+    }
+    if (maxTypes.length > 0) {
+      const covStr = maxCov || `${maxTypes.length} of ${sitCov?.arsenal_n || 5}`;
+      return `${covStr} (${maxTypes.join(", ")})`;
+    }
+  }
+
+  // 3. Collect from tips
+  const tips = p.tips || p.topLeads || [];
+  const predTypes = [];
+  for (const t of tips) {
+    const pt = t.pitchType || t.predicts;
+    if (pt && !predTypes.includes(pt)) {
+      predTypes.push(pt);
+    }
+  }
+  const arsenalN = (sitCov && typeof sitCov === "object" && sitCov.arsenal_n) || 4;
+  if (predTypes.length > 0) {
+    return `${predTypes.length} of ${arsenalN} (${predTypes.join(", ")})`;
+  }
+
+  if (bestSit && bestSit.coverage) {
+    return bestSit.coverage;
+  }
+  return `0 of ${arsenalN}`;
+}
+
+function getPrimaryCuePreview(p) {
+  const tips = p.tips || p.topLeads || [];
+  if (tips.length > 0) {
+    const t0 = tips[0];
+    const target = t0.target_body_part;
+    if (target) {
+      return target.split(" (+")[0].split(" (-")[0];
+    }
+    const cue = t0.cue;
+    if (cue && cue.length > 3 && !cue.toLowerCase().startsWith("savant")) {
+      return cue.charAt(0).toUpperCase() + cue.slice(1);
+    }
+    const title = t0.title;
+    if (title && !title.toLowerCase().includes("discernable")) {
+      const cleanT = title.split(" · ")[0].split(" [")[0];
+      if (cleanT && cleanT.length > 3) return cleanT;
+    }
+    const feat = t0.feature || t0.col;
+    if (feat) {
+      const base = formatFeatureName(feat);
+      const pt = t0.pitchType || t0.predicts;
+      return pt ? `${base} (${pt})` : base;
+    }
+    const look = t0.lookFor || t0.direction;
+    if (look && !look.toLowerCase().startsWith("in vs") && !look.toLowerCase().startsWith("savant")) {
+      return look.split(" (")[0].split(".")[0];
+    }
+  }
+
+  // Check situationCoverage best_situation types
+  const sitCov = p.situationCoverage;
+  if (sitCov && typeof sitCov === "object") {
+    const bestSit = sitCov.best_situation;
+    if (bestSit && bestSit.types) {
+      for (const ty of bestSit.types) {
+        if (ty && ty.discernable && ty.feature) {
+          const base = formatFeatureName(ty.feature);
+          return ty.pitch_type ? `${base} (${ty.pitch_type})` : base;
+        }
+      }
+    }
+    if (sitCov.situations) {
+      for (const sit of sitCov.situations) {
+        for (const ty of sit.types || []) {
+          if (ty && ty.discernable && ty.feature) {
+            const base = formatFeatureName(ty.feature);
+            return ty.pitch_type ? `${base} (${ty.pitch_type})` : base;
+          }
+        }
+      }
+    }
+  }
+
+  return "Pre-Release Glove & Set Dynamics";
+}
+
+function getValidationTierLabel(tier) {
+  if (tier === "elite" || tier === "operational") return "Operational";
+  if (tier === "developing") return "Developing";
+  return "Baseline";
+}
+
 function wirePicksTable(data) {
   const root = document.getElementById("picks-table-body");
   const summary = document.getElementById("picks-summary");
   if (!root) return;
 
   const players = playerList(data)
-    .filter((p) => p.picked && p.role !== "C")
+    .filter((p) => p.role !== "C")
     .sort((a, b) => {
-      if (isLiteMode) {
-        const aUnlocked = SHOWCASE_ARM_IDS.has(a.id) ? 1 : 0;
-        const bUnlocked = SHOWCASE_ARM_IDS.has(b.id) ? 1 : 0;
-        if (aUnlocked !== bUnlocked) return bUnlocked - aUnlocked;
-      }
-      return playerTips(b).length - playerTips(a).length || (b.pickConfidence || 0) - (a.pickConfidence || 0);
+      const aUnlocked = SHOWCASE_ARM_IDS.has(a.id) ? 1 : 0;
+      const bUnlocked = SHOWCASE_ARM_IDS.has(b.id) ? 1 : 0;
+      if (aUnlocked !== bUnlocked) return bUnlocked - aUnlocked;
+      return playerTips(b).length - playerTips(a).length || (b.pitchesModeled || 0) - (a.pitchesModeled || 0);
     });
 
-  const totalSignals = players.reduce((s, p) => s + playerTips(p).length, 0);
+  const showcaseCount = players.filter((p) => SHOWCASE_ARM_IDS.has(p.id)).length;
 
   if (summary) {
-    if (isLiteMode) {
-      summary.innerHTML = `<strong>4 Showcase Profiles Unlocked</strong> (Roupp, Rodriguez, Webb, Moreno) · ${players.length} Total Arms Tracked · Request Enterprise Demo for full database`;
-    } else {
-      summary.textContent = `${players.length} pitchers under active CV tracking · ${totalSignals} measurable mechanical indicators isolated across broadcast CF`;
-    }
+    summary.innerHTML = `<strong>${showcaseCount} Showcase Profiles Unlocked</strong> · <strong>${players.length} Total Arms Modeled</strong> across MLB &amp; Partner Leagues · Real-time sub-pixel computer vision tracking`;
   }
 
   root.innerHTML = players
     .map((p) => {
       const team = teamById(data, p.teamId);
-      const tips = playerTips(p);
-      const topLead = tips[0];
-      const look = topLead ? topLead.lookFor || topLead.direction : p.summary || "—";
       const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
-      
-      let playerLinkHtml;
-      let statusBadge;
-      if (isLiteMode) {
-        if (isShowcase) {
-          playerLinkHtml = `<a href="player.html?id=${encodeURIComponent(p.id)}&lite=1"><strong>${p.name}</strong></a> <span class="unlocked-tag">✨ Unlocked Showcase</span>`;
-          statusBadge = `<span class="badge hot">100% Unlocked</span>`;
-        } else {
-          playerLinkHtml = `<a href="player.html?id=${encodeURIComponent(p.id)}&lite=1">${p.name}</a> <button type="button" class="lock-tag" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}')">🔒 Enterprise</button>`;
-          statusBadge = `<span class="badge">Locked (Pilot)</span>`;
-        }
+      const tips = playerTips(p);
+
+      // Pitcher column: Name + Link + Badge
+      let pitcherCellHtml;
+      if (isShowcase) {
+        pitcherCellHtml = `<a href="player.html?id=${encodeURIComponent(p.id)}"><strong>${p.name}</strong></a> <span class="unlocked-tag">✨ Unlocked Showcase</span>`;
       } else {
-        playerLinkHtml = `<a href="player.html?id=${encodeURIComponent(p.id)}">${p.name}</a> <span class="badge ok">live PoC</span>`;
-        statusBadge = `<span class="badge ${tierBadge(p.tier)}">${tierLabel(data, p.tier)}</span>`;
+        pitcherCellHtml = `<a href="player.html?id=${encodeURIComponent(p.id)}">${p.name}</a> <button type="button" class="lock-tag" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}')">🔒 Enterprise</button>`;
       }
 
-      const sep = topLead?.separation_floor_multiples ? ` · ${topLead.separation_floor_multiples}× floor` : "";
+      // Club column: Team badge / tag
+      const clubAbbr = team?.abbr || (p.teamId || "—").toUpperCase();
+      const clubCellHtml = `<span class="badge" style="font-weight:600;">${clubAbbr}</span>`;
+
+      // Validation Tier: Operational / Developing / Baseline
+      const vTier = getValidationTierLabel(p.tier);
+      const tierBadgeCls = vTier === "Operational" ? "hot" : vTier === "Developing" ? "ok" : "";
+      const tierCellHtml = `<span class="badge ${tierBadgeCls}">${vTier}</span>`;
+
+      // Signal Floor
+      const signalFloorText = getSignalFloorDisplay(p);
+      const signalCellHtml = `<span style="font-family:var(--mono); font-weight:600; font-size:0.8rem; color:${signalFloorText.startsWith("0 of") ? "var(--muted)" : "var(--accent)"};">${signalFloorText}</span>`;
+
+      // Pitches Modeled
+      const pitchesCount = (p.pitchesModeled || 0).toLocaleString();
+      const pitchesCellHtml = `<span style="font-family:var(--mono);">${pitchesCount} Pitches</span>`;
+
+      // Physical Indicators
+      let indCount = tips.length;
+      if (indCount === 0) {
+        const sitCov = p.situationCoverage;
+        const bestSit = sitCov && typeof sitCov === "object" ? sitCov.best_situation : null;
+        if (bestSit && bestSit.discernable_n > 0) {
+          indCount = bestSit.discernable_n;
+        } else {
+          indCount = 1;
+        }
+      }
+      const indicatorsCellHtml = `<strong>${indCount}</strong> Ranked Leads`;
+
+      // Primary Cue Preview
+      const cuePreview = getPrimaryCuePreview(p);
+
       return `<tr>
-        <td>${playerLinkHtml}</td>
-        <td>${team?.abbr || "—"}</td>
-        <td>${statusBadge}</td>
-        <td>${pct(p.pickConfidence || p.holdoutAccuracy || 0.25)}</td>
-        <td>${(p.pitchesModeled || 0).toLocaleString()}</td>
-        <td><strong>${tips.length}</strong> indicators${sep}</td>
-        <td>${look}</td>
+        <td>${pitcherCellHtml}</td>
+        <td>${clubCellHtml}</td>
+        <td>${tierCellHtml}</td>
+        <td>${signalCellHtml}</td>
+        <td>${pitchesCellHtml}</td>
+        <td>${indicatorsCellHtml}</td>
+        <td style="color:var(--text);">${cuePreview}</td>
       </tr>`;
     })
     .join("");
@@ -1345,8 +1510,35 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   else if (c.includes("windup")) sitSuffix = "_windup";
   else if (c.includes("stretch")) sitSuffix = "_stretch";
 
-  // Landen Roupp
-  if (normId.includes("roupp")) {
+  // Gabriel Hughes (COL) - check first before any fallback
+  if (normId.includes("hughes") || normId.includes("gabriel_hughes")) {
+    let pCode = "ff";
+    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    return `media/video/hughes_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Tanner Gordon (COL)
+  if (normId.includes("gordon") || normId.includes("tanner_gordon")) {
+    let pCode = "ff";
+    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    else if (p.includes("si") || p.includes("sink")) pCode = "si";
+    return `media/video/gordon_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Brandon Pfaadt (ARI)
+  if (normId.includes("pfaadt") || normId.includes("brandon_pfaadt")) {
+    let pCode = "si";
+    if (p.includes("st") || p.includes("sweep")) pCode = "st";
+    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    else if (p.includes("ff") || p.includes("fast") || p.includes("four")) pCode = "ff";
+    return `media/video/pfaadt_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Landen Roupp (SF)
+  if (normId.includes("roupp") || normId.includes("landen_roupp")) {
     let pCode = "si";
     if (p.includes("cu") || p.includes("curve")) pCode = "cu";
     else if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1355,8 +1547,8 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/roupp_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Logan Webb
-  if (normId.includes("webb")) {
+  // Logan Webb (SF)
+  if (normId.includes("webb") || normId.includes("logan_webb")) {
     let pCode = "si";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("sl") || p.includes("st") || p.includes("sweep") || p.includes("slide")) pCode = "sl";
@@ -1365,8 +1557,8 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/webb_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Eduardo Rodriguez
-  if (normId.includes("erod") || normId.includes("eduardo")) {
+  // Eduardo Rodriguez (ARI)
+  if (normId.includes("erod") || normId.includes("eduardo") || normId.includes("eduardo_rodriguez")) {
     let pCode = "ff";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("fc") || p.includes("cut")) pCode = "fc";
@@ -1377,7 +1569,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Chase Burns (NCAA - Wake Forest)
-  if (normId.includes("burns")) {
+  if (normId.includes("burns") || normId.includes("chase_burns")) {
     let pCode = "ff";
     if (p.includes("sl") || p.includes("slide")) pCode = "sl";
     else if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1386,7 +1578,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Roki Sasaki (NPB - Chiba Lotte)
-  if (normId.includes("sasaki")) {
+  if (normId.includes("sasaki") || normId.includes("roki_sasaki")) {
     let pCode = "ff";
     if (p.includes("fs") || p.includes("split") || p.includes("fork")) pCode = "fs";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
@@ -1394,7 +1586,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Won-tae Choi (KBO - LG Twins)
-  if (normId.includes("choi")) {
+  if (normId.includes("choi") || normId.includes("won_tae_choi")) {
     let pCode = "si";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
@@ -1404,7 +1596,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Gu Lin Ruei-Yang (CPBL - Uni-President)
-  if (normId.includes("gu_lin") || normId.includes("gulin")) {
+  if (normId.includes("gu_lin") || normId.includes("gulin") || normId.includes("gu-lin") || normId.includes("ruei_yang")) {
     let pCode = "ff";
     if (p.includes("cu") || p.includes("curve")) pCode = "cu";
     else if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1412,7 +1604,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Wilmer Ríos (LMB - Monclova)
-  if (normId.includes("rios") || normId.includes("bauer")) {
+  if (normId.includes("rios") || normId.includes("wilmer") || normId.includes("bauer")) {
     let pCode = "si";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
@@ -1421,49 +1613,34 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   }
 
   // Kevin Gausman (TOR)
-  if (normId.includes("gausman")) {
+  if (normId.includes("gausman") || normId.includes("kevin_gausman")) {
     let pCode = "ff";
     if (p.includes("fs") || p.includes("split") || p.includes("fork")) pCode = "fs";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
     return `media/video/gausman_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Brandon Pfaadt (ARI)
-  if (normId.includes("pfaadt")) {
-    let pCode = "si";
-    if (p.includes("st") || p.includes("sweep")) pCode = "st";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("ff") || p.includes("fast") || p.includes("four")) pCode = "ff";
-    return `media/video/pfaadt_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Tanner Gordon (COL)
-  if (normId.includes("gordon")) {
-    let pCode = "ff";
-    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("si") || p.includes("sink")) pCode = "si";
-    return `media/video/gordon_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Gabriel Hughes (COL)
-  if (normId.includes("hughes")) {
-    let pCode = "ff";
-    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    return `media/video/hughes_${pCode}${sitSuffix}.mp4`;
-  }
-
   // Gabriel Moreno (Catcher - ARI)
-  if (normId.includes("moreno")) {
+  if (normId.includes("moreno") || normId.includes("gabriel_moreno")) {
     let pCode = "ff";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
     return `media/video/moreno_${pCode}${sitSuffix}.mp4`;
   }
 
-  return defaultFallback || "media/video/roupp_si.mp4";
+  // For any other pitcher, NEVER fall back to another pitcher's clip (e.g. Webb or Roupp).
+  if (defaultFallback && (defaultFallback.includes(normId) || defaultFallback.includes(playerId))) {
+    return defaultFallback;
+  }
+  if (normId) {
+    let pCode = "ff";
+    if (p.includes("sl") || p.includes("st") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    else if (p.includes("cu") || p.includes("curve")) pCode = "cu";
+    else if (p.includes("si") || p.includes("sink")) pCode = "si";
+    return `media/video/${normId}_${pCode}${sitSuffix}.mp4`;
+  }
+  return "";
 }
 
 function formatTipDropdownLabel(t, idx) {
