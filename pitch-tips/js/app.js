@@ -111,6 +111,11 @@ const PLAYER_ALIASES = {
   moreno: "gabriel_moreno",
   gabi: "gabriel_moreno",
 
+  gausman: "kevin_gausman",
+  kevin_gausman: "kevin_gausman",
+  kevingausman: "kevin_gausman",
+  "kevin-gausman": "kevin_gausman",
+
   // Catcher Batteries
   mccann: "james_mccann",
   james_mccann: "james_mccann",
@@ -1683,7 +1688,7 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   return { pitchA, pitchB, tA, tB, videoA, videoB, stillA, stillB };
 }
 
-function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex }) {
+function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex, hasVideo, hasImage }) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -1691,6 +1696,96 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
   const w = canvas.width;
   const h = canvas.height;
   ctx.clearRect(0, 0, w, h);
+
+  // If no underlying video/image, render a clean scouting telemetry backdrop with pitch geometry grid
+  if (!hasVideo && !hasImage) {
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+    bgGrad.addColorStop(0, "#080e18");
+    bgGrad.addColorStop(1, "#0d1624");
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Subtle coordinate grid
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+    ctx.lineWidth = 1;
+    for (let x = 40; x < w; x += 40) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
+      ctx.stroke();
+    }
+    for (let y = 30; y < h; y += 30) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+
+    // Mound & Stride Path Vector Lines
+    ctx.save();
+    ctx.strokeStyle = isPitchA ? "rgba(61, 139, 253, 0.25)" : "rgba(62, 207, 142, 0.25)";
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(w * 0.5, h * 0.72);
+    ctx.lineTo(w * 0.5 + (isPitchA ? -25 : 25), h * 0.35);
+    ctx.stroke();
+    ctx.restore();
+
+    // Landmark Silhouette Wireframe (Head, Shoulders, Arm, Glove)
+    ctx.save();
+    ctx.strokeStyle = isPitchA ? "rgba(61, 139, 253, 0.5)" : "rgba(62, 207, 142, 0.5)";
+    ctx.fillStyle = isPitchA ? "rgba(61, 139, 253, 0.12)" : "rgba(62, 207, 142, 0.12)";
+    ctx.lineWidth = 1.5;
+
+    // Head
+    const headX = w * 0.5;
+    const headY = h * 0.30;
+    ctx.beginPath();
+    ctx.arc(headX, headY, 14, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Torso / Spine
+    ctx.beginPath();
+    ctx.moveTo(headX, headY + 14);
+    ctx.lineTo(headX, headY + 70);
+    ctx.stroke();
+
+    // Shoulders
+    ctx.beginPath();
+    ctx.moveTo(headX - 26, headY + 28);
+    ctx.lineTo(headX + 26, headY + 28);
+    ctx.stroke();
+
+    // Glove Hand Anchor Node
+    const gloveY = isPitchA ? headY + 36 : headY + 52;
+    const gloveX = isPitchA ? headX - 24 : headX - 20;
+    ctx.beginPath();
+    ctx.arc(gloveX, gloveY, 7, 0, Math.PI * 2);
+    ctx.fillStyle = "#ffc450";
+    ctx.fill();
+    ctx.strokeStyle = "#ffc450";
+    ctx.stroke();
+
+    // Glove Label
+    ctx.font = "600 9px 'IBM Plex Mono', monospace";
+    ctx.fillStyle = "#ffc450";
+    ctx.fillText("GLOVE ANCHOR", gloveX - 35, gloveY - 10);
+
+    // Stride Leg Lift
+    ctx.beginPath();
+    ctx.moveTo(headX, headY + 70);
+    ctx.lineTo(headX + (isPitchA ? -20 : 15), headY + 120);
+    ctx.stroke();
+
+    // Telemetry Status Watermark
+    ctx.font = "600 11px 'IBM Plex Mono', monospace";
+    ctx.fillStyle = "rgba(138, 163, 189, 0.65)";
+    ctx.textAlign = "center";
+    ctx.fillText("PREFLIGHT COMPUTER VISION · DELIVERY TELEMETRY", w * 0.5, h * 0.88);
+    ctx.textAlign = "start";
+    ctx.restore();
+  }
 
   // Color scheme
   const primaryColor = isPitchA ? "#3d8bfd" : "#3ecf8e";
