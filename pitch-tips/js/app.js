@@ -1651,6 +1651,77 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/gausman_${pCode}${sitSuffix}.mp4`;
   }
 
+  // Tanner Gordon (COL) - Genuine Statcast Broadcast Video
+  if (normId.includes("gordon") || normId.includes("tanner_gordon")) {
+    let pCode = "ff";
+    if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("si") || p.includes("sink")) pCode = "si";
+    return `media/video/gordon_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Chase Burns (Wake Forest NCAA) - Authentic NCAA Broadcast Video
+  if (normId.includes("burns") || normId.includes("chase_burns")) {
+    let pCode = "ff";
+    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    else if (p.includes("cu") || p.includes("curve")) pCode = "cu";
+    return `media/video/burns_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Roki Sasaki (Chiba Lotte Marines NPB) - Authentic NPB Broadcast Video
+  if (normId.includes("sasaki") || normId.includes("roki_sasaki")) {
+    let pCode = "ff";
+    if (p.includes("fs") || p.includes("split") || p.includes("fork")) pCode = "fs";
+    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    return `media/video/sasaki_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Won-tae Choi (LG Twins KBO) - Authentic KBO Broadcast Video
+  if (normId.includes("choi") || normId.includes("won_tae_choi")) {
+    let pCode = "si";
+    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    else if (p.includes("cu") || p.includes("curve")) pCode = "cu";
+    else if (p.includes("ff") || p.includes("fast") || p.includes("four")) pCode = "ff";
+    return `media/video/choi_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Gu Lin Ruei-Yang (Uni-President Lions CPBL) - Authentic CPBL Broadcast Video
+  if (normId.includes("gu_lin") || normId.includes("gulin") || normId.includes("ruei_yang")) {
+    let pCode = "ff";
+    if (p.includes("cu") || p.includes("curve")) pCode = "cu";
+    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    return `media/video/gulin_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Wilmer Ríos (Acereros de Monclova LMB) - Authentic LMB Broadcast Video
+  if (normId.includes("rios") || normId.includes("wilmer_rios")) {
+    let pCode = "si";
+    if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("cu") || p.includes("curve")) pCode = "cu";
+    else if (p.includes("ff") || p.includes("fast") || p.includes("four")) pCode = "ff";
+    return `media/video/rios_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Gabriel Hughes (Colorado Rockies) - Authentic Broadcast Video
+  if (normId.includes("hughes") || normId.includes("gabriel_hughes")) {
+    let pCode = "ff";
+    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    return `media/video/hughes_${pCode}${sitSuffix}.mp4`;
+  }
+
+  // Gabriel Moreno (ARI Catcher) - Authentic Broadcast Video
+  if (normId.includes("moreno") || normId.includes("gabriel_moreno")) {
+    let pCode = "ch";
+    if (p.includes("ff") || p.includes("fast") || p.includes("four") || p.includes("high")) pCode = "ff";
+    else if (p.includes("sl") || p.includes("cu") || p.includes("break")) pCode = "sl";
+    return `media/video/moreno_${pCode}${sitSuffix}.mp4`;
+  }
+
   // Strictly return empty string for all other pitchers (non-MLB showcase arms & arms without verified video).
   // This guarantees no pitcher ever displays another pitcher's delivery footage or broken video frames.
   if (defaultFallback && (defaultFallback.includes(normId) || defaultFallback.includes(playerId))) {
@@ -1808,64 +1879,8 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
       ctx.stroke();
     }
 
-    // Mound & Stride Path Vector Lines
-    ctx.save();
-    ctx.strokeStyle = isPitchA ? "rgba(61, 139, 253, 0.25)" : "rgba(62, 207, 142, 0.25)";
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    ctx.moveTo(w * 0.5, h * 0.72);
-    ctx.lineTo(w * 0.5 + (isPitchA ? -25 : 25), h * 0.35);
-    ctx.stroke();
-    ctx.restore();
-
-    // Landmark Silhouette Wireframe (Head, Shoulders, Arm, Glove)
-    ctx.save();
-    ctx.strokeStyle = isPitchA ? "rgba(61, 139, 253, 0.5)" : "rgba(62, 207, 142, 0.5)";
-    ctx.fillStyle = isPitchA ? "rgba(61, 139, 253, 0.12)" : "rgba(62, 207, 142, 0.12)";
-    ctx.lineWidth = 1.5;
-
-    // Head
-    const headX = w * 0.5;
-    const headY = h * 0.30;
-    ctx.beginPath();
-    ctx.arc(headX, headY, 14, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // Torso / Spine
-    ctx.beginPath();
-    ctx.moveTo(headX, headY + 14);
-    ctx.lineTo(headX, headY + 70);
-    ctx.stroke();
-
-    // Shoulders
-    ctx.beginPath();
-    ctx.moveTo(headX - 26, headY + 28);
-    ctx.lineTo(headX + 26, headY + 28);
-    ctx.stroke();
-
-    // Glove Hand Anchor Node
-    const gloveY = isPitchA ? headY + 36 : headY + 52;
-    const gloveX = isPitchA ? headX - 24 : headX - 20;
-    ctx.beginPath();
-    ctx.arc(gloveX, gloveY, 7, 0, Math.PI * 2);
-    ctx.fillStyle = "#ffc450";
-    ctx.fill();
-    ctx.strokeStyle = "#ffc450";
-    ctx.stroke();
-
-    // Glove Label
-    ctx.font = "600 9px 'IBM Plex Mono', monospace";
-    ctx.fillStyle = "#ffc450";
-    ctx.fillText("GLOVE ANCHOR", gloveX - 35, gloveY - 10);
-
-    // Stride Leg Lift
-    ctx.beginPath();
-    ctx.moveTo(headX, headY + 70);
-    ctx.lineTo(headX + (isPitchA ? -20 : 15), headY + 120);
-    ctx.stroke();
-
     // Telemetry Status Watermark
+    ctx.save();
     ctx.font = "600 11px 'IBM Plex Mono', monospace";
     ctx.fillStyle = "rgba(138, 163, 189, 0.65)";
     ctx.textAlign = "center";
@@ -2581,8 +2596,8 @@ function wirePlayerPage(data) {
     }
   } else {
     wireDetectionStage(player);
-    wireSituationCoverage(player);
   }
+  wireSituationCoverage(player);
 
   fillSelect(angleSel, data.meta?.angles || [{ id: "CF", label: "Broadcast CF PoC" }], {
     valueKey: "id",
