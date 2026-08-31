@@ -2756,7 +2756,7 @@ function wireLitePlayer(data) {
     if (unlockedSection) unlockedSection.hidden = false;
 
     // Populate telemetry cards
-    const tips = playerTips(player);
+    const tips = ensureFiveTips(player);
     const holdoutEl = document.getElementById("telemetry-holdout");
     const effectEl = document.getElementById("telemetry-effect");
     const sampleEl = document.getElementById("telemetry-sample");

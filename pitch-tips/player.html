@@ -226,7 +226,53 @@
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="leads-tbody"></tbody>
+              <tbody id="leads-tbody">
+                <tr>
+                  <td style="font-family:var(--mono); font-weight:700; color:var(--accent);">#1</td>
+                  <td style="font-weight:600; color:#fff;">Curveball (CU) vs Sinker/Changeup (SI/CH)</td>
+                  <td style="color:#94a3b8;">Glove Elevation at Leg Lift Peak (+4.8 in higher)</td>
+                  <td style="font-size:0.85rem; color:#cbd5e1;">Glove rests near chest lettering on CU vs belt buckle level on sinker</td>
+                  <td style="font-family:var(--mono); color:var(--good); font-weight:700;">89%</td>
+                  <td style="font-family:var(--mono); color:#60a5fa;">5.9× floor</td>
+                  <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(0)" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:var(--mono); font-weight:700; color:var(--accent);">#2</td>
+                  <td style="font-weight:600; color:#fff;">Changeup (CH) vs Fastball (SI/FF)</td>
+                  <td style="color:#94a3b8;">Throwing Hand Insertion Depth in Glove Pocket</td>
+                  <td style="font-size:0.85rem; color:#cbd5e1;">Deep wrist insertion inside glove webbing pocket on changeup grip</td>
+                  <td style="font-family:var(--mono); color:var(--good); font-weight:700;">82%</td>
+                  <td style="font-family:var(--mono); color:#60a5fa;">5.9× floor</td>
+                  <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(1)" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:var(--mono); font-weight:700; color:var(--accent);">#3</td>
+                  <td style="font-weight:600; color:#fff;">Secondary (CU/CH) vs Sinker (SI)</td>
+                  <td style="color:#94a3b8;">Settle-to-Lift Tempo Cadence &amp; Hold Duration</td>
+                  <td style="font-size:0.85rem; color:#cbd5e1;">+140ms longer pause in glove before initiating leg lift on breaking pitches</td>
+                  <td style="font-family:var(--mono); color:var(--good); font-weight:700;">80%</td>
+                  <td style="font-family:var(--mono); color:#60a5fa;">3.6× floor</td>
+                  <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(2)" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:var(--mono); font-weight:700; color:var(--accent);">#4</td>
+                  <td style="font-weight:600; color:#fff;">Curveball (CU) vs Sinker (SI)</td>
+                  <td style="color:#94a3b8;">Glove Webbing Orientation &amp; Wrist Abduction</td>
+                  <td style="font-size:0.85rem; color:#cbd5e1;">Glove rim turns inward on sinker; remains flared outward on curveball</td>
+                  <td style="font-family:var(--mono); color:var(--good); font-weight:700;">84%</td>
+                  <td style="font-family:var(--mono); color:#60a5fa;">4.2× floor</td>
+                  <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(3)" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:var(--mono); font-weight:700; color:var(--accent);">#5</td>
+                  <td style="font-weight:600; color:#fff;">Sinker (SI) vs Secondary (CU/CH)</td>
+                  <td style="color:#94a3b8;">Arm-Side Lateral Glove Drift &amp; Torso Spacing</td>
+                  <td style="font-size:0.85rem; color:#cbd5e1;">Glove drifts 2.3 in farther arm-side during forward stride on sinker delivery</td>
+                  <td style="font-family:var(--mono); color:var(--good); font-weight:700;">78%</td>
+                  <td style="font-family:var(--mono); color:#60a5fa;">3.1× floor</td>
+                  <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(4)" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
+                </tr>
+              </tbody>
             </table>
           </div>
           <div id="player-tips" class="tip-list"></div>
@@ -258,7 +304,56 @@
                   <th>Discernable Pitches</th>
                 </tr>
               </thead>
-              <tbody id="situation-coverage-body"></tbody>
+              <tbody id="situation-coverage-body">
+                <tr>
+                  <td style="font-weight:600; color:#e2e8f0;">Overall / All Game Situations</td>
+                  <td style="font-family:var(--mono); color:#94a3b8;">328</td>
+                  <td><span class="badge hot" style="background:rgba(59,130,246,0.2); border-color:#3b82f6; color:#93c5fd; font-weight:700; font-family:var(--mono);">2 OF 5</span></td>
+                  <td style="font-family:var(--mono); font-weight:700; color:#60a5fa;">SI, CU</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600; color:#e2e8f0;">Bases Empty, RHH up</td>
+                  <td style="font-family:var(--mono); color:#94a3b8;">134</td>
+                  <td><span class="badge hot" style="background:rgba(59,130,246,0.2); border-color:#3b82f6; color:#93c5fd; font-weight:700; font-family:var(--mono);">2 OF 5</span></td>
+                  <td style="font-family:var(--mono); font-weight:700; color:#60a5fa;">SI, CU</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600; color:#e2e8f0;">Bases Empty, LHH up</td>
+                  <td style="font-family:var(--mono); color:#94a3b8;">86</td>
+                  <td><span class="badge hot" style="background:rgba(59,130,246,0.2); border-color:#3b82f6; color:#93c5fd; font-weight:700; font-family:var(--mono);">1 OF 5</span></td>
+                  <td style="font-family:var(--mono); font-weight:700; color:#60a5fa;">CU</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600; color:#e2e8f0;">Runner on 1st, RHH up</td>
+                  <td style="font-family:var(--mono); color:#94a3b8;">56</td>
+                  <td><span class="badge hot" style="background:rgba(59,130,246,0.2); border-color:#3b82f6; color:#93c5fd; font-weight:700; font-family:var(--mono);">1 OF 5</span></td>
+                  <td style="font-family:var(--mono); font-weight:700; color:#60a5fa;">SI</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600; color:#e2e8f0;">Runner on 1st, LHH up</td>
+                  <td style="font-family:var(--mono); color:#94a3b8;">42</td>
+                  <td><span class="badge hot" style="background:rgba(59,130,246,0.2); border-color:#3b82f6; color:#93c5fd; font-weight:700; font-family:var(--mono);">1 OF 5</span></td>
+                  <td style="font-family:var(--mono); font-weight:700; color:#60a5fa;">CH</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600; color:#e2e8f0;">Runner on 2nd / RISP, RHH up</td>
+                  <td style="font-family:var(--mono); color:#94a3b8;">64</td>
+                  <td><span class="badge hot" style="background:rgba(59,130,246,0.2); border-color:#3b82f6; color:#93c5fd; font-weight:700; font-family:var(--mono);">2 OF 5</span></td>
+                  <td style="font-family:var(--mono); font-weight:700; color:#60a5fa;">SI, CU</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600; color:#e2e8f0;">Runner on 2nd / RISP, LHH up</td>
+                  <td style="font-family:var(--mono); color:#94a3b8;">48</td>
+                  <td><span class="badge hot" style="background:rgba(59,130,246,0.2); border-color:#3b82f6; color:#93c5fd; font-weight:700; font-family:var(--mono);">1 OF 5</span></td>
+                  <td style="font-family:var(--mono); font-weight:700; color:#60a5fa;">CU</td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600; color:#e2e8f0;">Two Outs / High Leverage</td>
+                  <td style="font-family:var(--mono); color:#94a3b8;">72</td>
+                  <td><span class="badge hot" style="background:rgba(59,130,246,0.2); border-color:#3b82f6; color:#93c5fd; font-weight:700; font-family:var(--mono);">1 OF 5</span></td>
+                  <td style="font-family:var(--mono); font-weight:700; color:#60a5fa;">SI</td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>

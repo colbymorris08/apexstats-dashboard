@@ -41,6 +41,9 @@ pitch-tips/media/detection/*
 !pitch-tips/media/detection/ari/
 !pitch-tips/media/detection/ari/**
 !pitch-tips/media/detection/*.json
+!pitch-tips/media/detection/*.png
+!pitch-tips/media/deck/
+!pitch-tips/media/deck/**
 !pitch-tips/media/video/
 !pitch-tips/media/video/**
 !pitch-tips/media/videos/
