@@ -169,8 +169,8 @@
       "rule": "Pitcher and Catcher CV Detected Movement Leads (≥75% signal floor).",
       "publishedPlayers": 95,
       "publishedCatchers": 11,
-      "publishedTips": 321,
-      "publishedCatcherTips": 230
+      "publishedTips": 322,
+      "publishedCatcherTips": 233
     },
     "tierRules": {
       "precisionAlwaysShownWithBaseRate": true,
@@ -289,8 +289,8 @@
       "league": "MLB",
       "leagueBadge": "MLB ⚾",
       "division": "NL West",
-      "tipCount": 55,
-      "avgConfidence": 0.829,
+      "tipCount": 56,
+      "avgConfidence": 0.833,
       "playersWithTips": 11,
       "players": [
         "adrian_morejon",
@@ -15589,52 +15589,56 @@
       "throws": "R",
       "role": "SP",
       "picked": true,
-      "pickConfidence": 0.333,
+      "pickConfidence": 0.0,
       "tier": "watch",
-      "pitchesModeled": 11,
-      "holdoutAccuracy": 0.333,
-      "summary": "Savant CF PoC: 11 pitches / 1 games. 7 pitcher leads · 0 catcher setup leads (≥75% detected movement separation floor).",
+      "pitchesModeled": 16,
+      "holdoutAccuracy": 0.0,
+      "summary": "Savant CF PoC: 16 pitches / 2 games. 8 pitcher leads · 3 catcher setup leads (≥75% detected movement separation floor).",
       "contextCoverage": {
         "runner_bucket": {
           "1b": 8,
-          "second_any": 3
+          "second_any": 6,
+          "other": 2
         },
         "batter_tag": {
-          "rhh": 7,
-          "lhh": 4
+          "rhh": 10,
+          "lhh": 6
         },
         "delivery": {
-          "stretch": 11
+          "stretch": 16
         },
         "runner_exact": {
           "1b": 8,
-          "12": 3
+          "12": 3,
+          "23": 2,
+          "13": 2,
+          "loaded": 1
         }
       },
       "tips": [
         {
-          "id": "disc-all-all-FF-pitchcom_tap_rate",
-          "title": "FF discernable [all situations]",
+          "id": "disc-all-lhh-FF-glove_flare_std",
+          "title": "FF discernable [vs lefties]",
           "angle": "CF",
           "context": [
-            "all situations"
+            "vs lefties"
           ],
           "tipKind": "pitcher",
           "stratum": {
             "kind": "situation_pitcher",
-            "value": "all+all+FF"
+            "value": "all+lhh+FF"
           },
-          "lookFor": "On 4-Seam Fastball (FF), PitchCom tap cadence is rapid and brisk vs slow deliberate cadence on rest of arsenal.",
+          "lookFor": "On 4-Seam Fastball (FF), glove pocket flexes and expands during grip dig vs rigid angle on rest of arsenal.",
           "predicts": "FF",
           "confidence": 1.0,
           "precision": 1.0,
-          "feature": "pitchcom_tap_rate",
-          "threshold": 8.552356968826055,
+          "feature": "glove_flare_std",
+          "threshold": 0.02620420135360755,
           "high_means_type": true,
-          "n": 11,
-          "nType": 1,
-          "baseline": 0.125,
-          "lift": 8.0,
+          "n": 6,
+          "nType": 2,
+          "baseline": 0.333,
+          "lift": 3.0,
           "status": "active",
           "validation": "empirical_detection_75",
           "modelScope": "per_pitcher",
@@ -15643,8 +15647,42 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all",
-          "situationLabel": "all situations"
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-all-lhh-CU-pitchcom_tap_rate",
+          "title": "CU discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+CU"
+          },
+          "lookFor": "On Curveball (CU), PitchCom taps are slow and spaced out vs rapid cadence on rest of arsenal.",
+          "predicts": "CU",
+          "confidence": 1.0,
+          "precision": 1.0,
+          "feature": "pitchcom_tap_rate",
+          "threshold": 7.80057629819255,
+          "high_means_type": false,
+          "n": 6,
+          "nType": 2,
+          "baseline": 0.5,
+          "lift": 2.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CU",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
         },
         {
           "id": "disc-all-rhh-FF-wrist_speed_mean",
@@ -15663,12 +15701,12 @@
           "confidence": 1.0,
           "precision": 1.0,
           "feature": "wrist_speed_mean",
-          "threshold": 0.07229614324306184,
+          "threshold": 0.07134789299940032,
           "high_means_type": true,
-          "n": 7,
+          "n": 10,
           "nType": 1,
-          "baseline": 0.143,
-          "lift": 6.99,
+          "baseline": 0.1,
+          "lift": 10.0,
           "status": "active",
           "validation": "empirical_detection_75",
           "modelScope": "per_pitcher",
@@ -15677,6 +15715,74 @@
             "clears_75": true
           },
           "pitchType": "FF",
+          "situationId": "all|rhh",
+          "situationLabel": "vs righties"
+        },
+        {
+          "id": "disc-all-all-FF-pitchcom_tap_rate",
+          "title": "FF discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), PitchCom tap cadence is rapid and brisk vs slow deliberate cadence on rest of arsenal.",
+          "predicts": "FF",
+          "confidence": 0.917,
+          "precision": 0.5,
+          "feature": "pitchcom_tap_rate",
+          "threshold": 8.885847086514092,
+          "high_means_type": true,
+          "n": 16,
+          "nType": 1,
+          "baseline": 0.083,
+          "lift": 11.05,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-rhh-SL-pitchcom_tap_count",
+          "title": "SL discernable [vs righties]",
+          "angle": "CF",
+          "context": [
+            "vs righties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+rhh+SL"
+          },
+          "lookFor": "On Slider (SL), pitcher executes 3+ deliberate PitchCom taps vs 1-2 quick taps on rest of arsenal.",
+          "predicts": "SL",
+          "confidence": 0.875,
+          "precision": 0.75,
+          "feature": "pitchcom_tap_count",
+          "threshold": 4.066666666666666,
+          "high_means_type": true,
+          "n": 10,
+          "nType": 3,
+          "baseline": 0.375,
+          "lift": 2.33,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
           "situationId": "all|rhh",
           "situationLabel": "vs righties"
         },
@@ -15694,15 +15800,15 @@
           },
           "lookFor": "On Curveball (CU), a sharp late glove twitch occurs right as knee lift starts vs smooth continuous delivery on rest of arsenal.",
           "predicts": "CU",
-          "confidence": 0.909,
+          "confidence": 0.875,
           "precision": 0.5,
           "feature": "wrist_speed_p90",
-          "threshold": 0.1755745,
+          "threshold": 0.16005914285714287,
           "high_means_type": true,
-          "n": 11,
-          "nType": 1,
-          "baseline": 0.091,
-          "lift": 9.99,
+          "n": 16,
+          "nType": 2,
+          "baseline": 0.125,
+          "lift": 7.0,
           "status": "active",
           "validation": "empirical_detection_75",
           "modelScope": "per_pitcher",
@@ -15713,6 +15819,40 @@
           "pitchType": "CU",
           "situationId": "all|all",
           "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-lhh-SI-wrist_speed_p90",
+          "title": "SI discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+SI"
+          },
+          "lookFor": "On 2-Seam Sinker (SI), motion into leg lift is completely smooth without late hitch vs sharp late twitch on rest of arsenal.",
+          "predicts": "SI",
+          "confidence": 0.833,
+          "precision": 0.667,
+          "feature": "wrist_speed_p90",
+          "threshold": 0.113275875,
+          "high_means_type": false,
+          "n": 6,
+          "nType": 2,
+          "baseline": 0.333,
+          "lift": 2.5,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
         },
         {
           "id": "disc-all-all-SI-pitchcom_tap_count",
@@ -15728,117 +15868,15 @@
           },
           "lookFor": "On 2-Seam Sinker (SI), pitcher uses only 1 quick PitchCom tap before coming set vs multiple taps on rest of arsenal.",
           "predicts": "SI",
-          "confidence": 0.875,
-          "precision": 1.0,
-          "feature": "pitchcom_tap_count",
-          "threshold": 4.5,
-          "high_means_type": false,
-          "n": 11,
-          "nType": 4,
-          "baseline": 0.5,
-          "lift": 1.75,
-          "status": "active",
-          "validation": "empirical_detection_75",
-          "modelScope": "per_pitcher",
-          "gates": {
-            "tip_floor": 0.75,
-            "clears_75": true
-          },
-          "pitchType": "SI",
-          "situationId": "all|all",
-          "situationLabel": "all situations"
-        },
-        {
-          "id": "disc-all-rhh-SI-pitchcom_mean_isi",
-          "title": "SI discernable [vs righties]",
-          "angle": "CF",
-          "context": [
-            "vs righties"
-          ],
-          "tipKind": "pitcher",
-          "stratum": {
-            "kind": "situation_pitcher",
-            "value": "all+rhh+SI"
-          },
-          "lookFor": "On 2-Seam Sinker (SI), PitchCom taps occur in rapid back-to-back cluster vs wide pauses on rest of arsenal.",
-          "predicts": "SI",
-          "confidence": 0.833,
-          "precision": 1.0,
-          "feature": "pitchcom_mean_isi",
-          "threshold": 5.641666666666667,
-          "high_means_type": false,
-          "n": 7,
-          "nType": 4,
-          "baseline": 0.667,
-          "lift": 1.25,
-          "status": "active",
-          "validation": "empirical_detection_75",
-          "modelScope": "per_pitcher",
-          "gates": {
-            "tip_floor": 0.75,
-            "clears_75": true
-          },
-          "pitchType": "SI",
-          "situationId": "all|rhh",
-          "situationLabel": "vs righties"
-        },
-        {
-          "id": "disc-all-rhh-SL-pitchcom_mean_isi",
-          "title": "SL discernable [vs righties]",
-          "angle": "CF",
-          "context": [
-            "vs righties"
-          ],
-          "tipKind": "pitcher",
-          "stratum": {
-            "kind": "situation_pitcher",
-            "value": "all+rhh+SL"
-          },
-          "lookFor": "On Slider (SL), wide pauses (>1.0s) occur between PitchCom presses vs tightly clustered taps on rest of arsenal.",
-          "predicts": "SL",
-          "confidence": 0.833,
-          "precision": 0.667,
-          "feature": "pitchcom_mean_isi",
-          "threshold": 5.641666666666667,
-          "high_means_type": true,
-          "n": 7,
-          "nType": 2,
-          "baseline": 0.333,
-          "lift": 2.5,
-          "status": "active",
-          "validation": "empirical_detection_75",
-          "modelScope": "per_pitcher",
-          "gates": {
-            "tip_floor": 0.75,
-            "clears_75": true
-          },
-          "pitchType": "SL",
-          "situationId": "all|rhh",
-          "situationLabel": "vs righties"
-        },
-        {
-          "id": "disc-all-all-SL-pitchcom_tap_rate",
-          "title": "SL discernable [all situations]",
-          "angle": "CF",
-          "context": [
-            "all situations"
-          ],
-          "tipKind": "pitcher",
-          "stratum": {
-            "kind": "situation_pitcher",
-            "value": "all+all+SL"
-          },
-          "lookFor": "On Slider (SL), PitchCom tap cadence is rapid and brisk vs slow deliberate cadence on rest of arsenal.",
-          "predicts": "SL",
           "confidence": 0.75,
-          "precision": 0.5,
-          "feature": "pitchcom_tap_rate",
-          "threshold": 7.106917375901538,
-          "high_means_type": true,
-          "n": 11,
-          "nType": 2,
-          "baseline": 0.25,
-          "lift": 3.0,
+          "precision": 0.8,
+          "feature": "pitchcom_tap_count",
+          "threshold": 4.166666666666667,
+          "high_means_type": false,
+          "n": 16,
+          "nType": 6,
+          "baseline": 0.5,
+          "lift": 1.5,
           "status": "active",
           "validation": "empirical_detection_75",
           "modelScope": "per_pitcher",
@@ -15846,35 +15884,35 @@
             "tip_floor": 0.75,
             "clears_75": true
           },
-          "pitchType": "SL",
+          "pitchType": "SI",
           "situationId": "all|all",
           "situationLabel": "all situations"
         }
       ],
       "topLeads": [
         {
-          "id": "disc-all-all-FF-pitchcom_tap_rate",
-          "title": "FF discernable [all situations]",
+          "id": "disc-all-lhh-FF-glove_flare_std",
+          "title": "FF discernable [vs lefties]",
           "angle": "CF",
           "context": [
-            "all situations"
+            "vs lefties"
           ],
           "tipKind": "pitcher",
           "stratum": {
             "kind": "situation_pitcher",
-            "value": "all+all+FF"
+            "value": "all+lhh+FF"
           },
-          "lookFor": "On 4-Seam Fastball (FF), PitchCom tap cadence is rapid and brisk vs slow deliberate cadence on rest of arsenal.",
+          "lookFor": "On 4-Seam Fastball (FF), glove pocket flexes and expands during grip dig vs rigid angle on rest of arsenal.",
           "predicts": "FF",
           "confidence": 1.0,
           "precision": 1.0,
-          "feature": "pitchcom_tap_rate",
-          "threshold": 8.552356968826055,
+          "feature": "glove_flare_std",
+          "threshold": 0.02620420135360755,
           "high_means_type": true,
-          "n": 11,
-          "nType": 1,
-          "baseline": 0.125,
-          "lift": 8.0,
+          "n": 6,
+          "nType": 2,
+          "baseline": 0.333,
+          "lift": 3.0,
           "status": "active",
           "validation": "empirical_detection_75",
           "modelScope": "per_pitcher",
@@ -15883,8 +15921,42 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all",
-          "situationLabel": "all situations"
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-all-lhh-CU-pitchcom_tap_rate",
+          "title": "CU discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+CU"
+          },
+          "lookFor": "On Curveball (CU), PitchCom taps are slow and spaced out vs rapid cadence on rest of arsenal.",
+          "predicts": "CU",
+          "confidence": 1.0,
+          "precision": 1.0,
+          "feature": "pitchcom_tap_rate",
+          "threshold": 7.80057629819255,
+          "high_means_type": false,
+          "n": 6,
+          "nType": 2,
+          "baseline": 0.5,
+          "lift": 2.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CU",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
         },
         {
           "id": "disc-all-rhh-FF-wrist_speed_mean",
@@ -15903,12 +15975,12 @@
           "confidence": 1.0,
           "precision": 1.0,
           "feature": "wrist_speed_mean",
-          "threshold": 0.07229614324306184,
+          "threshold": 0.07134789299940032,
           "high_means_type": true,
-          "n": 7,
+          "n": 10,
           "nType": 1,
-          "baseline": 0.143,
-          "lift": 6.99,
+          "baseline": 0.1,
+          "lift": 10.0,
           "status": "active",
           "validation": "empirical_detection_75",
           "modelScope": "per_pitcher",
@@ -15917,6 +15989,74 @@
             "clears_75": true
           },
           "pitchType": "FF",
+          "situationId": "all|rhh",
+          "situationLabel": "vs righties"
+        },
+        {
+          "id": "disc-all-all-FF-pitchcom_tap_rate",
+          "title": "FF discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), PitchCom tap cadence is rapid and brisk vs slow deliberate cadence on rest of arsenal.",
+          "predicts": "FF",
+          "confidence": 0.917,
+          "precision": 0.5,
+          "feature": "pitchcom_tap_rate",
+          "threshold": 8.885847086514092,
+          "high_means_type": true,
+          "n": 16,
+          "nType": 1,
+          "baseline": 0.083,
+          "lift": 11.05,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-rhh-SL-pitchcom_tap_count",
+          "title": "SL discernable [vs righties]",
+          "angle": "CF",
+          "context": [
+            "vs righties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+rhh+SL"
+          },
+          "lookFor": "On Slider (SL), pitcher executes 3+ deliberate PitchCom taps vs 1-2 quick taps on rest of arsenal.",
+          "predicts": "SL",
+          "confidence": 0.875,
+          "precision": 0.75,
+          "feature": "pitchcom_tap_count",
+          "threshold": 4.066666666666666,
+          "high_means_type": true,
+          "n": 10,
+          "nType": 3,
+          "baseline": 0.375,
+          "lift": 2.33,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
           "situationId": "all|rhh",
           "situationLabel": "vs righties"
         },
@@ -15934,15 +16074,15 @@
           },
           "lookFor": "On Curveball (CU), a sharp late glove twitch occurs right as knee lift starts vs smooth continuous delivery on rest of arsenal.",
           "predicts": "CU",
-          "confidence": 0.909,
+          "confidence": 0.875,
           "precision": 0.5,
           "feature": "wrist_speed_p90",
-          "threshold": 0.1755745,
+          "threshold": 0.16005914285714287,
           "high_means_type": true,
-          "n": 11,
-          "nType": 1,
-          "baseline": 0.091,
-          "lift": 9.99,
+          "n": 16,
+          "nType": 2,
+          "baseline": 0.125,
+          "lift": 7.0,
           "status": "active",
           "validation": "empirical_detection_75",
           "modelScope": "per_pitcher",
@@ -15953,6 +16093,40 @@
           "pitchType": "CU",
           "situationId": "all|all",
           "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-lhh-SI-wrist_speed_p90",
+          "title": "SI discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+SI"
+          },
+          "lookFor": "On 2-Seam Sinker (SI), motion into leg lift is completely smooth without late hitch vs sharp late twitch on rest of arsenal.",
+          "predicts": "SI",
+          "confidence": 0.833,
+          "precision": 0.667,
+          "feature": "wrist_speed_p90",
+          "threshold": 0.113275875,
+          "high_means_type": false,
+          "n": 6,
+          "nType": 2,
+          "baseline": 0.333,
+          "lift": 2.5,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
         },
         {
           "id": "disc-all-all-SI-pitchcom_tap_count",
@@ -15968,117 +16142,15 @@
           },
           "lookFor": "On 2-Seam Sinker (SI), pitcher uses only 1 quick PitchCom tap before coming set vs multiple taps on rest of arsenal.",
           "predicts": "SI",
-          "confidence": 0.875,
-          "precision": 1.0,
-          "feature": "pitchcom_tap_count",
-          "threshold": 4.5,
-          "high_means_type": false,
-          "n": 11,
-          "nType": 4,
-          "baseline": 0.5,
-          "lift": 1.75,
-          "status": "active",
-          "validation": "empirical_detection_75",
-          "modelScope": "per_pitcher",
-          "gates": {
-            "tip_floor": 0.75,
-            "clears_75": true
-          },
-          "pitchType": "SI",
-          "situationId": "all|all",
-          "situationLabel": "all situations"
-        },
-        {
-          "id": "disc-all-rhh-SI-pitchcom_mean_isi",
-          "title": "SI discernable [vs righties]",
-          "angle": "CF",
-          "context": [
-            "vs righties"
-          ],
-          "tipKind": "pitcher",
-          "stratum": {
-            "kind": "situation_pitcher",
-            "value": "all+rhh+SI"
-          },
-          "lookFor": "On 2-Seam Sinker (SI), PitchCom taps occur in rapid back-to-back cluster vs wide pauses on rest of arsenal.",
-          "predicts": "SI",
-          "confidence": 0.833,
-          "precision": 1.0,
-          "feature": "pitchcom_mean_isi",
-          "threshold": 5.641666666666667,
-          "high_means_type": false,
-          "n": 7,
-          "nType": 4,
-          "baseline": 0.667,
-          "lift": 1.25,
-          "status": "active",
-          "validation": "empirical_detection_75",
-          "modelScope": "per_pitcher",
-          "gates": {
-            "tip_floor": 0.75,
-            "clears_75": true
-          },
-          "pitchType": "SI",
-          "situationId": "all|rhh",
-          "situationLabel": "vs righties"
-        },
-        {
-          "id": "disc-all-rhh-SL-pitchcom_mean_isi",
-          "title": "SL discernable [vs righties]",
-          "angle": "CF",
-          "context": [
-            "vs righties"
-          ],
-          "tipKind": "pitcher",
-          "stratum": {
-            "kind": "situation_pitcher",
-            "value": "all+rhh+SL"
-          },
-          "lookFor": "On Slider (SL), wide pauses (>1.0s) occur between PitchCom presses vs tightly clustered taps on rest of arsenal.",
-          "predicts": "SL",
-          "confidence": 0.833,
-          "precision": 0.667,
-          "feature": "pitchcom_mean_isi",
-          "threshold": 5.641666666666667,
-          "high_means_type": true,
-          "n": 7,
-          "nType": 2,
-          "baseline": 0.333,
-          "lift": 2.5,
-          "status": "active",
-          "validation": "empirical_detection_75",
-          "modelScope": "per_pitcher",
-          "gates": {
-            "tip_floor": 0.75,
-            "clears_75": true
-          },
-          "pitchType": "SL",
-          "situationId": "all|rhh",
-          "situationLabel": "vs righties"
-        },
-        {
-          "id": "disc-all-all-SL-pitchcom_tap_rate",
-          "title": "SL discernable [all situations]",
-          "angle": "CF",
-          "context": [
-            "all situations"
-          ],
-          "tipKind": "pitcher",
-          "stratum": {
-            "kind": "situation_pitcher",
-            "value": "all+all+SL"
-          },
-          "lookFor": "On Slider (SL), PitchCom tap cadence is rapid and brisk vs slow deliberate cadence on rest of arsenal.",
-          "predicts": "SL",
           "confidence": 0.75,
-          "precision": 0.5,
-          "feature": "pitchcom_tap_rate",
-          "threshold": 7.106917375901538,
-          "high_means_type": true,
-          "n": 11,
-          "nType": 2,
-          "baseline": 0.25,
-          "lift": 3.0,
+          "precision": 0.8,
+          "feature": "pitchcom_tap_count",
+          "threshold": 4.166666666666667,
+          "high_means_type": false,
+          "n": 16,
+          "nType": 6,
+          "baseline": 0.5,
+          "lift": 1.5,
           "status": "active",
           "validation": "empirical_detection_75",
           "modelScope": "per_pitcher",
@@ -16086,12 +16158,115 @@
             "tip_floor": 0.75,
             "clears_75": true
           },
-          "pitchType": "SL",
+          "pitchType": "SI",
           "situationId": "all|all",
           "situationLabel": "all situations"
         }
       ],
-      "catcherTips": [],
+      "catcherTips": [
+        {
+          "id": "catch-all-all-FF-catcher_glove_y_mean",
+          "title": "FF via Catcher Setup [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+all+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), catcher sets mitt target high at chest level vs low below knees on rest of arsenal.",
+          "predicts": "FF",
+          "confidence": 1.0,
+          "precision": 1.0,
+          "feature": "catcher_glove_y_mean",
+          "threshold": 0.5406598737980769,
+          "high_means_type": true,
+          "n": 16,
+          "nType": 1,
+          "baseline": 0.2,
+          "lift": 5.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "catch-all-all-SL-catcher_glove_x_mean",
+          "title": "SL via Catcher Setup [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+all+SL"
+          },
+          "lookFor": "On Slider (SL), catcher sets target 5+ inches wider to glove-side edge vs centered target on rest of arsenal.",
+          "predicts": "SL",
+          "confidence": 0.8,
+          "precision": 0.667,
+          "feature": "catcher_glove_x_mean",
+          "threshold": 0.511058108974359,
+          "high_means_type": true,
+          "n": 16,
+          "nType": 2,
+          "baseline": 0.4,
+          "lift": 2.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "catch-all-all-CU-catcher_glove_speed_mean",
+          "title": "CU via Catcher Setup [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+all+CU"
+          },
+          "lookFor": "On Curveball (CU), catcher exhibits active pre-set glove movement vs static target on rest of arsenal.",
+          "predicts": "CU",
+          "confidence": 0.75,
+          "precision": 0.5,
+          "feature": "catcher_glove_speed_mean",
+          "threshold": 0.12230177083333335,
+          "high_means_type": true,
+          "n": 16,
+          "nType": 1,
+          "baseline": 0.25,
+          "lift": 3.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CU",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        }
+      ],
       "tipFloor": 0.75,
       "tipsSource": "empirical_detection_75",
       "featureWindow": null,
@@ -16099,14 +16274,14 @@
       "situationCoverage": {
         "arsenal": [
           "SI",
-          "FF",
           "SL",
+          "FF",
           "CU"
         ],
         "arsenal_n": 4,
         "tip_floor": 0.75,
         "validation": null,
-        "n_tips_ge_floor": 7,
+        "n_tips_ge_floor": 8,
         "candidates_train": null,
         "n_failed_holdout": null,
         "best_situation": null,
@@ -16186,7 +16361,7 @@
             "label": "any w/ runner on 2nd, RHH up",
             "runner_bucket": "second_any",
             "batter_tag": "rhh",
-            "n": 3,
+            "n": 6,
             "arsenal_n": 4,
             "types_tested": [],
             "discernable_n": 0,
@@ -16228,14 +16403,14 @@
       "catcherCoverage": {
         "arsenal": [
           "SI",
-          "FF",
           "SL",
+          "FF",
           "CU"
         ],
         "arsenal_n": 4,
         "tip_floor": 0.75,
         "validation": null,
-        "n_tips_ge_floor": 0,
+        "n_tips_ge_floor": 3,
         "candidates_train": null,
         "n_failed_holdout": null,
         "best_situation": null,
@@ -16315,7 +16490,7 @@
             "label": "any w/ runner on 2nd, RHH up",
             "runner_bucket": "second_any",
             "batter_tag": "rhh",
-            "n": 3,
+            "n": 6,
             "arsenal_n": 4,
             "types_tested": [],
             "discernable_n": 0,
@@ -16389,7 +16564,7 @@
           "label": "any w/ runner on 2nd, RHH up",
           "coverage": "0 of 4",
           "discernable_types": [],
-          "n": 3
+          "n": 6
         },
         "3b|lhh": {
           "label": "third only, LHH up",
@@ -16412,8 +16587,8 @@
         "runDir": "runs/david_morgan_poc",
         "sanityGate": "pass",
         "tipSplitBacksTips": true,
-        "backedTips": 7,
-        "backedCatcherTips": 0
+        "backedTips": 8,
+        "backedCatcherTips": 3
       }
     },
     "dennis_santana": {
