@@ -1847,7 +1847,7 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
 }
 
 function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex, hasVideo, hasImage }) {
-  if (!canvas) return;
+  if (!canvas || typeof canvas.getContext !== "function") return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
@@ -1986,7 +1986,7 @@ function wireSynchronizedDeliveryScrubber(player) {
   if (!stage || !player) return;
 
   stage.hidden = false;
-  stage.style.display = "block";
+  if (stage.style) stage.style.display = "block";
 
   const tipDropdown = document.getElementById("sync-tip-dropdown");
   const quickPills = document.getElementById("sync-quick-pills");
@@ -2274,7 +2274,7 @@ function wireSynchronizedDeliveryScrubber(player) {
         const curSrcA = videoA.getAttribute("src") || videoA.src || "";
         if (!curSrcA.endsWith(vA)) {
           videoA.src = vA;
-          videoA.load();
+          try { videoA.load?.(); } catch (e) {}
         }
         videoA.style.display = "block";
         videoA.onerror = () => {
@@ -2315,7 +2315,7 @@ function wireSynchronizedDeliveryScrubber(player) {
         const curSrcB = videoB.getAttribute("src") || videoB.src || "";
         if (!curSrcB.endsWith(vB)) {
           videoB.src = vB;
-          videoB.load();
+          try { videoB.load?.(); } catch (e) {}
         }
         videoB.style.display = "block";
         videoB.onerror = () => {
@@ -2630,13 +2630,17 @@ function wirePlayerPage(data) {
 
     tipRoots.forEach((root) => {
       if (isLiteMode && !isShowcase && player.role !== "C") {
-        root.innerHTML = `
-          <div class="locked-preview-panel" style="background:var(--bg-elev); padding:1.25rem; border-radius:4px; border:1px solid var(--line); text-align:center;">
-            <p style="color:var(--warn); font-weight:600; margin-bottom:0.5rem;">🔒 ${tips.length} Mechanical Indicators Protected</p>
-            <p style="font-size:0.84rem; color:var(--muted); margin-bottom:1rem;">Out-of-sample verified separation, effect sizes (d), and pre-release tracking data are available for enterprise scouts.</p>
-            <button type="button" class="btn" onclick="window.openEnterpriseModal('${player.name.replace(/'/g, "\\'")}')">Request Pilot Access to Unlock ${player.name} →</button>
-          </div>
-        `;
+        if (root.tagName === "TBODY") {
+          root.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:1.25rem; color:var(--muted); font-weight:600;">🔒 Mechanical Indicators Protected (Enterprise Scouting Pilot Required)</td></tr>`;
+        } else {
+          root.innerHTML = `
+            <div class="locked-preview-panel" style="background:var(--bg-elev); padding:1.25rem; border-radius:4px; border:1px solid var(--line); text-align:center;">
+              <p style="color:var(--warn); font-weight:600; margin-bottom:0.5rem;">🔒 ${tips.length} Mechanical Indicators Protected</p>
+              <p style="font-size:0.84rem; color:var(--muted); margin-bottom:1rem;">Out-of-sample verified separation, effect sizes (d), and pre-release tracking data are available for enterprise scouts.</p>
+              <button type="button" class="btn" onclick="window.openEnterpriseModal('${player.name.replace(/'/g, "\\'")}')">Request Pilot Access to Unlock ${player.name} →</button>
+            </div>
+          `;
+        }
       } else if (root.tagName === "TBODY") {
         root.innerHTML = filteredTips.map((t, i) => {
           const rank = t.rank || (i + 1);
@@ -2649,7 +2653,7 @@ function wirePlayerPage(data) {
             <td style="font-size:0.85rem; color:#cbd5e1;">${t.what_to_spot || t.cue || t.lookFor}</td>
             <td style="font-family:var(--mono); color:var(--good); font-weight:700;">${conf}%</td>
             <td style="font-family:var(--mono); color:#60a5fa;">${mult}× floor</td>
-            <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${rank - 1})" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Compare</button></td>
+            <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${rank - 1})" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
           </tr>`;
         }).join("");
       } else {

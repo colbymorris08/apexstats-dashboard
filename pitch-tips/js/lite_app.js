@@ -2103,7 +2103,7 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
 }
 
 function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, isPitchA, tip, isApex, hasVideo, hasImage }) {
-  if (!canvas) return;
+  if (!canvas || typeof canvas.getContext !== "function") return;
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
@@ -2242,7 +2242,7 @@ function wireSynchronizedDeliveryScrubber(player) {
   if (!stage || !player) return;
 
   stage.hidden = false;
-  stage.style.display = "block";
+  if (stage.style) stage.style.display = "block";
 
   const tipDropdown = document.getElementById("sync-tip-dropdown") || document.getElementById("tip-select");
   const quickPills = document.getElementById("sync-quick-pills");
@@ -2474,7 +2474,7 @@ function wireSynchronizedDeliveryScrubber(player) {
         const curSrcA = videoA.getAttribute("src") || videoA.src || "";
         if (!curSrcA.endsWith(vA)) {
           videoA.src = vA;
-          videoA.load();
+          try { videoA.load?.(); } catch (e) {}
         }
         videoA.style.display = "block";
         videoA.onerror = () => {
@@ -2515,7 +2515,7 @@ function wireSynchronizedDeliveryScrubber(player) {
         const curSrcB = videoB.getAttribute("src") || videoB.src || "";
         if (!curSrcB.endsWith(vB)) {
           videoB.src = vB;
-          videoB.load();
+          try { videoB.load?.(); } catch (e) {}
         }
         videoB.style.display = "block";
         videoB.onerror = () => {
@@ -2820,7 +2820,7 @@ function wireLitePlayer(data) {
               <td style="font-size:0.85rem; color:#cbd5e1;">${t.what_to_spot || t.cue || t.lookFor}</td>
               <td style="font-family:var(--mono); color:var(--good); font-weight:700;">${conf}%</td>
               <td style="font-family:var(--mono); color:#60a5fa;">${mult}× floor</td>
-              <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${rank - 1})" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Compare</button></td>
+              <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${rank - 1})" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
             </tr>`;
           }).join("");
         } else {
