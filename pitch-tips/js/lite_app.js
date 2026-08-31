@@ -1751,34 +1751,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   else if (c.includes("windup")) sitSuffix = "_windup";
   else if (c.includes("stretch")) sitSuffix = "_stretch";
 
-  // Gabriel Hughes (COL) - check first before any fallback
-  if (normId.includes("hughes") || normId.includes("gabriel_hughes")) {
-    let pCode = "ff";
-    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    return `media/video/hughes_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Tanner Gordon (COL)
-  if (normId.includes("gordon") || normId.includes("tanner_gordon")) {
-    let pCode = "ff";
-    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("si") || p.includes("sink")) pCode = "si";
-    return `media/video/gordon_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Brandon Pfaadt (ARI)
-  if (normId.includes("pfaadt") || normId.includes("brandon_pfaadt")) {
-    let pCode = "si";
-    if (p.includes("st") || p.includes("sweep")) pCode = "st";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("ff") || p.includes("fast") || p.includes("four")) pCode = "ff";
-    return `media/video/pfaadt_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Landen Roupp (SF)
+  // Landen Roupp (SF) - Verified Genuine Statcast Broadcast Video
   if (normId.includes("roupp") || normId.includes("landen_roupp")) {
     let pCode = "si";
     if (p.includes("cu") || p.includes("curve")) pCode = "cu";
@@ -1788,7 +1761,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/roupp_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Logan Webb (SF)
+  // Logan Webb (SF) - Verified Genuine Statcast Broadcast Video
   if (normId.includes("webb") || normId.includes("logan_webb")) {
     let pCode = "si";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1798,7 +1771,7 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/webb_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Eduardo Rodriguez (ARI)
+  // Eduardo Rodriguez (ARI) - Verified Genuine Statcast Broadcast Video
   if (normId.includes("erod") || normId.includes("eduardo") || normId.includes("eduardo_rodriguez")) {
     let pCode = "ff";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1809,51 +1782,17 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/erod_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Chase Burns (NCAA - Wake Forest)
-  if (normId.includes("burns") || normId.includes("chase_burns")) {
-    let pCode = "ff";
-    if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("cu") || p.includes("cv") || p.includes("curve")) pCode = "cu";
-    return `media/video/burns_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Roki Sasaki (NPB - Chiba Lotte)
-  if (normId.includes("sasaki") || normId.includes("roki_sasaki")) {
-    let pCode = "ff";
-    if (p.includes("fs") || p.includes("split") || p.includes("fork")) pCode = "fs";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    return `media/video/sasaki_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Won-tae Choi (KBO - LG Twins)
-  if (normId.includes("choi") || normId.includes("won_tae_choi")) {
+  // Brandon Pfaadt (ARI) - Genuine Statcast Broadcast Video
+  if (normId.includes("pfaadt") || normId.includes("brandon_pfaadt")) {
     let pCode = "si";
-    if (p.includes("ch") || p.includes("change")) pCode = "ch";
+    if (p.includes("st") || p.includes("sweep")) pCode = "st";
     else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("cu") || p.includes("curve")) pCode = "cu";
+    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
     else if (p.includes("ff") || p.includes("fast") || p.includes("four")) pCode = "ff";
-    return `media/video/choi_${pCode}${sitSuffix}.mp4`;
+    return `media/video/pfaadt_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Gu Lin Ruei-Yang (CPBL - Uni-President)
-  if (normId.includes("gu_lin") || normId.includes("gulin") || normId.includes("gu-lin") || normId.includes("ruei_yang")) {
-    let pCode = "ff";
-    if (p.includes("cu") || p.includes("curve")) pCode = "cu";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    return `media/video/gulin_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Wilmer Ríos (LMB - Monclova)
-  if (normId.includes("rios") || normId.includes("wilmer") || normId.includes("bauer")) {
-    let pCode = "si";
-    if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("fc") || p.includes("cut")) pCode = "fc";
-    return `media/video/rios_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // Kevin Gausman (TOR)
+  // Kevin Gausman (TOR) - Genuine Statcast Broadcast Video
   if (normId.includes("gausman") || normId.includes("kevin_gausman")) {
     let pCode = "ff";
     if (p.includes("fs") || p.includes("split") || p.includes("fork")) pCode = "fs";
@@ -1861,26 +1800,10 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/gausman_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Gabriel Moreno (Catcher - ARI)
-  if (normId.includes("moreno") || normId.includes("gabriel_moreno")) {
-    let pCode = "ff";
-    if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("kc") || p.includes("curve")) pCode = "kc";
-    return `media/video/moreno_${pCode}${sitSuffix}.mp4`;
-  }
-
-  // For any other pitcher, NEVER fall back to another pitcher's clip (e.g. Webb or Roupp).
+  // Strictly return empty string for all other pitchers (non-MLB showcase arms & arms without verified video).
+  // This guarantees no pitcher ever displays another pitcher's delivery footage or broken video frames.
   if (defaultFallback && (defaultFallback.includes(normId) || defaultFallback.includes(playerId))) {
     return defaultFallback;
-  }
-  if (normId) {
-    let pCode = "ff";
-    if (p.includes("sl") || p.includes("st") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("cu") || p.includes("curve")) pCode = "cu";
-    else if (p.includes("si") || p.includes("sink")) pCode = "si";
-    return `media/video/${normId}_${pCode}${sitSuffix}.mp4`;
   }
   return "";
 }

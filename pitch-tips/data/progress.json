@@ -10,9 +10,9 @@
   "eta_hours": 500.2,
   "est_total_pitches": 180090,
   "current": {
-    "name": "David Morgan",
-    "team": "SD",
-    "message": "pitcher [13/13] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Parker Messick",
+    "team": "OTH",
+    "message": "pitcher [12/640] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -977,11 +977,11 @@
     "688158": {
       "name": "David Morgan",
       "team": "SD",
-      "n_tracked": 11,
-      "holdout": 0.333,
-      "tips_ge_75": 7,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 7,
+      "n_tracked": 16,
+      "holdout": 0.0,
+      "tips_ge_75": 8,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 8,
       "publishable": false,
       "failed_checks": [
         "holdout",
@@ -989,9 +989,9 @@
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/david_morgan_poc",
       "schema": "rich_72col",
-      "n_current_tracks": 16,
-      "ready": true,
-      "state": "complete"
+      "n_current_tracks": 21,
+      "ready": false,
+      "state": "tracking"
     },
     "656529": {
       "name": "Sam Hentges",
@@ -2789,8 +2789,8 @@
     "SD": {
       "queued": 13,
       "done": 13,
-      "pitcher_tips": 40,
-      "catcher_tips": 30
+      "pitcher_tips": 41,
+      "catcher_tips": 33
     },
     "SF": {
       "queued": 10,
@@ -2813,12 +2813,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 224,
-    "catcher_tips": 168
+    "pitcher_tips": 225,
+    "catcher_tips": 171
   },
-  "updated_at": "2026-08-31T14:59:04",
+  "updated_at": "2026-08-31T16:31:31",
   "live": {
-    "pitches_done": 11,
+    "pitches_done": 10,
     "pitches_target": null
   },
   "heartbeat": true
