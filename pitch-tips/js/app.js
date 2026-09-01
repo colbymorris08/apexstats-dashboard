@@ -1561,7 +1561,7 @@ function formatSec(s) {
 // Verified non-MLB showcase clips — ONLY these paths may load for international/college arms.
 // Situational suffixes are intentionally ignored; base verified files are always used.
 // Maps cover every pitch code tips can resolve to so SI/FC/CU never collapse both panes.
-const VIDEO_CACHE_BUST = "20260901lock";
+const VIDEO_CACHE_BUST = "20260901p10";
 const VERIFIED_NON_MLB_VIDEOS = {
   chase_burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4", si: "media/video/burns_ff.mp4", fc: "media/video/burns_sl.mp4", fs: "media/video/burns_ch.mp4" },
   burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4", si: "media/video/burns_ff.mp4", fc: "media/video/burns_sl.mp4", fs: "media/video/burns_ch.mp4" },
@@ -1653,6 +1653,10 @@ function resolveVerifiedNonMlbVideo(normId, pitchType) {
   return verified[pCode] || verified.ff || verified.ch || verified.si || Object.values(verified)[0] || "";
 }
 
+function videoPathBase(src) {
+  return String(src || "").split("?")[0];
+}
+
 function ensureDistinctShowcaseVideos(playerId, videoA, videoB) {
   const playerKey = normalizePlayerKey(playerId);
   const clips = SHOWCASE_UNIQUE_CLIPS[playerKey] || [];
@@ -1661,11 +1665,11 @@ function ensureDistinctShowcaseVideos(playerId, videoA, videoB) {
   if (clips.length) {
     if (!vA) vA = clips[0];
     if (!vB) vB = clips[1] || clips[0];
-    if (vA === vB && clips.length >= 2) {
-      vB = clips.find((c) => c !== vA) || vB;
+    if (videoPathBase(vA) === videoPathBase(vB) && clips.length >= 2) {
+      vB = clips.find((c) => videoPathBase(c) !== videoPathBase(vA)) || vB;
     }
   }
-  if (vA && vB && vA === vB) {
+  if (vA && vB && videoPathBase(vA) === videoPathBase(vB)) {
     console.error(`[Preflight Video] could not distinct-pair for ${playerId}: ${vA}`);
   }
   return { videoA: vA, videoB: vB };
@@ -1691,55 +1695,38 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   else if (c.includes("stretch")) sitSuffix = "_stretch";
 
   if (normId.includes("roupp") || normId.includes("landen_roupp")) {
-    let pCode = "si";
-    if (p.includes("cu") || p.includes("curve")) pCode = "cu";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ff") || p.includes("four") || p.includes("fast")) pCode = "ff";
-    return `media/video/roupp_${pCode}${sitSuffix}.mp4`;
+    const pCode = extractPitchCode(pitchType, "roupp");
+    const mapped = pCode === "fc" ? "sl" : (pCode === "fs" ? "si" : pCode);
+    return `media/video/roupp_${mapped}${sitSuffix}.mp4`;
   }
 
   if (normId.includes("webb") || normId.includes("logan_webb")) {
-    let pCode = "si";
-    if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("sl") || p.includes("st") || p.includes("sweep") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("fc") || p.includes("cut")) pCode = "fc";
-    else if (p.includes("ff") || p.includes("four") || p.includes("fast")) pCode = "ff";
-    return `media/video/webb_${pCode}${sitSuffix}.mp4`;
+    const pCode = extractPitchCode(pitchType, "webb");
+    const mapped = pCode === "cu" ? "sl" : (pCode === "fs" ? "si" : pCode);
+    return `media/video/webb_${mapped}${sitSuffix}.mp4`;
   }
 
   if (normId.includes("erod") || normId.includes("eduardo") || normId.includes("eduardo_rodriguez")) {
-    let pCode = "ff";
-    if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("fc") || p.includes("cut")) pCode = "fc";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("si") || p.includes("sink")) pCode = "si";
-    else if (p.includes("cu") || p.includes("curve")) pCode = "cu";
+    const pCode = extractPitchCode(pitchType, "erod");
     return `media/video/erod_${pCode}${sitSuffix}.mp4`;
   }
 
   if (normId.includes("pfaadt") || normId.includes("brandon_pfaadt")) {
-    let pCode = "si";
-    if (p.includes("st") || p.includes("sweep")) pCode = "st";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("ff") || p.includes("fast") || p.includes("four")) pCode = "ff";
-    return `media/video/pfaadt_${pCode}${sitSuffix}.mp4`;
+    const pCode = extractPitchCode(pitchType, "pfaadt");
+    const mapped = pCode === "fs" ? "st" : pCode;
+    return `media/video/pfaadt_${mapped}${sitSuffix}.mp4`;
   }
 
   if (normId.includes("gausman") || normId.includes("kevin_gausman")) {
-    let pCode = "ff";
-    if (p.includes("fs") || p.includes("split") || p.includes("fork")) pCode = "fs";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    return `media/video/gausman_${pCode}${sitSuffix}.mp4`;
+    const pCode = extractPitchCode(pitchType, "gausman");
+    const mapped = ["ff", "fs", "sl"].includes(pCode) ? pCode : "ff";
+    return `media/video/gausman_${mapped}${sitSuffix}.mp4`;
   }
 
   if (normId.includes("gordon") || normId.includes("tanner_gordon")) {
-    let pCode = "ff";
-    if (p.includes("ch") || p.includes("change")) pCode = "ch";
-    else if (p.includes("sl") || p.includes("slide")) pCode = "sl";
-    else if (p.includes("si") || p.includes("sink")) pCode = "si";
-    return `media/video/gordon_${pCode}${sitSuffix}.mp4`;
+    const pCode = extractPitchCode(pitchType, "gordon");
+    const mapped = ["ff", "ch", "sl", "si"].includes(pCode) ? pCode : "ff";
+    return `media/video/gordon_${mapped}${sitSuffix}.mp4`;
   }
 
   if (defaultFallback && (defaultFallback.includes(normId) || defaultFallback.includes(playerId))) {
@@ -1873,7 +1860,7 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
     pitchA = tip.pitch_a_label;
     pitchB = tip.pitch_b_label;
   } else if (tip?.contrast_label) {
-    const parts = tip.contrast_label.split(/ vs\.? | \/ | vs /i);
+    const parts = tip.contrast_label.split(/ vs\.? | vs /i);
     if (parts.length >= 2) {
       pitchA = parts[0].trim();
       pitchB = parts.slice(1).join(" / ").trim();
@@ -1882,7 +1869,7 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
       pitchB = "Arsenal Baseline";
     }
   } else if (tip?.contrast) {
-    const parts = tip.contrast.split(/ vs\.? | \/ | vs /i);
+    const parts = tip.contrast.split(/ vs\.? | vs /i);
     if (parts.length >= 2) {
       pitchA = parts[0].trim();
       pitchB = parts.slice(1).join(" / ").trim();
@@ -1941,13 +1928,15 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   }
 
   if (isMoreno) {
-    if (!(tip?.anchor_a != null && tip?.anchor_b != null) && !(tip?.tA != null && tip?.tB != null)) {
-      tA = Math.min(Math.max(tA || 0.75, 0.55), 0.85);
-      tB = tA;
-    } else {
-      tA = Math.min(tA, 1.0);
-      tB = Math.min(tB, 1.0);
-    }
+    // Catcher tell is pre-pitch mitt target, not pitcher high-lift (~2.4s).
+    tA = Math.min(Math.max(tA || 1.0, 0.95), 1.20);
+    tB = tA;
+  }
+
+  if (/roupp/i.test(pid)) {
+    // Metadata second-mark 0:02.1 is still set; peak lift in the CF clip is ~3.4s.
+    if (tA < 3.15) tA = 3.40;
+    if (tB < 3.15) tB = 3.40;
   }
 
   const vComp = player?.videoCompare || {};
