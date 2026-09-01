@@ -1499,7 +1499,7 @@ function wireSituationCoverage(player) {
   const note = document.getElementById("situation-coverage-note") || document.getElementById("situation-breakdown-note");
   const el = document.getElementById("situation-coverage");
 
-  if (!player) return;
+  if (!player || !bodies.length) return;
 
   const rawSit = player.situationCoverage;
   let situations = [];
@@ -1527,7 +1527,8 @@ function wireSituationCoverage(player) {
 
   if (panel) panel.hidden = false;
   if (note) {
-    const arsenal = (rawSit?.arsenal || (player.role === "C" ? ["FF", "CH", "SL", "SI"] : ["FF", "SL", "CH", "SI", "CU"])).join(", ");
+    const arsenalRaw = rawSit?.arsenal || (player.role === "C" ? ["FF", "CH", "SL", "SI"] : ["FF", "SL", "CH", "SI", "CU"]);
+    const arsenal = Array.isArray(arsenalRaw) ? arsenalRaw.join(", ") : String(arsenalRaw || "");
     note.textContent = `Pitch arsenal: ${arsenal}. Computer vision isolates physical mechanical variance across pre-release delivery windows.`;
   }
 
@@ -1558,9 +1559,10 @@ function wireSituationCoverage(player) {
   const tableRowsHtml = situations
     .map((s) => {
       const types = (s.discernable_types || []).join(", ") || "—";
-      const hasSignal = (s.discernable_n > 0 || (s.coverage && !s.coverage.startsWith("0 of")));
+      const coverageRaw = s.coverage ?? (s.discernable_n != null && s.arsenal_n != null ? `${s.discernable_n} of ${s.arsenal_n}` : "Tracked");
+      const coverageText = String(coverageRaw);
+      const hasSignal = (s.discernable_n > 0 || (coverageText && !coverageText.startsWith("0 of")));
       const badge = hasSignal ? "hot" : "";
-      const coverageText = s.coverage || (s.discernable_n != null && s.arsenal_n != null ? `${s.discernable_n} of ${s.arsenal_n}` : "Tracked");
       return `<tr>
         <td style="font-weight:600; color:#e2e8f0;">${s.label || s.situation || "All Situations"}</td>
         <td style="font-family:var(--mono); color:#94a3b8;">${s.n ?? s.pitches ?? "—"}</td>
@@ -1848,7 +1850,7 @@ function ensureFiveTips(player) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260901p14";
+const VIDEO_CACHE_BUST = "20260901p15";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -2251,8 +2253,8 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   }
 
   if (isMoreno) {
-    // Catcher tell is pre-pitch mitt target, not pitcher high-lift (~2.4s).
-    tA = Math.min(Math.max(tA || 1.0, 0.95), 1.20);
+    // Catcher pre-pitch mitt target (~0.5–0.8s); not pitcher leg-lift apex (~2.4s).
+    tA = Math.min(Math.max(tA || 0.65, 0.45), 0.85);
     tB = tA;
   }
 
@@ -2442,6 +2444,10 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
   ctx.restore();
 }
 
+function compareScrubWindowSpan(playerId) {
+  return /moreno/i.test(playerId || "") ? 4.0 : 1.5;
+}
+
 function wireSynchronizedDeliveryScrubber(player) {
   const stage = document.getElementById("unlocked-detection-stage") || document.getElementById("detection-stage") || document.querySelector(".detection-stage");
   if (!stage || !player) return;
@@ -2559,7 +2565,7 @@ function wireSynchronizedDeliveryScrubber(player) {
 
   function progressToTime(progressPct, tAnchor) {
     const p = Math.max(0, Math.min(100, Number(progressPct) || 0));
-    const windowSpan = 1.50;
+    const windowSpan = compareScrubWindowSpan(player?.id);
     const delta = ((p - 50) / 50) * windowSpan;
     return Math.round(Math.max(0, tAnchor + delta) * 1000) / 1000;
   }
@@ -2732,10 +2738,12 @@ function wireSynchronizedDeliveryScrubber(player) {
       apexTag.textContent = `★ KEY FRAME (${formatSec(tA)} | ${formatSec(tB)})`;
     }
     if (lblStart) {
-      lblStart.textContent = `Set Initiation (${formatSec(Math.max(0, tA - 1.5))})`;
+      const span = compareScrubWindowSpan(player?.id);
+      lblStart.textContent = `Set Initiation (${formatSec(Math.max(0, tA - span))})`;
     }
     if (lblEnd) {
-      lblEnd.textContent = `Ball Release (${formatSec(tA + 1.5)})`;
+      const span = compareScrubWindowSpan(player?.id);
+      lblEnd.textContent = `Ball Release (${formatSec(tA + span)})`;
     }
 
     // Setup Video and Still Elements with Graceful Error Handling
@@ -3074,6 +3082,57 @@ function wireDetectionStage(player) {
   mountNonMlbPlaceholderBanner(player?.id);
 }
 
+function hydrateRankedLeadsTable(player, data, { locked = false } = {}) {
+  const angleMap = Object.fromEntries((data.meta?.angles || []).map((a) => [a.id, a.label]));
+  const angle = document.getElementById("angle-select")?.value || "";
+  const context = document.getElementById("context-select")?.value || "";
+  const filtered = locked ? [] : rankedTipsForPlayer(player, { angle, context });
+
+  const tipRoots = [
+    document.getElementById("player-tips"),
+    document.getElementById("tips-container"),
+    document.getElementById("leads-tbody"),
+    document.querySelector(".ranked-leads-wrap")
+  ].filter(Boolean);
+
+  tipRoots.forEach((root) => {
+    if (locked) {
+      if (root.tagName === "TBODY") {
+        root.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:1.25rem; color:var(--muted); font-weight:600;">🔒 Mechanical Indicators Protected (Enterprise Scouting Pilot Required)</td></tr>`;
+      } else {
+        root.innerHTML = `<p class="note">Mechanical indicators for this arm require an enterprise scouting pilot.</p>`;
+      }
+      return;
+    }
+    if (root.tagName === "TBODY") {
+      root.innerHTML = filtered.map((t, i) => {
+        const rank = t.rank || (i + 1);
+        const conf = Math.round((t.confidence || 0.85) * 100);
+        const mult = t.separation_floor_multiples || 4.8;
+        return `<tr>
+          <td style="font-family:var(--mono); font-weight:700; color:var(--accent);">#${rank}</td>
+          <td style="font-weight:600; color:#fff;">${t.contrast_label || t.contrast || t.title}</td>
+          <td style="color:#94a3b8;">${t.target_body_part || "Glove Set & Delivery"}</td>
+          <td style="font-size:0.85rem; color:#cbd5e1;">${t.what_to_spot || t.cue || t.lookFor}</td>
+          <td style="font-family:var(--mono); color:var(--good); font-weight:700;">${conf}%</td>
+          <td style="font-family:var(--mono); color:#60a5fa;">${mult}× floor</td>
+          <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${i})" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
+        </tr>`;
+      }).join("");
+    } else {
+      root.innerHTML =
+        filtered.map((t, i) => renderTip(t, angleMap, i + 1)).join("") ||
+        "<p class='note'>No mechanical cues recorded for this arm.</p>";
+    }
+  });
+
+  if (!locked && typeof window.setRankedCompareTips === "function") {
+    window.setRankedCompareTips(filtered, 0);
+  } else if (!locked && typeof window.applyCurrentTipSelection === "function") {
+    window.applyCurrentTipSelection();
+  }
+}
+
 function wireLitePlayer(data) {
   const id = getPlayerIdFromUrl() || "eduardo_rodriguez";
   const player = resolvePlayer(data, id);
@@ -3106,6 +3165,25 @@ function wireLitePlayer(data) {
     if (lockSection) lockSection.hidden = true;
     if (unlockedSection) unlockedSection.hidden = false;
 
+    fillSelect(document.getElementById("angle-select"), data.meta?.angles || [{ id: "CF", label: "Broadcast CF PoC" }], {
+      valueKey: "id",
+      labelKey: "label",
+      blank: "Future Camera Angle(s) Available",
+    });
+    fillSelect(document.getElementById("context-select"), data.meta?.contexts || [{ id: "stretch", label: "Delivery: Stretch" }], {
+      valueKey: "id",
+      labelKey: "label",
+      blank: "All Game Filters",
+    });
+
+    function paintTips() {
+      hydrateRankedLeadsTable(player, data, { locked: false });
+    }
+
+    window.paintTips = paintTips;
+    window.paint = paintTips;
+    paintTips();
+
     // Populate telemetry cards
     const tips = ensureFiveTips(player);
     const holdoutEl = document.getElementById("telemetry-holdout");
@@ -3125,7 +3203,12 @@ function wireLitePlayer(data) {
       sampleEl.textContent = `${n} Pitches`;
     }
 
-    wireDetectionStage(player);
+    try {
+      wireDetectionStage(player);
+    } catch (e) {
+      console.error("[Preflight] wireDetectionStage skipped:", e);
+    }
+
     try {
       wireSituationCoverage(player);
     } catch (e) {
@@ -3134,76 +3217,22 @@ function wireLitePlayer(data) {
 
     const catcherPanel = document.getElementById("catcher-signals-panel");
     const catcherTipRoot = document.getElementById("player-catcher-tips");
-    if (player.catcherTips && player.catcherTips.length > 0) {
-      if (catcherPanel) catcherPanel.hidden = false;
-      if (catcherTipRoot) {
-        catcherTipRoot.innerHTML = player.catcherTips.map((t) => renderTip(t, {})).join("");
+    try {
+      if (player.catcherTips && player.catcherTips.length > 0) {
+        if (catcherPanel) catcherPanel.hidden = false;
+        if (catcherTipRoot) {
+          catcherTipRoot.innerHTML = player.catcherTips.map((t) => renderTip(t, {})).join("");
+        }
+      } else if (catcherPanel) {
+        catcherPanel.hidden = true;
       }
-    } else {
+    } catch (e) {
+      console.error("[Preflight] catcher panel skipped:", e);
       if (catcherPanel) catcherPanel.hidden = true;
     }
 
-    const angleMap = Object.fromEntries((data.meta?.angles || []).map((a) => [a.id, a.label]));
-    const tipRoot = document.getElementById("player-tips");
-
-    function paintTips() {
-      const angle = document.getElementById("angle-select")?.value || "";
-      const context = document.getElementById("context-select")?.value || "";
-      const filtered = rankedTipsForPlayer(player, { angle, context });
-      
-      const tipRoots = [
-        document.getElementById("player-tips"),
-        document.getElementById("tips-container"),
-        document.getElementById("leads-tbody"),
-        document.querySelector(".ranked-leads-wrap")
-      ].filter(Boolean);
-
-      tipRoots.forEach((root) => {
-        if (root.tagName === "TBODY") {
-          root.innerHTML = filtered.map((t, i) => {
-            const rank = t.rank || (i + 1);
-            const conf = Math.round((t.confidence || 0.85) * 100);
-            const mult = t.separation_floor_multiples || 4.8;
-            return `<tr>
-              <td style="font-family:var(--mono); font-weight:700; color:var(--accent);">#${rank}</td>
-              <td style="font-weight:600; color:#fff;">${t.contrast_label || t.contrast || t.title}</td>
-              <td style="color:#94a3b8;">${t.target_body_part || "Glove Set & Delivery"}</td>
-              <td style="font-size:0.85rem; color:#cbd5e1;">${t.what_to_spot || t.cue || t.lookFor}</td>
-              <td style="font-family:var(--mono); color:var(--good); font-weight:700;">${conf}%</td>
-              <td style="font-family:var(--mono); color:#60a5fa;">${mult}× floor</td>
-              <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${i})" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
-            </tr>`;
-          }).join("");
-        } else {
-          root.innerHTML =
-            filtered.map((t, i) => renderTip(t, angleMap, i + 1)).join("") || "<p class='note'>No mechanical cues recorded for this arm.</p>";
-        }
-      });
-
-      if (typeof window.setRankedCompareTips === "function") {
-        window.setRankedCompareTips(filtered, 0);
-      } else if (typeof window.applyCurrentTipSelection === "function") {
-        window.applyCurrentTipSelection();
-      }
-    }
-
-    window.paintTips = paintTips;
-    window.paint = paintTips;
-
-    fillSelect(document.getElementById("angle-select"), data.meta?.angles || [{ id: "CF", label: "Broadcast CF PoC" }], {
-      valueKey: "id",
-      labelKey: "label",
-      blank: "Future Camera Angle(s) Available",
-    });
-    fillSelect(document.getElementById("context-select"), data.meta?.contexts || [{ id: "stretch", label: "Delivery: Stretch" }], {
-      valueKey: "id",
-      labelKey: "label",
-      blank: "All Game Filters",
-    });
-
     document.getElementById("angle-select")?.addEventListener("change", paintTips);
     document.getElementById("context-select")?.addEventListener("change", paintTips);
-    paintTips();
   } else {
     if (lockSection) lockSection.hidden = false;
     if (unlockedSection) unlockedSection.hidden = true;
@@ -3219,10 +3248,13 @@ function wireLitePlayer(data) {
       requestPilotBtn.dataset.arm = `${player.name} (${team?.abbr || "MLB"})`;
     }
 
-    wireSituationCoverage(player);
+    hydrateRankedLeadsTable(player, data, { locked: true });
+    try {
+      wireSituationCoverage(player);
+    } catch (e) {
+      console.error("[Preflight] wireSituationCoverage skipped:", e);
+    }
   }
-
-  wirePilotModal();
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

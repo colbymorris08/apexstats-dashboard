@@ -1560,7 +1560,7 @@ function formatSec(s) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260901p14";
+const VIDEO_CACHE_BUST = "20260901p15";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -2108,8 +2108,8 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   }
 
   if (isMoreno) {
-    // Catcher tell is pre-pitch mitt target, not pitcher high-lift (~2.4s).
-    tA = Math.min(Math.max(tA || 1.0, 0.95), 1.20);
+    // Catcher pre-pitch mitt target (~0.5–0.8s); not pitcher leg-lift apex (~2.4s).
+    tA = Math.min(Math.max(tA || 0.65, 0.45), 0.85);
     tB = tA;
   }
 
@@ -2299,6 +2299,10 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
   ctx.restore();
 }
 
+function compareScrubWindowSpan(playerId) {
+  return /moreno/i.test(playerId || "") ? 4.0 : 1.5;
+}
+
 function wireSynchronizedDeliveryScrubber(player) {
   const stage = document.getElementById("detection-stage") || document.getElementById("unlocked-detection-stage") || document.querySelector(".detection-stage");
   if (!stage || !player) return;
@@ -2419,7 +2423,7 @@ function wireSynchronizedDeliveryScrubber(player) {
 
   function progressToTime(progressPct, tAnchor) {
     const p = Math.max(0, Math.min(100, Number(progressPct) || 0));
-    const windowSpan = 1.50;
+    const windowSpan = compareScrubWindowSpan(player?.id);
     const delta = ((p - 50) / 50) * windowSpan;
     return Math.round(Math.max(0, tAnchor + delta) * 1000) / 1000;
   }
@@ -2592,10 +2596,12 @@ function wireSynchronizedDeliveryScrubber(player) {
       apexTag.textContent = `★ KEY FRAME (${formatSec(tA)} | ${formatSec(tB)})`;
     }
     if (lblStart) {
-      lblStart.textContent = `Set Initiation (${formatSec(Math.max(0, tA - 1.5))})`;
+      const span = compareScrubWindowSpan(player?.id);
+      lblStart.textContent = `Set Initiation (${formatSec(Math.max(0, tA - span))})`;
     }
     if (lblEnd) {
-      lblEnd.textContent = `Ball Release (${formatSec(tA + 1.5)})`;
+      const span = compareScrubWindowSpan(player?.id);
+      lblEnd.textContent = `Ball Release (${formatSec(tA + span)})`;
     }
 
     // Setup Video and Still Elements with reliable source switching and error handlers
