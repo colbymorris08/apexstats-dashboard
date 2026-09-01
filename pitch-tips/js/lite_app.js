@@ -2354,13 +2354,38 @@ function wireSynchronizedDeliveryScrubber(player) {
   const canvasA = document.getElementById("sync-canvas-a");
   const canvasB = document.getElementById("sync-canvas-b");
 
-  const scrubSlider = document.getElementById("sync-scrub-slider");
-  const sliderProgress = document.getElementById("sync-slider-progress");
+  // Prefer dual pane sliders (player.html); fall back to legacy single slider.
+  const scrubSliderA = document.getElementById("sync-scrub-slider-a");
+  const scrubSliderB = document.getElementById("sync-scrub-slider-b");
+  const scrubSlider = scrubSliderA || scrubSliderB || document.getElementById("sync-scrub-slider");
+  const sliderProgressA = document.getElementById("sync-slider-progress-a");
+  const sliderProgressB = document.getElementById("sync-slider-progress-b");
+  const sliderProgress = sliderProgressA || document.getElementById("sync-slider-progress");
+  const apexLabelA = document.getElementById("sync-apex-label-a");
+  const apexLabelB = document.getElementById("sync-apex-label-b");
+  const snapApexA = document.getElementById("sync-snap-apex-a");
+  const snapApexB = document.getElementById("sync-snap-apex-b");
   const apexMarker = document.getElementById("sync-apex-marker");
   const apexTag = document.getElementById("sync-apex-tag");
   const lblStart = document.getElementById("sync-lbl-start");
   const lblApex = document.getElementById("sync-lbl-apex");
   const lblEnd = document.getElementById("sync-lbl-end");
+
+  function getScrubPct() {
+    return parseFloat(scrubSliderA?.value ?? scrubSliderB?.value ?? scrubSlider?.value ?? 50);
+  }
+
+  function setScrubPct(pct, sourceEl = null) {
+    const v = String(Math.max(0, Math.min(100, Number(pct) || 0)));
+    if (scrubSliderA && scrubSliderA !== sourceEl) scrubSliderA.value = v;
+    if (scrubSliderB && scrubSliderB !== sourceEl) scrubSliderB.value = v;
+    if (scrubSlider && scrubSlider !== scrubSliderA && scrubSlider !== scrubSliderB && scrubSlider !== sourceEl) {
+      scrubSlider.value = v;
+    }
+    if (sliderProgressA) sliderProgressA.style.width = `${v}%`;
+    if (sliderProgressB) sliderProgressB.style.width = `${v}%`;
+    if (sliderProgress && sliderProgress !== sliderProgressA) sliderProgress.style.width = `${v}%`;
+  }
 
   const telemA = document.getElementById("sync-telem-a");
   const telemB = document.getElementById("sync-telem-b");
@@ -2440,15 +2465,13 @@ function wireSynchronizedDeliveryScrubber(player) {
   function syncMediaAndHUD() {
     const tip = availableTips[currentTipIdx] || availableTips[0];
     const { pitchA, pitchB, tA, tB } = parseTipTimingsAndLabels(tip, player);
-    const p = parseFloat(scrubSlider?.value ?? 50);
+    const p = getScrubPct();
 
     const { curA, curB, isApex } = getTimes(p, tA, tB);
     const deltaT = (tA - tB).toFixed(2);
 
-    // Update Slider Progress Fill
-    if (sliderProgress) {
-      sliderProgress.style.width = `${p}%`;
-    }
+    // Keep dual (or single) slider fills locked together
+    setScrubPct(p);
 
     // Update Time Badges
     if (timeA) timeA.textContent = `${formatSec(curA)}s`;
@@ -2673,8 +2696,10 @@ function wireSynchronizedDeliveryScrubber(player) {
       }
     }
 
-    // Reset slider to 50% (Apex Key Frame)
-    if (scrubSlider) scrubSlider.value = "50";
+    // Reset locked scrubbers to 50% (Apex Key Frame)
+    setScrubPct(50);
+    if (apexLabelA) apexLabelA.textContent = `Apex: ${formatSec(tA)}`;
+    if (apexLabelB) apexLabelB.textContent = `Apex: ${formatSec(tB)}`;
     syncMediaAndHUD();
   }
 
@@ -2699,38 +2724,41 @@ function wireSynchronizedDeliveryScrubber(player) {
     }
   };
 
-  // Hook Slider Scrubber
-  scrubSlider?.addEventListener("input", () => {
+  // Hook Slider Scrubbers — dual panes stay locked to the same progress %.
+  function onScrubInput(e) {
     if (isPlaying) stopPlay();
+    setScrubPct(e?.target?.value ?? getScrubPct(), e?.target || null);
     syncMediaAndHUD();
-  });
+  }
+  scrubSliderA?.addEventListener("input", onScrubInput);
+  scrubSliderA?.addEventListener("change", onScrubInput);
+  scrubSliderB?.addEventListener("input", onScrubInput);
+  scrubSliderB?.addEventListener("change", onScrubInput);
+  if (scrubSlider && scrubSlider !== scrubSliderA && scrubSlider !== scrubSliderB) {
+    scrubSlider.addEventListener("input", onScrubInput);
+    scrubSlider.addEventListener("change", onScrubInput);
+  }
 
-  scrubSlider?.addEventListener("change", () => {
-    syncMediaAndHUD();
-  });
-
-  // Hook Snap to Apex Button
-  snapApexBtn?.addEventListener("click", () => {
+  function snapBothToApex() {
     if (isPlaying) stopPlay();
-    if (scrubSlider) scrubSlider.value = "50";
+    setScrubPct(50);
     syncMediaAndHUD();
-  });
+  }
+  snapApexBtn?.addEventListener("click", snapBothToApex);
+  snapApexA?.addEventListener("click", snapBothToApex);
+  snapApexB?.addEventListener("click", snapBothToApex);
 
-  // Step -0.1s and +0.1s
+  // Step -0.1s and +0.1s (≈3.333% of ±1.5s window)
   stepBackBtn?.addEventListener("click", () => {
     if (isPlaying) stopPlay();
-    if (scrubSlider) {
-      scrubSlider.value = String(Math.max(0, parseFloat(scrubSlider.value) - 3.333));
-      syncMediaAndHUD();
-    }
+    setScrubPct(Math.max(0, getScrubPct() - 3.333));
+    syncMediaAndHUD();
   });
 
   stepFwdBtn?.addEventListener("click", () => {
     if (isPlaying) stopPlay();
-    if (scrubSlider) {
-      scrubSlider.value = String(Math.min(100, parseFloat(scrubSlider.value) + 3.333));
-      syncMediaAndHUD();
-    }
+    setScrubPct(Math.min(100, getScrubPct() + 3.333));
+    syncMediaAndHUD();
   });
 
   // Play / Pause Animation Loop
@@ -2759,8 +2787,8 @@ function wireSynchronizedDeliveryScrubber(player) {
       playBtn.setAttribute("aria-label", "Pause Synchronized Playback");
     }
 
-    if (scrubSlider && parseFloat(scrubSlider.value) >= 99.5) {
-      scrubSlider.value = "0";
+    if (getScrubPct() >= 99.5) {
+      setScrubPct(0);
       syncMediaAndHUD();
     }
 
@@ -2770,12 +2798,10 @@ function wireSynchronizedDeliveryScrubber(player) {
       const elapsed = (now - lastTimestamp) / 1000;
       lastTimestamp = now;
 
-      if (scrubSlider) {
-        let curVal = parseFloat(scrubSlider.value) + (elapsed / 3.0) * 100;
-        if (curVal > 100) curVal = curVal % 100;
-        scrubSlider.value = curVal.toFixed(2);
-        syncMediaAndHUD();
-      }
+      let curVal = getScrubPct() + (elapsed / 3.0) * 100;
+      if (curVal > 100) curVal = curVal % 100;
+      setScrubPct(curVal);
+      syncMediaAndHUD();
       animReqId = requestAnimationFrame(loop);
     }
     animReqId = requestAnimationFrame(loop);
