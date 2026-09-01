@@ -2,15 +2,25 @@
  * Colby Morris Preflight Lite — Public Showcase & Enterprise Scouting Preview Logic
  */
 
+/** Public interactive unlock allowlist only. Every other arm is enterprise-locked. */
 const SHOWCASE_IDS = [
+  // MLB showcase
   "roupp",
   "landen_roupp",
   "eduardo_rodriguez",
   "erod",
   "webb",
   "logan_webb",
+  "brandon_pfaadt",
+  "pfaadt",
+  "gordon",
+  "tanner_gordon",
+  "gausman",
+  "kevin_gausman",
+  // Catcher showcase
   "gabriel_moreno",
   "moreno",
+  // Non-MLB / multi-league showcase
   "chase_burns",
   "burns",
   "roki_sasaki",
@@ -22,79 +32,8 @@ const SHOWCASE_IDS = [
   "gu_lin",
   "wilmer_rios",
   "rios",
-  "bauer",
-  "trevor_bauer",
   "hughes",
   "gabriel_hughes",
-  "brandon_pfaadt",
-  "pfaadt",
-  "gordon",
-  "tanner_gordon",
-  "gausman",
-  "kevin_gausman",
-  "snell",
-  "blake_snell",
-  "skubal",
-  "tarik_skubal",
-  "glasnow",
-  "tyler_glasnow",
-  "buehler",
-  "walker_buehler",
-  "kelly",
-  "merrill_kelly",
-  "miller",
-  "mason_miller",
-  "sugano",
-  "tomoyuki_sugano",
-  "yamamoto",
-  "yoshinobu_yamamoto",
-  "matsui",
-  "yuki_matsui",
-  "ray",
-  "robbie_ray",
-  "drake",
-  "kohl_drake",
-  "frasso",
-  "nick_frasso",
-  "morejon",
-  "adrian_morejon",
-  "vesia",
-  "alex_vesia",
-  "jameson",
-  "drey_jameson",
-  "ginkel",
-  "kevin_ginkel",
-  "feltner",
-  "ryan_feltner",
-  "lauer",
-  "eric_lauer",
-  "dreyer",
-  "jack_dreyer",
-  "scott",
-  "tanner_scott",
-  "king",
-  "michael_king",
-  "vasquez",
-  "randy_vasquez",
-  "peralta",
-  "wandy_peralta",
-  "hart",
-  "kyle_hart",
-  "morgan",
-  "david_morgan",
-  "tidwell",
-  "blade_tidwell",
-  "hentges",
-  "sam_hentges",
-  "ryan_walker",
-  "dylan_smith",
-  "carson_seymour",
-  "reiver_sanmartin",
-  "jason_foley",
-  "ryan_zeferjahn",
-  "caleb_thielbar",
-  "casey_mize",
-  "mize"
 ];
 
 const PLAYER_ALIASES = {
@@ -1163,7 +1102,7 @@ function wireLiteLanding(data) {
   fillSelect(
     playerSel,
     playerList(data)
-      .filter((p) => p.role !== "C" || isShowcaseArm(p.id))
+      .filter((p) => isShowcaseArm(p.id))
       .map((p) => ({
         id: p.id,
         label: `${p.name} (${teamById(data, p.teamId)?.abbr || ""})${isShowcaseArm(p.id) ? (p.role === "C" ? " ★ SHOWCASE CATCHER" : " ★ SHOWCASE") : ""}`,
@@ -1177,7 +1116,7 @@ function wireLiteLanding(data) {
       fillSelect(
         playerSel,
         playerList(data)
-          .filter((p) => p.role !== "C" || isShowcaseArm(p.id))
+          .filter((p) => isShowcaseArm(p.id))
           .map((p) => ({
             id: p.id,
             label: `${p.name} (${teamById(data, p.teamId)?.abbr || ""})${isShowcaseArm(p.id) ? (p.role === "C" ? " ★ SHOWCASE CATCHER" : " ★ SHOWCASE") : ""}`,
@@ -1189,7 +1128,7 @@ function wireLiteLanding(data) {
     fillSelect(
       playerSel,
       playersForTeam(data, tid)
-        .filter((p) => p.role !== "C" || isShowcaseArm(p.id))
+        .filter((p) => isShowcaseArm(p.id))
         .map((p) => ({
           id: p.id,
           label: `${p.name}${isShowcaseArm(p.id) ? (p.role === "C" ? " ★ SHOWCASE CATCHER" : " ★ SHOWCASE") : ""}`,
@@ -1395,7 +1334,7 @@ function wireLiteTeams(data) {
             const lockIcon = isShow ? "★ " : "🔒 ";
             const countLabel = isShow ? `UNLOCKED` : `Enterprise`;
             return `
-            <a class="roster-pill" href="lite_player.html?id=${encodeURIComponent(p.id)}" style="${isShow ? "border-color:rgba(62,207,142,0.4); background:rgba(62,207,142,0.06);" : ""}">
+            <a class="roster-pill ${isShow ? "" : "trigger-pilot-modal"}" href="${isShow ? `lite_player.html?id=${encodeURIComponent(p.id)}` : "#"}" data-arm="${p.name} (${t.abbr})" style="${isShow ? "border-color:rgba(62,207,142,0.4); background:rgba(62,207,142,0.06);" : ""}">
               <span>${p.name}</span>
               <span class="pill-badge ${badgeCls}">${lockIcon}${countLabel}</span>
             </a>`;
@@ -1502,8 +1441,10 @@ function wireLiteTeam(data) {
           ? `<span class="lite-badge-showcase">★ UNLOCKED SHOWCASE</span>`
           : `<span class="lite-badge-locked">🔒 ENTERPRISE PILOT</span>`;
 
+        const href = isShow ? `lite_player.html?id=${encodeURIComponent(p.id)}` : "#";
+        const extraClass = isShow ? "" : "trigger-pilot-modal";
         return `
-        <a class="tile" href="lite_player.html?id=${encodeURIComponent(p.id)}" style="${isShow ? "border-top:3px solid var(--good);" : "border-top:3px solid rgba(232,162,58,0.4);"}">
+        <a class="tile ${extraClass}" href="${href}" data-arm="${p.name} (${team.abbr})" style="${isShow ? "border-top:3px solid var(--good);" : "border-top:3px solid rgba(232,162,58,0.4);"}">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
             <span class="kicker" style="margin:0;">${p.throws}HP · ${p.role}</span>
             ${badge}
@@ -1887,7 +1828,7 @@ function ensureFiveTips(player) {
 // Verified non-MLB showcase clips — ONLY these paths may load for international/college arms.
 // Situational suffixes are intentionally ignored; base verified files are always used.
 // Maps cover every pitch code tips can resolve to so SI/FC/CU never collapse both panes.
-const VIDEO_CACHE_BUST = "20260901sync";
+const VIDEO_CACHE_BUST = "20260901lock";
 const VERIFIED_NON_MLB_VIDEOS = {
   chase_burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4", si: "media/video/burns_ff.mp4", fc: "media/video/burns_sl.mp4", fs: "media/video/burns_ch.mp4" },
   burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4", si: "media/video/burns_ff.mp4", fc: "media/video/burns_sl.mp4", fs: "media/video/burns_ch.mp4" },
@@ -2930,8 +2871,22 @@ function wireSynchronizedDeliveryScrubber(player) {
   applyTipSelection(0);
 }
 
+function mountNonMlbPlaceholderBanner(playerId) {
+  if (!normalizePlayerKey(playerId)) return;
+  if (document.getElementById("nonmlb-placeholder-banner")) return;
+  const stage = document.getElementById("sync-compare-stage") || document.querySelector(".sync-compare-stage");
+  if (!stage || !stage.parentElement) return;
+  const ban = document.createElement("div");
+  ban.id = "nonmlb-placeholder-banner";
+  ban.setAttribute("role", "status");
+  ban.style.cssText = "margin:0 0 0.75rem;padding:0.7rem 0.9rem;border:1px solid var(--warn);background:rgba(245,158,11,0.12);border-radius:6px;font-size:0.82rem;line-height:1.4;color:#fde68a;";
+  ban.innerHTML = `<strong>Stand-in broadcast clips.</strong> Git history (including a922d2b) has no authentic NCAA/NPB/KBO/CPBL/LMB source video for this arm — filenames map to distinct MLB CF broadcasts. Independent scrub still works; uniforms are not this pitcher.`;
+  stage.parentElement.insertBefore(ban, stage);
+}
+
 function wireDetectionStage(player) {
   wireSynchronizedDeliveryScrubber(player);
+  mountNonMlbPlaceholderBanner(player?.id);
 }
 
 function wireLitePlayer(data) {

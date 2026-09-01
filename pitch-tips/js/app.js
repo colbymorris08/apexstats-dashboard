@@ -1,12 +1,22 @@
+/** Public interactive unlock allowlist only. Every other arm is enterprise-locked. */
 const SHOWCASE_ARM_IDS = new Set([
+  // MLB showcase
   "roupp",
   "landen_roupp",
   "webb",
   "logan_webb",
   "eduardo_rodriguez",
   "erod",
+  "brandon_pfaadt",
+  "pfaadt",
+  "gordon",
+  "tanner_gordon",
+  "gausman",
+  "kevin_gausman",
+  // Catcher showcase
   "gabriel_moreno",
   "moreno",
+  // Non-MLB / multi-league showcase
   "chase_burns",
   "burns",
   "roki_sasaki",
@@ -18,79 +28,8 @@ const SHOWCASE_ARM_IDS = new Set([
   "gu_lin",
   "wilmer_rios",
   "rios",
-  "bauer",
-  "trevor_bauer",
   "hughes",
   "gabriel_hughes",
-  "brandon_pfaadt",
-  "pfaadt",
-  "gordon",
-  "tanner_gordon",
-  "gausman",
-  "kevin_gausman",
-  "snell",
-  "blake_snell",
-  "skubal",
-  "tarik_skubal",
-  "glasnow",
-  "tyler_glasnow",
-  "buehler",
-  "walker_buehler",
-  "kelly",
-  "merrill_kelly",
-  "miller",
-  "mason_miller",
-  "sugano",
-  "tomoyuki_sugano",
-  "yamamoto",
-  "yoshinobu_yamamoto",
-  "matsui",
-  "yuki_matsui",
-  "ray",
-  "robbie_ray",
-  "drake",
-  "kohl_drake",
-  "frasso",
-  "nick_frasso",
-  "morejon",
-  "adrian_morejon",
-  "vesia",
-  "alex_vesia",
-  "jameson",
-  "drey_jameson",
-  "ginkel",
-  "kevin_ginkel",
-  "feltner",
-  "ryan_feltner",
-  "lauer",
-  "eric_lauer",
-  "dreyer",
-  "jack_dreyer",
-  "scott",
-  "tanner_scott",
-  "king",
-  "michael_king",
-  "vasquez",
-  "randy_vasquez",
-  "peralta",
-  "wandy_peralta",
-  "hart",
-  "kyle_hart",
-  "morgan",
-  "david_morgan",
-  "tidwell",
-  "blade_tidwell",
-  "hentges",
-  "sam_hentges",
-  "ryan_walker",
-  "dylan_smith",
-  "carson_seymour",
-  "reiver_sanmartin",
-  "jason_foley",
-  "ryan_zeferjahn",
-  "caleb_thielbar",
-  "casey_mize",
-  "mize"
 ]);
 
 const PLAYER_ALIASES = {
@@ -1006,13 +945,13 @@ function wirePicksTable(data) {
   const players = playerList(data)
     .filter((p) => p.role !== "C")
     .sort((a, b) => {
-      const aUnlocked = SHOWCASE_ARM_IDS.has(a.id) ? 1 : 0;
-      const bUnlocked = SHOWCASE_ARM_IDS.has(b.id) ? 1 : 0;
+      const aUnlocked = isShowcaseArm(a.id) ? 1 : 0;
+      const bUnlocked = isShowcaseArm(b.id) ? 1 : 0;
       if (aUnlocked !== bUnlocked) return bUnlocked - aUnlocked;
       return playerTips(b).length - playerTips(a).length || (b.pitchesModeled || 0) - (a.pitchesModeled || 0);
     });
 
-  const showcaseCount = players.filter((p) => SHOWCASE_ARM_IDS.has(p.id)).length;
+  const showcaseCount = players.filter((p) => isShowcaseArm(p.id)).length;
 
   if (summary) {
     summary.innerHTML = `<strong>${showcaseCount} Showcase Profiles Unlocked</strong> · <strong>${players.length} Total Arms Modeled</strong> across MLB &amp; Partner Leagues · Real-time sub-pixel computer vision tracking`;
@@ -1021,7 +960,7 @@ function wirePicksTable(data) {
   root.innerHTML = players
     .map((p) => {
       const team = teamById(data, p.teamId);
-      const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
+      const isShowcase = isShowcaseArm(p.id);
       const tips = playerTips(p);
 
       // Pitcher column: Name + Link + Badge
@@ -1029,7 +968,7 @@ function wirePicksTable(data) {
       if (isShowcase) {
         pitcherCellHtml = `<a href="player.html?id=${encodeURIComponent(p.id)}"><strong>${p.name}</strong></a> <span class="unlocked-tag">✨ Unlocked Showcase</span>`;
       } else {
-        pitcherCellHtml = `<a href="player.html?id=${encodeURIComponent(p.id)}">${p.name}</a> <button type="button" class="lock-tag" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}')">🔒 Enterprise</button>`;
+        pitcherCellHtml = `<span>${p.name}</span> <button type="button" class="lock-tag" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}'); return false;">🔒 Enterprise Locked</button>`;
       }
 
       // Club column: Team badge / tag
@@ -1101,10 +1040,10 @@ function wireCatcherPicksTable(data) {
       .slice(0, 40)
       .map(
         ({ player, team, tip }) => {
-          const isShowcase = SHOWCASE_ARM_IDS.has(player.id);
-          const link = isLiteMode 
-            ? (isShowcase ? `<a href="player.html?id=${encodeURIComponent(player.id)}&lite=1">${player.name}</a>` : `<a href="#" onclick="window.openEnterpriseModal('${player.name.replace(/'/g, "\\'")}'); return false;">${player.name} 🔒</a>`)
-            : `<a href="player.html?id=${encodeURIComponent(player.id)}">${player.name}</a>`;
+          const isShowcase = isShowcaseArm(player.id);
+          const link = isShowcase
+            ? `<a href="player.html?id=${encodeURIComponent(player.id)}${isLiteMode ? "&lite=1" : ""}">${player.name}</a>`
+            : `<a href="#" onclick="window.openEnterpriseModal('${player.name.replace(/'/g, "\\'")}'); return false;">${player.name} 🔒</a>`;
           return `<tr>
       <td>${link}</td>
       <td>${team?.abbr || "—"}</td>
@@ -1131,13 +1070,11 @@ function wireLanding(data) {
 
   fillSelect(teamSel, data.teams, { valueKey: "id", labelKey: "name", blank: "Choose a team" });
   
-  const allPitchers = playerList(data).filter((p) => p.role !== "C");
+  const allPitchers = playerList(data).filter((p) => isShowcaseArm(p.id));
   const pitcherOpts = allPitchers.map((p) => {
-    const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
-    const prefix = isLiteMode ? (isShowcase ? "✨ [UNLOCKED] " : "🔒 [ENTERPRISE] ") : "";
     return {
       id: p.id,
-      label: `${prefix}${p.name} (${teamById(data, p.teamId)?.abbr || ""})`,
+      label: `✨ [UNLOCKED] ${p.name} (${teamById(data, p.teamId)?.abbr || ""})`,
     };
   });
   if (isLiteMode) {
@@ -1156,10 +1093,8 @@ function wireLanding(data) {
       fillSelect(playerSel, pitcherOpts, { valueKey: "id", labelKey: "label", blank: "Choose a pitcher" });
       return;
     }
-    const teamPitchers = playersForTeam(data, tid).filter((p) => p.role !== "C").map((p) => {
-      const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
-      const prefix = isLiteMode ? (isShowcase ? "✨ [UNLOCKED] " : "🔒 [ENTERPRISE] ") : "";
-      return { id: p.id, label: `${prefix}${p.name}` };
+    const teamPitchers = playersForTeam(data, tid).filter((p) => isShowcaseArm(p.id)).map((p) => {
+      return { id: p.id, label: `✨ [UNLOCKED] ${p.name}` };
     });
     fillSelect(playerSel, teamPitchers, { valueKey: "id", labelKey: "label", blank: "Choose a pitcher" });
   });
@@ -1199,19 +1134,25 @@ function renderTeamCoverageCard(data, t) {
   const pitcherPills = pitchers
     .map((p) => {
       const tips = playerTips(p);
-      const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
+      const isShowcase = isShowcaseArm(p.id);
       let badgeCls = tips.length > 0 ? "leads" : "";
       let countLabel = tips.length > 0 ? `${tips.length} leads` : `${p.pitchesModeled || 0} p`;
       let lockIcon = "";
-      if (isLiteMode) {
-        if (isShowcase) {
-          badgeCls = "leads";
-          countLabel = "✨ UNLOCKED";
-        } else {
-          lockIcon = "🔒 ";
-        }
+      if (isShowcase) {
+        badgeCls = "leads";
+        countLabel = "✨ UNLOCKED";
+      } else {
+        lockIcon = "🔒 ";
+        countLabel = "Enterprise";
       }
       const liteParam = isLiteMode ? "&lite=1" : "";
+      if (!isShowcase) {
+        return `
+      <a class="roster-pill" href="#" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}'); return false;">
+        <span>${lockIcon}${p.name}</span>
+        <span class="pill-badge ${badgeCls}">${p.throws || "R"}HP · ${countLabel}</span>
+      </a>`;
+      }
       return `
       <a class="roster-pill" href="player.html?id=${encodeURIComponent(p.id)}${liteParam}">
         <span>${lockIcon}${p.name}</span>
@@ -1223,8 +1164,16 @@ function renderTeamCoverageCard(data, t) {
   const catcherPills = catchers
     .map((c) => {
       const tips = playerTips(c);
-      const countLabel = tips.length > 0 ? `${tips.length} setup cues` : "Setup Active";
+      const isShowcase = isShowcaseArm(c.id);
+      const countLabel = isShowcase ? "✨ UNLOCKED" : (tips.length > 0 ? `${tips.length} setup cues` : "Enterprise");
       const liteParam = isLiteMode ? "&lite=1" : "";
+      if (!isShowcase) {
+        return `
+      <a class="roster-pill" href="#" onclick="window.openEnterpriseModal('${c.name.replace(/'/g, "\\'")}'); return false;">
+        <span>🔒 ${c.name}</span>
+        <span class="pill-badge">C · ${countLabel}</span>
+      </a>`;
+      }
       return `
       <a class="roster-pill" href="player.html?id=${encodeURIComponent(c.id)}${liteParam}">
         <span>${c.name}</span>
@@ -1477,12 +1426,18 @@ function wireTeamPage(data) {
     grid.innerHTML = pitchers
       .map((p) => {
         const tips = playerTips(p);
-        const isShowcase = SHOWCASE_ARM_IDS.has(p.id);
-        let badgeHtml = `<span><strong>${tips.length}</strong> mechanical leads</span>`;
-        if (isLiteMode) {
-          badgeHtml = isShowcase
-            ? `<span class="unlocked-tag">✨ 100% Unlocked Showcase</span>`
-            : `<button type="button" class="lock-tag" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}')">🔒 Enterprise Locked</button>`;
+        const isShowcase = isShowcaseArm(p.id);
+        const badgeHtml = isShowcase
+          ? `<span class="unlocked-tag">✨ 100% Unlocked Showcase</span>`
+          : `<button type="button" class="lock-tag" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}'); return false;">🔒 Enterprise Locked</button>`;
+        if (!isShowcase) {
+          return `
+      <a class="tile" href="#" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}'); return false;">
+        <div class="kicker">${p.throws}HP · ${p.role}</div>
+        <h3>${p.name}</h3>
+        <p>${p.summary}</p>
+        <div class="stats">${badgeHtml}</div>
+      </a>`;
         }
         return `
       <a class="tile" href="player.html?id=${encodeURIComponent(p.id)}${liteParam}">
@@ -1500,6 +1455,16 @@ function wireTeamPage(data) {
       .map((c) => {
         const cTips = playerTips(c);
         const roleLabel = c.roleType === "starter" ? "Primary Starter" : "Backup Catcher";
+        const isShowcase = isShowcaseArm(c.id);
+        if (!isShowcase) {
+          return `
+      <a class="tile" href="#" onclick="window.openEnterpriseModal('${c.name.replace(/'/g, "\\'")}'); return false;">
+        <div class="kicker">Catcher · ${roleLabel}</div>
+        <h3>${c.name}</h3>
+        <p>${c.summary}</p>
+        <div class="stats"><button type="button" class="lock-tag">🔒 Enterprise Locked</button></div>
+      </a>`;
+        }
         return `
       <a class="tile" href="player.html?id=${encodeURIComponent(c.id)}${liteParam}">
         <div class="kicker">Catcher · ${roleLabel}</div>
@@ -1517,8 +1482,8 @@ function wireTeamPage(data) {
   if (tipRoot) {
     tipRoot.innerHTML = allTips
       .map((t) => {
-        const isShowcase = SHOWCASE_ARM_IDS.has(t.playerId);
-        if (isLiteMode && !isShowcase) {
+        const isShowcase = isShowcaseArm(t.playerId);
+        if (!isShowcase) {
           return `
       <article class="tip" style="opacity: 0.75; border-left: 3px solid var(--warn);">
         <h4>${t.playerName} — ${t.title || t.cue}</h4>
@@ -1565,16 +1530,22 @@ function wireTeamPage(data) {
     );
     catcherRoot.innerHTML =
       catcherTips
-        .map((t) => `
+        .map((t) => {
+          const isShowcase = isShowcaseArm(t.playerId);
+          const nameHtml = isShowcase
+            ? `<a href="player.html?id=${encodeURIComponent(t.playerId)}${liteParam}">${t.playerName}</a>`
+            : `<span>${t.playerName} 🔒</span>`;
+          return `
       <article class="tip">
-        <h4><a href="player.html?id=${encodeURIComponent(t.playerId)}${liteParam}">${t.playerName}</a> — ${t.title || "Catcher Setup"}</h4>
+        <h4>${nameHtml} — ${t.title || "Catcher Setup"}</h4>
         <div class="meta">
           <span class="badge hot">${pct(t.confidence || 0.75)} signal</span>
           <span class="badge ok">catcher setup</span>
           <span>${t.predicts || "Offspeed"}</span>
         </div>
         <p><strong>Setup variance:</strong> ${t.lookFor || ""}</p>
-      </article>`)
+      </article>`;
+        })
         .join("") || `<p class="note">Catcher setup tracking active for ${team.abbr}.</p>`;
   }
 }
@@ -1590,7 +1561,7 @@ function formatSec(s) {
 // Verified non-MLB showcase clips — ONLY these paths may load for international/college arms.
 // Situational suffixes are intentionally ignored; base verified files are always used.
 // Maps cover every pitch code tips can resolve to so SI/FC/CU never collapse both panes.
-const VIDEO_CACHE_BUST = "20260901sync";
+const VIDEO_CACHE_BUST = "20260901lock";
 const VERIFIED_NON_MLB_VIDEOS = {
   chase_burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4", si: "media/video/burns_ff.mp4", fc: "media/video/burns_sl.mp4", fs: "media/video/burns_ch.mp4" },
   burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4", si: "media/video/burns_ff.mp4", fc: "media/video/burns_sl.mp4", fs: "media/video/burns_ch.mp4" },
@@ -2805,8 +2776,22 @@ function wireSynchronizedDeliveryScrubber(player) {
   applyTipSelection(0);
 }
 
+function mountNonMlbPlaceholderBanner(playerId) {
+  if (!normalizePlayerKey(playerId)) return;
+  if (document.getElementById("nonmlb-placeholder-banner")) return;
+  const stage = document.getElementById("sync-compare-stage") || document.querySelector(".sync-compare-stage");
+  if (!stage || !stage.parentElement) return;
+  const ban = document.createElement("div");
+  ban.id = "nonmlb-placeholder-banner";
+  ban.setAttribute("role", "status");
+  ban.style.cssText = "margin:0 0 0.75rem;padding:0.7rem 0.9rem;border:1px solid var(--warn);background:rgba(245,158,11,0.12);border-radius:6px;font-size:0.82rem;line-height:1.4;color:#fde68a;";
+  ban.innerHTML = `<strong>Stand-in broadcast clips.</strong> Git history (including a922d2b) has no authentic NCAA/NPB/KBO/CPBL/LMB source video for this arm — filenames map to distinct MLB CF broadcasts. Independent scrub still works; uniforms are not this pitcher.`;
+  stage.parentElement.insertBefore(ban, stage);
+}
+
 function wireDetectionStage(player) {
   wireSynchronizedDeliveryScrubber(player);
+  mountNonMlbPlaceholderBanner(player?.id);
 }
 
 function wirePlayerPage(data) {
@@ -2853,8 +2838,8 @@ function wirePlayerPage(data) {
     teamLink.textContent = `← ${team.abbr} summary`;
   }
 
-  // If in Lite mode and NOT a showcase arm, render the Enterprise Locked Overlay
-  if (isLiteMode && !isShowcase && player.role !== "C") {
+  // Direct URL / any mode: non-showcase arms are locked (password gate is separate).
+  if (!isShowcase) {
     const stage = document.querySelector(".detection-stage");
     if (stage) {
       const lockCard = document.createElement("div");
@@ -2917,7 +2902,7 @@ function wirePlayerPage(data) {
     ].filter(Boolean);
 
     tipRoots.forEach((root) => {
-      if (isLiteMode && !isShowcase && player.role !== "C") {
+      if (!isShowcase) {
         if (root.tagName === "TBODY") {
           root.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:1.25rem; color:var(--muted); font-weight:600;">🔒 Mechanical Indicators Protected (Enterprise Scouting Pilot Required)</td></tr>`;
         } else {
