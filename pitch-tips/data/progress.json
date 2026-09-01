@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 59,
-  "remaining": 620,
+  "remaining": 619,
   "sec_per_pitch": 10.0,
   "eta_hours": 500.2,
   "est_total_pitches": 180090,
   "current": {
-    "name": "Shane Baz",
+    "name": "Cam Schlittler",
     "team": "OTH",
-    "message": "pitcher [13/640] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [14/640] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -1355,6 +1355,22 @@
       "n_current_tracks": 252,
       "ready": true,
       "state": "complete"
+    },
+    "669358": {
+      "name": "Shane Baz",
+      "team": "OTH",
+      "n_tracked": 228,
+      "holdout": 0.161,
+      "tips_ge_75": 0,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/shane_baz_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 291,
+      "ready": false,
+      "state": "tracking"
     }
   },
   "failed": {
@@ -2818,9 +2834,9 @@
     },
     "OTH": {
       "queued": 640,
-      "done": 12,
+      "done": 13,
       "pitcher_tips": 72,
-      "catcher_tips": 53
+      "catcher_tips": 56
     },
     "CHC": {
       "queued": 0,
@@ -2832,11 +2848,11 @@
   "phases": null,
   "totals": {
     "pitcher_tips": 234,
-    "catcher_tips": 181
+    "catcher_tips": 184
   },
-  "updated_at": "2026-09-01T02:49:40",
+  "updated_at": "2026-09-01T05:07:07",
   "live": {
-    "pitches_done": 220,
+    "pitches_done": 200,
     "pitches_target": null
   },
   "heartbeat": true
