@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 59,
-  "remaining": 616,
+  "remaining": 615,
   "sec_per_pitch": 10.0,
   "eta_hours": 500.2,
   "est_total_pitches": 180090,
   "current": {
-    "name": "Freddy Peralta",
+    "name": "Foster Griffin",
     "team": "OTH",
-    "message": "pitcher [17/640] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [18/640] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -1421,6 +1421,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/dylan_cease_poc",
       "schema": "rich_72col",
       "n_current_tracks": 291,
+      "ready": true,
+      "state": "complete"
+    },
+    "642547": {
+      "name": "Freddy Peralta",
+      "team": "OTH",
+      "n_tracked": 178,
+      "holdout": 0.1,
+      "tips_ge_75": 9,
+      "catcher_tips": 4,
+      "legacy_tips_ge_75": 9,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/freddy_peralta_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 231,
       "ready": false,
       "state": "tracking"
     }
@@ -2886,9 +2904,9 @@
     },
     "OTH": {
       "queued": 640,
-      "done": 16,
-      "pitcher_tips": 86,
-      "catcher_tips": 65
+      "done": 17,
+      "pitcher_tips": 95,
+      "catcher_tips": 69
     },
     "CHC": {
       "queued": 0,
@@ -2899,12 +2917,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 248,
-    "catcher_tips": 193
+    "pitcher_tips": 257,
+    "catcher_tips": 197
   },
-  "updated_at": "2026-09-01T09:11:02",
+  "updated_at": "2026-09-01T09:35:06",
   "live": {
-    "pitches_done": 170,
+    "pitches_done": 130,
     "pitches_target": null
   },
   "heartbeat": true

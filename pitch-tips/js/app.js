@@ -2191,20 +2191,28 @@ function wireSynchronizedDeliveryScrubber(player) {
   const lblApex = document.getElementById("sync-lbl-apex");
   const lblEnd = document.getElementById("sync-lbl-end");
 
-  function getScrubPct() {
-    return parseFloat(scrubSliderA?.value ?? scrubSliderB?.value ?? scrubSlider?.value ?? 50);
+  function getScrubPctA() {
+    return parseFloat(scrubSliderA?.value ?? scrubSlider?.value ?? 50);
   }
 
-  function setScrubPct(pct, sourceEl = null) {
+  function getScrubPctB() {
+    return parseFloat(scrubSliderB?.value ?? scrubSlider?.value ?? 50);
+  }
+
+  function setScrubPctA(pct) {
     const v = String(Math.max(0, Math.min(100, Number(pct) || 0)));
-    if (scrubSliderA && scrubSliderA !== sourceEl) scrubSliderA.value = v;
-    if (scrubSliderB && scrubSliderB !== sourceEl) scrubSliderB.value = v;
-    if (scrubSlider && scrubSlider !== scrubSliderA && scrubSlider !== scrubSliderB && scrubSlider !== sourceEl) {
-      scrubSlider.value = v;
-    }
+    if (scrubSliderA) scrubSliderA.value = v;
     if (sliderProgressA) sliderProgressA.style.width = `${v}%`;
+    if (scrubSlider && !scrubSliderA) {
+      scrubSlider.value = v;
+      if (sliderProgress) sliderProgress.style.width = `${v}%`;
+    }
+  }
+
+  function setScrubPctB(pct) {
+    const v = String(Math.max(0, Math.min(100, Number(pct) || 0)));
+    if (scrubSliderB) scrubSliderB.value = v;
     if (sliderProgressB) sliderProgressB.style.width = `${v}%`;
-    if (sliderProgress && sliderProgress !== sliderProgressA) sliderProgress.style.width = `${v}%`;
   }
 
   const telemA = document.getElementById("sync-telem-a");
@@ -2293,25 +2301,22 @@ function wireSynchronizedDeliveryScrubber(player) {
   }
 
   let currentTipIdx = 0;
-  let isPlaying = false;
-  let animReqId = null;
+  let isPlayingA = false;
+  let isPlayingB = false;
+  let animReqIdA = null;
+  let animReqIdB = null;
   let hasVideoA = false;
   let hasVideoB = false;
 
-  function getTimes(progressPct, tA, tB) {
+  function progressToTime(progressPct, tAnchor) {
     const p = Math.max(0, Math.min(100, Number(progressPct) || 0));
-    // When p == 50, delta is exactly 0s (exact anchor frame)
-    // Total scrub window is 3.0s (±1.50s around the anchor)
     const windowSpan = 1.50;
     const delta = ((p - 50) / 50) * windowSpan;
-    const curA = Math.max(0, tA + delta);
-    const curB = Math.max(0, tB + delta);
+    return Math.round(Math.max(0, tAnchor + delta) * 1000) / 1000;
+  }
 
-    return {
-      curA: Math.round(curA * 1000) / 1000,
-      curB: Math.round(curB * 1000) / 1000,
-      isApex: Math.abs(p - 50) < 5.0
-    };
+  function isAtApex(progressPct) {
+    return Math.abs(Number(progressPct) - 50) < 5.0;
   }
 
   function getDeliveryPhase(progressPct) {
@@ -2339,64 +2344,89 @@ function wireSynchronizedDeliveryScrubber(player) {
     } catch (e) {}
   }
 
-  function syncMediaAndHUD() {
-    const tip = availableTips[currentTipIdx] || availableTips[0];
-    const { pitchA, pitchB, tA, tB } = parseTipTimingsAndLabels(tip, player);
-    const p = getScrubPct();
-
-    const { curA, curB, isApex } = getTimes(p, tA, tB);
+  function updateSharedTelemetry(tip, tA, tB, pA, pB) {
     const deltaT = (tA - tB).toFixed(2);
-
-    // Keep dual (or single) slider fills locked together
-    setScrubPct(p);
-
-    // Update Time Badges
-    if (timeA) timeA.textContent = `${formatSec(curA)}s`;
-    if (timeB) timeB.textContent = `${formatSec(curB)}s`;
-
-    // Update Telemetry Footer
-    if (telemA) telemA.textContent = formatSec(curA);
-    if (telemB) telemB.textContent = formatSec(curB);
+    const isApexA = isAtApex(pA);
+    const isApexB = isAtApex(pB);
     if (telemPhase) {
-      telemPhase.textContent = getDeliveryPhase(p);
-      telemPhase.style.color = isApex ? "#ffc450" : "var(--good)";
-      telemPhase.style.borderColor = isApex ? "rgba(255, 196, 80, 0.45)" : "rgba(62, 207, 142, 0.35)";
+      if (isApexA && isApexB) {
+        telemPhase.textContent = "★ KEY FRAME: MECHANICAL APEX (TELL WINDOW)";
+        telemPhase.style.color = "#ffc450";
+        telemPhase.style.borderColor = "rgba(255, 196, 80, 0.45)";
+      } else if (isApexA || isApexB) {
+        telemPhase.textContent = "MANUAL COMPARE — one pane at apex";
+        telemPhase.style.color = "#ffc450";
+        telemPhase.style.borderColor = "rgba(255, 196, 80, 0.45)";
+      } else {
+        telemPhase.textContent = "MANUAL COMPARE — scrub each pane independently";
+        telemPhase.style.color = "var(--good)";
+        telemPhase.style.borderColor = "rgba(62, 207, 142, 0.35)";
+      }
     }
     if (telemDelta) {
-      telemDelta.textContent = `Δt = ${deltaT >= 0 ? "+" : ""}${deltaT}s (Synced)`;
+      telemDelta.textContent = `Δt apex = ${deltaT >= 0 ? "+" : ""}${deltaT}s`;
     }
+  }
 
-    // Video synchronization
+  function updatePaneA() {
+    const tip = availableTips[currentTipIdx] || availableTips[0];
+    const { pitchA, tA, tB } = parseTipTimingsAndLabels(tip, player);
+    const pA = getScrubPctA();
+    const curA = progressToTime(pA, tA);
+    const isApexA = isAtApex(pA);
+
+    setScrubPctA(pA);
+    if (timeA) timeA.textContent = `${formatSec(curA)}s`;
+    if (telemA) telemA.textContent = formatSec(curA);
     if (videoA && hasVideoA) seekVideo(videoA, curA);
-    if (videoB && hasVideoB) seekVideo(videoB, curB);
 
     const hasImgA = !!(imgA && imgA.src && imgA.style.display !== "none");
-    const hasImgB = !!(imgB && imgB.src && imgB.style.display !== "none");
-
     if (canvasA) {
       drawDeliveryTelemetryCanvas(canvasA, {
         pitchName: pitchA,
         timeVal: curA,
-        progressPct: p,
+        progressPct: pA,
         isPitchA: true,
         tip,
-        isApex,
+        isApex: isApexA,
         hasVideo: hasVideoA,
         hasImage: hasImgA
       });
     }
+    updateSharedTelemetry(tip, tA, tB, pA, getScrubPctB());
+  }
+
+  function updatePaneB() {
+    const tip = availableTips[currentTipIdx] || availableTips[0];
+    const { pitchB, tA, tB } = parseTipTimingsAndLabels(tip, player);
+    const pB = getScrubPctB();
+    const curB = progressToTime(pB, tB);
+    const isApexB = isAtApex(pB);
+
+    setScrubPctB(pB);
+    if (timeB) timeB.textContent = `${formatSec(curB)}s`;
+    if (telemB) telemB.textContent = formatSec(curB);
+    if (videoB && hasVideoB) seekVideo(videoB, curB);
+
+    const hasImgB = !!(imgB && imgB.src && imgB.style.display !== "none");
     if (canvasB) {
       drawDeliveryTelemetryCanvas(canvasB, {
         pitchName: pitchB,
         timeVal: curB,
-        progressPct: p,
+        progressPct: pB,
         isPitchA: false,
         tip,
-        isApex,
+        isApex: isApexB,
         hasVideo: hasVideoB,
         hasImage: hasImgB
       });
     }
+    updateSharedTelemetry(tip, tA, tB, getScrubPctA(), pB);
+  }
+
+  function syncMediaAndHUD() {
+    updatePaneA();
+    updatePaneB();
   }
 
   function applyTipSelection(idx) {
@@ -2572,8 +2602,9 @@ function wireSynchronizedDeliveryScrubber(player) {
       }
     }
 
-    // Reset locked scrubbers to 50% (Apex Key Frame)
-    setScrubPct(50);
+    // Reset each scrubber to 50% (that pane's apex key frame)
+    setScrubPctA(50);
+    setScrubPctB(50);
     if (apexLabelA) apexLabelA.textContent = `Apex: ${formatSec(tA)}`;
     if (apexLabelB) apexLabelB.textContent = `Apex: ${formatSec(tB)}`;
     syncMediaAndHUD();
@@ -2590,124 +2621,172 @@ function wireSynchronizedDeliveryScrubber(player) {
     });
   });
 
-  // Hook Slider Scrubbers — dual panes stay locked to the same progress %.
-  function onScrubInput(e) {
-    if (isPlaying) stopPlay();
-    setScrubPct(e?.target?.value ?? getScrubPct(), e?.target || null);
-    syncMediaAndHUD();
+  // Independent per-pane scrubbers
+  function onScrubInputA() {
+    if (isPlayingA) stopPlayA();
+    updatePaneA();
   }
-  scrubSliderA?.addEventListener("input", onScrubInput);
-  scrubSliderA?.addEventListener("change", onScrubInput);
-  scrubSliderB?.addEventListener("input", onScrubInput);
-  scrubSliderB?.addEventListener("change", onScrubInput);
+  function onScrubInputB() {
+    if (isPlayingB) stopPlayB();
+    updatePaneB();
+  }
+  scrubSliderA?.addEventListener("input", onScrubInputA);
+  scrubSliderA?.addEventListener("change", onScrubInputA);
+  scrubSliderB?.addEventListener("input", onScrubInputB);
+  scrubSliderB?.addEventListener("change", onScrubInputB);
   if (scrubSlider && scrubSlider !== scrubSliderA && scrubSlider !== scrubSliderB) {
-    scrubSlider.addEventListener("input", onScrubInput);
-    scrubSlider.addEventListener("change", onScrubInput);
+    scrubSlider.addEventListener("input", onScrubInputA);
+    scrubSlider.addEventListener("change", onScrubInputA);
   }
 
+  function snapPaneToApex(pane) {
+    if (pane === "a") {
+      if (isPlayingA) stopPlayA();
+      setScrubPctA(50);
+      updatePaneA();
+    } else {
+      if (isPlayingB) stopPlayB();
+      setScrubPctB(50);
+      updatePaneB();
+    }
+  }
   function snapBothToApex() {
-    if (isPlaying) stopPlay();
-    setScrubPct(50);
+    if (isPlayingA) stopPlayA();
+    if (isPlayingB) stopPlayB();
+    setScrubPctA(50);
+    setScrubPctB(50);
     syncMediaAndHUD();
   }
   snapApexBtn?.addEventListener("click", snapBothToApex);
-  snapApexA?.addEventListener("click", snapBothToApex);
-  snapApexB?.addEventListener("click", snapBothToApex);
+  snapApexA?.addEventListener("click", () => snapPaneToApex("a"));
+  snapApexB?.addEventListener("click", () => snapPaneToApex("b"));
 
-  // Step -0.1s and +0.1s (≈3.333% of ±1.5s window)
+  // Step -0.1s and +0.1s per pane (≈3.333% of ±1.5s window)
   stepBackBtn?.addEventListener("click", () => {
-    if (isPlaying) stopPlay();
-    setScrubPct(Math.max(0, getScrubPct() - 3.333));
+    if (isPlayingA) stopPlayA();
+    if (isPlayingB) stopPlayB();
+    setScrubPctA(Math.max(0, getScrubPctA() - 3.333));
+    setScrubPctB(Math.max(0, getScrubPctB() - 3.333));
     syncMediaAndHUD();
   });
 
   stepFwdBtn?.addEventListener("click", () => {
-    if (isPlaying) stopPlay();
-    setScrubPct(Math.min(100, getScrubPct() + 3.333));
+    if (isPlayingA) stopPlayA();
+    if (isPlayingB) stopPlayB();
+    setScrubPctA(Math.min(100, getScrubPctA() + 3.333));
+    setScrubPctB(Math.min(100, getScrubPctB() + 3.333));
     syncMediaAndHUD();
   });
 
-  // Play / Pause Animation Loop
-  function stopPlay() {
-    isPlaying = false;
-    if (animReqId) {
-      cancelAnimationFrame(animReqId);
-      animReqId = null;
-    }
-    if (playIcon) playIcon.textContent = "▶";
-    if (playText) playText.textContent = "Play Sync";
-    if (playBtn) {
-      playBtn.classList.remove("is-playing");
-      playBtn.setAttribute("aria-label", "Play Synchronized Playback");
+  // Independent play / pause per pane
+  function stopPlayA() {
+    isPlayingA = false;
+    if (animReqIdA) {
+      cancelAnimationFrame(animReqIdA);
+      animReqIdA = null;
     }
     if (videoA && !videoA.paused) try { videoA.pause(); } catch (e) {}
+  }
+
+  function stopPlayB() {
+    isPlayingB = false;
+    if (animReqIdB) {
+      cancelAnimationFrame(animReqIdB);
+      animReqIdB = null;
+    }
     if (videoB && !videoB.paused) try { videoB.pause(); } catch (e) {}
   }
 
-  function startPlay() {
-    isPlaying = true;
-    if (playIcon) playIcon.textContent = "❚❚";
-    if (playText) playText.textContent = "Pause Sync";
+  function stopPlay() {
+    stopPlayA();
+    stopPlayB();
+    if (playIcon) playIcon.textContent = "▶";
+    if (playText) playText.textContent = "Play Both";
     if (playBtn) {
-      playBtn.classList.add("is-playing");
-      playBtn.setAttribute("aria-label", "Pause Synchronized Playback");
+      playBtn.classList.remove("is-playing");
+      playBtn.setAttribute("aria-label", "Play both delivery panes");
     }
+  }
 
-    if (getScrubPct() >= 99.5) {
-      setScrubPct(0);
-      syncMediaAndHUD();
+  function startPlayA() {
+    isPlayingA = true;
+    if (getScrubPctA() >= 99.5) {
+      setScrubPctA(0);
+      updatePaneA();
     }
-
     let lastTimestamp = performance.now();
     function loop(now) {
-      if (!isPlaying) return;
+      if (!isPlayingA) return;
       const elapsed = (now - lastTimestamp) / 1000;
       lastTimestamp = now;
-
-      let curVal = getScrubPct() + (elapsed / 3.0) * 100;
+      let curVal = getScrubPctA() + (elapsed / 3.0) * 100;
       if (curVal > 100) curVal = curVal % 100;
-      setScrubPct(curVal);
-      syncMediaAndHUD();
-      animReqId = requestAnimationFrame(loop);
+      setScrubPctA(curVal);
+      updatePaneA();
+      animReqIdA = requestAnimationFrame(loop);
     }
-    animReqId = requestAnimationFrame(loop);
+    animReqIdA = requestAnimationFrame(loop);
+  }
+
+  function startPlayB() {
+    isPlayingB = true;
+    if (getScrubPctB() >= 99.5) {
+      setScrubPctB(0);
+      updatePaneB();
+    }
+    let lastTimestamp = performance.now();
+    function loop(now) {
+      if (!isPlayingB) return;
+      const elapsed = (now - lastTimestamp) / 1000;
+      lastTimestamp = now;
+      let curVal = getScrubPctB() + (elapsed / 3.0) * 100;
+      if (curVal > 100) curVal = curVal % 100;
+      setScrubPctB(curVal);
+      updatePaneB();
+      animReqIdB = requestAnimationFrame(loop);
+    }
+    animReqIdB = requestAnimationFrame(loop);
+  }
+
+  function startPlay() {
+    startPlayA();
+    startPlayB();
+    if (playIcon) playIcon.textContent = "❚❚";
+    if (playText) playText.textContent = "Pause Both";
+    if (playBtn) {
+      playBtn.classList.add("is-playing");
+      playBtn.setAttribute("aria-label", "Pause both delivery panes");
+    }
+  }
+
+  function togglePlayA() {
+    if (isPlayingA) stopPlayA();
+    else startPlayA();
+  }
+
+  function togglePlayB() {
+    if (isPlayingB) stopPlayB();
+    else startPlayB();
   }
 
   function togglePlay() {
-    if (isPlaying) {
-      stopPlay();
-    } else {
-      startPlay();
-    }
+    if (isPlayingA || isPlayingB) stopPlay();
+    else startPlay();
   }
 
   playBtn?.addEventListener("click", togglePlay);
 
-  // Allow clicking on either video element or media box to toggle Play / Pause
   const boxA = document.getElementById("sync-media-box-a");
   const boxB = document.getElementById("sync-media-box-b");
-  boxA?.addEventListener("click", togglePlay);
-  boxB?.addEventListener("click", togglePlay);
+  boxA?.addEventListener("click", togglePlayA);
+  boxB?.addEventListener("click", togglePlayB);
   videoA?.addEventListener("click", (e) => {
     e.stopPropagation();
-    togglePlay();
+    togglePlayA();
   });
   videoB?.addEventListener("click", (e) => {
     e.stopPropagation();
-    togglePlay();
-  });
-
-  // Spacebar keyboard shortcut to toggle Play / Pause
-  document.addEventListener("keydown", (e) => {
-    if (e.code === "Space" || e.key === " ") {
-      const activeEl = document.activeElement;
-      const tag = activeEl ? activeEl.tagName.toLowerCase() : "";
-      if (tag === "input" || tag === "textarea" || tag === "select" || activeEl?.isContentEditable) {
-        return;
-      }
-      e.preventDefault();
-      togglePlay();
-    }
+    togglePlayB();
   });
 
   // Global Tip Selection Handler
