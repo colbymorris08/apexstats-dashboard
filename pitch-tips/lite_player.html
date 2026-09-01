@@ -160,6 +160,7 @@
                       <strong id="sync-label-a" class="sync-pane-title">FASTBALL (FF)</strong>
                     </div>
                     <div class="sync-time-readout" id="sync-time-readout-a">
+                      <span id="sync-apex-label-a" class="sync-apex-hint">Apex: 0:02.1</span>
                       <span class="sync-time-dot"></span>
                       <span id="sync-time-a">0:02.40s</span>
                     </div>
@@ -169,6 +170,16 @@
                     <video id="sync-video-a" playsinline muted preload="auto" class="sync-video-element"></video>
                     <img id="sync-img-a" alt="Pitch A delivery still" class="sync-img-element" style="display:none;" />
                     <canvas id="sync-canvas-a" class="sync-canvas-element" width="640" height="360"></canvas>
+                  </div>
+
+                  <div class="sync-pane-scrub">
+                    <div class="sync-pane-scrub-row">
+                      <button type="button" class="sync-apex-btn compact" id="sync-snap-apex-a" aria-label="Snap Video A to apex">★ Snap to Apex</button>
+                    </div>
+                    <div class="sync-slider-track-wrap">
+                      <div class="sync-slider-progress" id="sync-slider-progress-a" style="width: 50%;"></div>
+                      <input type="range" class="sync-scrub-slider" id="sync-scrub-slider-a" min="0" max="100" step="0.1" value="50" aria-label="Video A delivery scrubber" />
+                    </div>
                   </div>
                 </div>
 
@@ -180,6 +191,7 @@
                       <strong id="sync-label-b" class="sync-pane-title">SECONDARY (SL / CH)</strong>
                     </div>
                     <div class="sync-time-readout" id="sync-time-readout-b">
+                      <span id="sync-apex-label-b" class="sync-apex-hint">Apex: 0:01.8</span>
                       <span class="sync-time-dot"></span>
                       <span id="sync-time-b">0:02.10s</span>
                     </div>
@@ -190,65 +202,20 @@
                     <img id="sync-img-b" alt="Pitch B delivery still" class="sync-img-element" style="display:none;" />
                     <canvas id="sync-canvas-b" class="sync-canvas-element" width="640" height="360"></canvas>
                   </div>
-                </div>
-              </div>
 
-              <!-- ONE Synchronized Scrubber Controller -->
-              <div class="sync-scrubber-panel">
-                <div class="sync-controls-row">
-                  <div class="sync-btn-group">
-                    <button type="button" class="sync-ctrl-btn" id="sync-play-btn" aria-label="Play or Pause Synchronized Playback">
-                      <span id="sync-play-icon">▶</span> <span id="sync-play-text">Play Sync</span>
-                    </button>
-                    <button type="button" class="sync-ctrl-btn secondary" id="sync-step-back-btn" aria-label="Step back 0.1 seconds">◀ -0.1s</button>
-                    <button type="button" class="sync-ctrl-btn secondary" id="sync-step-fwd-btn" aria-label="Step forward 0.1 seconds">+0.1s ▶</button>
-                  </div>
-
-                  <button type="button" class="sync-apex-btn" id="sync-snap-apex-btn" aria-label="Snap to Tip Apex Keyframe">
-                    <span class="apex-star">★</span> Snap to Tip Apex (Key Frame)
-                  </button>
-                </div>
-
-                <!-- Scrubber Track with 50% Apex Marker -->
-                <div class="sync-slider-container">
-                  <div class="sync-slider-track-wrap">
-                    <div class="sync-slider-progress" id="sync-slider-progress" style="width: 50%;"></div>
-                    <div class="sync-apex-marker" id="sync-apex-marker" style="left: 50%;" title="Tip Apex Anchor Point (Exact Discrepancy Moment)">
-                      <div class="sync-apex-pin"></div>
-                      <div class="sync-apex-tag" id="sync-apex-tag">★ KEY FRAME APEX</div>
+                  <div class="sync-pane-scrub">
+                    <div class="sync-pane-scrub-row">
+                      <button type="button" class="sync-apex-btn compact" id="sync-snap-apex-b" aria-label="Snap Video B to apex">★ Snap to Apex</button>
                     </div>
-                    <input
-                      type="range"
-                      class="sync-scrub-slider"
-                      id="sync-scrub-slider"
-                      min="0"
-                      max="100"
-                      step="0.1"
-                      value="50"
-                      aria-label="Synchronized delivery time scrubber"
-                    />
-                  </div>
-                  <div class="sync-slider-labels">
-                    <span class="sync-lbl-start" id="sync-lbl-start">Set Initiation (-1.5s)</span>
-                    <span class="sync-lbl-apex" id="sync-lbl-apex">★ DISCREPANCY APEX (SYNCED)</span>
-                    <span class="sync-lbl-end" id="sync-lbl-end">Ball Release (+1.5s)</span>
-                  </div>
-                </div>
-
-                <!-- Live Readout Footer Bar -->
-                <div class="sync-telemetry-footer">
-                  <div class="sync-telem-left">
-                    <span>Video A: <strong id="sync-telem-a" class="sync-val-mono">0:02.40</strong></span>
-                  </div>
-                  <div class="sync-telem-center">
-                    <span id="sync-telem-phase" class="sync-phase-pill">PHASE: COME-SET / GLOVE ANCHOR</span>
-                    <span id="sync-telem-delta" class="sync-delta-pill">Δt = +0.30s (Aligned)</span>
-                  </div>
-                  <div class="sync-telem-right">
-                    <span>Video B: <strong id="sync-telem-b" class="sync-val-mono">0:02.10</strong></span>
+                    <div class="sync-slider-track-wrap">
+                      <div class="sync-slider-progress" id="sync-slider-progress-b" style="width: 50%;"></div>
+                      <input type="range" class="sync-scrub-slider" id="sync-scrub-slider-b" min="0" max="100" step="0.1" value="50" aria-label="Video B delivery scrubber" />
+                    </div>
                   </div>
                 </div>
               </div>
+
+              <p class="sync-manual-hint">Scrub each video independently — pause at the <strong>Apex</strong> timestamp shown above each pane to compare the mechanical tell.</p>
             </div>
           </div>
 

@@ -1589,66 +1589,125 @@ function formatSec(s) {
 
 // Verified non-MLB showcase clips — ONLY these paths may load for international/college arms.
 // Situational suffixes are intentionally ignored; base verified files are always used.
+// Maps cover every pitch code tips can resolve to so SI/FC/CU never collapse both panes.
+const VIDEO_CACHE_BUST = "20260901sync";
 const VERIFIED_NON_MLB_VIDEOS = {
-  chase_burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4" },
-  burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4" },
-  roki_sasaki: { ff: "media/video/sasaki_ff.mp4", fs: "media/video/sasaki_fs.mp4", sl: "media/video/sasaki_fs.mp4" },
-  sasaki: { ff: "media/video/sasaki_ff.mp4", fs: "media/video/sasaki_fs.mp4", sl: "media/video/sasaki_fs.mp4" },
-  won_tae_choi: { si: "media/video/choi_si.mp4", ch: "media/video/choi_ch.mp4", ff: "media/video/choi_si.mp4", sl: "media/video/choi_ch.mp4", cu: "media/video/choi_ch.mp4" },
-  gu_lin: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4", ch: "media/video/gulin_cu.mp4" },
-  gulin: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4", ch: "media/video/gulin_cu.mp4" },
-  gu_lin_ruei_yang: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4", ch: "media/video/gulin_cu.mp4" },
-  wilmer_rios: { si: "media/video/rios_si.mp4", sl: "media/video/rios_sl.mp4", ch: "media/video/rios_ch.mp4", cu: "media/video/rios_sl.mp4", ff: "media/video/rios_si.mp4" },
-  rios: { si: "media/video/rios_si.mp4", sl: "media/video/rios_sl.mp4", ch: "media/video/rios_ch.mp4", cu: "media/video/rios_sl.mp4", ff: "media/video/rios_si.mp4" },
-  hughes: { ff: "media/video/hughes_ff.mp4", sl: "media/video/hughes_sl.mp4", ch: "media/video/hughes_sl.mp4" },
-  gabriel_hughes: { ff: "media/video/hughes_ff.mp4", sl: "media/video/hughes_sl.mp4", ch: "media/video/hughes_sl.mp4" },
-  gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4" },
-  moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4" },
+  chase_burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4", si: "media/video/burns_ff.mp4", fc: "media/video/burns_sl.mp4", fs: "media/video/burns_ch.mp4" },
+  burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4", si: "media/video/burns_ff.mp4", fc: "media/video/burns_sl.mp4", fs: "media/video/burns_ch.mp4" },
+  roki_sasaki: { ff: "media/video/sasaki_ff.mp4", fs: "media/video/sasaki_fs.mp4", sl: "media/video/sasaki_ff.mp4", ch: "media/video/sasaki_fs.mp4", cu: "media/video/sasaki_fs.mp4", si: "media/video/sasaki_ff.mp4", fc: "media/video/sasaki_ff.mp4" },
+  sasaki: { ff: "media/video/sasaki_ff.mp4", fs: "media/video/sasaki_fs.mp4", sl: "media/video/sasaki_ff.mp4", ch: "media/video/sasaki_fs.mp4", cu: "media/video/sasaki_fs.mp4", si: "media/video/sasaki_ff.mp4", fc: "media/video/sasaki_ff.mp4" },
+  won_tae_choi: { si: "media/video/choi_si.mp4", ch: "media/video/choi_ch.mp4", ff: "media/video/choi_si.mp4", sl: "media/video/choi_ch.mp4", cu: "media/video/choi_ch.mp4", fs: "media/video/choi_ch.mp4", fc: "media/video/choi_ch.mp4" },
+  gu_lin: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4", ch: "media/video/gulin_cu.mp4", fs: "media/video/gulin_cu.mp4", si: "media/video/gulin_ff.mp4", fc: "media/video/gulin_cu.mp4" },
+  gulin: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4", ch: "media/video/gulin_cu.mp4", fs: "media/video/gulin_cu.mp4", si: "media/video/gulin_ff.mp4", fc: "media/video/gulin_cu.mp4" },
+  gu_lin_ruei_yang: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4", ch: "media/video/gulin_cu.mp4", fs: "media/video/gulin_cu.mp4", si: "media/video/gulin_ff.mp4", fc: "media/video/gulin_cu.mp4" },
+  wilmer_rios: { si: "media/video/rios_si.mp4", sl: "media/video/rios_sl.mp4", ch: "media/video/rios_sl.mp4", cu: "media/video/rios_sl.mp4", ff: "media/video/rios_si.mp4", fc: "media/video/rios_sl.mp4", fs: "media/video/rios_sl.mp4" },
+  rios: { si: "media/video/rios_si.mp4", sl: "media/video/rios_sl.mp4", ch: "media/video/rios_sl.mp4", cu: "media/video/rios_sl.mp4", ff: "media/video/rios_si.mp4", fc: "media/video/rios_sl.mp4", fs: "media/video/rios_sl.mp4" },
+  hughes: { ff: "media/video/hughes_ff.mp4", sl: "media/video/hughes_sl.mp4", ch: "media/video/hughes_sl.mp4", si: "media/video/hughes_ff.mp4", cu: "media/video/hughes_sl.mp4", fc: "media/video/hughes_sl.mp4", fs: "media/video/hughes_sl.mp4" },
+  gabriel_hughes: { ff: "media/video/hughes_ff.mp4", sl: "media/video/hughes_sl.mp4", ch: "media/video/hughes_sl.mp4", si: "media/video/hughes_ff.mp4", cu: "media/video/hughes_sl.mp4", fc: "media/video/hughes_sl.mp4", fs: "media/video/hughes_sl.mp4" },
+  gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
+  moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
+};
+
+/** Content-distinct clip pairs (rios_ch/hughes_ch are byte-identical to *_sl). */
+const SHOWCASE_UNIQUE_CLIPS = {
+  chase_burns: ["media/video/burns_ff.mp4", "media/video/burns_sl.mp4", "media/video/burns_ch.mp4"],
+  burns: ["media/video/burns_ff.mp4", "media/video/burns_sl.mp4", "media/video/burns_ch.mp4"],
+  roki_sasaki: ["media/video/sasaki_ff.mp4", "media/video/sasaki_fs.mp4"],
+  sasaki: ["media/video/sasaki_ff.mp4", "media/video/sasaki_fs.mp4"],
+  won_tae_choi: ["media/video/choi_si.mp4", "media/video/choi_ch.mp4"],
+  gu_lin: ["media/video/gulin_ff.mp4", "media/video/gulin_cu.mp4"],
+  gulin: ["media/video/gulin_ff.mp4", "media/video/gulin_cu.mp4"],
+  gu_lin_ruei_yang: ["media/video/gulin_ff.mp4", "media/video/gulin_cu.mp4"],
+  wilmer_rios: ["media/video/rios_si.mp4", "media/video/rios_sl.mp4"],
+  rios: ["media/video/rios_si.mp4", "media/video/rios_sl.mp4"],
+  hughes: ["media/video/hughes_ff.mp4", "media/video/hughes_sl.mp4"],
+  gabriel_hughes: ["media/video/hughes_ff.mp4", "media/video/hughes_sl.mp4"],
+  gabriel_moreno: ["media/video/moreno_ff.mp4", "media/video/moreno_ch.mp4"],
+  moreno: ["media/video/moreno_ff.mp4", "media/video/moreno_ch.mp4"],
 };
 
 const MLB_VIDEO_PREFIXES = new Set(["roupp", "webb", "erod", "pfaadt", "gausman", "gordon"]);
 
-function resolveVerifiedNonMlbVideo(normId, pitchType) {
-  const p = (pitchType || "").toLowerCase();
-  let playerKey = normId;
-  if (!VERIFIED_NON_MLB_VIDEOS[playerKey]) {
-    for (const key of Object.keys(VERIFIED_NON_MLB_VIDEOS)) {
-      if (normId.includes(key) || key.includes(normId)) {
-        playerKey = key;
-        break;
-      }
-    }
-  }
-  const verified = VERIFIED_NON_MLB_VIDEOS[playerKey];
-  if (!verified) return "";
-
-  let pCode = "ff";
-  // Catcher Moreno: only ff vs ch/offspeed clips exist
-  if (playerKey.includes("moreno")) {
-    if (/\bff\b|four|fastball|\(ff\)|\bfast\b/i.test(p)) pCode = "ff";
-    else pCode = "ch";
-  } else if (/\bff\b|four|fastball|\(ff\)|\bfast\b/i.test(p)) pCode = "ff";
-  else if (/split|fork|\bfs\b/i.test(p)) pCode = "fs";
-  else if (/curve|\bcu\b/i.test(p)) pCode = "cu";
-  else if (/change|\bch\b/i.test(p)) pCode = "ch";
-  else if (/slider|\bsl\b|sweep/i.test(p)) pCode = "sl";
-  else if (/sink|\bsi\b/i.test(p)) pCode = "si";
-  else if (/cutter|\bfc\b/i.test(p)) pCode = "fc";
-
-  return verified[pCode] || verified.ff || verified.ch || "";
+function withVideoCacheBust(src) {
+  if (!src) return src;
+  const base = String(src).split("?")[0];
+  return `${base}?v=${VIDEO_CACHE_BUST}`;
 }
 
-function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilter = "") {
+function normalizePlayerKey(playerId) {
+  const normId = (playerId || "").toLowerCase().replace(/[^a-z0-9_]/g, "_");
+  if (!normId) return "";
+  if (VERIFIED_NON_MLB_VIDEOS[normId]) return normId;
+  const keys = Object.keys(VERIFIED_NON_MLB_VIDEOS).sort((a, b) => b.length - a.length);
+  for (const key of keys) {
+    if (normId === key || normId.includes(key) || key.includes(normId)) return key;
+  }
+  return "";
+}
+
+function extractPitchCode(pitchType, playerKey) {
+  const p = (pitchType || "").toLowerCase();
+  if ((playerKey || "").includes("moreno")) {
+    if (/\bff\b|four|fastball|\(ff\)|\bfast\b|high/i.test(p)) return "ff";
+    return "ch";
+  }
+  const parenCodes = [...p.matchAll(/\(([a-z]{2})\b/g)].map((m) => m[1]);
+  const valid = new Set(["ff", "si", "sl", "ch", "cu", "fs", "fc", "st"]);
+  for (const code of parenCodes) {
+    if (valid.has(code)) return code === "st" ? "sl" : code;
+  }
+  const first = p.split(/\s*[\/·]\s*|\s+vs\.?\s+/i)[0] || p;
+  if (/\bff\b|four|fastball|\bfast\b/i.test(first)) return "ff";
+  if (/split|fork|\bfs\b/i.test(first)) return "fs";
+  if (/curve|\bcu\b|\bcv\b/i.test(first)) return "cu";
+  if (/change|\bch\b/i.test(first)) return "ch";
+  if (/slider|\bsl\b|sweep/i.test(first)) return "sl";
+  if (/sink|\bsi\b/i.test(first)) return "si";
+  if (/cutter|\bfc\b/i.test(first)) return "fc";
+  if (/\bff\b|four|fastball|\bfast\b/i.test(p)) return "ff";
+  if (/split|fork|\bfs\b/i.test(p)) return "fs";
+  if (/curve|\bcu\b|\bcv\b/i.test(p)) return "cu";
+  if (/change|\bch\b/i.test(p)) return "ch";
+  if (/slider|\bsl\b|sweep/i.test(p)) return "sl";
+  if (/sink|\bsi\b/i.test(p)) return "si";
+  if (/cutter|\bfc\b/i.test(p)) return "fc";
+  return "ff";
+}
+
+function resolveVerifiedNonMlbVideo(normId, pitchType) {
+  const playerKey = normalizePlayerKey(normId);
+  const verified = VERIFIED_NON_MLB_VIDEOS[playerKey];
+  if (!verified) return "";
+  const pCode = extractPitchCode(pitchType, playerKey);
+  return verified[pCode] || verified.ff || verified.ch || verified.si || Object.values(verified)[0] || "";
+}
+
+function ensureDistinctShowcaseVideos(playerId, videoA, videoB) {
+  const playerKey = normalizePlayerKey(playerId);
+  const clips = SHOWCASE_UNIQUE_CLIPS[playerKey] || [];
+  let vA = videoA || "";
+  let vB = videoB || "";
+  if (clips.length) {
+    if (!vA) vA = clips[0];
+    if (!vB) vB = clips[1] || clips[0];
+    if (vA === vB && clips.length >= 2) {
+      vB = clips.find((c) => c !== vA) || vB;
+    }
+  }
+  if (vA && vB && vA === vB) {
+    console.error(`[Preflight Video] could not distinct-pair for ${playerId}: ${vA}`);
+  }
+  return { videoA: vA, videoB: vB };
+}
+
+function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilter = "", _videoMatrix = null) {
   const normId = (playerId || "").toLowerCase().replace(/[^a-z0-9_]/g, "_");
   const p = (pitchType || "").toLowerCase();
   const c = (contextFilter || "").toLowerCase();
 
-  // Non-MLB showcase arms: strict verified map only (ignore situational suffixes)
   const verifiedNonMlb = resolveVerifiedNonMlbVideo(normId, pitchType);
   if (verifiedNonMlb) return verifiedNonMlb;
-  for (const key of Object.keys(VERIFIED_NON_MLB_VIDEOS)) {
-    if (normId.includes(key)) return "";
-  }
+  if (normalizePlayerKey(normId)) return "";
 
   let sitSuffix = "";
   if (c.includes("2b") || c.includes("second")) sitSuffix = "_runner_2b";
@@ -1660,7 +1719,6 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   else if (c.includes("windup")) sitSuffix = "_windup";
   else if (c.includes("stretch")) sitSuffix = "_stretch";
 
-  // Landen Roupp (SF) - Verified Genuine Statcast Broadcast Video
   if (normId.includes("roupp") || normId.includes("landen_roupp")) {
     let pCode = "si";
     if (p.includes("cu") || p.includes("curve")) pCode = "cu";
@@ -1670,7 +1728,6 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/roupp_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Logan Webb (SF) - Verified Genuine Statcast Broadcast Video
   if (normId.includes("webb") || normId.includes("logan_webb")) {
     let pCode = "si";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1680,7 +1737,6 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/webb_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Eduardo Rodriguez (ARI) - Verified Genuine Statcast Broadcast Video
   if (normId.includes("erod") || normId.includes("eduardo") || normId.includes("eduardo_rodriguez")) {
     let pCode = "ff";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1691,7 +1747,6 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/erod_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Brandon Pfaadt (ARI) - Genuine Statcast Broadcast Video
   if (normId.includes("pfaadt") || normId.includes("brandon_pfaadt")) {
     let pCode = "si";
     if (p.includes("st") || p.includes("sweep")) pCode = "st";
@@ -1701,7 +1756,6 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/pfaadt_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Kevin Gausman (TOR) - Genuine Statcast Broadcast Video
   if (normId.includes("gausman") || normId.includes("kevin_gausman")) {
     let pCode = "ff";
     if (p.includes("fs") || p.includes("split") || p.includes("fork")) pCode = "fs";
@@ -1709,7 +1763,6 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/gausman_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Tanner Gordon (COL) - Genuine Statcast Broadcast Video
   if (normId.includes("gordon") || normId.includes("tanner_gordon")) {
     let pCode = "ff";
     if (p.includes("ch") || p.includes("change")) pCode = "ch";
@@ -1718,8 +1771,6 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/gordon_${pCode}${sitSuffix}.mp4`;
   }
 
-  // Strictly return empty string for all other pitchers (non-MLB showcase arms & arms without verified video).
-  // This guarantees no pitcher ever displays another pitcher's delivery footage or broken video frames.
   if (defaultFallback && (defaultFallback.includes(normId) || defaultFallback.includes(playerId))) {
     return defaultFallback;
   }
@@ -1888,15 +1939,20 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
     } else if (p === "FF") {
       pitchA = "Four-Seam (FF 95mph)";
       pitchB = "Curveball (CU 79mph)";
+    } else if (p === "FS") {
+      pitchA = "Splitter (FS 92mph)";
+      pitchB = "Fastball (FF 95mph)";
     } else {
       pitchA = `${tip.predicts} (Tell Target)`;
       pitchB = "Arsenal Contrast";
     }
   }
 
-  // Parse anchor timestamps TA and TB
+  // Shared second-mark on both panes (prior tB = tA - 0.30 desynced compare stage).
   let tA = 2.40;
-  let tB = 2.10;
+  let tB = 2.40;
+  const pid = player?.id || "";
+  const isMoreno = /moreno/i.test(pid);
 
   if (tip?.anchor_a != null && tip?.anchor_b != null) {
     tA = Number(tip.anchor_a);
@@ -1909,36 +1965,44 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
     const matchA = rawTimeStr.match(/(?:0:)?0?([0-9])\.([0-9]{1,2})/);
     if (matchA) {
       tA = parseFloat(`${matchA[1]}.${matchA[2]}`);
-      tB = parseFloat(Math.max(0.5, tA - 0.30).toFixed(2));
+      tB = tA;
     }
   }
 
-  const pid = player?.id || "";
+  if (isMoreno) {
+    if (!(tip?.anchor_a != null && tip?.anchor_b != null) && !(tip?.tA != null && tip?.tB != null)) {
+      tA = Math.min(Math.max(tA || 0.75, 0.55), 0.85);
+      tB = tA;
+    } else {
+      tA = Math.min(tA, 1.0);
+      tB = Math.min(tB, 1.0);
+    }
+  }
+
   const vComp = player?.videoCompare || {};
   const currentContext = contextFilter || document.getElementById("context-select")?.value || "";
-  let videoA = tip?.videoA || tip?.video_a || resolveVideoForPitch(pid, pitchA, player?.videoA || vComp.videoA, currentContext);
-  let videoB = tip?.videoB || tip?.video_b || resolveVideoForPitch(pid, pitchB, player?.videoB || vComp.videoB, currentContext);
+  let videoA = tip?.videoA || tip?.video_a || resolveVideoForPitch(pid, pitchA, player?.videoA || vComp.videoA, currentContext, player?.videoMatrix);
+  let videoB = tip?.videoB || tip?.video_b || resolveVideoForPitch(pid, pitchB, player?.videoB || vComp.videoB, currentContext, player?.videoMatrix);
 
-  // Reject MLB-prefix paths for non-MLB showcase arms
   const normPid = (pid || "").toLowerCase();
+  const isMlbPlayer = ["roupp", "webb", "erod", "pfaadt", "gausman", "gordon"].some((m) => normPid.includes(m));
   for (const v of [videoA, videoB]) {
     if (!v) continue;
-    const filePrefix = v.split("/").pop()?.split("_")[0] || "";
-    if (MLB_VIDEO_PREFIXES.has(filePrefix)) {
-      const isMlbPlayer = ["roupp", "webb", "erod", "pfaadt", "gausman", "gordon"].some((m) => normPid.includes(m));
-      if (!isMlbPlayer) {
-        console.error(`[Preflight Video] BLOCKED MLB imposter for ${pid}: ${v}`);
-        if (v === videoA) videoA = "";
-        if (v === videoB) videoB = "";
-      }
+    const filePrefix = v.split("?")[0].split("/").pop()?.split("_")[0] || "";
+    if (MLB_VIDEO_PREFIXES.has(filePrefix) && !isMlbPlayer) {
+      console.error(`[Preflight Video] BLOCKED MLB imposter for ${pid}: ${v}`);
+      if (v === videoA) videoA = "";
+      if (v === videoB) videoB = "";
     }
   }
 
-  // Hide comparison when both sides resolve to the same file
-  if (videoA && videoB && videoA === videoB) {
+  // Showcase: never blank both panes to telemetry — force a distinct same-player pair.
+  if (normalizePlayerKey(pid)) {
+    const paired = ensureDistinctShowcaseVideos(pid, videoA, videoB);
+    videoA = paired.videoA;
+    videoB = paired.videoB;
+  } else if (videoA && videoB && videoA.split("?")[0] === videoB.split("?")[0]) {
     console.error(`[Preflight Video] DUPLICATE videoA === videoB for ${pid} tip "${tip?.id || tip?.title}": ${videoA}`);
-    videoA = "";
-    videoB = "";
   }
 
   const stillA = tip?.stillA || tip?.still_a || player?.stillA || player?.still_a || player?.detectionStill || "";
@@ -2317,19 +2381,12 @@ function wireSynchronizedDeliveryScrubber(player) {
     const tip = availableTips[currentTipIdx];
     let { pitchA, pitchB, tA, tB, videoA: vA, videoB: vB, stillA: sA, stillB: sB } = parseTipTimingsAndLabels(tip, player);
 
-    // Guard: identical resolved paths — force alternate pitch-type lookup or hide pane
-    if (vA && vB && vA === vB) {
-      const pid = player?.id || "";
-      const altA = resolveVideoForPitch(pid, pitchA, "", "");
-      const altB = resolveVideoForPitch(pid, pitchB, "", "");
-      if (altA && altB && altA !== altB) {
-        vA = altA;
-        vB = altB;
-      } else {
-        console.error(`[Preflight Video] applyTipSelection duplicate blocked for ${pid}: ${vA}`);
-        vA = "";
-        vB = "";
-      }
+    if (normalizePlayerKey(player?.id || "")) {
+      const paired = ensureDistinctShowcaseVideos(player?.id || "", vA, vB);
+      vA = paired.videoA;
+      vB = paired.videoB;
+    } else if (vA && vB && vA.split("?")[0] === vB.split("?")[0]) {
+      console.error(`[Preflight Video] applyTipSelection duplicate for ${player?.id}: ${vA}`);
     }
 
     // Update Dropdown & Quick Pills
@@ -2388,8 +2445,11 @@ function wireSynchronizedDeliveryScrubber(player) {
         videoA.playsInline = true;
         videoA.setAttribute("playsinline", "");
         const curSrcA = videoA.getAttribute("src") || videoA.src || "";
-        if (!curSrcA.endsWith(vA)) {
-          videoA.src = vA;
+        const nextSrcA = withVideoCacheBust(vA);
+        const curBaseA = (curSrcA || "").split("?")[0];
+        const nextBaseA = nextSrcA.split("?")[0];
+        if (curBaseA !== nextBaseA || !curSrcA || !String(curSrcA).includes(VIDEO_CACHE_BUST)) {
+          videoA.src = nextSrcA;
           try { videoA.load?.(); } catch (e) {}
         }
         videoA.style.display = "block";
@@ -2402,10 +2462,12 @@ function wireSynchronizedDeliveryScrubber(player) {
         const onReadyA = () => {
           hasVideoA = true;
           try { videoA.pause(); } catch (e) {}
+          try { videoA.playbackRate = 1; } catch (e) {}
           videoA.style.display = "block";
           if (imgA) imgA.style.display = "none";
           syncMediaAndHUD();
         };
+        videoA.onloadedmetadata = onReadyA;
         videoA.onloadeddata = onReadyA;
         videoA.oncanplay = onReadyA;
         if (videoA.readyState >= 2) {
@@ -2429,8 +2491,11 @@ function wireSynchronizedDeliveryScrubber(player) {
         videoB.playsInline = true;
         videoB.setAttribute("playsinline", "");
         const curSrcB = videoB.getAttribute("src") || videoB.src || "";
-        if (!curSrcB.endsWith(vB)) {
-          videoB.src = vB;
+        const nextSrcB = withVideoCacheBust(vB);
+        const curBaseB = (curSrcB || "").split("?")[0];
+        const nextBaseB = nextSrcB.split("?")[0];
+        if (curBaseB !== nextBaseB || !curSrcB || !String(curSrcB).includes(VIDEO_CACHE_BUST)) {
+          videoB.src = nextSrcB;
           try { videoB.load?.(); } catch (e) {}
         }
         videoB.style.display = "block";
@@ -2443,10 +2508,12 @@ function wireSynchronizedDeliveryScrubber(player) {
         const onReadyB = () => {
           hasVideoB = true;
           try { videoB.pause(); } catch (e) {}
+          try { videoB.playbackRate = 1; } catch (e) {}
           videoB.style.display = "block";
           if (imgB) imgB.style.display = "none";
           syncMediaAndHUD();
         };
+        videoB.onloadedmetadata = onReadyB;
         videoB.onloadeddata = onReadyB;
         videoB.oncanplay = onReadyB;
         if (videoB.readyState >= 2) {

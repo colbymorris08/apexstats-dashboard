@@ -967,6 +967,42 @@ th {
   padding: 0.2rem 0.5rem;
   border-radius: 3px;
   border: 1px solid rgba(255, 196, 80, 0.25);
+  flex-wrap: wrap;
+}
+
+.sync-apex-hint {
+  color: #93c5fd;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.sync-pane-scrub {
+  padding: 0.55rem 0.65rem 0.75rem;
+  background: rgba(8, 14, 24, 0.65);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sync-pane-scrub-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.4rem;
+}
+
+.sync-apex-btn.compact {
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+}
+
+.sync-manual-hint {
+  margin: 0.75rem 0 0;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.82rem;
+  color: var(--faint);
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 6px;
+  line-height: 1.45;
 }
 
 .sync-time-dot {

@@ -24872,7 +24872,9 @@
             "clears_75": true
           },
           "pitchType": "FC",
-          "situationId": "second_any|rhh"
+          "situationId": "second_any|rhh",
+          "anchor_a": 2.4,
+          "anchor_b": 2.1
         },
         {
           "id": "lead_eduardo_rodriguez_break_tempo_2",
@@ -24922,7 +24924,9 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.6,
+          "anchor_b": 1.3
         },
         {
           "id": "lead_eduardo_rodriguez_glove_flapping_3",
@@ -24972,7 +24976,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.2,
+          "anchor_b": 0.9
         },
         {
           "id": "lead_eduardo_rodriguez_glove_depth_4",
@@ -25022,7 +25028,9 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.1,
+          "anchor_b": 1.8
         },
         {
           "id": "lead_eduardo_rodriguez_knee_apex_height_5",
@@ -25072,7 +25080,9 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.5,
+          "anchor_b": 1.2
         }
       ],
       "topLeads": [
@@ -27612,7 +27622,15 @@
           },
           "pitchType": "SL",
           "situationId": "3b|rhh",
-          "situationLabel": "third only, RHH up"
+          "situationLabel": "third only, RHH up",
+          "videoA": "media/video/hughes_sl.mp4",
+          "videoB": "media/video/hughes_ff.mp4",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "Slider (SL 86mph)",
+          "pitch_b_label": "Fastball (FF 95mph)"
         },
         {
           "id": "disc-1b-lhh-CH-glove_flare_std",
@@ -27648,7 +27666,15 @@
           },
           "pitchType": "CH",
           "situationId": "1b|lhh",
-          "situationLabel": "first only, LHH up"
+          "situationLabel": "first only, LHH up",
+          "videoA": "media/video/hughes_sl.mp4",
+          "videoB": "media/video/hughes_ff.mp4",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "Changeup (CH 84mph)",
+          "pitch_b_label": "Sinker (SI 93mph)"
         },
         {
           "id": "disc-1b-rhh-SI-glove_vs_belt_std",
@@ -27684,7 +27710,15 @@
           },
           "pitchType": "SI",
           "situationId": "1b|rhh",
-          "situationLabel": "first only, RHH up"
+          "situationLabel": "first only, RHH up",
+          "videoA": "media/video/hughes_ff.mp4",
+          "videoB": "media/video/hughes_sl.mp4",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "Sinker (SI 93mph)",
+          "pitch_b_label": "Four-Seam (FF 95mph)"
         },
         {
           "id": "disc-1b-rhh-FF-glove_vs_belt_mean",
@@ -27720,7 +27754,15 @@
           },
           "pitchType": "FF",
           "situationId": "1b|rhh",
-          "situationLabel": "first only, RHH up"
+          "situationLabel": "first only, RHH up",
+          "videoA": "media/video/hughes_ff.mp4",
+          "videoB": "media/video/hughes_sl.mp4",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "Four-Seam (FF 95mph)",
+          "pitch_b_label": "Curveball (CU 79mph)"
         },
         {
           "id": "disc-all-lhh-SI-pitchcom_mean_isi",
@@ -27754,7 +27796,15 @@
           },
           "pitchType": "SI",
           "situationId": "all|lhh",
-          "situationLabel": "vs lefties"
+          "situationLabel": "vs lefties",
+          "videoA": "media/video/hughes_ff.mp4",
+          "videoB": "media/video/hughes_sl.mp4",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "Sinker (SI 93mph)",
+          "pitch_b_label": "Four-Seam (FF 95mph)"
         },
         {
           "id": "disc-all-rhh-CU-glove_vs_belt_mean",
@@ -27788,7 +27838,15 @@
           },
           "pitchType": "CU",
           "situationId": "all|rhh",
-          "situationLabel": "vs righties"
+          "situationLabel": "vs righties",
+          "videoA": "media/video/hughes_sl.mp4",
+          "videoB": "media/video/hughes_ff.mp4",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "Curveball (CU 79mph)",
+          "pitch_b_label": "Sinker (SI 93mph)"
         },
         {
           "id": "disc-3b-rhh-FF-pitchcom_mean_isi",
@@ -27824,7 +27882,15 @@
           },
           "pitchType": "FF",
           "situationId": "3b|rhh",
-          "situationLabel": "third only, RHH up"
+          "situationLabel": "third only, RHH up",
+          "videoA": "media/video/hughes_ff.mp4",
+          "videoB": "media/video/hughes_sl.mp4",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "Four-Seam (FF 95mph)",
+          "pitch_b_label": "Curveball (CU 79mph)"
         },
         {
           "id": "disc-1b-lhh-FF-glove_flare_std",
@@ -27860,7 +27926,15 @@
           },
           "pitchType": "FF",
           "situationId": "1b|lhh",
-          "situationLabel": "first only, LHH up"
+          "situationLabel": "first only, LHH up",
+          "videoA": "media/video/hughes_ff.mp4",
+          "videoB": "media/video/hughes_sl.mp4",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "Four-Seam (FF 95mph)",
+          "pitch_b_label": "Curveball (CU 79mph)"
         },
         {
           "id": "disc-1b-lhh-CU-glove_flare_mean",
@@ -27896,7 +27970,15 @@
           },
           "pitchType": "CU",
           "situationId": "1b|lhh",
-          "situationLabel": "first only, LHH up"
+          "situationLabel": "first only, LHH up",
+          "videoA": "media/video/hughes_sl.mp4",
+          "videoB": "media/video/hughes_ff.mp4",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "Curveball (CU 79mph)",
+          "pitch_b_label": "Sinker (SI 93mph)"
         }
       ],
       "topLeads": [
@@ -48095,7 +48177,9 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.1,
+          "anchor_b": 1.9
         },
         {
           "id": "lead_landen_roupp_hand_depth_pocket_2",
@@ -48145,7 +48229,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.4,
+          "anchor_b": 2.1
         },
         {
           "id": "lead_landen_roupp_settle_lift_tempo_3",
@@ -48195,7 +48281,9 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 2.0,
+          "anchor_b": 1.8
         },
         {
           "id": "lead_landen_roupp_glove_pocket_flare_4",
@@ -48247,7 +48335,9 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.7,
+          "anchor_b": 1.7
         },
         {
           "id": "lead_landen_roupp_glove_drift_dx_5",
@@ -48299,7 +48389,9 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.3,
+          "anchor_b": 1.3
         }
       ],
       "topLeads": [
@@ -48781,7 +48873,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.1,
+          "anchor_b": 1.8
         },
         {
           "id": "lead_logan_webb_spine_tilt_2",
@@ -48831,7 +48925,9 @@
             "clears_75": true
           },
           "pitchType": "ST",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.8,
+          "anchor_b": 1.5
         },
         {
           "id": "lead_logan_webb_catcher_target_3",
@@ -48881,7 +48977,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "lead_logan_webb_glove_tuck_break_4",
@@ -48931,7 +49029,9 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.4,
+          "anchor_b": 1.1
         },
         {
           "id": "lead_logan_webb_lead_knee_drift_5",
@@ -48981,7 +49081,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.7,
+          "anchor_b": 1.4
         }
       ],
       "topLeads": [
@@ -90036,7 +90138,9 @@
           "side_by_side_guide": "Pitch A (Splitter/Forkball - FS): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for splitter/forkball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Splitter/Forkball (FS) vs Arsenal Baseline",
-          "contrast": "Splitter/Forkball vs Arsenal"
+          "contrast": "Splitter/Forkball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-none-all-FS-catcher_glove_speed_p90",
@@ -90082,7 +90186,9 @@
           "side_by_side_guide": "Pitch A (Splitter/Forkball - FS): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for splitter/forkball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Splitter/Forkball (FS) vs Arsenal Baseline",
-          "contrast": "Splitter/Forkball vs Arsenal"
+          "contrast": "Splitter/Forkball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-lhh-CU-catcher_glove_y_mean",
@@ -90127,7 +90233,9 @@
           "side_by_side_guide": "Pitch A (Curveball - CU): Catcher mitt resting low below knees. Pitch B (Arsenal Baseline): Catcher mitt held elevated at chest/belt.",
           "scouting_note": "Low target placement signals a chase pitch in the lower third or dirt for curveball. Watch catcher target height before delivery begins.",
           "contrast_label": "Curveball (CU) vs Arsenal Baseline",
-          "contrast": "Curveball vs Arsenal"
+          "contrast": "Curveball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-lhh-FS-catcher_glove_x_mean",
@@ -90172,7 +90280,9 @@
           "side_by_side_guide": "Pitch A (Splitter/Forkball - FS): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on splitter/forkball. Watch catcher target offset before leg lift.",
           "contrast_label": "Splitter/Forkball (FS) vs Arsenal Baseline",
-          "contrast": "Splitter/Forkball vs Arsenal"
+          "contrast": "Splitter/Forkball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-none-all-CU-catcher_stance_mean",
@@ -90218,7 +90328,9 @@
           "side_by_side_guide": "Pitch A (Curveball - CU): Broad foot spread (wide blocking base). Pitch B (Arsenal Baseline): Narrow, compact foot placement.",
           "scouting_note": "Wide base spread allows rapid sideways sliding to block dirt balls on curveball. Watch catcher foot width before pitcher moves.",
           "contrast_label": "Curveball (CU) vs Arsenal Baseline",
-          "contrast": "Curveball vs Arsenal"
+          "contrast": "Curveball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-all-CU-catcher_glove_speed_mean",
@@ -90263,7 +90375,9 @@
           "side_by_side_guide": "Pitch A (Curveball - CU): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for curveball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Curveball (CU) vs Arsenal Baseline",
-          "contrast": "Curveball vs Arsenal"
+          "contrast": "Curveball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-all-FF-catcher_glove_speed_p90",
@@ -90308,7 +90422,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Motionless target held static for >1.0s. Pitch B (Arsenal Baseline): Active late target adjustments before lift.",
           "scouting_note": "Early target lock indicates preset location confidence on 4-seam fastball. Watch catcher target stability before pitcher moves.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-all-FS-catcher_glove_y_mean",
@@ -90353,7 +90469,9 @@
           "side_by_side_guide": "Pitch A (Splitter/Forkball - FS): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for splitter/forkball. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Splitter/Forkball (FS) vs Arsenal Baseline",
-          "contrast": "Splitter/Forkball vs Arsenal"
+          "contrast": "Splitter/Forkball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-all-SI-catcher_glove_x_mean",
@@ -90398,7 +90516,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on 2-seam sinker. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-lhh-FF-catcher_glove_x_mean",
@@ -90443,7 +90563,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on 4-seam fastball. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "catcherTips": [
@@ -90490,7 +90612,9 @@
           "side_by_side_guide": "Pitch A (Splitter/Forkball - FS): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for splitter/forkball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Splitter/Forkball (FS) vs Arsenal Baseline",
-          "contrast": "Splitter/Forkball vs Arsenal"
+          "contrast": "Splitter/Forkball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-none-all-FS-catcher_glove_speed_p90",
@@ -90536,7 +90660,9 @@
           "side_by_side_guide": "Pitch A (Splitter/Forkball - FS): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for splitter/forkball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Splitter/Forkball (FS) vs Arsenal Baseline",
-          "contrast": "Splitter/Forkball vs Arsenal"
+          "contrast": "Splitter/Forkball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-lhh-CU-catcher_glove_y_mean",
@@ -90581,7 +90707,9 @@
           "side_by_side_guide": "Pitch A (Curveball - CU): Catcher mitt resting low below knees. Pitch B (Arsenal Baseline): Catcher mitt held elevated at chest/belt.",
           "scouting_note": "Low target placement signals a chase pitch in the lower third or dirt for curveball. Watch catcher target height before delivery begins.",
           "contrast_label": "Curveball (CU) vs Arsenal Baseline",
-          "contrast": "Curveball vs Arsenal"
+          "contrast": "Curveball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-lhh-FS-catcher_glove_x_mean",
@@ -90626,7 +90754,9 @@
           "side_by_side_guide": "Pitch A (Splitter/Forkball - FS): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on splitter/forkball. Watch catcher target offset before leg lift.",
           "contrast_label": "Splitter/Forkball (FS) vs Arsenal Baseline",
-          "contrast": "Splitter/Forkball vs Arsenal"
+          "contrast": "Splitter/Forkball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-none-all-CU-catcher_stance_mean",
@@ -90672,7 +90802,9 @@
           "side_by_side_guide": "Pitch A (Curveball - CU): Broad foot spread (wide blocking base). Pitch B (Arsenal Baseline): Narrow, compact foot placement.",
           "scouting_note": "Wide base spread allows rapid sideways sliding to block dirt balls on curveball. Watch catcher foot width before pitcher moves.",
           "contrast_label": "Curveball (CU) vs Arsenal Baseline",
-          "contrast": "Curveball vs Arsenal"
+          "contrast": "Curveball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-all-CU-catcher_glove_speed_mean",
@@ -90717,7 +90849,9 @@
           "side_by_side_guide": "Pitch A (Curveball - CU): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for curveball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Curveball (CU) vs Arsenal Baseline",
-          "contrast": "Curveball vs Arsenal"
+          "contrast": "Curveball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-all-FF-catcher_glove_speed_p90",
@@ -90762,7 +90896,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Motionless target held static for >1.0s. Pitch B (Arsenal Baseline): Active late target adjustments before lift.",
           "scouting_note": "Early target lock indicates preset location confidence on 4-seam fastball. Watch catcher target stability before pitcher moves.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-all-FS-catcher_glove_y_mean",
@@ -90807,7 +90943,9 @@
           "side_by_side_guide": "Pitch A (Splitter/Forkball - FS): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for splitter/forkball. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Splitter/Forkball (FS) vs Arsenal Baseline",
-          "contrast": "Splitter/Forkball vs Arsenal"
+          "contrast": "Splitter/Forkball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-all-SI-catcher_glove_x_mean",
@@ -90852,7 +90990,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on 2-seam sinker. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-austin_barnes-all-lhh-FF-catcher_glove_x_mean",
@@ -90897,7 +91037,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on 4-seam fastball. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "tipFloor": 0.75,
@@ -90990,7 +91132,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt resting low below knees. Pitch B (Arsenal Baseline): Catcher mitt held elevated at chest/belt.",
           "scouting_note": "Low target placement signals a chase pitch in the lower third or dirt for 2-seam sinker. Watch catcher target height before delivery begins.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-lhh-ST-catcher_glove_speed_mean",
@@ -91035,7 +91179,9 @@
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for sweeper. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal"
+          "contrast": "Sweeper vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-all-FF-catcher_glove_y_mean",
@@ -91080,7 +91226,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for 4-seam fastball. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-rhh-SI-catcher_glove_speed_p90",
@@ -91125,7 +91273,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 2-seam sinker. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-all-FC-catcher_stance_mean",
@@ -91170,7 +91320,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Compact foot width directly under hips. Pitch B (Arsenal Baseline): Wide, splayed foot stance.",
           "scouting_note": "Compact stance maintains mobility for framing strikes on cutter. Watch catcher foot spacing before pitcher comes set.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-all-CH-catcher_stance_mean",
@@ -91215,7 +91367,9 @@
           "side_by_side_guide": "Pitch A (Changeup - CH): Compact foot width directly under hips. Pitch B (Arsenal Baseline): Wide, splayed foot stance.",
           "scouting_note": "Compact stance maintains mobility for framing strikes on changeup. Watch catcher foot spacing before pitcher comes set.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal"
+          "contrast": "Changeup vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-lhh-FC-catcher_glove_y_mean",
@@ -91260,7 +91414,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for cutter. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "catcherTips": [
@@ -91307,7 +91463,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt resting low below knees. Pitch B (Arsenal Baseline): Catcher mitt held elevated at chest/belt.",
           "scouting_note": "Low target placement signals a chase pitch in the lower third or dirt for 2-seam sinker. Watch catcher target height before delivery begins.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-lhh-ST-catcher_glove_speed_mean",
@@ -91352,7 +91510,9 @@
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for sweeper. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal"
+          "contrast": "Sweeper vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-all-FF-catcher_glove_y_mean",
@@ -91397,7 +91557,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for 4-seam fastball. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-rhh-SI-catcher_glove_speed_p90",
@@ -91442,7 +91604,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 2-seam sinker. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-all-FC-catcher_stance_mean",
@@ -91487,7 +91651,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Compact foot width directly under hips. Pitch B (Arsenal Baseline): Wide, splayed foot stance.",
           "scouting_note": "Compact stance maintains mobility for framing strikes on cutter. Watch catcher foot spacing before pitcher comes set.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-all-CH-catcher_stance_mean",
@@ -91532,7 +91698,9 @@
           "side_by_side_guide": "Pitch A (Changeup - CH): Compact foot width directly under hips. Pitch B (Arsenal Baseline): Wide, splayed foot stance.",
           "scouting_note": "Compact stance maintains mobility for framing strikes on changeup. Watch catcher foot spacing before pitcher comes set.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal"
+          "contrast": "Changeup vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-curt_casali-all-lhh-FC-catcher_glove_y_mean",
@@ -91577,7 +91745,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for cutter. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "tipFloor": 0.75,
@@ -91673,7 +91843,9 @@
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on sweeper. Watch catcher target offset before leg lift.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal"
+          "contrast": "Sweeper vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-runners_on-all-FF-catcher_glove_x_mean",
@@ -91719,7 +91891,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on 4-seam fastball. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-none-all-FF-catcher_glove_speed_mean",
@@ -91765,7 +91939,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 4-seam fastball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-none-all-SI-catcher_glove_speed_mean",
@@ -91811,7 +91987,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Motionless target held static for >1.0s. Pitch B (Arsenal Baseline): Active late target adjustments before lift.",
           "scouting_note": "Early target lock indicates preset location confidence on 2-seam sinker. Watch catcher target stability before pitcher moves.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-none-all-ST-catcher_glove_speed_p90",
@@ -91857,7 +92035,9 @@
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for sweeper. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal"
+          "contrast": "Sweeper vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-all-lhh-FC-catcher_glove_y_mean",
@@ -91902,7 +92082,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Catcher mitt resting low below knees. Pitch B (Arsenal Baseline): Catcher mitt held elevated at chest/belt.",
           "scouting_note": "Low target placement signals a chase pitch in the lower third or dirt for cutter. Watch catcher target height before delivery begins.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-all-all-SI-catcher_stance_mean",
@@ -91947,7 +92129,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Broad foot spread (wide blocking base). Pitch B (Arsenal Baseline): Narrow, compact foot placement.",
           "scouting_note": "Wide base spread allows rapid sideways sliding to block dirt balls on 2-seam sinker. Watch catcher foot width before pitcher moves.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-all-all-ST-catcher_hip_y_mean",
@@ -91992,7 +92176,9 @@
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher hips elevated in high crouch. Pitch B (Arsenal Baseline): Catcher dropped low on one knee in dirt.",
           "scouting_note": "Taller crouch posture presets the catcher to receive elevated pitches on sweeper. Watch catcher hip height before pitcher starts delivery.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal"
+          "contrast": "Sweeper vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-all-rhh-SI-catcher_glove_x_mean",
@@ -92037,7 +92223,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on 2-seam sinker. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "catcherTips": [
@@ -92085,7 +92273,9 @@
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on sweeper. Watch catcher target offset before leg lift.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal"
+          "contrast": "Sweeper vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-runners_on-all-FF-catcher_glove_x_mean",
@@ -92131,7 +92321,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on 4-seam fastball. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-none-all-FF-catcher_glove_speed_mean",
@@ -92177,7 +92369,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 4-seam fastball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-none-all-SI-catcher_glove_speed_mean",
@@ -92223,7 +92417,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Motionless target held static for >1.0s. Pitch B (Arsenal Baseline): Active late target adjustments before lift.",
           "scouting_note": "Early target lock indicates preset location confidence on 2-seam sinker. Watch catcher target stability before pitcher moves.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-none-all-ST-catcher_glove_speed_p90",
@@ -92269,7 +92465,9 @@
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for sweeper. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal"
+          "contrast": "Sweeper vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-all-lhh-FC-catcher_glove_y_mean",
@@ -92314,7 +92512,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Catcher mitt resting low below knees. Pitch B (Arsenal Baseline): Catcher mitt held elevated at chest/belt.",
           "scouting_note": "Low target placement signals a chase pitch in the lower third or dirt for cutter. Watch catcher target height before delivery begins.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-all-all-SI-catcher_stance_mean",
@@ -92359,7 +92559,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Broad foot spread (wide blocking base). Pitch B (Arsenal Baseline): Narrow, compact foot placement.",
           "scouting_note": "Wide base spread allows rapid sideways sliding to block dirt balls on 2-seam sinker. Watch catcher foot width before pitcher moves.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-all-all-ST-catcher_hip_y_mean",
@@ -92404,7 +92606,9 @@
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher hips elevated in high crouch. Pitch B (Arsenal Baseline): Catcher dropped low on one knee in dirt.",
           "scouting_note": "Taller crouch posture presets the catcher to receive elevated pitches on sweeper. Watch catcher hip height before pitcher starts delivery.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal"
+          "contrast": "Sweeper vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-drew_romo-all-rhh-SI-catcher_glove_x_mean",
@@ -92449,7 +92653,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on 2-seam sinker. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "tipFloor": 0.75,
@@ -92542,7 +92748,9 @@
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on knuckle curve. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal"
+          "contrast": "Knuckle Curve vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-elias_diaz-all-rhh-SL-catcher_glove_speed_mean",
@@ -92587,7 +92795,9 @@
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for slider. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal"
+          "contrast": "Slider vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-elias_diaz-all-rhh-KC-catcher_glove_y_mean",
@@ -92632,7 +92842,9 @@
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for knuckle curve. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal"
+          "contrast": "Knuckle Curve vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-elias_diaz-all-all-KC-catcher_hip_y_mean",
@@ -92677,7 +92889,9 @@
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher hips elevated in high crouch. Pitch B (Arsenal Baseline): Catcher dropped low on one knee in dirt.",
           "scouting_note": "Taller crouch posture presets the catcher to receive elevated pitches on knuckle curve. Watch catcher hip height before pitcher starts delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal"
+          "contrast": "Knuckle Curve vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-elias_diaz-all-lhh-FF-catcher_glove_speed_mean",
@@ -92722,7 +92936,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 4-seam fastball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-elias_diaz-all-all-SL-catcher_glove_x_mean",
@@ -92767,7 +92983,9 @@
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on slider. Watch catcher target offset before leg lift.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal"
+          "contrast": "Slider vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "catcherTips": [
@@ -92814,7 +93032,9 @@
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on knuckle curve. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal"
+          "contrast": "Knuckle Curve vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-elias_diaz-all-rhh-SL-catcher_glove_speed_mean",
@@ -92859,7 +93079,9 @@
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for slider. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal"
+          "contrast": "Slider vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-elias_diaz-all-rhh-KC-catcher_glove_y_mean",
@@ -92904,7 +93126,9 @@
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for knuckle curve. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal"
+          "contrast": "Knuckle Curve vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-elias_diaz-all-all-KC-catcher_hip_y_mean",
@@ -92949,7 +93173,9 @@
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher hips elevated in high crouch. Pitch B (Arsenal Baseline): Catcher dropped low on one knee in dirt.",
           "scouting_note": "Taller crouch posture presets the catcher to receive elevated pitches on knuckle curve. Watch catcher hip height before pitcher starts delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal"
+          "contrast": "Knuckle Curve vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-elias_diaz-all-lhh-FF-catcher_glove_speed_mean",
@@ -92994,7 +93220,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 4-seam fastball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-elias_diaz-all-all-SL-catcher_glove_x_mean",
@@ -93039,7 +93267,9 @@
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on slider. Watch catcher target offset before leg lift.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal"
+          "contrast": "Slider vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "tipFloor": 0.75,
@@ -93139,7 +93369,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 0.6,
+          "anchor_b": 0.6,
+          "videoA": "media/video/moreno_ch.mp4",
+          "videoB": "media/video/moreno_ff.mp4",
+          "tA": 0.6,
+          "tB": 0.6,
+          "pitch_a_label": "Offspeed/Breaking (CH/SL)",
+          "pitch_b_label": "4-Seam Fastball (FF)"
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -93189,7 +93427,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 0.8,
+          "anchor_b": 0.8,
+          "videoA": "media/video/moreno_ff.mp4",
+          "videoB": "media/video/moreno_ch.mp4",
+          "tA": 0.8,
+          "tB": 0.8,
+          "pitch_a_label": "High 4-Seam (FF)",
+          "pitch_b_label": "Dirt Curve/Slider (CU/SL)"
         }
       ],
       "topLeads": [
@@ -93343,7 +93589,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 0.6,
+          "anchor_b": 0.65
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -93393,7 +93641,9 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 0.8,
+          "anchor_b": 0.75
         }
       ],
       "tipFloor": 0.75,
@@ -93605,7 +93855,9 @@
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on slider. Watch catcher target offset before leg lift.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal"
+          "contrast": "Slider vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "catcherTips": [
@@ -93652,7 +93904,9 @@
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on slider. Watch catcher target offset before leg lift.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal"
+          "contrast": "Slider vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "tipFloor": 0.75,
@@ -93745,7 +93999,9 @@
           "side_by_side_guide": "Pitch A (Changeup - CH): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for changeup. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal"
+          "contrast": "Changeup vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-james_mccann-all-all-FC-catcher_glove_y_mean",
@@ -93790,7 +94046,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Catcher mitt resting low below knees. Pitch B (Arsenal Baseline): Catcher mitt held elevated at chest/belt.",
           "scouting_note": "Low target placement signals a chase pitch in the lower third or dirt for cutter. Watch catcher target height before delivery begins.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "catcherTips": [
@@ -93837,7 +94095,9 @@
           "side_by_side_guide": "Pitch A (Changeup - CH): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for changeup. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal"
+          "contrast": "Changeup vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-james_mccann-all-all-FC-catcher_glove_y_mean",
@@ -93882,7 +94142,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Catcher mitt resting low below knees. Pitch B (Arsenal Baseline): Catcher mitt held elevated at chest/belt.",
           "scouting_note": "Low target placement signals a chase pitch in the lower third or dirt for cutter. Watch catcher target height before delivery begins.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "tipFloor": 0.75,
@@ -93975,7 +94237,9 @@
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for slider. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal"
+          "contrast": "Slider vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-luis_campusano-all-all-ST-catcher_hip_y_mean",
@@ -94020,7 +94284,9 @@
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher left knee flat on the dirt in deep crouch. Pitch B (Arsenal Baseline): Standard two-foot elevated crouch.",
           "scouting_note": "Deep one-knee posture prepares catcher to smother low dirt balls on sweeper. Watch catcher stance depth before delivery starts.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal"
+          "contrast": "Sweeper vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-luis_campusano-all-all-CH-catcher_stance_mean",
@@ -94065,7 +94331,9 @@
           "side_by_side_guide": "Pitch A (Changeup - CH): Compact foot width directly under hips. Pitch B (Arsenal Baseline): Wide, splayed foot stance.",
           "scouting_note": "Compact stance maintains mobility for framing strikes on changeup. Watch catcher foot spacing before pitcher comes set.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal"
+          "contrast": "Changeup vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-luis_campusano-all-all-SI-catcher_glove_speed_p90",
@@ -94110,7 +94378,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 2-seam sinker. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-luis_campusano-all-lhh-SI-catcher_glove_x_mean",
@@ -94155,7 +94425,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on 2-seam sinker. Watch catcher target offset before leg lift.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-luis_campusano-none-all-FF-catcher_glove_y_mean",
@@ -94201,7 +94473,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for 4-seam fastball. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "catcherTips": [
@@ -94248,7 +94522,9 @@
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for slider. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal"
+          "contrast": "Slider vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-luis_campusano-all-all-ST-catcher_hip_y_mean",
@@ -94293,7 +94569,9 @@
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher left knee flat on the dirt in deep crouch. Pitch B (Arsenal Baseline): Standard two-foot elevated crouch.",
           "scouting_note": "Deep one-knee posture prepares catcher to smother low dirt balls on sweeper. Watch catcher stance depth before delivery starts.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal"
+          "contrast": "Sweeper vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-luis_campusano-all-all-CH-catcher_stance_mean",
@@ -94338,7 +94616,9 @@
           "side_by_side_guide": "Pitch A (Changeup - CH): Compact foot width directly under hips. Pitch B (Arsenal Baseline): Wide, splayed foot stance.",
           "scouting_note": "Compact stance maintains mobility for framing strikes on changeup. Watch catcher foot spacing before pitcher comes set.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal"
+          "contrast": "Changeup vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-luis_campusano-all-all-SI-catcher_glove_speed_p90",
@@ -94383,7 +94663,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 2-seam sinker. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-luis_campusano-all-lhh-SI-catcher_glove_x_mean",
@@ -94428,7 +94710,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on 2-seam sinker. Watch catcher target offset before leg lift.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-luis_campusano-none-all-FF-catcher_glove_y_mean",
@@ -94474,7 +94758,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for 4-seam fastball. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "tipFloor": 0.75,
@@ -94569,7 +94855,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for 4-seam fastball. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-patrick_bailey-all-all-FC-catcher_hip_y_mean",
@@ -94614,7 +94902,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Catcher left knee flat on the dirt in deep crouch. Pitch B (Arsenal Baseline): Standard two-foot elevated crouch.",
           "scouting_note": "Deep one-knee posture prepares catcher to smother low dirt balls on cutter. Watch catcher stance depth before delivery starts.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-patrick_bailey-all-lhh-CH-catcher_glove_speed_p90",
@@ -94659,7 +94949,9 @@
           "side_by_side_guide": "Pitch A (Changeup - CH): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for changeup. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal"
+          "contrast": "Changeup vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-patrick_bailey-all-lhh-SI-catcher_glove_speed_mean",
@@ -94704,7 +94996,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Motionless target held static for >1.0s. Pitch B (Arsenal Baseline): Active late target adjustments before lift.",
           "scouting_note": "Early target lock indicates preset location confidence on 2-seam sinker. Watch catcher target stability before pitcher moves.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-patrick_bailey-all-all-CH-catcher_glove_x_mean",
@@ -94749,7 +95043,9 @@
           "side_by_side_guide": "Pitch A (Changeup - CH): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on changeup. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal"
+          "contrast": "Changeup vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-patrick_bailey-all-all-SI-catcher_stance_mean",
@@ -94794,7 +95090,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Broad foot spread (wide blocking base). Pitch B (Arsenal Baseline): Narrow, compact foot placement.",
           "scouting_note": "Wide base spread allows rapid sideways sliding to block dirt balls on 2-seam sinker. Watch catcher foot width before pitcher moves.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "catcherTips": [
@@ -94841,7 +95139,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for 4-seam fastball. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-patrick_bailey-all-all-FC-catcher_hip_y_mean",
@@ -94886,7 +95186,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Catcher left knee flat on the dirt in deep crouch. Pitch B (Arsenal Baseline): Standard two-foot elevated crouch.",
           "scouting_note": "Deep one-knee posture prepares catcher to smother low dirt balls on cutter. Watch catcher stance depth before delivery starts.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-patrick_bailey-all-lhh-CH-catcher_glove_speed_p90",
@@ -94931,7 +95233,9 @@
           "side_by_side_guide": "Pitch A (Changeup - CH): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for changeup. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal"
+          "contrast": "Changeup vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-patrick_bailey-all-lhh-SI-catcher_glove_speed_mean",
@@ -94976,7 +95280,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Motionless target held static for >1.0s. Pitch B (Arsenal Baseline): Active late target adjustments before lift.",
           "scouting_note": "Early target lock indicates preset location confidence on 2-seam sinker. Watch catcher target stability before pitcher moves.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-patrick_bailey-all-all-CH-catcher_glove_x_mean",
@@ -95021,7 +95327,9 @@
           "side_by_side_guide": "Pitch A (Changeup - CH): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on changeup. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal"
+          "contrast": "Changeup vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-patrick_bailey-all-all-SI-catcher_stance_mean",
@@ -95066,7 +95374,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Broad foot spread (wide blocking base). Pitch B (Arsenal Baseline): Narrow, compact foot placement.",
           "scouting_note": "Wide base spread allows rapid sideways sliding to block dirt balls on 2-seam sinker. Watch catcher foot width before pitcher moves.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         }
       ],
       "tipFloor": 0.75,
@@ -95159,7 +95469,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on 2-seam sinker. Watch catcher target offset before leg lift.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-none-all-CU-catcher_glove_speed_mean",
@@ -95205,7 +95517,9 @@
           "side_by_side_guide": "Pitch A (Curveball - CU): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for curveball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Curveball (CU) vs Arsenal Baseline",
-          "contrast": "Curveball vs Arsenal"
+          "contrast": "Curveball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-all-rhh-FC-catcher_stance_mean",
@@ -95250,7 +95564,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Broad foot spread (wide blocking base). Pitch B (Arsenal Baseline): Narrow, compact foot placement.",
           "scouting_note": "Wide base spread allows rapid sideways sliding to block dirt balls on cutter. Watch catcher foot width before pitcher moves.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-all-all-CU-catcher_glove_y_mean",
@@ -95295,7 +95611,9 @@
           "side_by_side_guide": "Pitch A (Curveball - CU): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for curveball. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Curveball (CU) vs Arsenal Baseline",
-          "contrast": "Curveball vs Arsenal"
+          "contrast": "Curveball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-all-lhh-SI-catcher_hip_y_mean",
@@ -95340,7 +95658,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher hips elevated in high crouch. Pitch B (Arsenal Baseline): Catcher dropped low on one knee in dirt.",
           "scouting_note": "Taller crouch posture presets the catcher to receive elevated pitches on 2-seam sinker. Watch catcher hip height before pitcher starts delivery.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-runners_on-all-FF-catcher_glove_speed_p90",
@@ -95386,7 +95706,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 4-seam fastball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-runners_on-all-FC-catcher_glove_speed_p90",
@@ -95432,7 +95754,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Motionless target held static for >1.0s. Pitch B (Arsenal Baseline): Active late target adjustments before lift.",
           "scouting_note": "Early target lock indicates preset location confidence on cutter. Watch catcher target stability before pitcher moves.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         }
       ],
       "catcherTips": [
@@ -95479,7 +95803,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on 2-seam sinker. Watch catcher target offset before leg lift.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-none-all-CU-catcher_glove_speed_mean",
@@ -95525,7 +95851,9 @@
           "side_by_side_guide": "Pitch A (Curveball - CU): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for curveball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Curveball (CU) vs Arsenal Baseline",
-          "contrast": "Curveball vs Arsenal"
+          "contrast": "Curveball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-all-rhh-FC-catcher_stance_mean",
@@ -95570,7 +95898,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Broad foot spread (wide blocking base). Pitch B (Arsenal Baseline): Narrow, compact foot placement.",
           "scouting_note": "Wide base spread allows rapid sideways sliding to block dirt balls on cutter. Watch catcher foot width before pitcher moves.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-all-all-CU-catcher_glove_y_mean",
@@ -95615,7 +95945,9 @@
           "side_by_side_guide": "Pitch A (Curveball - CU): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for curveball. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Curveball (CU) vs Arsenal Baseline",
-          "contrast": "Curveball vs Arsenal"
+          "contrast": "Curveball vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-all-lhh-SI-catcher_hip_y_mean",
@@ -95660,7 +95992,9 @@
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher hips elevated in high crouch. Pitch B (Arsenal Baseline): Catcher dropped low on one knee in dirt.",
           "scouting_note": "Taller crouch posture presets the catcher to receive elevated pitches on 2-seam sinker. Watch catcher hip height before pitcher starts delivery.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal"
+          "contrast": "2-Seam Sinker vs Arsenal",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-runners_on-all-FF-catcher_glove_speed_p90",
@@ -95706,7 +96040,9 @@
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 4-seam fastball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal"
+          "contrast": "4-Seam Fastball vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         },
         {
           "id": "c-will_smith-runners_on-all-FC-catcher_glove_speed_p90",
@@ -95752,7 +96088,9 @@
           "side_by_side_guide": "Pitch A (Cutter - FC): Motionless target held static for >1.0s. Pitch B (Arsenal Baseline): Active late target adjustments before lift.",
           "scouting_note": "Early target lock indicates preset location confidence on cutter. Watch catcher target stability before pitcher moves.",
           "contrast_label": "Cutter (FC) vs Arsenal Baseline",
-          "contrast": "Cutter vs Arsenal"
+          "contrast": "Cutter vs Arsenal",
+          "anchor_a": 0.8,
+          "anchor_b": 0.5
         }
       ],
       "tipFloor": 0.75,
@@ -95853,7 +96191,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "videoA": "media/video/burns_ff.mp4",
+          "videoB": "media/video/burns_sl.mp4",
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "4-Seam Fastball (FF 101mph)",
+          "pitch_b_label": "Slider (SL 89mph)"
         },
         {
           "id": "lead_chase_burns_elbow_lift_hinge_2",
@@ -95903,7 +96249,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.8,
+          "anchor_b": 1.8,
+          "videoA": "media/video/burns_sl.mp4",
+          "videoB": "media/video/burns_ff.mp4",
+          "tA": 1.8,
+          "tB": 1.8,
+          "pitch_a_label": "Slider (SL 89mph)",
+          "pitch_b_label": "Fastball/Curve"
         },
         {
           "id": "lead_chase_burns_tempo_dwell_3",
@@ -95953,7 +96307,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 0.9,
+          "anchor_b": 0.9,
+          "videoA": "media/video/burns_ch.mp4",
+          "videoB": "media/video/burns_ff.mp4",
+          "tA": 0.9,
+          "tB": 0.9,
+          "pitch_a_label": "Offspeed (CH/CV)",
+          "pitch_b_label": "Fastball (FF)"
         },
         {
           "id": "lead_chase_burns_glove_tuck_apex_4",
@@ -96003,7 +96365,15 @@
             "clears_75": true
           },
           "pitchType": "CV",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.4,
+          "anchor_b": 1.4,
+          "videoA": "media/video/burns_ch.mp4",
+          "videoB": "media/video/burns_ff.mp4",
+          "tA": 1.4,
+          "tB": 1.4,
+          "pitch_a_label": "Curveball (CV 82mph)",
+          "pitch_b_label": "Fastball (FF 101mph)"
         },
         {
           "id": "lead_chase_burns_head_tilt_stride_5",
@@ -96053,7 +96423,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.0,
+          "anchor_b": 1.0,
+          "videoA": "media/video/burns_ff.mp4",
+          "videoB": "media/video/burns_sl.mp4",
+          "tA": 1.0,
+          "tB": 1.0,
+          "pitch_a_label": "Fastball (FF 101mph)",
+          "pitch_b_label": "Slider (SL 89mph)"
         }
       ],
       "topLeads": [
@@ -96556,7 +96934,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "videoA": "media/video/burns_ff.mp4",
+          "videoB": "media/video/burns_sl.mp4",
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "4-Seam Fastball (FF 101mph)",
+          "pitch_b_label": "Slider (SL 89mph)"
         },
         {
           "id": "lead_chase_burns_elbow_lift_hinge_2",
@@ -96606,7 +96992,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.8,
+          "anchor_b": 1.8,
+          "videoA": "media/video/burns_sl.mp4",
+          "videoB": "media/video/burns_ff.mp4",
+          "tA": 1.8,
+          "tB": 1.8,
+          "pitch_a_label": "Slider (SL 89mph)",
+          "pitch_b_label": "Fastball/Curve"
         },
         {
           "id": "lead_chase_burns_tempo_dwell_3",
@@ -96656,7 +97050,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 0.9,
+          "anchor_b": 0.9,
+          "videoA": "media/video/burns_ch.mp4",
+          "videoB": "media/video/burns_ff.mp4",
+          "tA": 0.9,
+          "tB": 0.9,
+          "pitch_a_label": "Offspeed (CH/CV)",
+          "pitch_b_label": "Fastball (FF)"
         },
         {
           "id": "lead_chase_burns_glove_tuck_apex_4",
@@ -96706,7 +97108,15 @@
             "clears_75": true
           },
           "pitchType": "CV",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.4,
+          "anchor_b": 1.4,
+          "videoA": "media/video/burns_ch.mp4",
+          "videoB": "media/video/burns_ff.mp4",
+          "tA": 1.4,
+          "tB": 1.4,
+          "pitch_a_label": "Curveball (CV 82mph)",
+          "pitch_b_label": "Fastball (FF 101mph)"
         },
         {
           "id": "lead_chase_burns_head_tilt_stride_5",
@@ -96756,7 +97166,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.0,
+          "anchor_b": 1.0,
+          "videoA": "media/video/burns_ff.mp4",
+          "videoB": "media/video/burns_sl.mp4",
+          "tA": 1.0,
+          "tB": 1.0,
+          "pitch_a_label": "Fastball (FF 101mph)",
+          "pitch_b_label": "Slider (SL 89mph)"
         }
       ],
       "topLeads": [
@@ -97259,7 +97677,15 @@
             "clears_75": true
           },
           "pitchType": "FS",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.5,
+          "anchor_b": 2.5,
+          "videoA": "media/video/sasaki_fs.mp4",
+          "videoB": "media/video/sasaki_ff.mp4",
+          "tA": 2.5,
+          "tB": 2.5,
+          "pitch_a_label": "Forkball/Splitter (FS 92mph)",
+          "pitch_b_label": "Fastball (FF 102mph)"
         },
         {
           "id": "lead_roki_sasaki_glove_height_at_lift_2",
@@ -97309,7 +97735,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.9,
+          "anchor_b": 1.9,
+          "videoA": "media/video/sasaki_ff.mp4",
+          "videoB": "media/video/sasaki_fs.mp4",
+          "tA": 1.9,
+          "tB": 1.9,
+          "pitch_a_label": "Fastball (FF 102mph)",
+          "pitch_b_label": "Forkball/Splitter (FS 92mph)"
         },
         {
           "id": "lead_roki_sasaki_balance_apex_dwell_3",
@@ -97359,7 +97793,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 1.4,
+          "anchor_b": 1.4,
+          "videoA": "media/video/sasaki_ff.mp4",
+          "videoB": "media/video/sasaki_fs.mp4",
+          "tA": 1.4,
+          "tB": 1.4,
+          "pitch_a_label": "Fastball (FF 102mph)",
+          "pitch_b_label": "Secondary (FS/SL)"
         },
         {
           "id": "lead_roki_sasaki_glove_flare_set_4",
@@ -97409,7 +97851,15 @@
             "clears_75": true
           },
           "pitchType": "FS",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 2.1,
+          "anchor_b": 2.1,
+          "videoA": "media/video/sasaki_fs.mp4",
+          "videoB": "media/video/sasaki_ff.mp4",
+          "tA": 2.1,
+          "tB": 2.1,
+          "pitch_a_label": "Forkball (FS 92mph)",
+          "pitch_b_label": "Slider (SL 88mph)"
         },
         {
           "id": "lead_roki_sasaki_arm_slot_plant_5",
@@ -97459,7 +97909,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 0.9,
+          "anchor_b": 0.9,
+          "videoA": "media/video/sasaki_ff.mp4",
+          "videoB": "media/video/sasaki_fs.mp4",
+          "tA": 0.9,
+          "tB": 0.9,
+          "pitch_a_label": "Fastball (FF 102mph)",
+          "pitch_b_label": "Slider (SL 88mph)"
         }
       ],
       "topLeads": [
@@ -97934,7 +98392,15 @@
             "clears_75": true
           },
           "pitchType": "FS",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.5,
+          "anchor_b": 2.5,
+          "videoA": "media/video/sasaki_fs.mp4",
+          "videoB": "media/video/sasaki_ff.mp4",
+          "tA": 2.5,
+          "tB": 2.5,
+          "pitch_a_label": "Forkball/Splitter (FS 92mph)",
+          "pitch_b_label": "Fastball (FF 102mph)"
         },
         {
           "id": "lead_roki_sasaki_glove_height_at_lift_2",
@@ -97984,7 +98450,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.9,
+          "anchor_b": 1.9,
+          "videoA": "media/video/sasaki_ff.mp4",
+          "videoB": "media/video/sasaki_fs.mp4",
+          "tA": 1.9,
+          "tB": 1.9,
+          "pitch_a_label": "Fastball (FF 102mph)",
+          "pitch_b_label": "Forkball/Splitter (FS 92mph)"
         },
         {
           "id": "lead_roki_sasaki_balance_apex_dwell_3",
@@ -98034,7 +98508,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 1.4,
+          "anchor_b": 1.4,
+          "videoA": "media/video/sasaki_ff.mp4",
+          "videoB": "media/video/sasaki_fs.mp4",
+          "tA": 1.4,
+          "tB": 1.4,
+          "pitch_a_label": "Fastball (FF 102mph)",
+          "pitch_b_label": "Secondary (FS/SL)"
         },
         {
           "id": "lead_roki_sasaki_glove_flare_set_4",
@@ -98084,7 +98566,15 @@
             "clears_75": true
           },
           "pitchType": "FS",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 2.1,
+          "anchor_b": 2.1,
+          "videoA": "media/video/sasaki_fs.mp4",
+          "videoB": "media/video/sasaki_ff.mp4",
+          "tA": 2.1,
+          "tB": 2.1,
+          "pitch_a_label": "Forkball (FS 92mph)",
+          "pitch_b_label": "Slider (SL 88mph)"
         },
         {
           "id": "lead_roki_sasaki_arm_slot_plant_5",
@@ -98134,7 +98624,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 0.9,
+          "anchor_b": 0.9,
+          "videoA": "media/video/sasaki_ff.mp4",
+          "videoB": "media/video/sasaki_fs.mp4",
+          "tA": 0.9,
+          "tB": 0.9,
+          "pitch_a_label": "Fastball (FF 102mph)",
+          "pitch_b_label": "Slider (SL 88mph)"
         }
       ],
       "topLeads": [
@@ -98609,7 +99107,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.0,
+          "anchor_b": 2.0,
+          "videoA": "media/video/choi_ch.mp4",
+          "videoB": "media/video/choi_si.mp4",
+          "tA": 2.0,
+          "tB": 2.0,
+          "pitch_a_label": "Circle-Changeup (CH)",
+          "pitch_b_label": "2-Seam Sinker (SI)"
         },
         {
           "id": "lead_won_tae_choi_glove_seam_set_2",
@@ -98659,7 +99165,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "videoA": "media/video/choi_si.mp4",
+          "videoB": "media/video/choi_ch.mp4",
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "2-Seam Sinker (SI)",
+          "pitch_b_label": "Secondary (CH/SL)"
         },
         {
           "id": "lead_won_tae_choi_stance_width_3",
@@ -98709,7 +99223,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 0.6,
+          "anchor_b": 0.6,
+          "videoA": "media/video/choi_si.mp4",
+          "videoB": "media/video/choi_ch.mp4",
+          "tA": 0.6,
+          "tB": 0.6,
+          "pitch_a_label": "Sinker (SI)",
+          "pitch_b_label": "Breaking (SL/CU)"
         },
         {
           "id": "lead_won_tae_choi_glove_tuck_apex_4",
@@ -98759,7 +99281,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.4,
+          "anchor_b": 1.4,
+          "videoA": "media/video/choi_ch.mp4",
+          "videoB": "media/video/choi_si.mp4",
+          "tA": 1.4,
+          "tB": 1.4,
+          "pitch_a_label": "Slider (SL 84mph)",
+          "pitch_b_label": "Sinker (SI 91mph)"
         },
         {
           "id": "lead_won_tae_choi_glove_dwell_5",
@@ -98809,7 +99339,15 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.8,
+          "anchor_b": 2.8,
+          "videoA": "media/video/choi_ch.mp4",
+          "videoB": "media/video/choi_si.mp4",
+          "tA": 2.8,
+          "tB": 2.8,
+          "pitch_a_label": "12-6 Curveball (CU 77mph)",
+          "pitch_b_label": "Sinker/Changeup"
         }
       ],
       "topLeads": [
@@ -99287,7 +99825,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.0,
+          "anchor_b": 2.0,
+          "videoA": "media/video/choi_ch.mp4",
+          "videoB": "media/video/choi_si.mp4",
+          "tA": 2.0,
+          "tB": 2.0,
+          "pitch_a_label": "Circle-Changeup (CH)",
+          "pitch_b_label": "2-Seam Sinker (SI)"
         },
         {
           "id": "lead_won_tae_choi_glove_seam_set_2",
@@ -99337,7 +99883,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.4,
+          "anchor_b": 2.4,
+          "videoA": "media/video/choi_si.mp4",
+          "videoB": "media/video/choi_ch.mp4",
+          "tA": 2.4,
+          "tB": 2.4,
+          "pitch_a_label": "2-Seam Sinker (SI)",
+          "pitch_b_label": "Secondary (CH/SL)"
         },
         {
           "id": "lead_won_tae_choi_stance_width_3",
@@ -99387,7 +99941,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 0.6,
+          "anchor_b": 0.6,
+          "videoA": "media/video/choi_si.mp4",
+          "videoB": "media/video/choi_ch.mp4",
+          "tA": 0.6,
+          "tB": 0.6,
+          "pitch_a_label": "Sinker (SI)",
+          "pitch_b_label": "Breaking (SL/CU)"
         },
         {
           "id": "lead_won_tae_choi_glove_tuck_apex_4",
@@ -99437,7 +99999,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.4,
+          "anchor_b": 1.4,
+          "videoA": "media/video/choi_ch.mp4",
+          "videoB": "media/video/choi_si.mp4",
+          "tA": 1.4,
+          "tB": 1.4,
+          "pitch_a_label": "Slider (SL 84mph)",
+          "pitch_b_label": "Sinker (SI 91mph)"
         },
         {
           "id": "lead_won_tae_choi_glove_dwell_5",
@@ -99487,7 +100057,15 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.8,
+          "anchor_b": 2.8,
+          "videoA": "media/video/choi_ch.mp4",
+          "videoB": "media/video/choi_si.mp4",
+          "tA": 2.8,
+          "tB": 2.8,
+          "pitch_a_label": "12-6 Curveball (CU 77mph)",
+          "pitch_b_label": "Sinker/Changeup"
         }
       ],
       "topLeads": [
@@ -99965,7 +100543,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.3,
+          "anchor_b": 2.3,
+          "videoA": "media/video/gulin_ff.mp4",
+          "videoB": "media/video/gulin_cu.mp4",
+          "tA": 2.3,
+          "tB": 2.3,
+          "pitch_a_label": "4-Seam Fastball (FF 98mph)",
+          "pitch_b_label": "12-6 Curveball (CU 78mph)"
         },
         {
           "id": "lead_gu_lin_elbow_cocking_angle_2",
@@ -100015,7 +100601,15 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.7,
+          "anchor_b": 1.7,
+          "videoA": "media/video/gulin_cu.mp4",
+          "videoB": "media/video/gulin_ff.mp4",
+          "tA": 1.7,
+          "tB": 1.7,
+          "pitch_a_label": "Curveball (CU 78mph)",
+          "pitch_b_label": "Fastball/Slider"
         },
         {
           "id": "lead_gu_lin_tempo_break_3",
@@ -100065,7 +100659,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.3,
+          "anchor_b": 1.3,
+          "videoA": "media/video/gulin_ff.mp4",
+          "videoB": "media/video/gulin_cu.mp4",
+          "tA": 1.3,
+          "tB": 1.3,
+          "pitch_a_label": "Fastball (FF 98mph)",
+          "pitch_b_label": "Secondary (CU/CH)"
         },
         {
           "id": "lead_gu_lin_glove_flare_set_4",
@@ -100115,7 +100717,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.1,
+          "anchor_b": 2.1,
+          "videoA": "media/video/gulin_cu.mp4",
+          "videoB": "media/video/gulin_ff.mp4",
+          "tA": 2.1,
+          "tB": 2.1,
+          "pitch_a_label": "Forkball/Changeup (CH 86mph)",
+          "pitch_b_label": "4-Seam Fastball (FF 98mph)"
         },
         {
           "id": "lead_gu_lin_trunk_tilt_apex_5",
@@ -100165,7 +100775,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.6,
+          "anchor_b": 1.6,
+          "videoA": "media/video/gulin_cu.mp4",
+          "videoB": "media/video/gulin_ff.mp4",
+          "tA": 1.6,
+          "tB": 1.6,
+          "pitch_a_label": "Slider (SL 88mph)",
+          "pitch_b_label": "Fastball (FF 98mph)"
         }
       ],
       "topLeads": [
@@ -100643,7 +101261,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.3,
+          "anchor_b": 2.3,
+          "videoA": "media/video/gulin_ff.mp4",
+          "videoB": "media/video/gulin_cu.mp4",
+          "tA": 2.3,
+          "tB": 2.3,
+          "pitch_a_label": "4-Seam Fastball (FF 98mph)",
+          "pitch_b_label": "12-6 Curveball (CU 78mph)"
         },
         {
           "id": "lead_gu_lin_elbow_cocking_angle_2",
@@ -100693,7 +101319,15 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.7,
+          "anchor_b": 1.7,
+          "videoA": "media/video/gulin_cu.mp4",
+          "videoB": "media/video/gulin_ff.mp4",
+          "tA": 1.7,
+          "tB": 1.7,
+          "pitch_a_label": "Curveball (CU 78mph)",
+          "pitch_b_label": "Fastball/Slider"
         },
         {
           "id": "lead_gu_lin_tempo_break_3",
@@ -100743,7 +101377,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.3,
+          "anchor_b": 1.3,
+          "videoA": "media/video/gulin_ff.mp4",
+          "videoB": "media/video/gulin_cu.mp4",
+          "tA": 1.3,
+          "tB": 1.3,
+          "pitch_a_label": "Fastball (FF 98mph)",
+          "pitch_b_label": "Secondary (CU/CH)"
         },
         {
           "id": "lead_gu_lin_glove_flare_set_4",
@@ -100793,7 +101435,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.1,
+          "anchor_b": 2.1,
+          "videoA": "media/video/gulin_cu.mp4",
+          "videoB": "media/video/gulin_ff.mp4",
+          "tA": 2.1,
+          "tB": 2.1,
+          "pitch_a_label": "Forkball/Changeup (CH 86mph)",
+          "pitch_b_label": "4-Seam Fastball (FF 98mph)"
         },
         {
           "id": "lead_gu_lin_trunk_tilt_apex_5",
@@ -100843,7 +101493,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.6,
+          "anchor_b": 1.6,
+          "videoA": "media/video/gulin_cu.mp4",
+          "videoB": "media/video/gulin_ff.mp4",
+          "tA": 1.6,
+          "tB": 1.6,
+          "pitch_a_label": "Slider (SL 88mph)",
+          "pitch_b_label": "Fastball (FF 98mph)"
         }
       ],
       "topLeads": [
@@ -101321,7 +101979,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.3,
+          "anchor_b": 2.3,
+          "videoA": "media/video/gulin_ff.mp4",
+          "videoB": "media/video/gulin_cu.mp4",
+          "tA": 2.3,
+          "tB": 2.3,
+          "pitch_a_label": "4-Seam Fastball (FF 98mph)",
+          "pitch_b_label": "12-6 Curveball (CU 78mph)"
         },
         {
           "id": "lead_gu_lin_elbow_cocking_angle_2",
@@ -101371,7 +102037,15 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.7,
+          "anchor_b": 1.7,
+          "videoA": "media/video/gulin_cu.mp4",
+          "videoB": "media/video/gulin_ff.mp4",
+          "tA": 1.7,
+          "tB": 1.7,
+          "pitch_a_label": "Curveball (CU 78mph)",
+          "pitch_b_label": "Fastball/Slider"
         },
         {
           "id": "lead_gu_lin_tempo_break_3",
@@ -101421,7 +102095,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.3,
+          "anchor_b": 1.3,
+          "videoA": "media/video/gulin_ff.mp4",
+          "videoB": "media/video/gulin_cu.mp4",
+          "tA": 1.3,
+          "tB": 1.3,
+          "pitch_a_label": "Fastball (FF 98mph)",
+          "pitch_b_label": "Secondary (CU/CH)"
         },
         {
           "id": "lead_gu_lin_glove_flare_set_4",
@@ -101471,7 +102153,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.1,
+          "anchor_b": 2.1,
+          "videoA": "media/video/gulin_cu.mp4",
+          "videoB": "media/video/gulin_ff.mp4",
+          "tA": 2.1,
+          "tB": 2.1,
+          "pitch_a_label": "Forkball/Changeup (CH 86mph)",
+          "pitch_b_label": "4-Seam Fastball (FF 98mph)"
         },
         {
           "id": "lead_gu_lin_trunk_tilt_apex_5",
@@ -101521,7 +102211,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.6,
+          "anchor_b": 1.6,
+          "videoA": "media/video/gulin_cu.mp4",
+          "videoB": "media/video/gulin_ff.mp4",
+          "tA": 1.6,
+          "tB": 1.6,
+          "pitch_a_label": "Slider (SL 88mph)",
+          "pitch_b_label": "Fastball (FF 98mph)"
         }
       ],
       "topLeads": [
@@ -101999,7 +102697,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.2,
+          "anchor_b": 2.2,
+          "videoA": "media/video/rios_si.mp4",
+          "videoB": "media/video/rios_sl.mp4",
+          "tA": 2.2,
+          "tB": 2.2,
+          "pitch_a_label": "2-Seam Sinker (SI 91mph)",
+          "pitch_b_label": "Slider/Cutter (SL/FC 84mph)"
         },
         {
           "id": "lead_wilmer_rios_wrist_orientation_set_2",
@@ -102049,7 +102755,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 2.0,
+          "anchor_b": 2.0,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 2.0,
+          "tB": 2.0,
+          "pitch_a_label": "Circle-Changeup (CH 82mph)",
+          "pitch_b_label": "Fastball/Sinker"
         },
         {
           "id": "lead_wilmer_rios_tempo_dwell_pause_3",
@@ -102099,7 +102813,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 1.0,
+          "anchor_b": 1.0,
+          "videoA": "media/video/rios_si.mp4",
+          "videoB": "media/video/rios_sl.mp4",
+          "tA": 1.0,
+          "tB": 1.0,
+          "pitch_a_label": "Fastball/Sinker (SI 91mph)",
+          "pitch_b_label": "Breaking (SL/CU 83mph)"
         },
         {
           "id": "lead_wilmer_rios_glove_tuck_stride_4",
@@ -102149,7 +102871,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.3,
+          "anchor_b": 1.3,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 1.3,
+          "tB": 1.3,
+          "pitch_a_label": "Slider (SL 84mph)",
+          "pitch_b_label": "Sinker (SI 91mph)"
         },
         {
           "id": "lead_wilmer_rios_front_hip_rotation_5",
@@ -102199,7 +102929,15 @@
             "clears_75": true
           },
           "pitchType": "FC",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 0.8,
+          "anchor_b": 0.8,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 0.8,
+          "tB": 0.8,
+          "pitch_a_label": "Cutter (FC 88mph)",
+          "pitch_b_label": "Sinker (SI 91mph)"
         }
       ],
       "topLeads": [
@@ -102678,7 +103416,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.2,
+          "anchor_b": 2.2,
+          "videoA": "media/video/rios_si.mp4",
+          "videoB": "media/video/rios_sl.mp4",
+          "tA": 2.2,
+          "tB": 2.2,
+          "pitch_a_label": "2-Seam Sinker (SI 91mph)",
+          "pitch_b_label": "Slider/Cutter (SL/FC 84mph)"
         },
         {
           "id": "lead_wilmer_rios_wrist_orientation_set_2",
@@ -102728,7 +103474,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 2.0,
+          "anchor_b": 2.0,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 2.0,
+          "tB": 2.0,
+          "pitch_a_label": "Circle-Changeup (CH 82mph)",
+          "pitch_b_label": "Fastball/Sinker"
         },
         {
           "id": "lead_wilmer_rios_tempo_dwell_pause_3",
@@ -102778,7 +103532,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 1.0,
+          "anchor_b": 1.0,
+          "videoA": "media/video/rios_si.mp4",
+          "videoB": "media/video/rios_sl.mp4",
+          "tA": 1.0,
+          "tB": 1.0,
+          "pitch_a_label": "Fastball/Sinker (SI 91mph)",
+          "pitch_b_label": "Breaking (SL/CU 83mph)"
         },
         {
           "id": "lead_wilmer_rios_glove_tuck_stride_4",
@@ -102828,7 +103590,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.3,
+          "anchor_b": 1.3,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 1.3,
+          "tB": 1.3,
+          "pitch_a_label": "Slider (SL 84mph)",
+          "pitch_b_label": "Sinker (SI 91mph)"
         },
         {
           "id": "lead_wilmer_rios_front_hip_rotation_5",
@@ -102878,7 +103648,15 @@
             "clears_75": true
           },
           "pitchType": "FC",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 0.8,
+          "anchor_b": 0.8,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 0.8,
+          "tB": 0.8,
+          "pitch_a_label": "Cutter (FC 88mph)",
+          "pitch_b_label": "Sinker (SI 91mph)"
         }
       ],
       "topLeads": [
@@ -103357,7 +104135,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.2,
+          "anchor_b": 2.2,
+          "videoA": "media/video/rios_si.mp4",
+          "videoB": "media/video/rios_sl.mp4",
+          "tA": 2.2,
+          "tB": 2.2,
+          "pitch_a_label": "2-Seam Sinker (SI 91mph)",
+          "pitch_b_label": "Slider/Cutter (SL/FC 84mph)"
         },
         {
           "id": "lead_wilmer_rios_wrist_orientation_set_2",
@@ -103407,7 +104193,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 2.0,
+          "anchor_b": 2.0,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 2.0,
+          "tB": 2.0,
+          "pitch_a_label": "Circle-Changeup (CH 82mph)",
+          "pitch_b_label": "Fastball/Sinker"
         },
         {
           "id": "lead_wilmer_rios_tempo_dwell_pause_3",
@@ -103457,7 +104251,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 1.0,
+          "anchor_b": 1.0,
+          "videoA": "media/video/rios_si.mp4",
+          "videoB": "media/video/rios_sl.mp4",
+          "tA": 1.0,
+          "tB": 1.0,
+          "pitch_a_label": "Fastball/Sinker (SI 91mph)",
+          "pitch_b_label": "Breaking (SL/CU 83mph)"
         },
         {
           "id": "lead_wilmer_rios_glove_tuck_stride_4",
@@ -103507,7 +104309,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.3,
+          "anchor_b": 1.3,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 1.3,
+          "tB": 1.3,
+          "pitch_a_label": "Slider (SL 84mph)",
+          "pitch_b_label": "Sinker (SI 91mph)"
         },
         {
           "id": "lead_wilmer_rios_front_hip_rotation_5",
@@ -103557,7 +104367,15 @@
             "clears_75": true
           },
           "pitchType": "FC",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 0.8,
+          "anchor_b": 0.8,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 0.8,
+          "tB": 0.8,
+          "pitch_a_label": "Cutter (FC 88mph)",
+          "pitch_b_label": "Sinker (SI 91mph)"
         }
       ],
       "topLeads": [
@@ -104036,7 +104854,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.2,
+          "anchor_b": 2.2,
+          "videoA": "media/video/rios_si.mp4",
+          "videoB": "media/video/rios_sl.mp4",
+          "tA": 2.2,
+          "tB": 2.2,
+          "pitch_a_label": "2-Seam Sinker (SI 91mph)",
+          "pitch_b_label": "Slider/Cutter (SL/FC 84mph)"
         },
         {
           "id": "lead_wilmer_rios_wrist_orientation_set_2",
@@ -104086,7 +104912,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 2.0,
+          "anchor_b": 2.0,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 2.0,
+          "tB": 2.0,
+          "pitch_a_label": "Circle-Changeup (CH 82mph)",
+          "pitch_b_label": "Fastball/Sinker"
         },
         {
           "id": "lead_wilmer_rios_tempo_dwell_pause_3",
@@ -104136,7 +104970,15 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 1.0,
+          "anchor_b": 1.0,
+          "videoA": "media/video/rios_si.mp4",
+          "videoB": "media/video/rios_sl.mp4",
+          "tA": 1.0,
+          "tB": 1.0,
+          "pitch_a_label": "Fastball/Sinker (SI 91mph)",
+          "pitch_b_label": "Breaking (SL/CU 83mph)"
         },
         {
           "id": "lead_wilmer_rios_glove_tuck_stride_4",
@@ -104186,7 +105028,15 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.3,
+          "anchor_b": 1.3,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 1.3,
+          "tB": 1.3,
+          "pitch_a_label": "Slider (SL 84mph)",
+          "pitch_b_label": "Sinker (SI 91mph)"
         },
         {
           "id": "lead_wilmer_rios_front_hip_rotation_5",
@@ -104236,7 +105086,15 @@
             "clears_75": true
           },
           "pitchType": "FC",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 0.8,
+          "anchor_b": 0.8,
+          "videoA": "media/video/rios_sl.mp4",
+          "videoB": "media/video/rios_si.mp4",
+          "tA": 0.8,
+          "tB": 0.8,
+          "pitch_a_label": "Cutter (FC 88mph)",
+          "pitch_b_label": "Sinker (SI 91mph)"
         }
       ],
       "topLeads": [
@@ -104716,7 +105574,15 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 0.6,
+          "anchor_b": 0.6,
+          "videoA": "media/video/moreno_ch.mp4",
+          "videoB": "media/video/moreno_ff.mp4",
+          "tA": 0.6,
+          "tB": 0.6,
+          "pitch_a_label": "Offspeed/Breaking (CH/SL)",
+          "pitch_b_label": "4-Seam Fastball (FF)"
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -104766,7 +105632,15 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 0.8,
+          "anchor_b": 0.8,
+          "videoA": "media/video/moreno_ff.mp4",
+          "videoB": "media/video/moreno_ch.mp4",
+          "tA": 0.8,
+          "tB": 0.8,
+          "pitch_a_label": "High 4-Seam (FF)",
+          "pitch_b_label": "Dirt Curve/Slider (CU/SL)"
         }
       ],
       "topLeads": [
@@ -104920,7 +105794,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 0.6,
+          "anchor_b": 0.65
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -104970,7 +105846,9 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 0.8,
+          "anchor_b": 0.75
         }
       ],
       "tipFloor": 0.75,
@@ -105188,7 +106066,9 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.1,
+          "anchor_b": 1.9
         },
         {
           "id": "lead_landen_roupp_hand_depth_pocket_2",
@@ -105238,7 +106118,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.4,
+          "anchor_b": 2.1
         },
         {
           "id": "lead_landen_roupp_settle_lift_tempo_3",
@@ -105288,7 +106170,9 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 2.0,
+          "anchor_b": 1.8
         },
         {
           "id": "lead_landen_roupp_glove_pocket_flare_4",
@@ -105340,7 +106224,9 @@
             "clears_75": true
           },
           "pitchType": "CU",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.7,
+          "anchor_b": 1.7
         },
         {
           "id": "lead_landen_roupp_glove_drift_dx_5",
@@ -105392,7 +106278,9 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.3,
+          "anchor_b": 1.3
         }
       ],
       "topLeads": [
@@ -105874,7 +106762,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "anchor_a": 2.1,
+          "anchor_b": 1.8
         },
         {
           "id": "lead_logan_webb_spine_tilt_2",
@@ -105924,7 +106814,9 @@
             "clears_75": true
           },
           "pitchType": "ST",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.8,
+          "anchor_b": 1.5
         },
         {
           "id": "lead_logan_webb_catcher_target_3",
@@ -105974,7 +106866,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 0.5,
+          "anchor_b": 0.5
         },
         {
           "id": "lead_logan_webb_glove_tuck_break_4",
@@ -106024,7 +106918,9 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.4,
+          "anchor_b": 1.1
         },
         {
           "id": "lead_logan_webb_lead_knee_drift_5",
@@ -106074,7 +106970,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.7,
+          "anchor_b": 1.4
         }
       ],
       "topLeads": [
@@ -106567,7 +107465,9 @@
             "clears_75": true
           },
           "pitchType": "FC",
-          "situationId": "second_any|rhh"
+          "situationId": "second_any|rhh",
+          "anchor_a": 2.4,
+          "anchor_b": 2.1
         },
         {
           "id": "lead_eduardo_rodriguez_break_tempo_2",
@@ -106617,7 +107517,9 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 1.6,
+          "anchor_b": 1.3
         },
         {
           "id": "lead_eduardo_rodriguez_glove_flapping_3",
@@ -106667,7 +107569,9 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.2,
+          "anchor_b": 0.9
         },
         {
           "id": "lead_eduardo_rodriguez_glove_depth_4",
@@ -106717,7 +107621,9 @@
             "clears_75": true
           },
           "pitchType": "SL",
-          "situationId": "stretch|all"
+          "situationId": "stretch|all",
+          "anchor_a": 2.1,
+          "anchor_b": 1.8
         },
         {
           "id": "lead_eduardo_rodriguez_knee_apex_height_5",
@@ -106767,7 +107673,9 @@
             "clears_75": true
           },
           "pitchType": "SI",
-          "situationId": "stretch|runners_on"
+          "situationId": "stretch|runners_on",
+          "anchor_a": 1.5,
+          "anchor_b": 1.2
         }
       ],
       "topLeads": [
