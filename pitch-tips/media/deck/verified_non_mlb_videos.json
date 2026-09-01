@@ -1,5 +1,26 @@
 {
-  "status": "PURGED",
-  "audit_date": "2026-09-01",
-  "players": {}
+  "burns": {
+    "ff": "media/video/burns_ff.mp4",
+    "sl": "media/video/burns_sl.mp4"
+  },
+  "sasaki": {
+    "ff": "media/video/sasaki_ff.mp4",
+    "fs": "media/video/sasaki_fs.mp4"
+  },
+  "choi": {
+    "ch": "media/video/choi_ch.mp4",
+    "si": "media/video/choi_si.mp4"
+  },
+  "gulin": {
+    "ff": "media/video/gulin_ff.mp4",
+    "cu": "media/video/gulin_cu.mp4"
+  },
+  "rios": {
+    "sl": "media/video/rios_sl.mp4",
+    "si": "media/video/rios_si.mp4"
+  },
+  "hughes": {
+    "ff": "media/video/hughes_ff.mp4",
+    "sl": "media/video/hughes_sl.mp4"
+  }
 }

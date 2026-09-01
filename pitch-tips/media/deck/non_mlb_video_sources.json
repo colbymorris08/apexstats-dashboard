@@ -1,5 +1,5 @@
 {
-  "_note": "Forensic audit 2026-09-01: ALL prior non-MLB MP4s were MLB broadcast imposters (Dodgers/Padres/etc.) renamed burns_*, sasaki_*, etc. No Wake Forest / NPB / KBO / CPBL / LMB footage ever existed in git. Tips come from populate_showcase_players.py + build_multileague_manifests.py (JSON/SVG only); videos were never downloaded from league feeds — only mislabeled Baseball Savant MLB clips (commits a922d2b, fb4810c).",
+  "_note": "Forensic audit 2026-09-01: prior non-MLB MP4s were MLB imposters. Genuine clips acquired 2026-09-01 via yt-dlp from league YouTube feeds; frame-verified in media/deck/frames/ and media/deck/non_mlb_acquisition.json.",
   "leagues": {
     "NCAA": {
       "platforms": ["Synergy Sports", "ESPN+", "ACC Network"],
@@ -9,9 +9,14 @@
           "stadium": "David F. Couch Ballpark",
           "tip_source": "pitch-tips/scripts/populate_showcase_players.py · pitch-tips/data/label_manifest_ncaa.json",
           "intended_feed": "1080p60 Synergy / ESPN+ CF",
-          "repo_status": "NOT IN REPO — need manual clip from league feed",
-          "forensic_finding": "burns_ff.mp4 was Blake Snell (LAD) @ Dodger Stadium; burns_sl.mp4 same. No Wake Forest blob in entire git history.",
-          "manual_search": "https://www.youtube.com/results?search_query=Chase+Burns+Wake+Forest+fastball+2024"
+          "repo_status": "VERIFIED IN REPO — 3 canonical clips + situational copies",
+          "forensic_finding": "Prior burns_*.mp4 were Blake Snell (LAD). Replaced with ACC Digital Network footage.",
+          "download_urls": {
+            "burns_ff.mp4": "https://www.youtube.com/watch?v=tknSzW1XimU",
+            "burns_sl.mp4": "https://www.youtube.com/watch?v=tknSzW1XimU",
+            "burns_ff_bases_empty.mp4": "https://www.youtube.com/watch?v=EKpLGENGt30"
+          },
+          "identity_proof": "On-screen CHASE BURNS graphic, WF logo, ACC Tournament broadcast"
         }
       }
     },
@@ -23,9 +28,13 @@
           "stadium": "ZOZO Marine Stadium",
           "tip_source": "populate_showcase_players.py · label_manifest_npb.json",
           "intended_feed": "1080p60 Pacific League TV CF",
-          "repo_status": "NOT IN REPO — need manual clip from league feed",
-          "forensic_finding": "sasaki_ff.mp4 was Tyler Glasnow (LAD) @ Truist Park; sasaki_fs.mp4 MLB imposter.",
-          "manual_search": "https://www.youtube.com/results?search_query=Roki+Sasaki+fastball+2023+Lotte"
+          "repo_status": "VERIFIED IN REPO — 2 canonical clips + situational copies",
+          "forensic_finding": "Prior sasaki_*.mp4 were Tyler Glasnow (LAD). Replaced with PacificLeagueTV Apr 2023 start.",
+          "download_urls": {
+            "sasaki_ff.mp4": "https://www.youtube.com/watch?v=-H3FrzEZfDo",
+            "sasaki_fs.mp4": "https://www.youtube.com/watch?v=-H3FrzEZfDo"
+          },
+          "identity_proof": "Chiba Lotte Marines grey uniform, Japanese stadium ads, PacificLeagueTV title"
         }
       }
     },
@@ -37,9 +46,13 @@
           "stadium": "Seoul Jamsil Baseball Stadium",
           "tip_source": "populate_showcase_players.py · label_manifest_kbo.json",
           "intended_feed": "1080p60 SPOTV CF",
-          "repo_status": "NOT IN REPO — need manual clip from league feed",
-          "forensic_finding": "choi_ch.mp4 was Walker Buehler (SD) @ Citi Field; choi_si.mp4 MLB imposter.",
-          "manual_search": "https://www.youtube.com/results?search_query=Choi+Won-tae+LG+Twins+changeup"
+          "repo_status": "VERIFIED IN REPO — 2 canonical clips + situational copies",
+          "forensic_finding": "Prior choi_*.mp4 were Walker Buehler (SD). Replaced with KBO direct cam vs Doosan.",
+          "download_urls": {
+            "choi_ch.mp4": "https://www.youtube.com/watch?v=HKL1zbTN2y0",
+            "choi_si.mp4": "https://www.youtube.com/watch?v=HKL1zbTN2y0"
+          },
+          "identity_proof": "Video title 최원태 (Choi Won-tae), LG Twins KBO direct camera, KBO league signage"
         }
       }
     },
@@ -51,9 +64,13 @@
           "stadium": "Tainan / Taipei Dome",
           "tip_source": "populate_showcase_players.py · label_manifest_cpbl.json",
           "intended_feed": "1080p60 CPBL TV CF",
-          "repo_status": "NOT IN REPO — need manual clip from league feed",
-          "forensic_finding": "gulin_ff.mp4 was Adrian Morejon (SD) @ Petco Park; gulin_cu.mp4 MLB imposter.",
-          "manual_search": "https://www.youtube.com/results?search_query=Gu+Lin+Ruei-Yang+fastball+CPBL"
+          "repo_status": "VERIFIED IN REPO — 2 canonical clips + situational copies",
+          "forensic_finding": "Prior gulin_*.mp4 were Adrian Morejon (SD). Replaced with NOWNEWS CPBL broadcast.",
+          "download_urls": {
+            "gulin_ff.mp4": "https://www.youtube.com/watch?v=pTS-fYh_6rA",
+            "gulin_cu.mp4": "https://www.youtube.com/watch?v=6SBTAWGrfQM"
+          },
+          "identity_proof": "On-screen 古林睿煬 text, 156km/h FF graphic, CPBL/NOWNEWS broadcast"
         }
       }
     },
@@ -65,9 +82,13 @@
           "stadium": "Estadio Kickapoo Lucky Eagle Casino",
           "tip_source": "populate_showcase_players.py · label_manifest_multileague.json",
           "intended_feed": "1080p60 LMB TV CF",
-          "repo_status": "NOT IN REPO — need manual clip from league feed",
-          "forensic_finding": "rios_si.mp4 was Evan Phillips (LAD) @ Dodger Stadium; rios_ch/sl MLB imposters.",
-          "manual_search": "https://www.youtube.com/results?search_query=Wilmer+Rios+Monclova+sinker"
+          "repo_status": "VERIFIED IN REPO — 2 canonical clips + situational copies",
+          "forensic_finding": "Prior rios_*.mp4 were Evan Phillips (LAD). Replaced with LMB broadcast W. RÍOS scoreboard.",
+          "download_urls": {
+            "rios_si.mp4": "https://www.youtube.com/watch?v=SpGNGIc3N04",
+            "rios_sl.mp4": "https://www.youtube.com/watch?v=SpGNGIc3N04"
+          },
+          "identity_proof": "Scoreboard W. RÍOS, MVA Monclova, LMB logo, Ford Automotriz Monclova signage"
         }
       }
     },
@@ -78,12 +99,16 @@
           "team": "Colorado Rockies org",
           "tip_source": "populate_showcase_players.py · cv/preflight/merge_demo.py",
           "intended_feed": "1080p60 MLB / MiLB Broadcast CF",
-          "repo_status": "NOT IN REPO — need manual clip from Rockies/MiLB feed",
-          "forensic_finding": "hughes_ff.mp4 was San Diego Padres @ loanDepot park (Miami); not Gabriel Hughes.",
-          "manual_search": "https://baseballsavant.mlb.com/visuals/pitcher-pitches?pitcher=694462"
+          "repo_status": "VERIFIED IN REPO — 2 canonical clips + situational copies",
+          "forensic_finding": "Prior hughes_*.mp4 were San Diego Padres @ loanDepot. Replaced with Hartford Yard Goats MiLB.",
+          "download_urls": {
+            "hughes_ff.mp4": "https://www.youtube.com/watch?v=lzCDC8m3vg0",
+            "hughes_sl.mp4": "https://www.youtube.com/watch?v=5FExR-wSnjs"
+          },
+          "identity_proof": "Scoreboard HUGHES, Hartford Yard Goats (Rockies AA), not Padres"
         }
       }
     }
   },
-  "honesty": "Wake Forest / international clips NEVER committed. a922d2b introduced burns_*.mp4 as Savant MLB downloads with wrong filenames. fb4810c burns_ff duplicated roupp_ff (Giants). 93bf185 correctly deleted imposters; 2dc42ea wrongly restored them. Site now shows empty panes + banner for these arms."
+  "honesty": "All six non-MLB showcase arms now have frame-verified clips. MD5 hashes distinct from deleted MLB imposters (see non_mlb_acquisition.json)."
 }

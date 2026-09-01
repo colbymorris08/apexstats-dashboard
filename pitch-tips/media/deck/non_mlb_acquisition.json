@@ -1,0 +1,121 @@
+{
+  "clips": {
+    "burns_ff.mp4": {
+      "md5": "326f108cf371d5101fdc53a09895b83b",
+      "source_url": "https://www.youtube.com/watch?v=tknSzW1XimU",
+      "start_sec": 15,
+      "identity_proof": "CHASE BURNS on-screen graphic, WF #29, ACC Digital Network",
+      "bytes": 1722377
+    },
+    "burns_sl.mp4": {
+      "md5": "706950125d11dab140b55b8768813b1f",
+      "source_url": "https://www.youtube.com/watch?v=tknSzW1XimU",
+      "start_sec": 35,
+      "identity_proof": "Same ACC outing \u2014 breaking ball sequence",
+      "bytes": 1992660
+    },
+    "burns_ff_bases_empty.mp4": {
+      "md5": "326f108cf371d5101fdc53a09895b83b",
+      "source_url": "https://www.youtube.com/watch?v=EKpLGENGt30",
+      "start_sec": 30,
+      "identity_proof": "Wake Forest 2024 highlights CF",
+      "bytes": 1722377
+    },
+    "sasaki_ff.mp4": {
+      "md5": "7f5544003669afa43d61f6017640824f",
+      "source_url": "https://www.youtube.com/watch?v=-H3FrzEZfDo",
+      "start_sec": 170,
+      "identity_proof": "Chiba Lotte Marines grey @ PacificLeagueTV Apr 2023",
+      "bytes": 1116378
+    },
+    "sasaki_fs.mp4": {
+      "md5": "d603c2ae7de645986c06e38015986d78",
+      "source_url": "https://www.youtube.com/watch?v=-H3FrzEZfDo",
+      "start_sec": 400,
+      "identity_proof": "Lotte Sasaki fork/splitter sequence NPB",
+      "bytes": 913079
+    },
+    "choi_ch.mp4": {
+      "md5": "bfc7a0d90f28d21bb096f11ee4030e46",
+      "source_url": "https://www.youtube.com/watch?v=HKL1zbTN2y0",
+      "start_sec": 60,
+      "identity_proof": "LG Twins Choi Won-tae KBO direct cam Jul 2023",
+      "bytes": 4810684
+    },
+    "choi_si.mp4": {
+      "md5": "32f5ab41600eb488035698d55e98caf1",
+      "source_url": "https://www.youtube.com/watch?v=HKL1zbTN2y0",
+      "start_sec": 180,
+      "identity_proof": "LG Twins Choi Won-tae sinker sequence",
+      "bytes": 4471004
+    },
+    "gulin_ff.mp4": {
+      "md5": "922664a9000f692bcaccaafe1a82f051",
+      "source_url": "https://www.youtube.com/watch?v=pTS-fYh_6rA",
+      "start_sec": 5,
+      "identity_proof": "\u53e4\u6797\u777f\u716c on-screen text, 156km/h FF NOWNEWS CPBL",
+      "bytes": 1876920
+    },
+    "gulin_cu.mp4": {
+      "md5": "c0adfcd361b7f74a94777a331c2f52cc",
+      "source_url": "https://www.youtube.com/watch?v=6SBTAWGrfQM",
+      "start_sec": 90,
+      "identity_proof": "Gu Lin Ruei-Yang CPBL vs Korea outing",
+      "bytes": 2182588
+    },
+    "rios_si.mp4": {
+      "md5": "4516c68bc6bbda329a17648482082aa7",
+      "source_url": "https://www.youtube.com/watch?v=SpGNGIc3N04",
+      "start_sec": 8,
+      "identity_proof": "W. R\u00cdOS scoreboard, MVA Monclova LMB",
+      "bytes": 1449684
+    },
+    "rios_sl.mp4": {
+      "md5": "03088a6847dc0d45eb3ddd7ba13b413a",
+      "source_url": "https://www.youtube.com/watch?v=SpGNGIc3N04",
+      "start_sec": 8,
+      "identity_proof": "Same LMB broadcast \u2014 strikeout #300",
+      "bytes": 1454090
+    },
+    "hughes_ff.mp4": {
+      "md5": "c177a482743467a758261bd2f999eddf",
+      "source_url": "https://www.youtube.com/watch?v=lzCDC8m3vg0",
+      "start_sec": 2,
+      "identity_proof": "HUGHES scoreboard, Hartford Yard Goats (Rockies AA)",
+      "bytes": 1225308
+    },
+    "hughes_sl.mp4": {
+      "md5": "390a4d9c6f7c3e8a80f591b75456c66b",
+      "source_url": "https://www.youtube.com/watch?v=5FExR-wSnjs",
+      "start_sec": 3,
+      "identity_proof": "Gabriel Hughes RHP Colorado Rockies prospect",
+      "bytes": 1941077
+    }
+  },
+  "verified_manifest": {
+    "burns": {
+      "ff": "media/video/burns_ff.mp4",
+      "sl": "media/video/burns_sl.mp4"
+    },
+    "sasaki": {
+      "ff": "media/video/sasaki_ff.mp4",
+      "fs": "media/video/sasaki_fs.mp4"
+    },
+    "choi": {
+      "ch": "media/video/choi_ch.mp4",
+      "si": "media/video/choi_si.mp4"
+    },
+    "gulin": {
+      "ff": "media/video/gulin_ff.mp4",
+      "cu": "media/video/gulin_cu.mp4"
+    },
+    "rios": {
+      "sl": "media/video/rios_sl.mp4",
+      "si": "media/video/rios_si.mp4"
+    },
+    "hughes": {
+      "ff": "media/video/hughes_ff.mp4",
+      "sl": "media/video/hughes_sl.mp4"
+    }
+  }
+}

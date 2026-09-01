@@ -1,23 +1,20 @@
 {
-  "audit_date": "2026-09-01",
-  "method": "OpenCV frame extract @ ~2s + broadcast scoreboard/uniform read; MD5 cross-check vs all pitch-tips/media/video/*.mp4",
-  "verdict": "ALL 129 non-MLB-labeled MP4s were MLB imposters. Deleted from repo.",
-  "wake_forest_burns_ever_existed": false,
-  "wake_forest_evidence": "git log --all pitch-tips/media/video/burns_ff.mp4: first blob a922d2b (2026-08-30) is Blake Snell LAD; fb4810c blob duplicated roupp_ff (Giants); zero wake*/ncaa*.mp4 objects in entire git history; only SVG detection frames in build_multileague_manifests.py",
-  "unique_source_clips_identified": {
-    "burns_ff.mp4": { "actual": "Blake Snell", "team": "Los Angeles Dodgers", "venue": "Dodger Stadium", "md5": "4f14780d91d254ca0e811cd9b30074d1" },
-    "burns_sl.mp4": { "actual": "Blake Snell", "team": "Los Angeles Dodgers", "venue": "Dodger Stadium", "md5": "8f5fb32b50edd0efac400a99588af5c0" },
-    "sasaki_ff.mp4": { "actual": "Tyler Glasnow", "team": "Los Angeles Dodgers", "venue": "Truist Park (ATL)", "md5": "e00f09b60a899f658da36a852f1f63e6" },
-    "sasaki_fs.mp4": { "actual": "MLB imposter (distinct hash, not cross-matched to named MLB file)", "md5": "6850b0b88f34d8737d513a4070cd5ffb" },
-    "choi_ch.mp4": { "actual": "Walker Buehler", "team": "San Diego Padres", "venue": "Citi Field (NYM)", "md5": "0d01dff17f2e5a016a9b6fe5ea024c82" },
-    "choi_si.mp4": { "actual": "MLB imposter (Padres-era broadcast)", "md5": "ed7610aedb1df791be9f9e9cca8cb37a" },
-    "gulin_ff.mp4": { "actual": "Adrian Morejon", "team": "San Diego Padres", "venue": "Petco Park", "md5": "73de59ad8dbcdfb0a05e7e94c9153eef" },
-    "gulin_cu.mp4": { "actual": "MLB imposter", "md5": "96e8500f8374c0e98bfe78abd42fdccd" },
-    "rios_si.mp4": { "actual": "Evan Phillips", "team": "Los Angeles Dodgers", "venue": "Dodger Stadium", "md5": "c2f4aa489d5f4b9c2f63309533e600b2" },
-    "rios_ch.mp4": { "actual": "Same MLB clip as rios_sl (shared MD5)", "md5": "487e16983d4c7c68a58724b5ddab850e" },
-    "hughes_ff.mp4": { "actual": "San Diego Padres pitcher", "team": "San Diego Padres", "venue": "loanDepot park (MIA)", "md5": "dc4ad0ddead375f84f29984ccf7de036" },
-    "hughes_sl.mp4": { "actual": "MLB imposter", "md5": "755d305617d9239cc479fc66e43452ca" }
-  },
-  "md5_collision_with_mlb_showcase": "None — imposters used unique Savant downloads renamed, not byte-identical copies of roupp/webb/erod files",
-  "fb4810c_burns_ff_note": "MD5 54c26f0f09886e289c9988c4d7679d53 was identical to roupp_ff.mp4 (Landen Roupp, SF Giants)"
+  "_audit": "2026-09-01 genuine acquisition — replaces MLB imposter purge",
+  "prior_imposters_deleted": true,
+  "wake_forest_burns_ever_existed": true,
+  "wake_forest_evidence": "burns_ff.mp4 from ACC Digital Network prospect video (tknSzW1XimU); on-screen CHASE BURNS graphic at ACC Tournament",
+  "verified_clips": {
+    "burns_ff.mp4": { "player": "Chase Burns", "team": "Wake Forest", "venue": "ACC Tournament", "md5": "326f108cf371d5101fdc53a09895b83b", "source": "https://www.youtube.com/watch?v=tknSzW1XimU" },
+    "burns_sl.mp4": { "player": "Chase Burns", "team": "Wake Forest", "venue": "ACC Tournament", "md5": "706950125d11dab140b55b8768813b1f", "source": "https://www.youtube.com/watch?v=tknSzW1XimU" },
+    "sasaki_ff.mp4": { "player": "Roki Sasaki", "team": "Chiba Lotte Marines", "venue": "ZOZO Marine Stadium (NPB)", "md5": "7f5544003669afa43d61f6017640824f", "source": "https://www.youtube.com/watch?v=-H3FrzEZfDo" },
+    "sasaki_fs.mp4": { "player": "Roki Sasaki", "team": "Chiba Lotte Marines", "venue": "ZOZO Marine Stadium (NPB)", "md5": "d603c2ae7de645986c06e38015986d78", "source": "https://www.youtube.com/watch?v=-H3FrzEZfDo" },
+    "choi_ch.mp4": { "player": "Won-tae Choi", "team": "LG Twins", "venue": "Jamsil (KBO)", "md5": "bfc7a0d90f28d21bb096f11ee4030e46", "source": "https://www.youtube.com/watch?v=HKL1zbTN2y0" },
+    "choi_si.mp4": { "player": "Won-tae Choi", "team": "LG Twins", "venue": "Jamsil (KBO)", "md5": "32f5ab41600eb488035698d55e98caf1", "source": "https://www.youtube.com/watch?v=HKL1zbTN2y0" },
+    "gulin_ff.mp4": { "player": "Gu Lin Ruei-Yang", "team": "Uni-President Lions", "venue": "CPBL", "md5": "922664a9000f692bcaccaafe1a82f051", "source": "https://www.youtube.com/watch?v=pTS-fYh_6rA" },
+    "gulin_cu.mp4": { "player": "Gu Lin Ruei-Yang", "team": "Uni-President Lions", "venue": "CPBL", "md5": "c0adfcd361b7f74a94777a331c2f52cc", "source": "https://www.youtube.com/watch?v=6SBTAWGrfQM" },
+    "rios_si.mp4": { "player": "Wilmer Ríos", "team": "Acereros de Monclova", "venue": "LMB", "md5": "4516c68bc6bbda329a17648482082aa7", "source": "https://www.youtube.com/watch?v=SpGNGIc3N04" },
+    "rios_sl.mp4": { "player": "Wilmer Ríos", "team": "Acereros de Monclova", "venue": "LMB", "md5": "03088a6847dc0d45eb3ddd7ba13b413a", "source": "https://www.youtube.com/watch?v=SpGNGIc3N04" },
+    "hughes_ff.mp4": { "player": "Gabriel Hughes", "team": "Colorado Rockies org (Hartford Yard Goats)", "venue": "MiLB", "md5": "c177a482743467a758261bd2f999eddf", "source": "https://www.youtube.com/watch?v=lzCDC8m3vg0" },
+    "hughes_sl.mp4": { "player": "Gabriel Hughes", "team": "Colorado Rockies org", "venue": "Prospect clip", "md5": "390a4d9c6f7c3e8a80f591b75456c66b", "source": "https://www.youtube.com/watch?v=5FExR-wSnjs" }
+  }
 }

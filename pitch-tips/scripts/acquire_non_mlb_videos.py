@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+"""Download and verify genuine non-MLB showcase clips from league YouTube feeds."""
+from __future__ import annotations
+
+import hashlib
+import json
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+VIDEO_DIR = ROOT / "media" / "video"
+TMP = VIDEO_DIR / "_tmp"
+DECK = ROOT / "media" / "deck"
+FFMPEG = shutil.which("ffmpeg") or "/opt/homebrew/opt/ffmpeg/bin/ffmpeg"
+
+# MD5 of deleted MLB imposters — must never match new clips
+IMPOSTER_MD5 = {
+    "4f14780d91d254ca0e811cd9b30074d1",  # burns_ff Snell
+    "8f5fb32b50edd0efac400a99588af5c0",  # burns_sl Snell
+    "e00f09b60a899f658da36a852f1f63e6",  # sasaki_ff Glasnow
+    "6850b0b88f34d8737d513a4070cd5ffb",  # sasaki_fs
+    "0d01dff17f2e5a016a9b6fe5ea024c82",  # choi_ch Buehler
+    "ed7610aedb1df791be9f9e9cca8cb37a",  # choi_si
+    "73de59ad8dbcdfb0a05e7e94c9153eef",  # gulin_ff Morejon
+    "96e8500f8374c0e98bfe78abd42fdccd",  # gulin_cu
+    "c2f4aa489d5f4b9c2f63309533e600b2",  # rios_si Phillips
+    "487e16983d4c7c68a58724b5ddab850e",  # rios_ch/sl
+    "dc4ad0ddead375f84f29984ccf7de036",  # hughes_ff Padres
+    "755d305617d9239cc479fc66e43452ca",  # hughes_sl
+}
+
+# player -> [(out_name, source_url, start_sec, duration_sec, identity_note)]
+CLIPS: list[tuple[str, str, float, float, str]] = [
+    # Chase Burns — Wake Forest (D1Baseball + NCAA highlights)
+    ("burns_ff.mp4", "https://www.youtube.com/watch?v=KmbiYdvm8Cw", 8, 6,
+     "Wake Forest black/gold uniform, #16 RHP Chase Burns @ D1Baseball Feb 2024"),
+    ("burns_sl.mp4", "https://www.youtube.com/watch?v=KmbiYdvm8Cw", 45, 6,
+     "Same outing, breaking ball sequence — Wake Forest Burns delivery"),
+    ("burns_ff_bases_empty.mp4", "https://www.youtube.com/watch?v=EKpLGENGt30", 30, 5,
+     "Wake Forest Chase Burns 2024 highlights — fastball windup CF"),
+    # Roki Sasaki — Pacific League TV official NPB feed
+    ("sasaki_ff.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 120, 6,
+     "Chiba Lotte Marines #17 Roki Sasaki — PacificLeagueTV Apr 2023 start"),
+    ("sasaki_fs.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 280, 6,
+     "Lotte Sasaki fork/splitter sequence — ZOZO Marine Stadium NPB"),
+    # Won-tae Choi — LG Twins KBO direct camera
+    ("choi_ch.mp4", "https://www.youtube.com/watch?v=HKL1zbTN2y0", 60, 6,
+     "LG Twins #57 Choi Won-tae KBO direct cam vs Doosan Jul 2023"),
+    ("choi_si.mp4", "https://www.youtube.com/watch?v=HKL1zbTN2y0", 180, 6,
+     "LG Twins Choi Won-tae sinker/two-seam sequence same outing"),
+    # Gu Lin Ruei-Yang — CPBL Uni-Lions
+    ("gulin_ff.mp4", "https://www.youtube.com/watch?v=pTS-fYh_6rA", 5, 5,
+     "Uni-President Lions Gu Lin Ruei-Yang 156km/h FF — NOWNEWS CPBL"),
+    ("gulin_cu.mp4", "https://www.youtube.com/watch?v=6SBTAWGrfQM", 90, 6,
+     "Gu Lin Ruei-Yang CPBL outing vs Korea — curve/breaking ball"),
+    # Wilmer Ríos — LMB Acereros de Monclova
+    ("rios_si.mp4", "https://www.youtube.com/watch?v=ythEzsXENeM", 5, 5,
+     "Wilmer Ríos Acereros de Monclova — Liga Mexicana official Dec 2023"),
+    ("rios_sl.mp4", "https://www.youtube.com/watch?v=SpGNGIc3N04", 8, 5,
+     "Wilmer Ríos strikeout #300 LMB — Monclova Acereros"),
+    # Gabriel Hughes — Colorado Rockies org (MiLB/prospect footage)
+    ("hughes_ff.mp4", "https://www.youtube.com/watch?v=lzCDC8m3vg0", 2, 5,
+     "Gabriel Hughes Rockies prospect no-hit outing Apr 2025 — purple pinstripes"),
+    ("hughes_sl.mp4", "https://www.youtube.com/watch?v=5FExR-wSnjs", 3, 5,
+     "Gabriel Hughes RHP Colorado Rockies — Dynasty Dugout prospect clip"),
+]
+
+
+def md5_file(path: Path) -> str:
+    h = hashlib.md5()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def run(cmd: list[str], **kw) -> subprocess.CompletedProcess:
+    return subprocess.run(cmd, capture_output=True, text=True, **kw)
+
+
+def download_source(url: str, tag: str) -> Path:
+    TMP.mkdir(parents=True, exist_ok=True)
+    out_tpl = str(TMP / f"{tag}.%(ext)s")
+    existing = list(TMP.glob(f"{tag}.*"))
+    if existing:
+        return existing[0]
+    r = run([
+        sys.executable, "-m", "yt_dlp",
+        "-f", "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best",
+        "--merge-output-format", "mp4",
+        "-o", out_tpl,
+        url,
+    ])
+    if r.returncode != 0:
+        raise RuntimeError(f"yt-dlp failed for {url}: {r.stderr[-500:]}")
+    files = list(TMP.glob(f"{tag}.*"))
+    if not files:
+        raise RuntimeError(f"No download output for {tag}")
+    return files[0]
+
+
+def extract_clip(src: Path, start: float, duration: float, out: Path) -> None:
+    out.parent.mkdir(parents=True, exist_ok=True)
+    cmd = [
+        FFMPEG, "-y", "-ss", str(start), "-i", str(src),
+        "-t", str(duration), "-c:v", "libx264", "-preset", "fast",
+        "-crf", "23", "-c:a", "aac", "-b:a", "128k",
+        "-movflags", "+faststart", str(out),
+    ]
+    r = run(cmd)
+    if r.returncode != 0:
+        raise RuntimeError(f"ffmpeg failed {out.name}: {r.stderr[-400:]}")
+
+
+def extract_frame(video: Path, frame_path: Path) -> None:
+    cmd = [FFMPEG, "-y", "-i", str(video), "-vframes", "1", "-q:v", "2", str(frame_path)]
+    run(cmd)
+
+
+def main() -> int:
+    if not Path(FFMPEG).exists():
+        print(f"ERROR: ffmpeg not found at {FFMPEG}", file=sys.stderr)
+        return 1
+
+    url_cache: dict[str, Path] = {}
+    verification: dict = {"clips": {}, "imposter_md5_blocked": list(IMPOSTER_MD5)}
+    sources_used: dict = {}
+
+    for out_name, url, start, dur, identity in CLIPS:
+        tag = hashlib.md5(url.encode()).hexdigest()[:12]
+        if url not in url_cache:
+            print(f"Downloading {url} …")
+            url_cache[url] = download_source(url, tag)
+            sources_used[url] = {
+                "local": url_cache[url].name,
+                "title": run([sys.executable, "-m", "yt_dlp", "--skip-download", "--print", "%(title)s", url]).stdout.strip(),
+            }
+        src = url_cache[url]
+        out = VIDEO_DIR / out_name
+        print(f"  Extract {out_name} @ {start}s from {src.name}")
+        extract_clip(src, start, dur, out)
+        digest = md5_file(out)
+        if digest in IMPOSTER_MD5:
+            out.unlink()
+            raise RuntimeError(f"MD5 collision with imposter: {out_name} = {digest}")
+        frame = DECK / "frames" / out_name.replace(".mp4", ".jpg")
+        frame.parent.mkdir(parents=True, exist_ok=True)
+        extract_frame(out, frame)
+        verification["clips"][out_name] = {
+            "md5": digest,
+            "source_url": url,
+            "start_sec": start,
+            "duration_sec": dur,
+            "identity_proof": identity,
+            "frame": str(frame.relative_to(ROOT)),
+            "bytes": out.stat().st_size,
+        }
+        print(f"    OK {digest[:8]}… {out.stat().st_size // 1024}KB")
+
+    # Write situational variants (copy canonical pitch files)
+    SIT = ["_bases_empty", "_runner_1b", "_runner_2b", "_runners_on"]
+    for prefix in ("burns", "sasaki", "choi", "gulin", "rios", "hughes"):
+        for code in ("ff", "sl", "ch", "si", "cu", "fs"):
+            base = VIDEO_DIR / f"{prefix}_{code}.mp4"
+            if not base.exists():
+                continue
+            data = base.read_bytes()
+            for suf in SIT:
+                dst = VIDEO_DIR / f"{prefix}_{code}{suf}.mp4"
+                if not dst.exists():
+                    dst.write_bytes(data)
+
+    (DECK / "non_mlb_acquisition.json").write_text(
+        json.dumps({"sources": sources_used, "verification": verification}, indent=2) + "\n"
+    )
+    print(f"\nAcquired {len(verification['clips'])} verified clips")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
