@@ -1560,7 +1560,7 @@ function formatSec(s) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260901p12";
+const VIDEO_CACHE_BUST = "20260901p13";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -1932,15 +1932,22 @@ function formatTipDropdownLabel(t, idx) {
   return `Tip #${rankNum}: ${title}${cleanContrast ? ` · ${cleanContrast}` : ""}`;
 }
 
-function ensureFiveTips(player) {
-  let tips = [...playerTips(player)];
-  if (tips.length >= 5) {
-    return tips.slice(0, 5);
-  }
-  
-  const defaults = [
+function sortTipsByRank(tips) {
+  return [...tips].sort((a, b) => {
+    const ra = Number(a.rank);
+    const rb = Number(b.rank);
+    if (Number.isFinite(ra) && Number.isFinite(rb) && ra !== rb) return ra - rb;
+    if (Number.isFinite(ra)) return -1;
+    if (Number.isFinite(rb)) return 1;
+    return 0;
+  });
+}
+
+function defaultTipTemplates(playerId) {
+  const pid = playerId || "p";
+  return [
     {
-      id: `${player?.id || "p"}_tip_1`,
+      id: `${pid}_tip_1`,
       rank: 1,
       title: "Glove Elevation at Leg Lift Peak",
       contrast: "Primary (SI/FF) vs. Offspeed (CU/CH)",
@@ -1951,10 +1958,10 @@ function ensureFiveTips(player) {
       what_to_spot: "Glove rests near chest lettering on offspeed vs belt buckle level on fastball/sinker (+4.8 in delta).",
       confidence: 0.89,
       separation_floor_multiples: 5.9,
-      effect_size_d: 1.42
+      effect_size_d: 1.42,
     },
     {
-      id: `${player?.id || "p"}_tip_2`,
+      id: `${pid}_tip_2`,
       rank: 2,
       title: "Throwing Hand Insertion Depth in Glove Pocket",
       contrast: "Changeup/Offspeed (CH) vs. Fastball (SI/FF)",
@@ -1965,10 +1972,10 @@ function ensureFiveTips(player) {
       what_to_spot: "Deep wrist insertion inside glove webbing pocket on changeup grip setting.",
       confidence: 0.82,
       separation_floor_multiples: 5.9,
-      effect_size_d: 1.28
+      effect_size_d: 1.28,
     },
     {
-      id: `${player?.id || "p"}_tip_3`,
+      id: `${pid}_tip_3`,
       rank: 3,
       title: "Settle-to-Lift Tempo Cadence & Hold Duration",
       contrast: "Breaking (CU/SL) vs. Fastball (SI/FF)",
@@ -1979,10 +1986,10 @@ function ensureFiveTips(player) {
       what_to_spot: "+140ms longer pause in glove before initiating leg lift on breaking pitches.",
       confidence: 0.80,
       separation_floor_multiples: 3.6,
-      effect_size_d: 1.15
+      effect_size_d: 1.15,
     },
     {
-      id: `${player?.id || "p"}_tip_4`,
+      id: `${pid}_tip_4`,
       rank: 4,
       title: "Glove Webbing Orientation & Wrist Abduction",
       contrast: "Curveball (CU) vs. Sinker (SI)",
@@ -1993,10 +2000,10 @@ function ensureFiveTips(player) {
       what_to_spot: "Glove rim turns inward on sinker; remains flared outward on curveball delivery.",
       confidence: 0.84,
       separation_floor_multiples: 4.2,
-      effect_size_d: 1.22
+      effect_size_d: 1.22,
     },
     {
-      id: `${player?.id || "p"}_tip_5`,
+      id: `${pid}_tip_5`,
       rank: 5,
       title: "Arm-Side Lateral Glove Drift & Torso Spacing",
       contrast: "Fastball (SI/FF) vs. Offspeed (CH/CU)",
@@ -2007,16 +2014,36 @@ function ensureFiveTips(player) {
       what_to_spot: "Glove drifts 2.3 in farther arm-side during forward stride on fastball/sinker delivery.",
       confidence: 0.78,
       separation_floor_multiples: 3.1,
-      effect_size_d: 0.98
-    }
+      effect_size_d: 0.98,
+    },
   ];
+}
 
-  while (tips.length < 5) {
-    const idx = tips.length;
-    const item = { ...defaults[idx], rank: idx + 1 };
-    tips.push(item);
+function padTipsToFive(tips, playerId) {
+  const sorted = sortTipsByRank(tips);
+  if (sorted.length >= 5) return sorted.slice(0, 5);
+  const defaults = defaultTipTemplates(playerId);
+  const out = [...sorted];
+  while (out.length < 5) {
+    const idx = out.length;
+    out.push({ ...defaults[idx], rank: idx + 1, id: `${playerId || "p"}_tip_${idx + 1}` });
   }
-  return tips.slice(0, 5);
+  return out.slice(0, 5);
+}
+
+/** Single source of truth for ranked table rows AND compare scrubber tips. */
+function rankedTipsForPlayer(player, filters = {}) {
+  const base = padTipsToFive(playerTips(player), player?.id || "");
+  const angle = filters.angle || "";
+  const context = filters.context || "";
+  if (!angle && !context) return base;
+  let filtered = base.filter((t) => tipPassesFilters(t, { angle, context }));
+  if (!filtered.length) filtered = base;
+  return filtered.slice(0, 5);
+}
+
+function ensureFiveTips(player) {
+  return rankedTipsForPlayer(player, {});
 }
 
 function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
@@ -2346,80 +2373,36 @@ function wireSynchronizedDeliveryScrubber(player) {
   const stepBackBtn = document.getElementById("sync-step-back-btn");
   const stepFwdBtn = document.getElementById("sync-step-fwd-btn");
 
-  const rawTips = playerTips(player);
-  let availableTips = rawTips.slice(0, 5);
-
-  if (!availableTips.length) {
-    availableTips = [
-      {
-        id: "default_tip_1",
-        title: "Glove Set Anchor Height · Fastball (FF 95mph) vs Offspeed (CH 84 / SL 86)",
-        cue: "Glove set high across chest letters on fastball vs low at belt buckle",
-        contrast: "Fastball vs Offspeed",
-        contrast_label: "Four-Seam Fastball (FF 95mph) vs Changeup / Slider (CH 84 / SL 86)",
-        predicts: "FF",
-        confidence: 0.88,
-        separation_display: "5.2× floor",
-        target_body_part: "Glove Set Anchor Height (Chest Letters vs Belt Buckle)",
-        what_to_spot: "Sets hands 2.4 inches higher across mid-chest lettering during the stationary set pause on Four-Seam Fastballs (FF 95mph), compared to a low belt buckle anchor on Offspeed pitches (CH/SL).",
-        lookFor: "On Fastballs (FF 95mph), glove is anchored 2.4 inches higher across mid-chest letters during set pause; on Offspeed pitches (CH/SL), hands rest low against belt buckle (5.2× visibility floor separation).",
-        direction: "On Fastballs (FF 95mph), glove is anchored 2.4 inches higher across mid-chest letters during set pause; on Offspeed pitches (CH/SL), hands rest low against belt buckle.",
-        side_by_side_guide: "Pitch A (Fastball - FF): Glove rim covers jersey chest letters before leg lift. Pitch B (Offspeed - CH/SL): Glove rim rests 2.4 inches lower flush against belt buckle.",
-        scouting_note: "Higher hand anchor establishes a steeper downward arm swing required to drive fastball plane. Watch glove position right before the front knee begins upward motion.",
-        timestamp_window: "Second Mark: 0:02.4 · Window: -0.85s Set Position Hold (Video Frames -36 to -20)",
-        delivery_phase: "Stationary Set Position (-1.20s to -0.65s before hand break)",
-        second_mark: "0:02.4",
-        anchor_a: 2.40,
-        anchor_b: 2.40,
-        angle: "CF",
-        pitch_a_label: "Four-Seam Fastball (FF 95mph)",
-        pitch_b_label: "Changeup / Slider (CH 84 / SL 86)"
-      },
-      {
-        id: "default_tip_2",
-        title: "Hand Depth in Glove Pocket · Breaking (SL/CU) vs Fastball (FF 95mph)",
-        cue: "Throwing wrist buried 1.5 inches deep inside mitt on breaking pitch vs exposed wrist",
-        contrast: "Breaking vs Fastball",
-        contrast_label: "Slider / Curveball (SL 86 / CU 80) vs Four-Seam Fastball (FF 95mph)",
-        predicts: "SL",
-        confidence: 0.84,
-        separation_display: "4.6× floor",
-        target_body_part: "Throwing Wrist Depth & Glove Pocket Collar",
-        what_to_spot: "Buries throwing wrist 1.5 inches deeper into the glove pocket on Breaking Pitches (SL/CU), stretching mitt laces flat, compared to clearly visible wrist crease on Fastballs (FF).",
-        lookFor: "On Breaking Pitches (SL/CU), throwing wrist is buried deep in glove pocket with stretched laces; on Fastballs (FF), wrist crease is fully exposed outside glove rim (4.6× visibility floor separation).",
-        direction: "On Breaking Pitches (SL/CU), throwing wrist is buried deep in glove pocket with stretched laces; on Fastballs (FF), wrist crease is fully exposed outside glove rim.",
-        side_by_side_guide: "Pitch A (Breaking - SL/CU): Wrist completely hidden inside glove collar. Pitch B (Fastball - FF): Wrist crease visible 1.5 inches outside glove rim.",
-        scouting_note: "Deep pocket insertion allows fingers to hook along the breaking ball seam orientation. Watch the glove opening during the stationary set pause.",
-        timestamp_window: "Second Mark: 0:02.1 · Window: -0.22s Peak Balance Point (Video Frames -9 to -5)",
-        delivery_phase: "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
-        second_mark: "0:02.1",
-        anchor_a: 2.20,
-        anchor_b: 2.20,
-        angle: "CF",
-        pitch_a_label: "Slider / Curve (SL 86 / CU 80)",
-        pitch_b_label: "Fastball (FF 95mph)"
-      }
-    ];
-  }
-
-  // Populate Dropdown
-  if (tipDropdown) {
-    tipDropdown.innerHTML = availableTips.map((t, idx) => {
-      const confStr = t.confidence ? `${Math.round(t.confidence * 100)}% signal` : "Lead";
-      const contrastStr = t.contrast_label || t.contrast || t.predicts || "Primary vs Secondary";
-      const titleStr = t.title || t.cue || `Mechanical Indicator #${idx+1}`;
-      return `<option value="${idx}">Tip #${idx+1}: ${titleStr} (${confStr} · ${contrastStr})</option>`;
-    }).join("");
-  }
-
-  // Populate Quick Pills
-  if (quickPills) {
-    quickPills.innerHTML = availableTips.map((t, idx) => {
-      return `<button type="button" class="sync-pill-btn ${idx === 0 ? "active" : ""}" data-tip-idx="${idx}">Tip #${idx+1}</button>`;
-    }).join("");
-  }
-
   let currentTipIdx = 0;
+  let availableTips = rankedTipsForPlayer(player, {}).slice(0, 5);
+
+  function rebuildTipSelectors() {
+    if (tipDropdown) {
+      tipDropdown.innerHTML = availableTips.map((t, idx) => {
+        const confStr = t.confidence ? `${Math.round(t.confidence * 100)}% signal` : "Lead";
+        const contrastStr = t.contrast_label || t.contrast || t.predicts || "Primary vs Secondary";
+        const titleStr = t.title || t.cue || `Mechanical Indicator #${idx + 1}`;
+        return `<option value="${idx}">Tip #${idx + 1}: ${titleStr} (${confStr} · ${contrastStr})</option>`;
+      }).join("");
+    }
+    if (quickPills) {
+      quickPills.innerHTML = availableTips.map((t, idx) => {
+        return `<button type="button" class="sync-pill-btn ${idx === currentTipIdx ? "active" : ""}" data-tip-idx="${idx}">Tip #${idx + 1}</button>`;
+      }).join("");
+    }
+  }
+
+  function setAvailableTips(nextTips, preferredIdx = currentTipIdx) {
+    availableTips = (nextTips || []).slice(0, 5);
+    if (!availableTips.length) return;
+    currentTipIdx = Math.max(0, Math.min(preferredIdx, availableTips.length - 1));
+    rebuildTipSelectors();
+    applyTipSelection(currentTipIdx);
+  }
+
+  rebuildTipSelectors();
+  window.setRankedCompareTips = setAvailableTips;
+
   let isPlayingA = false;
   let isPlayingB = false;
   let animReqIdA = null;
@@ -2961,7 +2944,7 @@ function wirePlayerPage(data) {
   }
 
   const isShowcase = isShowcaseArm(player.id) || isShowcaseArm(id);
-  const tips = ensureFiveTips(player);
+  const tips = rankedTipsForPlayer(player, {});
 
   if (title) {
     title.innerHTML = isLiteMode && isShowcase
@@ -3036,11 +3019,7 @@ function wirePlayerPage(data) {
   function paint() {
     const angle = angleSel?.value || "";
     const context = contextSel?.value || "";
-    let filteredTips = tips.filter((t) => tipPassesFilters(t, { angle, context }));
-    // Graceful fallback to all player tips if strict sub-filter yields empty
-    if (!filteredTips.length && tips.length) {
-      filteredTips = tips;
-    }
+    const filteredTips = rankedTipsForPlayer(player, { angle, context });
 
     const tipRoots = [
       document.getElementById("player-tips"),
@@ -3074,7 +3053,7 @@ function wirePlayerPage(data) {
             <td style="font-size:0.85rem; color:#cbd5e1;">${t.what_to_spot || t.cue || t.lookFor}</td>
             <td style="font-family:var(--mono); color:var(--good); font-weight:700;">${conf}%</td>
             <td style="font-family:var(--mono); color:#60a5fa;">${mult}× floor</td>
-            <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${rank - 1})" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
+            <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${i})" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
           </tr>`;
         }).join("");
       } else {
@@ -3101,8 +3080,9 @@ function wirePlayerPage(data) {
         cTips.map((t, i) => renderTip(t, angleMap, i + 1)).join("") ||
         `<p class="note">Catcher setup tracking (target position, stance, pre-pitch glove stillness) active. Multi-angle 4K club video elevates fine target adjustments to high-certainty indicators.</p>`;
     }
-    // Re-apply current scrubber tip to reload correct situational video
-    if (typeof window.applyCurrentTipSelection === "function") {
+    if (typeof window.setRankedCompareTips === "function") {
+      window.setRankedCompareTips(filteredTips, 0);
+    } else if (typeof window.applyCurrentTipSelection === "function") {
       window.applyCurrentTipSelection();
     }
   }

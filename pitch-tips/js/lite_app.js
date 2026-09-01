@@ -538,7 +538,7 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
             <strong>Target Body Part:</strong> ${targetBodyPart}
           </div>
         </div>
-        <button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${rank - 1})" aria-label="Compare Tip #${rank} in independent delivery scrubber">
+        <button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${(rankIndex != null ? rankIndex : rank) - 1})" aria-label="Compare Tip #${rank} in independent delivery scrubber">
           <span class="sync-play-mini-icon">▶</span> Compare in Scrubber
         </button>
       </div>
@@ -1652,8 +1652,29 @@ function formatTipDropdownLabel(t, idx) {
   return `Tip #${rankNum}: ${title}${cleanContrast ? ` · ${cleanContrast}` : ""}`;
 }
 
+function sortTipsByRank(tips) {
+  return [...tips].sort((a, b) => {
+    const ra = Number(a.rank);
+    const rb = Number(b.rank);
+    if (Number.isFinite(ra) && Number.isFinite(rb) && ra !== rb) return ra - rb;
+    if (Number.isFinite(ra)) return -1;
+    if (Number.isFinite(rb)) return 1;
+    return 0;
+  });
+}
+
+function rankedTipsForPlayer(player, filters = {}) {
+  const base = ensureFiveTips(player);
+  const angle = filters.angle || "";
+  const context = filters.context || "";
+  if (!angle && !context) return base;
+  let filtered = base.filter((t) => tipPassesFilters(t, { angle, context }));
+  if (!filtered.length) filtered = base;
+  return filtered.slice(0, 5);
+}
+
 function ensureFiveTips(player) {
-  let tips = [...playerTips(player)];
+  let tips = sortTipsByRank(playerTips(player));
   if (tips.length >= 5) return tips.slice(0, 5);
 
   const name = player?.name || "Pitcher";
@@ -1827,7 +1848,7 @@ function ensureFiveTips(player) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260901p12";
+const VIDEO_CACHE_BUST = "20260901p13";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -2495,23 +2516,33 @@ function wireSynchronizedDeliveryScrubber(player) {
   const stepBackBtn = document.getElementById("sync-step-back-btn");
   const stepFwdBtn = document.getElementById("sync-step-fwd-btn");
 
-  const availableTips = ensureFiveTips(player);
-
-  // Populate Dropdown
-  if (tipDropdown) {
-    tipDropdown.innerHTML = availableTips.map((t, idx) => {
-      return `<option value="${idx}">${formatTipDropdownLabel(t, idx)}</option>`;
-    }).join("");
-  }
-
-  // Populate Quick Pills
-  if (quickPills) {
-    quickPills.innerHTML = availableTips.map((t, idx) => {
-      return `<button type="button" class="sync-pill-btn ${idx === 0 ? "active" : ""}" data-tip-idx="${idx}">Tip #${idx+1}</button>`;
-    }).join("");
-  }
-
   let currentTipIdx = 0;
+  let availableTips = rankedTipsForPlayer(player, {}).slice(0, 5);
+
+  function rebuildTipSelectors() {
+    if (tipDropdown) {
+      tipDropdown.innerHTML = availableTips.map((t, idx) => {
+        return `<option value="${idx}">${formatTipDropdownLabel(t, idx)}</option>`;
+      }).join("");
+    }
+    if (quickPills) {
+      quickPills.innerHTML = availableTips.map((t, idx) => {
+        return `<button type="button" class="sync-pill-btn ${idx === currentTipIdx ? "active" : ""}" data-tip-idx="${idx}">Tip #${idx + 1}</button>`;
+      }).join("");
+    }
+  }
+
+  function setAvailableTips(nextTips, preferredIdx = currentTipIdx) {
+    availableTips = (nextTips || []).slice(0, 5);
+    if (!availableTips.length) return;
+    currentTipIdx = Math.max(0, Math.min(preferredIdx, availableTips.length - 1));
+    rebuildTipSelectors();
+    applyTipSelection(currentTipIdx);
+  }
+
+  rebuildTipSelectors();
+  window.setRankedCompareTips = setAvailableTips;
+
   let isPlayingA = false;
   let isPlayingB = false;
   let animReqIdA = null;
@@ -3107,11 +3138,7 @@ function wireLitePlayer(data) {
     function paintTips() {
       const angle = document.getElementById("angle-select")?.value || "";
       const context = document.getElementById("context-select")?.value || "";
-      let filtered = tips.filter((t) => tipPassesFilters(t, { angle, context }));
-      // Graceful fallback to all player tips if strict sub-filter yields empty
-      if (!filtered.length && tips.length) {
-        filtered = tips;
-      }
+      const filtered = rankedTipsForPlayer(player, { angle, context });
       
       const tipRoots = [
         document.getElementById("player-tips"),
@@ -3133,7 +3160,7 @@ function wireLitePlayer(data) {
               <td style="font-size:0.85rem; color:#cbd5e1;">${t.what_to_spot || t.cue || t.lookFor}</td>
               <td style="font-family:var(--mono); color:var(--good); font-weight:700;">${conf}%</td>
               <td style="font-family:var(--mono); color:#60a5fa;">${mult}× floor</td>
-              <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${rank - 1})" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
+              <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${i})" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
             </tr>`;
           }).join("");
         } else {
@@ -3142,8 +3169,9 @@ function wireLitePlayer(data) {
         }
       });
 
-      // Re-apply current scrubber tip to reload correct situational video
-      if (typeof window.applyCurrentTipSelection === "function") {
+      if (typeof window.setRankedCompareTips === "function") {
+        window.setRankedCompareTips(filtered, 0);
+      } else if (typeof window.applyCurrentTipSelection === "function") {
         window.applyCurrentTipSelection();
       }
     }
