@@ -1886,18 +1886,18 @@ function ensureFiveTips(player) {
 
 // Verified non-MLB showcase clips — ONLY these paths may load for international/college arms.
 const VERIFIED_NON_MLB_VIDEOS = {
-  chase_burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_cu.mp4" },
-  burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_cu.mp4" },
-  roki_sasaki: { ff: "media/video/sasaki_ff.mp4", fs: "media/video/sasaki_fs.mp4", sl: "media/video/sasaki_ff.mp4" },
-  sasaki: { ff: "media/video/sasaki_ff.mp4", fs: "media/video/sasaki_fs.mp4", sl: "media/video/sasaki_ff.mp4" },
-  won_tae_choi: { si: "media/video/choi_si.mp4", ch: "media/video/choi_ch.mp4", ff: "media/video/choi_ff.mp4", sl: "media/video/choi_sl.mp4", cu: "media/video/choi_cu.mp4" },
-  gu_lin: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_sl.mp4", ch: "media/video/gulin_ch.mp4" },
-  gulin: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_sl.mp4", ch: "media/video/gulin_ch.mp4" },
-  gu_lin_ruei_yang: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_sl.mp4", ch: "media/video/gulin_ch.mp4" },
+  chase_burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4" },
+  burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_ch.mp4", cu: "media/video/burns_ch.mp4" },
+  roki_sasaki: { ff: "media/video/sasaki_ff.mp4", fs: "media/video/sasaki_fs.mp4", sl: "media/video/sasaki_fs.mp4" },
+  sasaki: { ff: "media/video/sasaki_ff.mp4", fs: "media/video/sasaki_fs.mp4", sl: "media/video/sasaki_fs.mp4" },
+  won_tae_choi: { si: "media/video/choi_si.mp4", ch: "media/video/choi_ch.mp4", ff: "media/video/choi_si.mp4", sl: "media/video/choi_ch.mp4", cu: "media/video/choi_ch.mp4" },
+  gu_lin: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4", ch: "media/video/gulin_cu.mp4" },
+  gulin: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4", ch: "media/video/gulin_cu.mp4" },
+  gu_lin_ruei_yang: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4", ch: "media/video/gulin_cu.mp4" },
   wilmer_rios: { si: "media/video/rios_si.mp4", sl: "media/video/rios_sl.mp4", ch: "media/video/rios_ch.mp4", cu: "media/video/rios_sl.mp4", ff: "media/video/rios_si.mp4" },
   rios: { si: "media/video/rios_si.mp4", sl: "media/video/rios_sl.mp4", ch: "media/video/rios_ch.mp4", cu: "media/video/rios_sl.mp4", ff: "media/video/rios_si.mp4" },
-  hughes: { ff: "media/video/hughes_ff.mp4", sl: "media/video/hughes_sl.mp4", ch: "media/video/hughes_ch.mp4" },
-  gabriel_hughes: { ff: "media/video/hughes_ff.mp4", sl: "media/video/hughes_sl.mp4", ch: "media/video/hughes_ch.mp4" },
+  hughes: { ff: "media/video/hughes_ff.mp4", sl: "media/video/hughes_sl.mp4", ch: "media/video/hughes_sl.mp4" },
+  gabriel_hughes: { ff: "media/video/hughes_ff.mp4", sl: "media/video/hughes_sl.mp4", ch: "media/video/hughes_sl.mp4" },
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4" },
 };
@@ -2428,7 +2428,21 @@ function wireSynchronizedDeliveryScrubber(player) {
   function applyTipSelection(idx) {
     currentTipIdx = Math.max(0, Math.min(availableTips.length - 1, idx));
     const tip = availableTips[currentTipIdx];
-    const { pitchA, pitchB, tA, tB, videoA: vA, videoB: vB, stillA: sA, stillB: sB } = parseTipTimingsAndLabels(tip, player);
+    let { pitchA, pitchB, tA, tB, videoA: vA, videoB: vB, stillA: sA, stillB: sB } = parseTipTimingsAndLabels(tip, player);
+
+    if (vA && vB && vA === vB) {
+      const pid = player?.id || "";
+      const altA = resolveVideoForPitch(pid, pitchA, "", "");
+      const altB = resolveVideoForPitch(pid, pitchB, "", "");
+      if (altA && altB && altA !== altB) {
+        vA = altA;
+        vB = altB;
+      } else {
+        console.error(`[Preflight Video] applyTipSelection duplicate blocked for ${pid}: ${vA}`);
+        vA = "";
+        vB = "";
+      }
+    }
 
     // Update Dropdown & Quick Pills
     if (tipDropdown) tipDropdown.value = String(currentTipIdx);
