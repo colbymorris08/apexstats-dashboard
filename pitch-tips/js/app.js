@@ -1560,7 +1560,7 @@ function formatSec(s) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260901p13";
+const VIDEO_CACHE_BUST = "20260901p14";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -1572,15 +1572,8 @@ const SHOWCASE_UNIQUE_CLIPS = {
   moreno: ["media/video/moreno_ff.mp4", "media/video/moreno_ch.mp4"],
 };
 
-/** Restored non-MLB showcase clips (git a922d2b); MD5-distinct from MLB files. */
-const VERIFIED_NON_MLB_VIDEOS = {
-  burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_sl.mp4", cu: "media/video/burns_sl.mp4" },
-  sasaki: { ff: "media/video/sasaki_ff.mp4", fs: "media/video/sasaki_fs.mp4", sl: "media/video/sasaki_fs.mp4" },
-  choi: { ch: "media/video/choi_ch.mp4", si: "media/video/choi_si.mp4", ff: "media/video/choi_si.mp4" },
-  gulin: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4" },
-  rios: { si: "media/video/rios_si.mp4", sl: "media/video/rios_sl.mp4", ch: "media/video/rios_ch.mp4", cu: "media/video/rios_sl.mp4" },
-  hughes: { ff: "media/video/hughes_ff.mp4", sl: "media/video/hughes_sl.mp4", ch: "media/video/hughes_sl.mp4", si: "media/video/hughes_ff.mp4" },
-};
+/** Non-MLB showcase clips purged — frame-verified MLB imposters (Sep 2026 forensic audit). */
+const VERIFIED_NON_MLB_VIDEOS = {};
 
 const NON_MLB_VIDEO_PREFIX = {
   chase_burns: "burns",
@@ -1604,7 +1597,21 @@ const PLAYER_PITCH_FILE_MAP = {
 };
 
 /** Showcase arms with no clip files in repo — compare panes stay empty. */
-const NO_AUTHENTIC_FOOTAGE_KEYS = new Set([]);
+const NO_AUTHENTIC_FOOTAGE_KEYS = new Set([
+  "chase_burns",
+  "burns",
+  "roki_sasaki",
+  "sasaki",
+  "won_tae_choi",
+  "choi",
+  "gu_lin",
+  "gulin",
+  "gu_lin_ruei_yang",
+  "wilmer_rios",
+  "rios",
+  "hughes",
+  "gabriel_hughes",
+]);
 
 const MLB_VIDEO_PREFIXES = new Set(["roupp", "webb", "erod", "pfaadt", "gausman", "gordon"]);
 
