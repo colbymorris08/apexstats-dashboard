@@ -29,35 +29,11 @@ SHOWCASE = {
 }
 
 VERIFIED = {
-    "chase_burns": {"ff": "media/video/burns_ff.mp4", "sl": "media/video/burns_sl.mp4", "ch": "media/video/burns_ch.mp4", "cu": "media/video/burns_ch.mp4", "si": "media/video/burns_ff.mp4", "fc": "media/video/burns_sl.mp4", "fs": "media/video/burns_ch.mp4"},
-    "burns": {"ff": "media/video/burns_ff.mp4", "sl": "media/video/burns_sl.mp4", "ch": "media/video/burns_ch.mp4", "cu": "media/video/burns_ch.mp4", "si": "media/video/burns_ff.mp4", "fc": "media/video/burns_sl.mp4", "fs": "media/video/burns_ch.mp4"},
-    "roki_sasaki": {"ff": "media/video/sasaki_ff.mp4", "fs": "media/video/sasaki_fs.mp4", "sl": "media/video/sasaki_ff.mp4", "ch": "media/video/sasaki_fs.mp4", "cu": "media/video/sasaki_fs.mp4", "si": "media/video/sasaki_ff.mp4", "fc": "media/video/sasaki_ff.mp4"},
-    "sasaki": {"ff": "media/video/sasaki_ff.mp4", "fs": "media/video/sasaki_fs.mp4", "sl": "media/video/sasaki_ff.mp4", "ch": "media/video/sasaki_fs.mp4", "cu": "media/video/sasaki_fs.mp4", "si": "media/video/sasaki_ff.mp4", "fc": "media/video/sasaki_ff.mp4"},
-    "won_tae_choi": {"si": "media/video/choi_si.mp4", "ch": "media/video/choi_ch.mp4", "ff": "media/video/choi_si.mp4", "sl": "media/video/choi_ch.mp4", "cu": "media/video/choi_ch.mp4", "fs": "media/video/choi_ch.mp4", "fc": "media/video/choi_ch.mp4"},
-    "gu_lin_ruei_yang": {"ff": "media/video/gulin_ff.mp4", "cu": "media/video/gulin_cu.mp4", "sl": "media/video/gulin_cu.mp4", "ch": "media/video/gulin_cu.mp4", "fs": "media/video/gulin_cu.mp4", "si": "media/video/gulin_ff.mp4", "fc": "media/video/gulin_cu.mp4"},
-    "gulin": {"ff": "media/video/gulin_ff.mp4", "cu": "media/video/gulin_cu.mp4", "sl": "media/video/gulin_cu.mp4", "ch": "media/video/gulin_cu.mp4", "fs": "media/video/gulin_cu.mp4", "si": "media/video/gulin_ff.mp4", "fc": "media/video/gulin_cu.mp4"},
-    "gu_lin": {"ff": "media/video/gulin_ff.mp4", "cu": "media/video/gulin_cu.mp4", "sl": "media/video/gulin_cu.mp4", "ch": "media/video/gulin_cu.mp4", "fs": "media/video/gulin_cu.mp4", "si": "media/video/gulin_ff.mp4", "fc": "media/video/gulin_cu.mp4"},
-    "wilmer_rios": {"si": "media/video/rios_si.mp4", "sl": "media/video/rios_sl.mp4", "ch": "media/video/rios_sl.mp4", "cu": "media/video/rios_sl.mp4", "ff": "media/video/rios_si.mp4", "fc": "media/video/rios_sl.mp4", "fs": "media/video/rios_sl.mp4"},
-    "rios": {"si": "media/video/rios_si.mp4", "sl": "media/video/rios_sl.mp4", "ch": "media/video/rios_sl.mp4", "cu": "media/video/rios_sl.mp4", "ff": "media/video/rios_si.mp4", "fc": "media/video/rios_sl.mp4", "fs": "media/video/rios_sl.mp4"},
-    "hughes": {"ff": "media/video/hughes_ff.mp4", "sl": "media/video/hughes_sl.mp4", "ch": "media/video/hughes_sl.mp4", "si": "media/video/hughes_ff.mp4", "cu": "media/video/hughes_sl.mp4", "fc": "media/video/hughes_sl.mp4", "fs": "media/video/hughes_sl.mp4"},
-    "gabriel_hughes": {"ff": "media/video/hughes_ff.mp4", "sl": "media/video/hughes_sl.mp4", "ch": "media/video/hughes_sl.mp4", "si": "media/video/hughes_ff.mp4", "cu": "media/video/hughes_sl.mp4", "fc": "media/video/hughes_sl.mp4", "fs": "media/video/hughes_sl.mp4"},
     "gabriel_moreno": {"ff": "media/video/moreno_ff.mp4", "ch": "media/video/moreno_ch.mp4", "sl": "media/video/moreno_ch.mp4", "cu": "media/video/moreno_ch.mp4", "si": "media/video/moreno_ff.mp4", "fc": "media/video/moreno_ch.mp4", "fs": "media/video/moreno_ch.mp4"},
     "moreno": {"ff": "media/video/moreno_ff.mp4", "ch": "media/video/moreno_ch.mp4", "sl": "media/video/moreno_ch.mp4", "cu": "media/video/moreno_ch.mp4", "si": "media/video/moreno_ff.mp4", "fc": "media/video/moreno_ch.mp4", "fs": "media/video/moreno_ch.mp4"},
 }
 
 UNIQUE = {
-    "chase_burns": ["media/video/burns_ff.mp4", "media/video/burns_sl.mp4", "media/video/burns_ch.mp4"],
-    "burns": ["media/video/burns_ff.mp4", "media/video/burns_sl.mp4", "media/video/burns_ch.mp4"],
-    "roki_sasaki": ["media/video/sasaki_ff.mp4", "media/video/sasaki_fs.mp4"],
-    "sasaki": ["media/video/sasaki_ff.mp4", "media/video/sasaki_fs.mp4"],
-    "won_tae_choi": ["media/video/choi_si.mp4", "media/video/choi_ch.mp4"],
-    "gu_lin_ruei_yang": ["media/video/gulin_ff.mp4", "media/video/gulin_cu.mp4"],
-    "gulin": ["media/video/gulin_ff.mp4", "media/video/gulin_cu.mp4"],
-    "gu_lin": ["media/video/gulin_ff.mp4", "media/video/gulin_cu.mp4"],
-    "wilmer_rios": ["media/video/rios_si.mp4", "media/video/rios_sl.mp4"],
-    "rios": ["media/video/rios_si.mp4", "media/video/rios_sl.mp4"],
-    "hughes": ["media/video/hughes_ff.mp4", "media/video/hughes_sl.mp4"],
-    "gabriel_hughes": ["media/video/hughes_ff.mp4", "media/video/hughes_sl.mp4"],
     "gabriel_moreno": ["media/video/moreno_ff.mp4", "media/video/moreno_ch.mp4"],
     "moreno": ["media/video/moreno_ff.mp4", "media/video/moreno_ch.mp4"],
 }
