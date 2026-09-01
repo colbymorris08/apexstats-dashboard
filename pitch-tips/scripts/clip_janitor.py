@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "cv"))
 
 from preflight.clip_cache import KEEP_PER_ARM, free_bytes, purge_tracked_clips  # noqa: E402
+from preflight.disk_guardian import MIN_FREE_GB, run_disk_guardian  # noqa: E402
 from preflight.readiness import write_index  # noqa: E402
 
 RUNS = ROOT / "runs"
@@ -29,7 +30,7 @@ POLL = 300
 # 0.16 GB. What needs headroom is the transient clip working set for one arm,
 # which the purge keeps to a few GB, so warn near that rather than at a level
 # that fires constantly and trains everyone to ignore it.
-LOW_WATER_GB = 8.0
+LOW_WATER_GB = MIN_FREE_GB
 
 # The retention floor has to be bounded globally, not just per arm. Keeping 40
 # clips for every arm is 0.22 GB each, which is 138 GB across the 617-arm league
@@ -77,6 +78,11 @@ def main() -> None:
                 if free_gb < LOW_WATER_GB:
                     log.write(
                         f"{time.strftime('%H:%M:%S')} WARNING low disk: {free_gb:.1f} GB\n"
+                    )
+                    run_disk_guardian(ROOT, min_free_gb=MIN_FREE_GB, aggressive=True)
+                    free_gb = free_bytes(RUNS) / 1e9
+                    log.write(
+                        f"{time.strftime('%H:%M:%S')} disk_guardian pass: {free_gb:.1f} GB free\n"
                     )
             except Exception as exc:
                 log.write(f"{time.strftime('%H:%M:%S')} error: {exc}\n")

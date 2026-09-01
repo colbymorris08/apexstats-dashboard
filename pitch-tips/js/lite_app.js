@@ -2087,8 +2087,8 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   const pid = player?.id || "";
   const vComp = player?.videoCompare || {};
   const currentContext = contextFilter || document.getElementById("context-select")?.value || "";
-  let videoA = tip?.videoA || tip?.video_a || resolveVideoForPitch(pid, pitchA, player?.videoA || vComp.videoA, currentContext);
-  let videoB = tip?.videoB || tip?.video_b || resolveVideoForPitch(pid, pitchB, player?.videoB || vComp.videoB, currentContext);
+  let videoA = tip?.videoA || tip?.video_a || resolveVideoForPitch(pid, pitchA, player?.videoA || vComp.videoA, currentContext, player?.videoMatrix);
+  let videoB = tip?.videoB || tip?.video_b || resolveVideoForPitch(pid, pitchB, player?.videoB || vComp.videoB, currentContext, player?.videoMatrix);
 
   const normPid = (pid || "").toLowerCase();
   for (const v of [videoA, videoB]) {

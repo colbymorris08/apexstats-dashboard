@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 59,
-  "remaining": 619,
+  "remaining": 618,
   "sec_per_pitch": 10.0,
   "eta_hours": 500.2,
   "est_total_pitches": 180090,
   "current": {
-    "name": "Cam Schlittler",
+    "name": "Aaron Nola",
     "team": "OTH",
-    "message": "pitcher [14/640] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [15/640] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -1369,6 +1369,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/shane_baz_poc",
       "schema": "rich_72col",
       "n_current_tracks": 291,
+      "ready": true,
+      "state": "complete"
+    },
+    "693645": {
+      "name": "Cam Schlittler",
+      "team": "OTH",
+      "n_tracked": 204,
+      "holdout": 0.37,
+      "tips_ge_75": 3,
+      "catcher_tips": 5,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/cam_schlittler_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 225,
       "ready": false,
       "state": "tracking"
     }
@@ -2834,9 +2852,9 @@
     },
     "OTH": {
       "queued": 640,
-      "done": 13,
-      "pitcher_tips": 72,
-      "catcher_tips": 56
+      "done": 14,
+      "pitcher_tips": 75,
+      "catcher_tips": 61
     },
     "CHC": {
       "queued": 0,
@@ -2847,10 +2865,10 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 234,
-    "catcher_tips": 184
+    "pitcher_tips": 237,
+    "catcher_tips": 189
   },
-  "updated_at": "2026-09-01T05:07:07",
+  "updated_at": "2026-09-01T07:50:52",
   "live": {
     "pitches_done": 200,
     "pitches_target": null
