@@ -599,7 +599,7 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
             <strong>Target Body Part:</strong> ${targetBodyPart}
           </div>
         </div>
-        <button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${rank - 1})" aria-label="Compare Tip #${rank} in Synchronized Scrubber">
+        <button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${rank - 1})" aria-label="Compare Tip #${rank} in independent delivery scrubber">
           <span class="sync-play-mini-icon">▶</span> Compare in Scrubber
         </button>
       </div>
