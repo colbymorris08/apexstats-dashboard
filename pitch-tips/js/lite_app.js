@@ -1827,7 +1827,7 @@ function ensureFiveTips(player) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260901p11";
+const VIDEO_CACHE_BUST = "20260901p12";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -1839,22 +1839,38 @@ const SHOWCASE_UNIQUE_CLIPS = {
   moreno: ["media/video/moreno_ff.mp4", "media/video/moreno_ch.mp4"],
 };
 
-/** Showcase arms with no authentic league footage in repo — never load MLB imposters. */
-const NO_AUTHENTIC_FOOTAGE_KEYS = new Set([
-  "chase_burns",
-  "burns",
-  "roki_sasaki",
-  "sasaki",
-  "won_tae_choi",
-  "choi",
-  "gu_lin",
-  "gulin",
-  "gu_lin_ruei_yang",
-  "wilmer_rios",
-  "rios",
-  "hughes",
-  "gabriel_hughes",
-]);
+/** Restored non-MLB showcase clips (git a922d2b); MD5-distinct from MLB files. */
+const VERIFIED_NON_MLB_VIDEOS = {
+  burns: { ff: "media/video/burns_ff.mp4", sl: "media/video/burns_sl.mp4", ch: "media/video/burns_sl.mp4", cu: "media/video/burns_sl.mp4" },
+  sasaki: { ff: "media/video/sasaki_ff.mp4", fs: "media/video/sasaki_fs.mp4", sl: "media/video/sasaki_fs.mp4" },
+  choi: { ch: "media/video/choi_ch.mp4", si: "media/video/choi_si.mp4", ff: "media/video/choi_si.mp4" },
+  gulin: { ff: "media/video/gulin_ff.mp4", cu: "media/video/gulin_cu.mp4", sl: "media/video/gulin_cu.mp4" },
+  rios: { si: "media/video/rios_si.mp4", sl: "media/video/rios_sl.mp4", ch: "media/video/rios_ch.mp4", cu: "media/video/rios_sl.mp4" },
+  hughes: { ff: "media/video/hughes_ff.mp4", sl: "media/video/hughes_sl.mp4", ch: "media/video/hughes_sl.mp4", si: "media/video/hughes_ff.mp4" },
+};
+
+const NON_MLB_VIDEO_PREFIX = {
+  chase_burns: "burns",
+  burns: "burns",
+  roki_sasaki: "sasaki",
+  sasaki: "sasaki",
+  won_tae_choi: "choi",
+  choi: "choi",
+  gu_lin_ruei_yang: "gulin",
+  gu_lin: "gulin",
+  gulin: "gulin",
+  wilmer_rios: "rios",
+  rios: "rios",
+  gabriel_hughes: "hughes",
+  hughes: "hughes",
+};
+
+const PLAYER_PITCH_FILE_MAP = {
+  pfaadt: { cu: "ch", fs: "st" },
+};
+
+/** Showcase arms with no clip files in repo — compare panes stay empty. */
+const NO_AUTHENTIC_FOOTAGE_KEYS = new Set([]);
 
 const MLB_VIDEO_PREFIXES = new Set(["roupp", "webb", "erod", "pfaadt", "gausman", "gordon"]);
 
@@ -1886,6 +1902,108 @@ function isNoAuthenticFootage(playerId) {
   return false;
 }
 
+const PITCH_LABEL_BY_CODE = {
+  ff: "Four-Seam Fastball (FF)",
+  si: "2-Seam Sinker (SI)",
+  sl: "Slider (SL)",
+  st: "Sweeper (ST)",
+  ch: "Changeup (CH)",
+  cu: "Curveball (CU)",
+  fs: "Splitter (FS)",
+  fc: "Cutter (FC)",
+};
+
+const PREDICTS_CONTRAST_LABELS = {
+  FF: ["Four-Seam Fastball (FF)", "Changeup (CH)"],
+  SI: ["2-Seam Sinker (SI)", "Four-Seam Fastball (FF)"],
+  SL: ["Slider (SL)", "Four-Seam Fastball (FF)"],
+  ST: ["Sweeper (ST)", "Four-Seam Fastball (FF)"],
+  CH: ["Changeup (CH)", "Four-Seam Fastball (FF)"],
+  CU: ["Curveball (CU)", "2-Seam Sinker (SI)"],
+  FS: ["Splitter (FS)", "Four-Seam Fastball (FF)"],
+  FC: ["Cutter (FC)", "Changeup (CH)"],
+};
+
+const BASELINE_PITCH_CODES = {
+  ff: ["ch", "sl", "si", "cu"],
+  si: ["ff", "ch", "sl"],
+  sl: ["ff", "ch"],
+  st: ["ff", "si"],
+  ch: ["ff", "si"],
+  cu: ["ff", "si", "sl"],
+  fs: ["ff", "ch"],
+  fc: ["ch", "ff"],
+};
+
+function pitchLabelsFromPredicts(predicts) {
+  const key = (predicts || "").toUpperCase();
+  const pair = PREDICTS_CONTRAST_LABELS[key];
+  if (pair) return { pitchA: pair[0], pitchB: pair[1] };
+  const code = key.toLowerCase();
+  return {
+    pitchA: `${predicts} (${code.toUpperCase()})`,
+    pitchB: PITCH_LABEL_BY_CODE.ff,
+  };
+}
+
+function isGenericBaselineLabel(label) {
+  return /arsenal|baseline|secondary mix|contrast mix|rest of the/i.test(label || "");
+}
+
+function resolveBaselinePitchLabel(pitchA, playerId) {
+  const codeA = extractPitchCode(pitchA, playerId);
+  const order = BASELINE_PITCH_CODES[codeA] || ["ff", "ch", "si", "sl", "cu"];
+  for (const code of order) {
+    if (code !== codeA) return PITCH_LABEL_BY_CODE[code] || `Pitch (${code.toUpperCase()})`;
+  }
+  return PITCH_LABEL_BY_CODE.ff;
+}
+
+function pickDistinctBaselineVideo(codeA, playerId, contextFilter, excludePath = "") {
+  const order = BASELINE_PITCH_CODES[codeA] || ["ff", "ch", "si", "sl", "cu"];
+  for (const code of order) {
+    if (code === codeA) continue;
+    const label = PITCH_LABEL_BY_CODE[code] || `Pitch (${code.toUpperCase()})`;
+    const video = resolveVideoForPitch(playerId, label, "", contextFilter);
+    if (video && videoPathBase(video) !== videoPathBase(excludePath)) {
+      return { label, video };
+    }
+  }
+  return null;
+}
+
+function ensureDistinctPitchVideos(playerId, pitchA, pitchB, videoA, videoB, contextFilter = "") {
+  if (isNoAuthenticFootage(playerId)) {
+    return { pitchA, pitchB, videoA: videoA || "", videoB: videoB || "" };
+  }
+  let pA = pitchA;
+  let pB = pitchB;
+  let vA = videoA || "";
+  let vB = videoB || "";
+  const pid = playerId || "";
+
+  if (isGenericBaselineLabel(pB)) {
+    pB = resolveBaselinePitchLabel(pA, pid);
+    vB = resolveVideoForPitch(pid, pB, "", contextFilter);
+  }
+
+  let codeA = extractPitchCode(pA, pid);
+  let codeB = extractPitchCode(pB, pid);
+  if (codeA === codeB || (vA && vB && videoPathBase(vA) === videoPathBase(vB))) {
+    const alt = pickDistinctBaselineVideo(codeA, pid, contextFilter, vA);
+    if (alt) {
+      pB = alt.label;
+      vB = alt.video;
+      codeB = extractPitchCode(pB, pid);
+    }
+  }
+
+  if (vA && vB && videoPathBase(vA) === videoPathBase(vB)) {
+    console.error(`[Preflight Video] DUPLICATE pitch pair for ${pid}: ${codeA} vs ${codeB} -> ${vA}`);
+  }
+  return { pitchA: pA, pitchB: pB, videoA: vA, videoB: vB };
+}
+
 function extractPitchCode(pitchType, playerKey) {
   const p = (pitchType || "").toLowerCase();
   if ((playerKey || "").includes("moreno")) {
@@ -1895,24 +2013,57 @@ function extractPitchCode(pitchType, playerKey) {
   const parenCodes = [...p.matchAll(/\(([a-z]{2})\b/g)].map((m) => m[1]);
   const valid = new Set(["ff", "si", "sl", "ch", "cu", "fs", "fc", "st"]);
   for (const code of parenCodes) {
-    if (valid.has(code)) return code === "st" ? "sl" : code;
+    if (valid.has(code)) return code;
   }
   const first = p.split(/\s*[\/·]\s*|\s+vs\.?\s+/i)[0] || p;
   if (/\bff\b|four|fastball|\bfast\b/i.test(first)) return "ff";
   if (/split|fork|\bfs\b/i.test(first)) return "fs";
+  if (/\bst\b|sweeper/i.test(first)) return "st";
   if (/curve|\bcu\b|\bcv\b/i.test(first)) return "cu";
   if (/change|\bch\b/i.test(first)) return "ch";
-  if (/slider|\bsl\b|sweep/i.test(first)) return "sl";
+  if (/slider|\bsl\b/i.test(first)) return "sl";
+  if (/sweep/i.test(first)) return "st";
   if (/sink|\bsi\b/i.test(first)) return "si";
   if (/cutter|\bfc\b/i.test(first)) return "fc";
   if (/\bff\b|four|fastball|\bfast\b/i.test(p)) return "ff";
   if (/split|fork|\bfs\b/i.test(p)) return "fs";
+  if (/\bst\b|sweeper/i.test(p)) return "st";
   if (/curve|\bcu\b|\bcv\b/i.test(p)) return "cu";
   if (/change|\bch\b/i.test(p)) return "ch";
-  if (/slider|\bsl\b|sweep/i.test(p)) return "sl";
+  if (/slider|\bsl\b/i.test(p)) return "sl";
+  if (/sweep/i.test(p)) return "st";
   if (/sink|\bsi\b/i.test(p)) return "si";
   if (/cutter|\bfc\b/i.test(p)) return "fc";
   return "ff";
+}
+
+function nonMlbVideoPrefix(normId) {
+  if (NON_MLB_VIDEO_PREFIX[normId]) return NON_MLB_VIDEO_PREFIX[normId];
+  const keys = Object.keys(NON_MLB_VIDEO_PREFIX).sort((a, b) => b.length - a.length);
+  for (const key of keys) {
+    if (normId.includes(key) || key.includes(normId)) return NON_MLB_VIDEO_PREFIX[key];
+  }
+  return "";
+}
+
+function resolveNonMlbVideo(normId, pitchType, sitSuffix = "") {
+  const prefix = nonMlbVideoPrefix(normId);
+  if (!prefix) return "";
+  const verified = VERIFIED_NON_MLB_VIDEOS[prefix];
+  if (!verified) return "";
+  const pCode = extractPitchCode(pitchType, prefix);
+  const fileCode = Object.prototype.hasOwnProperty.call(verified, pCode)
+    ? pCode
+    : (verified.ff ? "ff" : Object.keys(verified)[0]);
+  return `media/video/${prefix}_${fileCode}${sitSuffix}.mp4`;
+}
+
+function mapPlayerPitchFile(playerKey, pitchCode) {
+  const norm = (playerKey || "").toLowerCase();
+  for (const [key, map] of Object.entries(PLAYER_PITCH_FILE_MAP)) {
+    if (norm.includes(key)) return map[pitchCode] || pitchCode;
+  }
+  return pitchCode;
 }
 
 function resolveVerifiedIdentityVideo(normId, pitchType) {
@@ -1965,6 +2116,9 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   else if (c.includes("windup")) sitSuffix = "_windup";
   else if (c.includes("stretch")) sitSuffix = "_stretch";
 
+  const nonMlbClip = resolveNonMlbVideo(normId, pitchType, sitSuffix);
+  if (nonMlbClip) return nonMlbClip;
+
   if (normId.includes("roupp") || normId.includes("landen_roupp")) {
     const pCode = extractPitchCode(pitchType, "roupp");
     const mapped = pCode === "fc" ? "sl" : (pCode === "fs" ? "si" : pCode);
@@ -1984,8 +2138,15 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
 
   if (normId.includes("pfaadt") || normId.includes("brandon_pfaadt")) {
     const pCode = extractPitchCode(pitchType, "pfaadt");
-    const mapped = pCode === "fs" ? "st" : pCode;
+    const mapped = mapPlayerPitchFile("pfaadt", pCode === "fs" ? "st" : pCode);
     return `media/video/pfaadt_${mapped}${sitSuffix}.mp4`;
+  }
+
+  if (normId.includes("hughes") || normId.includes("gabriel_hughes")) {
+    const pCode = extractPitchCode(pitchType, "hughes");
+    const mapped = ["ff", "sl", "ch", "si"].includes(pCode) ? pCode : "ff";
+    const fileCode = mapped === "ch" || mapped === "cu" ? "sl" : (mapped === "si" ? "ff" : mapped);
+    return `media/video/hughes_${fileCode}${sitSuffix}.mp4`;
   }
 
   if (normId.includes("gausman") || normId.includes("kevin_gausman")) {
@@ -2033,32 +2194,11 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
       pitchB = "Secondary Mix";
     }
   } else if (tip?.predicts) {
-    const p = tip.predicts.toUpperCase();
-    if (p === "FC") {
-      pitchA = "Cutter (FC 89mph)";
-      pitchB = "Changeup (CH 84mph)";
-    } else if (p === "SL") {
-      pitchA = "Slider (SL 86mph)";
-      pitchB = "Fastball (FF 95mph)";
-    } else if (p === "CH") {
-      pitchA = "Changeup (CH 84mph)";
-      pitchB = "Sinker (SI 93mph)";
-    } else if (p === "CU") {
-      pitchA = "Curveball (CU 79mph)";
-      pitchB = "Sinker (SI 93mph)";
-    } else if (p === "SI") {
-      pitchA = "Sinker (SI 93mph)";
-      pitchB = "Four-Seam (FF 95mph)";
-    } else if (p === "FF") {
-      pitchA = "Four-Seam (FF 95mph)";
-      pitchB = "Curveball (CU 79mph)";
-    } else if (p === "FS") {
-      pitchA = "Splitter (FS 92mph)";
-      pitchB = "Fastball (FF 95mph)";
-    } else {
-      pitchA = `${tip.predicts} (Tell Target)`;
-      pitchB = "Arsenal Contrast";
-    }
+    ({ pitchA, pitchB } = pitchLabelsFromPredicts(tip.predicts));
+  }
+
+  if (isGenericBaselineLabel(pitchB)) {
+    pitchB = resolveBaselinePitchLabel(pitchA, player?.id || "");
   }
 
   // Shared second-mark on both panes (prior tB = tA - 0.30 desynced compare stage).
@@ -2098,6 +2238,13 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   const currentContext = contextFilter || document.getElementById("context-select")?.value || "";
   let videoA = tip?.videoA || tip?.video_a || resolveVideoForPitch(pid, pitchA, player?.videoA || vComp.videoA, currentContext, player?.videoMatrix);
   let videoB = tip?.videoB || tip?.video_b || resolveVideoForPitch(pid, pitchB, player?.videoB || vComp.videoB, currentContext, player?.videoMatrix);
+
+  ({
+    pitchA,
+    pitchB,
+    videoA,
+    videoB,
+  } = ensureDistinctPitchVideos(pid, pitchA, pitchB, videoA, videoB, currentContext));
 
   // Never ship wrong-person footage for arms without authentic source video.
   if (isNoAuthenticFootage(pid)) {

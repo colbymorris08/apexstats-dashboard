@@ -1,33 +1,31 @@
 {
-  "burns": {
-    "ch": "media/video/burns_ch.mp4",
-    "ff": "media/video/burns_ff.mp4",
-    "sl": "media/video/burns_sl.mp4"
+  "choi": {
+    "ch": "media/video/choi_ch.mp4",
+    "si": "media/video/choi_si.mp4"
   },
   "hughes": {
-    "ch": "media/video/hughes_sl.mp4",
     "ff": "media/video/hughes_ff.mp4",
     "sl": "media/video/hughes_sl.mp4"
   },
   "rios": {
-    "ch": "media/video/rios_sl.mp4",
+    "ch": "media/video/rios_ch.mp4",
     "si": "media/video/rios_si.mp4",
     "sl": "media/video/rios_sl.mp4"
-  },
-  "gulin": {
-    "cu": "media/video/gulin_cu.mp4",
-    "ff": "media/video/gulin_ff.mp4"
-  },
-  "choi": {
-    "ch": "media/video/choi_ch.mp4",
-    "si": "media/video/choi_si.mp4"
   },
   "moreno": {
     "ch": "media/video/moreno_ch.mp4",
     "ff": "media/video/moreno_ff.mp4"
   },
+  "burns": {
+    "ff": "media/video/burns_ff.mp4",
+    "sl": "media/video/burns_sl.mp4"
+  },
   "sasaki": {
     "ff": "media/video/sasaki_ff.mp4",
     "fs": "media/video/sasaki_fs.mp4"
+  },
+  "gulin": {
+    "cu": "media/video/gulin_cu.mp4",
+    "ff": "media/video/gulin_ff.mp4"
   }
 }

@@ -1,0 +1,96 @@
+{
+  "_note": "Tip mechanics sourced from CV PoC manifests (build_multileague_manifests.py, populate_showcase_players.py). MP4s restored from git a922d2b; per-clip download URLs were not committed. video_spec fields document intended broadcast feeds.",
+  "leagues": {
+    "NCAA": {
+      "platforms": ["Synergy Sports", "ESPN+", "ACC Network"],
+      "players": {
+        "Chase Burns": {
+          "team": "Wake Forest (ACC)",
+          "stadium": "David F. Couch Ballpark",
+          "tip_source": "pitch-tips/scripts/populate_showcase_players.py · pitch-tips/data/label_manifest_ncaa.json",
+          "intended_feed": "1080p60 Synergy / ESPN+ CF",
+          "clips": {
+            "burns_ff.mp4": { "pitch": "FF", "md5": "4f14780d91d254ca0e811cd9b30074d1", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Chase+Burns+Wake+Forest+fastball+2024" },
+            "burns_sl.mp4": { "pitch": "SL", "md5": "8f5fb32b50edd0efac400a99588af5c0", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Chase+Burns+Wake+Forest+slider+2024" }
+          }
+        }
+      }
+    },
+    "NPB": {
+      "platforms": ["Pacific League TV", "NPB official YouTube", "npb.jp"],
+      "players": {
+        "Roki Sasaki": {
+          "team": "Chiba Lotte Marines",
+          "stadium": "ZOZO Marine Stadium",
+          "tip_source": "populate_showcase_players.py · label_manifest_npb.json",
+          "intended_feed": "1080p60 Pacific League TV CF",
+          "clips": {
+            "sasaki_ff.mp4": { "pitch": "FF", "md5": "see verified_non_mlb_videos.json", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Roki+Sasaki+fastball+2023+Lotte" },
+            "sasaki_fs.mp4": { "pitch": "FS", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Roki+Sasaki+forkball+splitter" }
+          }
+        }
+      }
+    },
+    "KBO": {
+      "platforms": ["SPOTV", "kbo.co.kr", "KBO YouTube"],
+      "players": {
+        "Won-tae Choi": {
+          "team": "LG Twins",
+          "stadium": "Seoul Jamsil Baseball Stadium",
+          "tip_source": "populate_showcase_players.py · label_manifest_kbo.json",
+          "intended_feed": "1080p60 SPOTV CF",
+          "clips": {
+            "choi_ch.mp4": { "pitch": "CH", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Choi+Won-tae+LG+Twins+changeup" },
+            "choi_si.mp4": { "pitch": "SI", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Choi+Won-tae+sinker+Jamsil" }
+          }
+        }
+      }
+    },
+    "CPBL": {
+      "platforms": ["CPBL TV", "cpbl.com.tw", "Eleven Sports Taiwan YouTube"],
+      "players": {
+        "Gu Lin Ruei-Yang": {
+          "team": "Uni-President 7-Eleven Lions",
+          "stadium": "Tainan / Taipei Dome",
+          "tip_source": "populate_showcase_players.py · label_manifest_cpbl.json",
+          "intended_feed": "1080p60 CPBL TV CF",
+          "clips": {
+            "gulin_ff.mp4": { "pitch": "FF", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Gu+Lin+Ruei-Yang+fastball+CPBL" },
+            "gulin_cu.mp4": { "pitch": "CU", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Gu+Lin+curveball+Uni-Lions" }
+          }
+        }
+      }
+    },
+    "LMB": {
+      "platforms": ["LMB TV", "Acereros Monclova YouTube", "Latin American baseball feeds"],
+      "players": {
+        "Wilmer Ríos": {
+          "team": "Acereros de Monclova",
+          "stadium": "Estadio Kickapoo Lucky Eagle Casino",
+          "tip_source": "populate_showcase_players.py · label_manifest_multileague.json",
+          "intended_feed": "1080p60 LMB TV CF",
+          "clips": {
+            "rios_si.mp4": { "pitch": "SI", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Wilmer+Rios+Monclova+sinker" },
+            "rios_sl.mp4": { "pitch": "SL", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Wilmer+Rios+Acereros+slider" },
+            "rios_ch.mp4": { "pitch": "CH", "git_commit": "a922d2b", "manual_search": "https://www.youtube.com/results?search_query=Wilmer+Rios+Monclova+changeup" }
+          }
+        }
+      }
+    },
+    "MiLB_MLB": {
+      "platforms": ["MLB.tv", "Rockies broadcast", "baseballsavant.mlb.com"],
+      "players": {
+        "Gabriel Hughes": {
+          "team": "Colorado Rockies org",
+          "tip_source": "populate_showcase_players.py · cv/preflight/merge_demo.py",
+          "intended_feed": "1080p60 MLB / MiLB Broadcast CF",
+          "clips": {
+            "hughes_ff.mp4": { "pitch": "FF", "git_commit": "a922d2b", "manual_search": "https://baseballsavant.mlb.com/visuals/pitcher-pitches?pitcher=694462" },
+            "hughes_sl.mp4": { "pitch": "SL", "git_commit": "a922d2b" }
+          }
+        }
+      }
+    }
+  },
+  "honesty": "Git history (a922d2b, fb4810c, a035379) bundles these MP4s without per-play source URLs. Commits a035379/fb4810c note Savant sporty-videos for MLB arms; non-MLB files are MD5-distinct from MLB showcase clips but league-authenticity was not verified frame-by-frame. Replace with league-feed clips using manual_search URLs where possible."
+}

@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 59,
-  "remaining": 614,
+  "remaining": 613,
   "sec_per_pitch": 10.0,
   "eta_hours": 500.2,
   "est_total_pitches": 180090,
   "current": {
-    "name": "Noah Cameron",
+    "name": "Jos\u00e9 Soriano",
     "team": "OTH",
-    "message": "pitcher [19/640] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [26/640] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "808963": {
@@ -1457,8 +1457,26 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/foster_griffin_poc",
       "schema": "rich_72col",
       "n_current_tracks": 296,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
+    },
+    "702070": {
+      "name": "Noah Cameron",
+      "team": "OTH",
+      "n_tracked": 187,
+      "holdout": 0.278,
+      "tips_ge_75": 7,
+      "catcher_tips": 5,
+      "legacy_tips_ge_75": 7,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/noah_cameron_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 204,
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -2124,7 +2142,7 @@
     },
     "684007": {
       "name": "Shota Imanaga",
-      "team": "CHC",
+      "team": "OTH",
       "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=684007&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
     },
     "607067": {
@@ -2244,7 +2262,7 @@
     },
     "663903": {
       "name": "Brady Singer",
-      "team": "CIN",
+      "team": "OTH",
       "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=663903&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
     },
     "695505": {
@@ -2429,7 +2447,7 @@
     },
     "641743": {
       "name": "Anthony Kay",
-      "team": "CWS",
+      "team": "OTH",
       "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=641743&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
     },
     "663436": {
@@ -2739,7 +2757,7 @@
     },
     "607625": {
       "name": "Seth Lugo",
-      "team": "KC",
+      "team": "OTH",
       "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=607625&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
     },
     "608379": {
@@ -2861,6 +2879,16 @@
       "name": "Grayson Rodriguez",
       "team": "LAA",
       "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=680570&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "676917": {
+      "name": "Cade Cavalli",
+      "team": "OTH",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=676917&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
+    },
+    "694973": {
+      "name": "Paul Skenes",
+      "team": "OTH",
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=694973&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
     }
   },
   "catchers_done": {
@@ -2922,9 +2950,9 @@
     },
     "OTH": {
       "queued": 640,
-      "done": 18,
-      "pitcher_tips": 103,
-      "catcher_tips": 70
+      "done": 19,
+      "pitcher_tips": 110,
+      "catcher_tips": 75
     },
     "CHC": {
       "queued": 0,
@@ -2935,13 +2963,10 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 265,
-    "catcher_tips": 198
+    "pitcher_tips": 272,
+    "catcher_tips": 203
   },
-  "updated_at": "2026-09-01T11:18:53",
-  "live": {
-    "pitches_done": 180,
-    "pitches_target": null
-  },
+  "updated_at": "2026-09-01T15:10:21",
+  "live": null,
   "heartbeat": true
 }

@@ -14,7 +14,7 @@ VIDEO_DIR = ROOT / "media" / "video"
 WORKSPACE = ROOT.parent
 SOURCE_COMMIT = "a922d2b"
 MLB_PREFIXES = {"roupp", "webb", "erod", "pfaadt", "gausman", "gordon"}
-NON_MLB_PREFIXES = {"burns", "sasaki", "choi", "gulin", "rios", "hughes", "moreno"}
+NON_MLB_PREFIXES = {"burns", "sasaki", "choi", "gulin", "rios", "hughes"}
 SIT_SUFFIXES = [
     "_bases_empty", "_runner_1b", "_runner_2b", "_runners_on",
     "_vs_rhb", "_vs_lhb", "_windup", "_stretch",
