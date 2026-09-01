@@ -1560,7 +1560,7 @@ function formatSec(s) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260901p15";
+const VIDEO_CACHE_BUST = "20260901p16";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -1614,6 +1614,37 @@ const NO_AUTHENTIC_FOOTAGE_KEYS = new Set([
 ]);
 
 const MLB_VIDEO_PREFIXES = new Set(["roupp", "webb", "erod", "pfaadt", "gausman", "gordon"]);
+
+function isMlbShowcasePlayer(playerId) {
+  const normId = (playerId || "").toLowerCase().replace(/[^a-z0-9_]/g, "_");
+  if (!normId) return false;
+  return (
+    normId.includes("roupp") ||
+    normId.includes("webb") ||
+    normId.includes("eduardo") ||
+    normId === "erod" ||
+    normId.includes("pfaadt") ||
+    normId.includes("gausman") ||
+    normId.includes("gordon")
+  );
+}
+
+function resolveSitSuffix(contextFilter, playerId = "") {
+  const c = (contextFilter || "").toLowerCase();
+  const mlb = isMlbShowcasePlayer(playerId);
+  if (c.includes("2b") || c.includes("second")) return "_runner_2b";
+  if (c.includes("1b") || c.includes("first")) return "_runner_1b";
+  if (c.includes("runner") || c.includes("loaded") || c.includes("12") || c.includes("13") || c.includes("23")) {
+    return "_runners_on";
+  }
+  if (c.includes("none") || c.includes("empty") || c.includes("bases empty")) return "_bases_empty";
+  if (mlb) return "";
+  if (c.includes("rhh") || c.includes("rhb")) return "_vs_rhb";
+  if (c.includes("lhh") || c.includes("lhb")) return "_vs_lhb";
+  if (c.includes("windup")) return "_windup";
+  if (c.includes("stretch")) return "_stretch";
+  return "";
+}
 
 function withVideoCacheBust(src) {
   if (!src) return src;
@@ -1840,22 +1871,13 @@ function ensureDistinctShowcaseVideos(playerId, videoA, videoB) {
 function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilter = "", _videoMatrix = null) {
   const normId = (playerId || "").toLowerCase().replace(/[^a-z0-9_]/g, "_");
   const p = (pitchType || "").toLowerCase();
-  const c = (contextFilter || "").toLowerCase();
 
   if (isNoAuthenticFootage(normId)) return "";
   const verifiedIdentity = resolveVerifiedIdentityVideo(normId, pitchType);
   if (verifiedIdentity) return verifiedIdentity;
   if (normalizePlayerKey(normId)) return "";
 
-  let sitSuffix = "";
-  if (c.includes("2b") || c.includes("second")) sitSuffix = "_runner_2b";
-  else if (c.includes("1b") || c.includes("first")) sitSuffix = "_runner_1b";
-  else if (c.includes("runner") || c.includes("loaded") || c.includes("12") || c.includes("13") || c.includes("23")) sitSuffix = "_runners_on";
-  else if (c.includes("none") || c.includes("empty") || c.includes("bases empty")) sitSuffix = "_bases_empty";
-  else if (c.includes("rhh") || c.includes("rhb")) sitSuffix = "_vs_rhb";
-  else if (c.includes("lhh") || c.includes("lhb")) sitSuffix = "_vs_lhb";
-  else if (c.includes("windup")) sitSuffix = "_windup";
-  else if (c.includes("stretch")) sitSuffix = "_stretch";
+  const sitSuffix = resolveSitSuffix(contextFilter, playerId);
 
   const nonMlbClip = resolveNonMlbVideo(normId, pitchType, sitSuffix);
   if (nonMlbClip) return nonMlbClip;
@@ -2137,8 +2159,7 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
     videoB = "";
   }
 
-  const normPid = (pid || "").toLowerCase();
-  const isMlbPlayer = ["roupp", "webb", "erod", "pfaadt", "gausman", "gordon"].some((m) => normPid.includes(m));
+  const isMlbPlayer = isMlbShowcasePlayer(pid);
   for (const v of [videoA, videoB]) {
     if (!v) continue;
     const filePrefix = v.split("?")[0].split("/").pop()?.split("_")[0] || "";
