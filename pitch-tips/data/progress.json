@@ -4,15 +4,15 @@
   "season": 2026,
   "games": 8,
   "queue_total": 699,
-  "nlwest_pitchers": 60,
+  "nlwest_pitchers": 61,
   "remaining": 604,
   "sec_per_pitch": 10.0,
-  "eta_hours": 493.8,
-  "est_total_pitches": 177770,
+  "eta_hours": 486.6,
+  "est_total_pitches": 175160,
   "current": {
-    "name": "Ryan Weathers",
-    "team": "OTH",
-    "message": "pitcher [33/639] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Blas Casta\u00f1o",
+    "team": "COL",
+    "message": "pitcher [11/12] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "592662": {
@@ -1639,8 +1639,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/chris_sale_poc",
       "schema": "rich_72col",
       "n_current_tracks": 221,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -3229,7 +3229,7 @@
       "catcher_tips": 14
     },
     "COL": {
-      "queued": 11,
+      "queued": 12,
       "done": 11,
       "pitcher_tips": 30,
       "catcher_tips": 33
@@ -3253,7 +3253,7 @@
       "catcher_tips": 20
     },
     "OTH": {
-      "queued": 639,
+      "queued": 638,
       "done": 29,
       "pitcher_tips": 155,
       "catcher_tips": 113
@@ -3270,9 +3270,9 @@
     "pitcher_tips": 317,
     "catcher_tips": 241
   },
-  "updated_at": "2026-09-02T10:24:54",
+  "updated_at": "2026-09-02T12:36:30",
   "live": {
-    "pitches_done": 16,
+    "pitches_done": 30,
     "pitches_target": null
   },
   "heartbeat": true
