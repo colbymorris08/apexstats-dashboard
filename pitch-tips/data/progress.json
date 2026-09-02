@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 60,
-  "remaining": 611,
+  "remaining": 610,
   "sec_per_pitch": 10.0,
   "eta_hours": 493.8,
   "est_total_pitches": 177770,
   "current": {
-    "name": "Shota Imanaga",
+    "name": "Jos\u00e9 Soriano",
     "team": "OTH",
-    "message": "pitcher [25/639] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [26/639] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "592662": {
@@ -1513,6 +1513,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brady_singer_poc",
       "schema": "rich_72col",
       "n_current_tracks": 244,
+      "ready": true,
+      "state": "complete"
+    },
+    "684007": {
+      "name": "Shota Imanaga",
+      "team": "OTH",
+      "n_tracked": 219,
+      "holdout": 0.37,
+      "tips_ge_75": 4,
+      "catcher_tips": 1,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/shota_imanaga_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 252,
       "ready": false,
       "state": "tracking"
     }
@@ -3128,9 +3146,9 @@
     },
     "OTH": {
       "queued": 639,
-      "done": 22,
-      "pitcher_tips": 128,
-      "catcher_tips": 86
+      "done": 23,
+      "pitcher_tips": 132,
+      "catcher_tips": 87
     },
     "CHC": {
       "queued": 0,
@@ -3141,12 +3159,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 290,
-    "catcher_tips": 214
+    "pitcher_tips": 294,
+    "catcher_tips": 215
   },
-  "updated_at": "2026-09-02T00:00:28",
+  "updated_at": "2026-09-02T01:10:15",
   "live": {
-    "pitches_done": 219,
+    "pitches_done": 240,
     "pitches_target": null
   },
   "heartbeat": true
