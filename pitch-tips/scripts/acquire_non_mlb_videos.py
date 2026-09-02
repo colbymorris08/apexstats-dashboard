@@ -31,40 +31,39 @@ IMPOSTER_MD5 = {
     "755d305617d9239cc479fc66e43452ca",  # hughes_sl
 }
 
-# player -> [(out_name, source_url, start_sec, duration_sec, identity_note)]
+# Canonical pitch-type exemplars: filename pitch code MUST match on-camera pitch type.
+# One clip per (player, pitch code); broadcast CF; identity verified via on-screen graphics.
 CLIPS: list[tuple[str, str, float, float, str]] = [
-    # Chase Burns — Wake Forest (D1Baseball + NCAA highlights)
-    ("burns_ff.mp4", "https://www.youtube.com/watch?v=KmbiYdvm8Cw", 8, 6,
-     "Wake Forest black/gold uniform, #16 RHP Chase Burns @ D1Baseball Feb 2024"),
-    ("burns_sl.mp4", "https://www.youtube.com/watch?v=KmbiYdvm8Cw", 45, 6,
-     "Same outing, breaking ball sequence — Wake Forest Burns delivery"),
-    ("burns_ff_bases_empty.mp4", "https://www.youtube.com/watch?v=EKpLGENGt30", 30, 5,
-     "Wake Forest Chase Burns 2024 highlights — fastball windup CF"),
-    # Roki Sasaki — Pacific League TV official NPB feed
-    ("sasaki_ff.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 120, 6,
-     "Chiba Lotte Marines #17 Roki Sasaki — PacificLeagueTV Apr 2023 start"),
-    ("sasaki_fs.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 280, 6,
-     "Lotte Sasaki fork/splitter sequence — ZOZO Marine Stadium NPB"),
-    # Won-tae Choi — LG Twins KBO direct camera
+    # Chase Burns — 101 MPH FF (highlights) vs ~86 MPH breaking (Greenville Regional)
+    ("burns_ff.mp4", "https://www.youtube.com/watch?v=EKpLGENGt30", 46, 6,
+     "Wake Forest #29 Chase Burns 101 MPH FF — ACCN CF Clemson @ Wake"),
+    ("burns_sl.mp4", "https://www.youtube.com/watch?v=tknSzW1XimU", 0.5, 6,
+     "Chase Burns ~86 MPH breaking delivery — ESPN2 Greenville Regional"),
+    # Roki Sasaki — Pacific League TV CF deliveries (avoid HERO INTERVIEW segments ~400s+)
+    ("sasaki_ff.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 167, 6,
+     "Chiba Lotte Marines Roki Sasaki CF delivery — ZOZO 160km/h context Apr 2023"),
+    ("sasaki_fs.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 188.5, 6,
+     "Lotte Sasaki CF delivery #2 — yellow glove forkball sequence"),
+    # Won-tae Choi — LG Twins KBO SPOTV direct camera
     ("choi_ch.mp4", "https://www.youtube.com/watch?v=HKL1zbTN2y0", 60, 6,
-     "LG Twins #57 Choi Won-tae KBO direct cam vs Doosan Jul 2023"),
+     "LG Twins #57 Choi Won-tae changeup delivery KBO direct cam Jul 2023"),
     ("choi_si.mp4", "https://www.youtube.com/watch?v=HKL1zbTN2y0", 180, 6,
-     "LG Twins Choi Won-tae sinker/two-seam sequence same outing"),
-    # Gu Lin Ruei-Yang — CPBL Uni-Lions
-    ("gulin_ff.mp4", "https://www.youtube.com/watch?v=pTS-fYh_6rA", 5, 5,
+     "LG Twins Choi Won-tae sinker/two-seam delivery same outing"),
+    # Gu Lin Ruei-Yang — CPBL NOWNEWS broadcast (both pitches same verified outing)
+    ("gulin_ff.mp4", "https://www.youtube.com/watch?v=pTS-fYh_6rA", 5, 6,
      "Uni-President Lions Gu Lin Ruei-Yang 156km/h FF — NOWNEWS CPBL"),
-    ("gulin_cu.mp4", "https://www.youtube.com/watch?v=6SBTAWGrfQM", 90, 6,
-     "Gu Lin Ruei-Yang CPBL outing vs Korea — curve/breaking ball"),
-    # Wilmer Ríos — LMB Acereros de Monclova
-    ("rios_si.mp4", "https://www.youtube.com/watch?v=ythEzsXENeM", 5, 5,
-     "Wilmer Ríos Acereros de Monclova — Liga Mexicana official Dec 2023"),
-    ("rios_sl.mp4", "https://www.youtube.com/watch?v=SpGNGIc3N04", 8, 5,
-     "Wilmer Ríos strikeout #300 LMB — Monclova Acereros"),
-    # Gabriel Hughes — Colorado Rockies org (MiLB/prospect footage)
-    ("hughes_ff.mp4", "https://www.youtube.com/watch?v=lzCDC8m3vg0", 2, 5,
-     "Gabriel Hughes Rockies prospect no-hit outing Apr 2025 — purple pinstripes"),
-    ("hughes_sl.mp4", "https://www.youtube.com/watch?v=5FExR-wSnjs", 3, 5,
-     "Gabriel Hughes RHP Colorado Rockies — Dynasty Dugout prospect clip"),
+    ("gulin_cu.mp4", "https://www.youtube.com/watch?v=pTS-fYh_6rA", 22, 6,
+     "Gu Lin Ruei-Yang curve/breaking delivery — same CPBL broadcast CF"),
+    # Wilmer Ríos — LMB Monclova (distinct timestamps: SI vs SL)
+    ("rios_si.mp4", "https://www.youtube.com/watch?v=SpGNGIc3N04", 1.5, 6,
+     "W. Ríos 93 MPH delivery — MVA Monclova LMB CF broadcast"),
+    ("rios_sl.mp4", "https://www.youtube.com/watch?v=SpGNGIc3N04", 0, 6,
+     "W. Ríos full windup delivery — same LMB outing (replaces stats-graphic clip)"),
+    # Gabriel Hughes — Hartford Yard Goats MiLB broadcast (same outing, distinct velocities)
+    ("hughes_ff.mp4", "https://www.youtube.com/watch?v=lzCDC8m3vg0", 3.5, 6,
+     "Gabriel Hughes #45 HFD 96 MPH FF — Hartford Yard Goats vs Somerset"),
+    ("hughes_sl.mp4", "https://www.youtube.com/watch?v=lzCDC8m3vg0", 12, 6,
+     "Gabriel Hughes #45 HFD 86 MPH secondary — same Hartford outing"),
 ]
 
 
@@ -159,18 +158,17 @@ def main() -> int:
         }
         print(f"    OK {digest[:8]}… {out.stat().st_size // 1024}KB")
 
-    # Write situational variants (copy canonical pitch files)
+    # Refresh situational variants from canonical pitch files (always overwrite).
     SIT = ["_bases_empty", "_runner_1b", "_runner_2b", "_runners_on"]
     for prefix in ("burns", "sasaki", "choi", "gulin", "rios", "hughes"):
         for code in ("ff", "sl", "ch", "si", "cu", "fs"):
             base = VIDEO_DIR / f"{prefix}_{code}.mp4"
-            if not base.exists():
+            if not base.is_file():
                 continue
             data = base.read_bytes()
             for suf in SIT:
                 dst = VIDEO_DIR / f"{prefix}_{code}{suf}.mp4"
-                if not dst.exists():
-                    dst.write_bytes(data)
+                dst.write_bytes(data)
 
     (DECK / "non_mlb_acquisition.json").write_text(
         json.dumps({"sources": sources_used, "verification": verification}, indent=2) + "\n"

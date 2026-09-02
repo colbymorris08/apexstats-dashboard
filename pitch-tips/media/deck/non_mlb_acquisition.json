@@ -1,121 +1,162 @@
 {
-  "clips": {
-    "burns_ff.mp4": {
-      "md5": "326f108cf371d5101fdc53a09895b83b",
-      "source_url": "https://www.youtube.com/watch?v=tknSzW1XimU",
-      "start_sec": 15,
-      "identity_proof": "CHASE BURNS on-screen graphic, WF #29, ACC Digital Network",
-      "bytes": 1722377
+  "sources": {
+    "https://www.youtube.com/watch?v=EKpLGENGt30": {
+      "local": "62c57947a5e3.mp4",
+      "title": "Chase Burns | 2024 Wake Forest Highlights"
     },
-    "burns_sl.mp4": {
-      "md5": "706950125d11dab140b55b8768813b1f",
-      "source_url": "https://www.youtube.com/watch?v=tknSzW1XimU",
-      "start_sec": 35,
-      "identity_proof": "Same ACC outing \u2014 breaking ball sequence",
-      "bytes": 1992660
+    "https://www.youtube.com/watch?v=tknSzW1XimU": {
+      "local": "3ce89329ce89.mp4",
+      "title": "CHASE BURNS - RHP (Wake Forest) 2024 MLB Draft Prospect Video"
     },
-    "burns_ff_bases_empty.mp4": {
-      "md5": "326f108cf371d5101fdc53a09895b83b",
-      "source_url": "https://www.youtube.com/watch?v=EKpLGENGt30",
-      "start_sec": 30,
-      "identity_proof": "Wake Forest 2024 highlights CF",
-      "bytes": 1722377
+    "https://www.youtube.com/watch?v=-H3FrzEZfDo": {
+      "local": "10d9c2dc79fd.mp4",
+      "title": "Marines vs. Hawks - Roki Sasaki's 3rd start of '23 | Game Highlights [4/21/23]"
     },
-    "sasaki_ff.mp4": {
-      "md5": "7f5544003669afa43d61f6017640824f",
-      "source_url": "https://www.youtube.com/watch?v=-H3FrzEZfDo",
-      "start_sec": 170,
-      "identity_proof": "Chiba Lotte Marines grey @ PacificLeagueTV Apr 2023",
-      "bytes": 1116378
+    "https://www.youtube.com/watch?v=HKL1zbTN2y0": {
+      "local": "9eb0a1c2500b.mp4",
+      "title": "[4K] \uc5d8\uc6d0\ud0dc \uccab \ub4f1\ud310! \ub108\ubb34 \ud3b8\uc548~ \uc57c\uc218\ub4e4 \ud638\uc218\ube44\ub3c4 \uad7f! (\ucd5c\uc6d0\ud0dc 1\ud68c\ub9d0 \ud22c\uad6c \ud480\uc601\uc0c1) [2023.07.30 (VS \ub450\uc0b0 10\ucc28\uc804) \ucd5c\uc6d0\ud0dc \ub4f1\ud310 \ubc0f 1\ud68c\ub9d0 \ud22c\uad6c \uc9c1\ucea0]"
     },
-    "sasaki_fs.mp4": {
-      "md5": "d603c2ae7de645986c06e38015986d78",
-      "source_url": "https://www.youtube.com/watch?v=-H3FrzEZfDo",
-      "start_sec": 400,
-      "identity_proof": "Lotte Sasaki fork/splitter sequence NPB",
-      "bytes": 913079
+    "https://www.youtube.com/watch?v=pTS-fYh_6rA": {
+      "local": "da31e9ed2faa.mp4",
+      "title": "\u65e5\u8077\uff0f\u53e4\u6797\u777f\u716c\u4e2d\u7e7c\u4e00\u5c40\u7121\u5931\u5206\uff01\u72c2\u98c6156\u516c\u91cc\u706b\u7403\u3000\u4e09\u632f\u6d0b\u806f\u65b0\u4eba\u738b\u8d85\u9738\u6c23\uff5cNOWNEWS"
     },
-    "choi_ch.mp4": {
-      "md5": "bfc7a0d90f28d21bb096f11ee4030e46",
-      "source_url": "https://www.youtube.com/watch?v=HKL1zbTN2y0",
-      "start_sec": 60,
-      "identity_proof": "LG Twins Choi Won-tae KBO direct cam Jul 2023",
-      "bytes": 4810684
+    "https://www.youtube.com/watch?v=SpGNGIc3N04": {
+      "local": "8627f4b1c624.mp4",
+      "title": "Wilmer R\u00edos ponche 300 en LMB."
     },
-    "choi_si.mp4": {
-      "md5": "32f5ab41600eb488035698d55e98caf1",
-      "source_url": "https://www.youtube.com/watch?v=HKL1zbTN2y0",
-      "start_sec": 180,
-      "identity_proof": "LG Twins Choi Won-tae sinker sequence",
-      "bytes": 4471004
+    "https://www.youtube.com/watch?v=lzCDC8m3vg0": {
+      "local": "0aa06e98d703.mp4",
+      "title": "Gabriel Hughes Strikes Out 3 in 4 No-Hit Innings! | Colorado Rockies Prospect | 04/04/2025"
     },
-    "gulin_ff.mp4": {
-      "md5": "922664a9000f692bcaccaafe1a82f051",
-      "source_url": "https://www.youtube.com/watch?v=pTS-fYh_6rA",
-      "start_sec": 5,
-      "identity_proof": "\u53e4\u6797\u777f\u716c on-screen text, 156km/h FF NOWNEWS CPBL",
-      "bytes": 1876920
-    },
-    "gulin_cu.mp4": {
-      "md5": "c0adfcd361b7f74a94777a331c2f52cc",
-      "source_url": "https://www.youtube.com/watch?v=6SBTAWGrfQM",
-      "start_sec": 90,
-      "identity_proof": "Gu Lin Ruei-Yang CPBL vs Korea outing",
-      "bytes": 2182588
-    },
-    "rios_si.mp4": {
-      "md5": "4516c68bc6bbda329a17648482082aa7",
-      "source_url": "https://www.youtube.com/watch?v=SpGNGIc3N04",
-      "start_sec": 8,
-      "identity_proof": "W. R\u00cdOS scoreboard, MVA Monclova LMB",
-      "bytes": 1449684
-    },
-    "rios_sl.mp4": {
-      "md5": "03088a6847dc0d45eb3ddd7ba13b413a",
-      "source_url": "https://www.youtube.com/watch?v=SpGNGIc3N04",
-      "start_sec": 8,
-      "identity_proof": "Same LMB broadcast \u2014 strikeout #300",
-      "bytes": 1454090
-    },
-    "hughes_ff.mp4": {
-      "md5": "c177a482743467a758261bd2f999eddf",
-      "source_url": "https://www.youtube.com/watch?v=lzCDC8m3vg0",
-      "start_sec": 2,
-      "identity_proof": "HUGHES scoreboard, Hartford Yard Goats (Rockies AA)",
-      "bytes": 1225308
-    },
-    "hughes_sl.mp4": {
-      "md5": "390a4d9c6f7c3e8a80f591b75456c66b",
-      "source_url": "https://www.youtube.com/watch?v=5FExR-wSnjs",
-      "start_sec": 3,
-      "identity_proof": "Gabriel Hughes RHP Colorado Rockies prospect",
-      "bytes": 1941077
+    "https://www.youtube.com/watch?v=5FExR-wSnjs": {
+      "local": "2eaf3e3428d8.mp4",
+      "title": "Gabriel Hughes, RHP, Colorado Rockies"
     }
   },
-  "verified_manifest": {
-    "burns": {
-      "ff": "media/video/burns_ff.mp4",
-      "sl": "media/video/burns_sl.mp4"
+  "verification": {
+    "clips": {
+      "burns_ff.mp4": {
+        "md5": "8dfafe0d71173bf35cdf2a6daf9790e9",
+        "source_url": "https://www.youtube.com/watch?v=EKpLGENGt30",
+        "start_sec": 30,
+        "duration_sec": 6,
+        "identity_proof": "Wake Forest #29 Chase Burns FF windup \u2014 ACCN CF Clemson @ Wake",
+        "frame": "media/deck/frames/burns_ff.jpg",
+        "bytes": 1758870
+      },
+      "burns_sl.mp4": {
+        "md5": "115bca5d72a608a0936a8727ef2c4ecf",
+        "source_url": "https://www.youtube.com/watch?v=tknSzW1XimU",
+        "start_sec": 35,
+        "duration_sec": 6,
+        "identity_proof": "CHASE BURNS on-screen graphic \u2014 slider/breaking delivery ACC Digital Network",
+        "frame": "media/deck/frames/burns_sl.jpg",
+        "bytes": 1991753
+      },
+      "sasaki_ff.mp4": {
+        "md5": "9a9e5d57020d07cedfe178a3156e2173",
+        "source_url": "https://www.youtube.com/watch?v=-H3FrzEZfDo",
+        "start_sec": 170,
+        "duration_sec": 6,
+        "identity_proof": "Chiba Lotte Marines #17 Roki Sasaki FF \u2014 PacificLeagueTV CF Apr 2023",
+        "frame": "media/deck/frames/sasaki_ff.jpg",
+        "bytes": 1118091
+      },
+      "sasaki_fs.mp4": {
+        "md5": "9eba0ecfe72efd701b133912dbef5724",
+        "source_url": "https://www.youtube.com/watch?v=-H3FrzEZfDo",
+        "start_sec": 255,
+        "duration_sec": 6,
+        "identity_proof": "Lotte Sasaki forkball delivery sequence \u2014 ZOZO Marine Stadium NPB broadcast",
+        "frame": "media/deck/frames/sasaki_fs.jpg",
+        "bytes": 1263609
+      },
+      "choi_ch.mp4": {
+        "md5": "bfc7a0d90f28d21bb096f11ee4030e46",
+        "source_url": "https://www.youtube.com/watch?v=HKL1zbTN2y0",
+        "start_sec": 60,
+        "duration_sec": 6,
+        "identity_proof": "LG Twins #57 Choi Won-tae changeup delivery KBO direct cam Jul 2023",
+        "frame": "media/deck/frames/choi_ch.jpg",
+        "bytes": 4810684
+      },
+      "choi_si.mp4": {
+        "md5": "32f5ab41600eb488035698d55e98caf1",
+        "source_url": "https://www.youtube.com/watch?v=HKL1zbTN2y0",
+        "start_sec": 180,
+        "duration_sec": 6,
+        "identity_proof": "LG Twins Choi Won-tae sinker/two-seam delivery same outing",
+        "frame": "media/deck/frames/choi_si.jpg",
+        "bytes": 4471004
+      },
+      "gulin_ff.mp4": {
+        "md5": "b52b1882ffdee024f1e6ecf17066b86e",
+        "source_url": "https://www.youtube.com/watch?v=pTS-fYh_6rA",
+        "start_sec": 5,
+        "duration_sec": 6,
+        "identity_proof": "Uni-President Lions Gu Lin Ruei-Yang 156km/h FF \u2014 NOWNEWS CPBL",
+        "frame": "media/deck/frames/gulin_ff.jpg",
+        "bytes": 2179685
+      },
+      "gulin_cu.mp4": {
+        "md5": "62acce717e67b5a5898f9977ecb6efbf",
+        "source_url": "https://www.youtube.com/watch?v=pTS-fYh_6rA",
+        "start_sec": 22,
+        "duration_sec": 6,
+        "identity_proof": "Gu Lin Ruei-Yang curve/breaking delivery \u2014 same CPBL broadcast CF",
+        "frame": "media/deck/frames/gulin_cu.jpg",
+        "bytes": 1098711
+      },
+      "rios_si.mp4": {
+        "md5": "94fe445462969d3f524b7d19807260ec",
+        "source_url": "https://www.youtube.com/watch?v=SpGNGIc3N04",
+        "start_sec": 8,
+        "duration_sec": 6,
+        "identity_proof": "W. R\u00edos scoreboard 93 MPH sinker \u2014 MVA Monclova LMB broadcast",
+        "frame": "media/deck/frames/rios_si.jpg",
+        "bytes": 1742147
+      },
+      "rios_sl.mp4": {
+        "md5": "906695de550d64c0a1ce458a8895ccb7",
+        "source_url": "https://www.youtube.com/watch?v=SpGNGIc3N04",
+        "start_sec": 55,
+        "duration_sec": 6,
+        "identity_proof": "W. R\u00edos breaking/slider sequence \u2014 same LMB broadcast later AB",
+        "frame": "media/deck/frames/rios_sl.jpg",
+        "bytes": 261
+      },
+      "hughes_ff.mp4": {
+        "md5": "b976510ee0eabde624cea5b03f6ac0e7",
+        "source_url": "https://www.youtube.com/watch?v=lzCDC8m3vg0",
+        "start_sec": 2,
+        "duration_sec": 6,
+        "identity_proof": "HUGHES scoreboard FF 88 MPH \u2014 Hartford Yard Goats broadcast",
+        "frame": "media/deck/frames/hughes_ff.jpg",
+        "bytes": 1448777
+      },
+      "hughes_sl.mp4": {
+        "md5": "2d0d1b9a7f8216fb6758a880e7df8dbc",
+        "source_url": "https://www.youtube.com/watch?v=5FExR-wSnjs",
+        "start_sec": 3,
+        "duration_sec": 6,
+        "identity_proof": "Gabriel Hughes slider delivery \u2014 Dynasty Dugout Rockies prospect CF",
+        "frame": "media/deck/frames/hughes_sl.jpg",
+        "bytes": 2237111
+      }
     },
-    "sasaki": {
-      "ff": "media/video/sasaki_ff.mp4",
-      "fs": "media/video/sasaki_fs.mp4"
-    },
-    "choi": {
-      "ch": "media/video/choi_ch.mp4",
-      "si": "media/video/choi_si.mp4"
-    },
-    "gulin": {
-      "ff": "media/video/gulin_ff.mp4",
-      "cu": "media/video/gulin_cu.mp4"
-    },
-    "rios": {
-      "sl": "media/video/rios_sl.mp4",
-      "si": "media/video/rios_si.mp4"
-    },
-    "hughes": {
-      "ff": "media/video/hughes_ff.mp4",
-      "sl": "media/video/hughes_sl.mp4"
-    }
+    "imposter_md5_blocked": [
+      "755d305617d9239cc479fc66e43452ca",
+      "c2f4aa489d5f4b9c2f63309533e600b2",
+      "6850b0b88f34d8737d513a4070cd5ffb",
+      "487e16983d4c7c68a58724b5ddab850e",
+      "4f14780d91d254ca0e811cd9b30074d1",
+      "0d01dff17f2e5a016a9b6fe5ea024c82",
+      "73de59ad8dbcdfb0a05e7e94c9153eef",
+      "96e8500f8374c0e98bfe78abd42fdccd",
+      "ed7610aedb1df791be9f9e9cca8cb37a",
+      "dc4ad0ddead375f84f29984ccf7de036",
+      "e00f09b60a899f658da36a852f1f63e6",
+      "8f5fb32b50edd0efac400a99588af5c0"
+    ]
   }
 }

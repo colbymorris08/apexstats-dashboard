@@ -1560,7 +1560,7 @@ function formatSec(s) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260901p22";
+const VIDEO_CACHE_BUST = "20260902p02";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -1830,10 +1830,10 @@ function resolveNonMlbVideo(normId, pitchType, sitSuffix = "") {
   const verified = VERIFIED_NON_MLB_VIDEOS[prefix];
   if (!verified) return "";
   const pCode = extractPitchCode(pitchType, prefix);
-  const fileCode = Object.prototype.hasOwnProperty.call(verified, pCode)
-    ? pCode
-    : (verified.ff ? "ff" : Object.keys(verified)[0]);
-  return `media/video/${prefix}_${fileCode}${sitSuffix}.mp4`;
+  const canonical = verified[pCode] || verified.ff || verified.sl || Object.values(verified)[0] || "";
+  if (!canonical) return "";
+  if (!sitSuffix) return canonical;
+  return canonical.replace(/\.mp4$/i, `${sitSuffix}.mp4`);
 }
 
 function mapPlayerPitchFile(playerKey, pitchCode) {
@@ -2136,8 +2136,8 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   }
 
   if (isMoreno) {
-    // Catcher pre-pitch mitt target (~0.5–0.8s); not pitcher leg-lift apex (~2.4s).
-    tA = Math.min(Math.max(tA || 0.65, 0.45), 0.85);
+    // Catcher pre-pitch mitt target (~0.45s); before pitcher windup — not leg-lift apex (~2.4s).
+    tA = Math.min(Math.max(tA || 0.45, 0.40), 0.55);
     tB = tA;
   }
 
