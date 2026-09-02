@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 60,
-  "remaining": 606,
+  "remaining": 605,
   "sec_per_pitch": 10.0,
   "eta_hours": 493.8,
   "est_total_pitches": 177770,
   "current": {
-    "name": "Framber Valdez",
+    "name": "Chris Sale",
     "team": "OTH",
-    "message": "pitcher [31/639] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [32/639] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "592662": {
@@ -1603,6 +1603,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/nolan_mclean_poc",
       "schema": "rich_72col",
       "n_current_tracks": 260,
+      "ready": true,
+      "state": "complete"
+    },
+    "664285": {
+      "name": "Framber Valdez",
+      "team": "OTH",
+      "n_tracked": 219,
+      "holdout": 0.154,
+      "tips_ge_75": 4,
+      "catcher_tips": 4,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/framber_valdez_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 245,
       "ready": false,
       "state": "tracking"
     }
@@ -3218,9 +3236,9 @@
     },
     "OTH": {
       "queued": 639,
-      "done": 27,
-      "pitcher_tips": 149,
-      "catcher_tips": 106
+      "done": 28,
+      "pitcher_tips": 153,
+      "catcher_tips": 110
     },
     "CHC": {
       "queued": 0,
@@ -3231,12 +3249,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 311,
-    "catcher_tips": 234
+    "pitcher_tips": 315,
+    "catcher_tips": 238
   },
-  "updated_at": "2026-09-02T05:32:42",
+  "updated_at": "2026-09-02T06:53:26",
   "live": {
-    "pitches_done": 210,
+    "pitches_done": 190,
     "pitches_target": null
   },
   "heartbeat": true
