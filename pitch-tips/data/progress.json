@@ -10,9 +10,9 @@
   "eta_hours": 493.8,
   "est_total_pitches": 177770,
   "current": {
-    "name": "Jos\u00e9 Soriano",
+    "name": "Kyle Bradish",
     "team": "OTH",
-    "message": "pitcher [26/639] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [27/639] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "592662": {
@@ -1465,20 +1465,20 @@
     "667755": {
       "name": "Jos\u00e9 Soriano",
       "team": "OTH",
-      "n_tracked": 13,
-      "holdout": 1.0,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
+      "n_tracked": 241,
+      "holdout": 0.231,
+      "tips_ge_75": 3,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 3,
       "publishable": false,
       "failed_checks": [
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jos\u00e9_soriano_poc",
       "schema": "rich_72col",
-      "n_current_tracks": 13,
-      "ready": true,
-      "state": "complete"
+      "n_current_tracks": 266,
+      "ready": false,
+      "state": "tracking"
     },
     "641743": {
       "name": "Anthony Kay",
@@ -1531,8 +1531,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/shota_imanaga_poc",
       "schema": "rich_72col",
       "n_current_tracks": 252,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -3147,8 +3147,8 @@
     "OTH": {
       "queued": 639,
       "done": 23,
-      "pitcher_tips": 132,
-      "catcher_tips": 87
+      "pitcher_tips": 135,
+      "catcher_tips": 89
     },
     "CHC": {
       "queued": 0,
@@ -3159,12 +3159,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 294,
-    "catcher_tips": 215
+    "pitcher_tips": 297,
+    "catcher_tips": 217
   },
-  "updated_at": "2026-09-02T01:10:15",
+  "updated_at": "2026-09-02T03:00:14",
   "live": {
-    "pitches_done": 240,
+    "pitches_done": 220,
     "pitches_target": null
   },
   "heartbeat": true
