@@ -10,27 +10,11 @@
   "eta_hours": 484.9,
   "est_total_pitches": 174580,
   "current": {
-    "name": "Michael King",
+    "name": "Robbie Ray",
     "team": "SD",
-    "message": "pitcher [1/13] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [2/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
-    "592662": {
-      "name": "Robbie Ray",
-      "team": "SD",
-      "n_tracked": 261,
-      "holdout": 0.4,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
-      "publishable": true,
-      "failed_checks": [],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/robbie_ray_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
     "681190": {
       "name": "Randy V\u00e1squez",
       "team": "SD",
@@ -1689,6 +1673,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brock_stewart_poc",
       "schema": "rich_72col",
       "n_current_tracks": 127,
+      "ready": true,
+      "state": "complete"
+    },
+    "650633": {
+      "name": "Michael King",
+      "team": "SD",
+      "n_tracked": 255,
+      "holdout": 0.043,
+      "tips_ge_75": 4,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/michael_king_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 284,
       "ready": false,
       "state": "tracking"
     }
@@ -3293,8 +3295,8 @@
     "SD": {
       "queued": 13,
       "done": 12,
-      "pitcher_tips": 36,
-      "catcher_tips": 26
+      "pitcher_tips": 40,
+      "catcher_tips": 29
     },
     "SF": {
       "queued": 10,
@@ -3317,12 +3319,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 322,
-    "catcher_tips": 251
+    "pitcher_tips": 326,
+    "catcher_tips": 254
   },
-  "updated_at": "2026-09-03T14:33:27",
+  "updated_at": "2026-09-03T15:16:06",
   "live": {
-    "pitches_done": 250,
+    "pitches_done": 150,
     "pitches_target": null
   },
   "heartbeat": true
