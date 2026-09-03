@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 61,
-  "remaining": 602,
+  "remaining": 601,
   "sec_per_pitch": 10.0,
   "eta_hours": 484.9,
   "est_total_pitches": 174580,
   "current": {
-    "name": "Justin Wrobleski",
+    "name": "Blake Snell",
     "team": "LAD",
-    "message": "pitcher [2/15] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [13/15] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "592662": {
@@ -26,10 +26,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/robbie_ray_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 319,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "681190": {
       "name": "Randy V\u00e1squez",
@@ -42,10 +42,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/randy_v\u00e1squez_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 274,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "663554": {
       "name": "Casey Mize",
@@ -58,10 +58,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/casey_mize_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 246,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "656288": {
       "name": "Griffin Canning",
@@ -74,10 +74,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/griffin_canning_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 219,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "657277": {
       "name": "Logan Webb",
@@ -90,10 +90,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/logan_webb_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 316,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "694738": {
       "name": "Landen Roupp",
@@ -106,10 +106,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/landen_roupp_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 298,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "694918": {
       "name": "Blade Tidwell",
@@ -122,10 +122,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blade_tidwell_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 171,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "703615": {
       "name": "Jose Cabrera",
@@ -140,10 +140,10 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jose_cabrera_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 49,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "683352": {
       "name": "Mitch Bratt",
@@ -156,10 +156,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/mitch_bratt_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 259,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "656464": {
       "name": "Kevin Ginkel",
@@ -172,10 +172,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kevin_ginkel_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 123,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "666661": {
       "name": "Juan Morillo",
@@ -188,10 +188,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/juan_morillo_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 120,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "664199": {
       "name": "Taylor Clarke",
@@ -204,10 +204,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/taylor_clarke_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 136,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "642528": {
       "name": "Jonathan Lo\u00e1isiga",
@@ -220,10 +220,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jonathan_lo\u00e1isiga_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 155,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "642701": {
       "name": "Dennis Santana",
@@ -238,10 +238,10 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/dennis_santana_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 90,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "805299": {
       "name": "Brandyn Garcia",
@@ -254,10 +254,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brandyn_garcia_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 130,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "686753": {
       "name": "Drey Jameson",
@@ -272,10 +272,10 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/drey_jameson_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 75,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "672629": {
       "name": "Gerardo Carrillo",
@@ -288,10 +288,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/gerardo_carrillo_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 188,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "688642": {
       "name": "Zach Agnos",
@@ -304,10 +304,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/zach_agnos_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 194,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "657514": {
       "name": "Brennan Bernardino",
@@ -320,10 +320,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brennan_bernardino_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 125,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "675848": {
       "name": "Juan Mejia",
@@ -336,10 +336,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/juan_mejia_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 102,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "666171": {
       "name": "Ryan Zeferjahn",
@@ -352,10 +352,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/ryan_zeferjahn_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 153,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "657097": {
       "name": "Jacob Webb",
@@ -368,10 +368,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jacob_webb_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 125,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "573204": {
       "name": "Caleb Thielbar",
@@ -384,10 +384,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/caleb_thielbar_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 104,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "593958": {
       "name": "Eduardo Rodriguez",
@@ -402,10 +402,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/eduardo_rodriguez_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 305,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "694297": {
       "name": "Brandon Pfaadt",
@@ -420,10 +420,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brandon_pfaadt_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 312,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "684442": {
       "name": "Kohl Drake",
@@ -438,10 +438,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kohl_drake_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 173,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "608372": {
       "name": "Tomoyuki Sugano",
@@ -456,10 +456,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tomoyuki_sugano_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 279,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "663372": {
       "name": "Ryan Feltner",
@@ -474,10 +474,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/ryan_feltner_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 292,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "685299": {
       "name": "Tanner Gordon",
@@ -492,10 +492,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tanner_gordon_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 213,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "687312": {
       "name": "Gabriel Hughes",
@@ -510,10 +510,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/gabriel_hughes_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 249,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "623474": {
       "name": "Jimmy Herget",
@@ -528,10 +528,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jimmy_herget_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 174,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "677955": {
       "name": "Jaden Hill",
@@ -547,10 +547,10 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jaden_hill_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 27,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "605447": {
       "name": "Jordan Romano",
@@ -565,10 +565,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jordan_romano_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 129,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "693308": {
       "name": "Nick Frasso",
@@ -581,10 +581,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/nick_frasso_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 128,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "808967": {
       "name": "Yoshinobu Yamamoto",
@@ -599,10 +599,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/yoshinobu_yamamoto_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 294,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "669373": {
       "name": "Tarik Skubal",
@@ -617,10 +617,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tarik_skubal_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 288,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "641778": {
       "name": "Eric Lauer",
@@ -633,10 +633,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/eric_lauer_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 255,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "660271": {
       "name": "Shohei Ohtani",
@@ -651,10 +651,10 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/shohei_ohtani_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 23,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "681911": {
       "name": "Alex Vesia",
@@ -669,10 +669,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/alex_vesia_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 111,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "683618": {
       "name": "Edgardo Henriquez",
@@ -687,10 +687,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/edgardo_henriquez_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 161,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "656945": {
       "name": "Tanner Scott",
@@ -703,10 +703,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tanner_scott_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 101,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "607192": {
       "name": "Tyler Glasnow",
@@ -722,10 +722,10 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tyler_glasnow_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 41,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "669165": {
       "name": "Kyle Hurt",
@@ -740,10 +740,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kyle_hurt_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 109,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "678020": {
       "name": "Seth Halvorsen",
@@ -759,28 +759,10 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/seth_halvorsen_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 37,
-      "ready": true,
-      "state": "complete"
-    },
-    "605483": {
-      "name": "Blake Snell",
-      "team": "LAD",
-      "n_tracked": 110,
-      "holdout": 0.163,
-      "tips_ge_75": 4,
-      "catcher_tips": 3,
-      "legacy_tips_ge_75": 4,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blake_snell_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 134,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "623465": {
       "name": "Evan Phillips",
@@ -795,10 +777,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/evan_phillips_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 115,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "592779": {
       "name": "Brock Stewart",
@@ -813,10 +795,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brock_stewart_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 107,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "650633": {
       "name": "Michael King",
@@ -831,10 +813,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/michael_king_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 269,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "621111": {
       "name": "Walker Buehler",
@@ -847,10 +829,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/walker_buehler_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 288,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "670970": {
       "name": "Adrian Morejon",
@@ -865,10 +847,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/adrian_morejon_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 172,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "593974": {
       "name": "Wandy Peralta",
@@ -883,10 +865,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/wandy_peralta_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 146,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "699134": {
       "name": "Bradgley Rodriguez",
@@ -899,10 +881,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/bradgley_rodriguez_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 127,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "695243": {
       "name": "Mason Miller",
@@ -917,10 +899,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/mason_miller_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 122,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "606996": {
       "name": "Kyle Hart",
@@ -935,10 +917,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kyle_hart_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 179,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "673513": {
       "name": "Yuki Matsui",
@@ -953,10 +935,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/yuki_matsui_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 186,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "688158": {
       "name": "David Morgan",
@@ -972,10 +954,10 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/david_morgan_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 21,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "656529": {
       "name": "Sam Hentges",
@@ -990,10 +972,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/sam_hentges_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 173,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "676254": {
       "name": "Ryan Walker",
@@ -1008,10 +990,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/ryan_walker_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 52,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "681916": {
       "name": "Dylan Smith",
@@ -1026,10 +1008,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/dylan_smith_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 124,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "693313": {
       "name": "Carson Seymour",
@@ -1044,10 +1026,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/carson_seymour_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 172,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "665665": {
       "name": "Reiver Sanmartin",
@@ -1062,10 +1044,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/reiver_sanmartin_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 159,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "671345": {
       "name": "Jason Foley",
@@ -1080,10 +1062,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jason_foley_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 153,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "805345": {
       "name": "Trent Harris",
@@ -1099,10 +1081,10 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/trent_harris_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 152,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "683627": {
       "name": "Anthony Molina",
@@ -1119,10 +1101,10 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/anthony_molina_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 35,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "645261": {
       "name": "Sandy Alcantara",
@@ -1137,10 +1119,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/sandy_alcantara_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 311,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "666200": {
       "name": "Jes\u00fas Luzardo",
@@ -1155,10 +1137,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jes\u00fas_luzardo_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 256,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "669022": {
       "name": "MacKenzie Gore",
@@ -1173,10 +1155,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/mackenzie_gore_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 265,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "668909": {
       "name": "Gavin Williams",
@@ -1191,10 +1173,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/gavin_williams_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 237,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "671096": {
       "name": "Andrew Abbott",
@@ -1209,10 +1191,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/andrew_abbott_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 269,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "650911": {
       "name": "Cristopher S\u00e1nchez",
@@ -1227,10 +1209,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/cristopher_s\u00e1nchez_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 191,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "608379": {
       "name": "Michael Wacha",
@@ -1245,10 +1227,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/michael_wacha_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 302,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "680732": {
       "name": "Sean Burke",
@@ -1263,10 +1245,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/sean_burke_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 297,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "676440": {
       "name": "Tanner Bibee",
@@ -1281,10 +1263,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tanner_bibee_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 320,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "592332": {
       "name": "Kevin Gausman",
@@ -1299,10 +1281,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kevin_gausman_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 170,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "671737": {
       "name": "Taj Bradley",
@@ -1317,10 +1299,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/taj_bradley_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 243,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "800048": {
       "name": "Parker Messick",
@@ -1335,10 +1317,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/parker_messick_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 252,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "669358": {
       "name": "Shane Baz",
@@ -1351,10 +1333,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/shane_baz_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 291,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "693645": {
       "name": "Cam Schlittler",
@@ -1369,10 +1351,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/cam_schlittler_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 225,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "605400": {
       "name": "Aaron Nola",
@@ -1385,10 +1367,10 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/aaron_nola_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 273,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "656302": {
       "name": "Dylan Cease",
@@ -1403,10 +1385,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/dylan_cease_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 291,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "642547": {
       "name": "Freddy Peralta",
@@ -1421,10 +1403,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/freddy_peralta_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 231,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "656492": {
       "name": "Foster Griffin",
@@ -1439,10 +1421,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/foster_griffin_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 296,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "702070": {
       "name": "Noah Cameron",
@@ -1457,10 +1439,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/noah_cameron_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 204,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "667755": {
       "name": "Jos\u00e9 Soriano",
@@ -1475,10 +1457,10 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jos\u00e9_soriano_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 266,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "641743": {
       "name": "Anthony Kay",
@@ -1493,10 +1475,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/anthony_kay_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 304,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "663903": {
       "name": "Brady Singer",
@@ -1511,10 +1493,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brady_singer_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 244,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "684007": {
       "name": "Shota Imanaga",
@@ -1529,10 +1511,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/shota_imanaga_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 252,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "680694": {
       "name": "Kyle Bradish",
@@ -1547,10 +1529,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kyle_bradish_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 268,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "672282": {
       "name": "Reid Detmers",
@@ -1565,10 +1547,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/reid_detmers_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 231,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "669302": {
       "name": "Logan Gilbert",
@@ -1583,10 +1565,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/logan_gilbert_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 277,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "690997": {
       "name": "Nolan McLean",
@@ -1601,10 +1583,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/nolan_mclean_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 260,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "664285": {
       "name": "Framber Valdez",
@@ -1619,10 +1601,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/framber_valdez_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 245,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "519242": {
       "name": "Chris Sale",
@@ -1637,10 +1619,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/chris_sale_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 221,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "680604": {
       "name": "Blas Casta\u00f1o",
@@ -1655,10 +1637,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blas_casta\u00f1o_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 50,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "677960": {
       "name": "Ryan Weathers",
@@ -1669,10 +1651,46 @@
       "catcher_tips": 0,
       "legacy_tips_ge_75": 0,
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/ryan_weathers_poc",
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
+    },
+    "680736": {
+      "name": "Justin Wrobleski",
+      "team": "LAD",
+      "n_tracked": 175,
+      "holdout": 0.233,
+      "tips_ge_75": 10,
+      "catcher_tips": 6,
+      "legacy_tips_ge_75": 10,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/justin_wrobleski_poc",
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
+    },
+    "595014": {
+      "name": "Blake Treinen",
+      "team": "LAD",
+      "n_tracked": 81,
+      "holdout": 0.167,
+      "tips_ge_75": 2,
+      "catcher_tips": 4,
+      "legacy_tips_ge_75": 2,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blake_treinen_poc",
       "schema": "rich_72col",
-      "n_current_tracks": 17,
-      "ready": true,
-      "state": "complete"
+      "n_current_tracks": 96,
+      "ready": false,
+      "state": "tracking"
     }
   },
   "failed": {
@@ -3268,9 +3286,9 @@
     },
     "LAD": {
       "queued": 15,
-      "done": 14,
-      "pitcher_tips": 45,
-      "catcher_tips": 28
+      "done": 15,
+      "pitcher_tips": 53,
+      "catcher_tips": 35
     },
     "SD": {
       "queued": 13,
@@ -3299,12 +3317,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 319,
-    "catcher_tips": 245
+    "pitcher_tips": 327,
+    "catcher_tips": 252
   },
-  "updated_at": "2026-09-03T11:22:41",
+  "updated_at": "2026-09-03T12:43:02",
   "live": {
-    "pitches_done": 175,
+    "pitches_done": 150,
     "pitches_target": null
   },
   "heartbeat": true
