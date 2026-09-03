@@ -10,9 +10,9 @@
   "eta_hours": 484.9,
   "est_total_pitches": 174580,
   "current": {
-    "name": "Evan Phillips",
+    "name": "Brock Stewart",
     "team": "LAD",
-    "message": "pitcher [14/15] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [15/15] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "592662": {
@@ -759,24 +759,6 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/seth_halvorsen_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "592779": {
-      "name": "Brock Stewart",
-      "team": "LAD",
-      "n_tracked": 80,
-      "holdout": 0.0,
-      "tips_ge_75": 3,
-      "catcher_tips": 2,
-      "legacy_tips_ge_75": 3,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brock_stewart_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -1689,6 +1671,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blake_snell_poc",
       "schema": "rich_72col",
       "n_current_tracks": 185,
+      "ready": true,
+      "state": "complete"
+    },
+    "623465": {
+      "name": "Evan Phillips",
+      "team": "LAD",
+      "n_tracked": 71,
+      "holdout": 0.0,
+      "tips_ge_75": 3,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/evan_phillips_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 116,
       "ready": false,
       "state": "tracking"
     }
@@ -3320,9 +3320,9 @@
     "pitcher_tips": 325,
     "catcher_tips": 254
   },
-  "updated_at": "2026-09-03T13:03:07",
+  "updated_at": "2026-09-03T13:27:42",
   "live": {
-    "pitches_done": 70,
+    "pitches_done": 80,
     "pitches_target": null
   },
   "heartbeat": true
