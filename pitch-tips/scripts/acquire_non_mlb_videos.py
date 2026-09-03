@@ -40,10 +40,10 @@ CLIPS: list[tuple[str, str, float, float, str]] = [
     ("burns_sl.mp4", "https://www.youtube.com/watch?v=tknSzW1XimU", 0.5, 6,
      "Chase Burns ~86 MPH breaking delivery — ESPN2 Greenville Regional"),
     # Roki Sasaki — Pacific League TV CF deliveries (avoid HERO INTERVIEW segments ~400s+)
-    ("sasaki_ff.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 166.2, 3.8,
-     "Chiba Lotte Marines Roki Sasaki CF delivery — ZOZO 160km/h context Apr 2023"),
-    ("sasaki_fs.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 142.9, 3.6,
-     "Lotte Sasaki CF delivery #2 — yellow glove forkball sequence"),
+    ("sasaki_ff.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 90, 6,
+     "Chiba Lotte Marines Roki Sasaki CF windup delivery — ZOZO yellow glove Apr 2023"),
+    ("sasaki_fs.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 168, 6,
+     "Lotte Sasaki CF delivery #2 — post-release follow-through same outing"),
     # Won-tae Choi — LG Twins KBO SPOTV direct camera
     ("choi_ch.mp4", "https://www.youtube.com/watch?v=HKL1zbTN2y0", 60, 6,
      "LG Twins #57 Choi Won-tae changeup delivery KBO direct cam Jul 2023"),

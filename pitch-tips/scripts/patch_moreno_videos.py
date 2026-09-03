@@ -13,8 +13,10 @@ VIDEO = ROOT / "media" / "video"
 DOWNLOADS = Path("/Users/colbymorris/Downloads/Preflight_Sales_Deck")
 FFMPEG = shutil.which("ffmpeg") or "/opt/homebrew/opt/ffmpeg/bin/ffmpeg"
 
-# Pre-pitch glove target phase — before pitcher windup (~0.45s in broadcast CF clips)
-MORENO_ANCHOR = 0.45
+# Pre-pitch glove target — before pitcher windup.
+# CH/FF clips are not phase-aligned; CH starts moving earlier.
+MORENO_ANCHOR_A = 0.08  # tip1 CH pane / tip2 FF pane primary
+MORENO_ANCHOR_B = 0.25
 
 
 def patch_tips(tips: list) -> int:
@@ -30,16 +32,16 @@ def patch_tips(tips: list) -> int:
             tip["pitch_b_label"] = "4-Seam Fastball (FF)"
             tip["videoA"] = "media/video/moreno_ch.mp4"
             tip["videoB"] = "media/video/moreno_ff.mp4"
-            tip["anchor_a"] = MORENO_ANCHOR
-            tip["anchor_b"] = MORENO_ANCHOR
+            tip["anchor_a"] = MORENO_ANCHOR_A
+            tip["anchor_b"] = MORENO_ANCHOR_B
             n += 1
         elif "target_height" in tid or "crouch" in tip.get("title", "").lower():
             tip["pitch_a_label"] = "4-Seam Fastball (FF)"
             tip["pitch_b_label"] = "Offspeed/Breaking (CH/SL)"
             tip["videoA"] = "media/video/moreno_ff.mp4"
             tip["videoB"] = "media/video/moreno_ch.mp4"
-            tip["anchor_a"] = MORENO_ANCHOR
-            tip["anchor_b"] = MORENO_ANCHOR
+            tip["anchor_a"] = MORENO_ANCHOR_B
+            tip["anchor_b"] = MORENO_ANCHOR_A
             n += 1
     return n
 
@@ -83,8 +85,8 @@ def regenerate_deck_stills() -> None:
     ff_still = DECK / "moreno_ff_fastball_setup.png"
     comparison = DECK / "moreno_catcher_setup_deck_comparison.png"
 
-    extract_still(VIDEO / "moreno_ch.mp4", MORENO_ANCHOR, ch_still)
-    extract_still(VIDEO / "moreno_ff.mp4", MORENO_ANCHOR, ff_still)
+    extract_still(VIDEO / "moreno_ch.mp4", MORENO_ANCHOR_A, ch_still)
+    extract_still(VIDEO / "moreno_ff.mp4", MORENO_ANCHOR_B, ff_still)
 
     ch = Image.open(ch_still).convert("RGB")
     ff = Image.open(ff_still).convert("RGB")
@@ -107,7 +109,7 @@ def regenerate_deck_stills() -> None:
         font = ImageFont.load_default()
         small = font
     draw.text((24, 12), "Gabriel Moreno · Pre-Pitch Glove Target", fill=(232, 237, 245), font=font)
-    draw.text((24, 38), f"CH/SL vs FF @ t={MORENO_ANCHOR:.2f}s (before windup)", fill=(148, 163, 184), font=small)
+    draw.text((24, 38), f"CH/SL @ {MORENO_ANCHOR_A:.2f}s · FF @ {MORENO_ANCHOR_B:.2f}s (pre-windup)", fill=(148, 163, 184), font=small)
     draw.text((ch.width // 2 - 80, header - 4), "CH / Offspeed", fill=(248, 113, 113), font=small)
     draw.text((ch.width + gap + ff.width // 2 - 60, header - 4), "FF / Fastball", fill=(96, 165, 250), font=small)
     canvas.save(comparison, optimize=True)
@@ -120,7 +122,7 @@ def regenerate_deck_stills() -> None:
             "moreno_catcher_setup_deck_comparison.png",
         ):
             shutil.copy2(DECK / name, DOWNLOADS / name)
-    print(f"Regenerated Moreno deck stills @ t={MORENO_ANCHOR}s")
+    print(f"Regenerated Moreno deck stills @ CH={MORENO_ANCHOR_A}s FF={MORENO_ANCHOR_B}s")
 
 
 def main() -> None:
@@ -134,7 +136,7 @@ def main() -> None:
             if isinstance(player, dict):
                 total += patch_player(player)
         path.write_text(json.dumps(data, indent=2) + "\n")
-        print(f"Patched {total} Moreno tips in {path.name} (anchor={MORENO_ANCHOR}s)")
+        print(f"Patched {total} Moreno tips in {path.name} (anchors={MORENO_ANCHOR_A}/{MORENO_ANCHOR_B}s)")
 
     regenerate_deck_stills()
 
