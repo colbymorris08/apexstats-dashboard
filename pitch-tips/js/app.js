@@ -1560,7 +1560,7 @@ function formatSec(s) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260903p01";
+const VIDEO_CACHE_BUST = "20260903p02";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
