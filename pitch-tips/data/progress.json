@@ -10,9 +10,9 @@
   "eta_hours": 484.9,
   "est_total_pitches": 174580,
   "current": {
-    "name": "Blake Snell",
+    "name": "Evan Phillips",
     "team": "LAD",
-    "message": "pitcher [13/15] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [14/15] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "592662": {
@@ -759,24 +759,6 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/seth_halvorsen_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "623465": {
-      "name": "Evan Phillips",
-      "team": "LAD",
-      "n_tracked": 71,
-      "holdout": 0.0,
-      "tips_ge_75": 3,
-      "catcher_tips": 2,
-      "legacy_tips_ge_75": 3,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/evan_phillips_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -1689,6 +1671,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blake_treinen_poc",
       "schema": "rich_72col",
       "n_current_tracks": 96,
+      "ready": true,
+      "state": "complete"
+    },
+    "605483": {
+      "name": "Blake Snell",
+      "team": "LAD",
+      "n_tracked": 161,
+      "holdout": 0.122,
+      "tips_ge_75": 1,
+      "catcher_tips": 4,
+      "legacy_tips_ge_75": 1,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blake_snell_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 185,
       "ready": false,
       "state": "tracking"
     }
@@ -3287,8 +3287,8 @@
     "LAD": {
       "queued": 15,
       "done": 15,
-      "pitcher_tips": 53,
-      "catcher_tips": 35
+      "pitcher_tips": 51,
+      "catcher_tips": 37
     },
     "SD": {
       "queued": 13,
@@ -3317,12 +3317,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 327,
-    "catcher_tips": 252
+    "pitcher_tips": 325,
+    "catcher_tips": 254
   },
-  "updated_at": "2026-09-03T12:43:02",
+  "updated_at": "2026-09-03T13:03:07",
   "live": {
-    "pitches_done": 150,
+    "pitches_done": 70,
     "pitches_target": null
   },
   "heartbeat": true
