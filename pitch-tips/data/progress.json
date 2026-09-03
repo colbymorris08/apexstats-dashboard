@@ -10,9 +10,9 @@
   "eta_hours": 484.9,
   "est_total_pitches": 174580,
   "current": {
-    "name": "Robbie Ray",
+    "name": "Walker Buehler",
     "team": "SD",
-    "message": "pitcher [2/13] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [3/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "681190": {
@@ -743,22 +743,6 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/seth_halvorsen_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "621111": {
-      "name": "Walker Buehler",
-      "team": "SD",
-      "n_tracked": 229,
-      "holdout": 0.194,
-      "tips_ge_75": 8,
-      "catcher_tips": 2,
-      "legacy_tips_ge_75": 8,
-      "publishable": true,
-      "failed_checks": [],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/walker_buehler_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -1691,6 +1675,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/michael_king_poc",
       "schema": "rich_72col",
       "n_current_tracks": 284,
+      "ready": true,
+      "state": "complete"
+    },
+    "592662": {
+      "name": "Robbie Ray",
+      "team": "SD",
+      "n_tracked": 264,
+      "holdout": 0.212,
+      "tips_ge_75": 4,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/robbie_ray_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 318,
       "ready": false,
       "state": "tracking"
     }
@@ -3295,7 +3297,7 @@
     "SD": {
       "queued": 13,
       "done": 12,
-      "pitcher_tips": 40,
+      "pitcher_tips": 36,
       "catcher_tips": 29
     },
     "SF": {
@@ -3319,12 +3321,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 326,
+    "pitcher_tips": 322,
     "catcher_tips": 254
   },
-  "updated_at": "2026-09-03T15:52:45",
+  "updated_at": "2026-09-03T16:42:53",
   "live": {
-    "pitches_done": 260,
+    "pitches_done": 230,
     "pitches_target": null
   },
   "heartbeat": true
