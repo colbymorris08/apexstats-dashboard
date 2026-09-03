@@ -10,9 +10,9 @@
   "eta_hours": 484.9,
   "est_total_pitches": 174580,
   "current": {
-    "name": "Brock Stewart",
-    "team": "LAD",
-    "message": "pitcher [15/15] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Michael King",
+    "team": "SD",
+    "message": "pitcher [1/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "592662": {
@@ -759,24 +759,6 @@
         "volume"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/seth_halvorsen_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "650633": {
-      "name": "Michael King",
-      "team": "SD",
-      "n_tracked": 238,
-      "holdout": 0.077,
-      "tips_ge_75": 5,
-      "catcher_tips": 7,
-      "legacy_tips_ge_75": 5,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/michael_king_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -1689,6 +1671,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/evan_phillips_poc",
       "schema": "rich_72col",
       "n_current_tracks": 116,
+      "ready": true,
+      "state": "complete"
+    },
+    "592779": {
+      "name": "Brock Stewart",
+      "team": "LAD",
+      "n_tracked": 89,
+      "holdout": 0.0,
+      "tips_ge_75": 2,
+      "catcher_tips": 4,
+      "legacy_tips_ge_75": 2,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brock_stewart_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 127,
       "ready": false,
       "state": "tracking"
     }
@@ -3286,15 +3286,15 @@
     },
     "LAD": {
       "queued": 15,
-      "done": 15,
-      "pitcher_tips": 51,
-      "catcher_tips": 37
+      "done": 16,
+      "pitcher_tips": 53,
+      "catcher_tips": 41
     },
     "SD": {
       "queued": 13,
-      "done": 13,
-      "pitcher_tips": 41,
-      "catcher_tips": 33
+      "done": 12,
+      "pitcher_tips": 36,
+      "catcher_tips": 26
     },
     "SF": {
       "queued": 10,
@@ -3317,12 +3317,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 325,
-    "catcher_tips": 254
+    "pitcher_tips": 322,
+    "catcher_tips": 251
   },
-  "updated_at": "2026-09-03T13:27:42",
+  "updated_at": "2026-09-03T14:33:27",
   "live": {
-    "pitches_done": 80,
+    "pitches_done": 250,
     "pitches_target": null
   },
   "heartbeat": true
