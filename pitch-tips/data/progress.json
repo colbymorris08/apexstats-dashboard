@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 699,
   "nlwest_pitchers": 61,
-  "remaining": 604,
+  "remaining": 602,
   "sec_per_pitch": 10.0,
-  "eta_hours": 486.6,
-  "est_total_pitches": 175160,
+  "eta_hours": 484.9,
+  "est_total_pitches": 174580,
   "current": {
-    "name": "Blas Casta\u00f1o",
-    "team": "COL",
-    "message": "pitcher [11/12] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Justin Wrobleski",
+    "team": "LAD",
+    "message": "pitcher [2/15] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "592662": {
@@ -1641,6 +1641,38 @@
       "n_current_tracks": 221,
       "ready": true,
       "state": "complete"
+    },
+    "680604": {
+      "name": "Blas Casta\u00f1o",
+      "team": "COL",
+      "n_tracked": 40,
+      "holdout": 0.667,
+      "tips_ge_75": 2,
+      "catcher_tips": 4,
+      "legacy_tips_ge_75": 2,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blas_casta\u00f1o_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 50,
+      "ready": true,
+      "state": "complete"
+    },
+    "677960": {
+      "name": "Ryan Weathers",
+      "team": "OTH",
+      "n_tracked": 16,
+      "holdout": 1.0,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/ryan_weathers_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 17,
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -3052,7 +3084,7 @@
     "694973": {
       "name": "Paul Skenes",
       "team": "OTH",
-      "error": "HTTPSConnectionPool(host='statsapi.mlb.com', port=443): Max retries exceeded with url: /api/v1.1/game/823358/feed/live (Caused by ConnectTimeoutError(<HTTPSConnection(host='statsapi.mlb.com', port=443) at 0x138e4a210>, 'Connection to statsapi.mlb.com timed out. (connect timeout=40)'))"
+      "error": "HTTPSConnectionPool(host='baseballsavant.mlb.com', port=443): Max retries exceeded with url: /statcast_search/csv?all=true&hfPT=&hfAB=&hfBBT=&hfPR=&hfZ=&stadium=&hfBBL=&hfNewZones=&hfGT=R%7CPO%7CS%7C=&hfSea=&hfSit=&player_type=pitcher&hfOuts=&opponent=&pitcher_throws=&batter_stands=&hfSA=&game_date_gt=2026-03-01&game_date_lt=2026-11-30&pitchers_lookup%5B%5D=694973&team=&position=&hfRO=&home_road=&hfFlag=&metric_1=&hfInn=&min_pitches=0&min_results=0&group_by=name&sort_col=pitches&player_event_sort=h_launch_speed&sort_order=desc&min_abs=0&type=details& (Caused by NameResolutionError(\"HTTPSConnection(host='baseballsavant.mlb.com', port=443): Failed to resolve 'baseballsavant.mlb.com' ([Errno 8] nodename nor servname provided, or not known)\"))"
     },
     "669302": {
       "name": "Logan Gilbert",
@@ -3230,9 +3262,9 @@
     },
     "COL": {
       "queued": 12,
-      "done": 11,
-      "pitcher_tips": 30,
-      "catcher_tips": 33
+      "done": 12,
+      "pitcher_tips": 32,
+      "catcher_tips": 37
     },
     "LAD": {
       "queued": 15,
@@ -3254,7 +3286,7 @@
     },
     "OTH": {
       "queued": 638,
-      "done": 29,
+      "done": 30,
       "pitcher_tips": 155,
       "catcher_tips": 113
     },
@@ -3267,12 +3299,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 317,
-    "catcher_tips": 241
+    "pitcher_tips": 319,
+    "catcher_tips": 245
   },
-  "updated_at": "2026-09-02T12:36:30",
+  "updated_at": "2026-09-03T11:22:41",
   "live": {
-    "pitches_done": 30,
+    "pitches_done": 175,
     "pitches_target": null
   },
   "heartbeat": true
