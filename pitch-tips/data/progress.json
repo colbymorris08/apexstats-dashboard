@@ -10,27 +10,11 @@
   "eta_hours": 484.9,
   "est_total_pitches": 174580,
   "current": {
-    "name": "Walker Buehler",
+    "name": "Randy V\u00e1squez",
     "team": "SD",
-    "message": "pitcher [3/13] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [4/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
-    "681190": {
-      "name": "Randy V\u00e1squez",
-      "team": "SD",
-      "n_tracked": 245,
-      "holdout": 0.28,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
-      "publishable": true,
-      "failed_checks": [],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/randy_v\u00e1squez_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
     "663554": {
       "name": "Casey Mize",
       "team": "SD",
@@ -1693,6 +1677,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/robbie_ray_poc",
       "schema": "rich_72col",
       "n_current_tracks": 318,
+      "ready": true,
+      "state": "complete"
+    },
+    "621111": {
+      "name": "Walker Buehler",
+      "team": "SD",
+      "n_tracked": 239,
+      "holdout": 0.229,
+      "tips_ge_75": 6,
+      "catcher_tips": 1,
+      "legacy_tips_ge_75": 6,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/walker_buehler_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 292,
       "ready": false,
       "state": "tracking"
     }
@@ -3297,8 +3299,8 @@
     "SD": {
       "queued": 13,
       "done": 12,
-      "pitcher_tips": 36,
-      "catcher_tips": 29
+      "pitcher_tips": 42,
+      "catcher_tips": 30
     },
     "SF": {
       "queued": 10,
@@ -3321,12 +3323,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 322,
-    "catcher_tips": 254
+    "pitcher_tips": 328,
+    "catcher_tips": 255
   },
-  "updated_at": "2026-09-03T16:42:53",
+  "updated_at": "2026-09-03T17:49:40",
   "live": {
-    "pitches_done": 230,
+    "pitches_done": 250,
     "pitches_target": null
   },
   "heartbeat": true
