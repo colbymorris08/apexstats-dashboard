@@ -1,5 +1,5 @@
 {
-  "_audit": "2026-09-02 pitch-type re-extract from cached league sources",
+  "_audit": "2026-09-03 pitch-type exemplars + interview replacement",
   "verified_clips": {
     "burns_ff.mp4": {
       "md5": "4dbc6126c61a935bcd73c2abefd8953c",
@@ -11,16 +11,6 @@
       "bytes": 1633300,
       "frame": "media/deck/frames/burns_sl.jpg"
     },
-    "sasaki_ff.mp4": {
-      "md5": "64e571a77c3d6af227b6ac5ed2edbb4c",
-      "bytes": 1149273,
-      "frame": "media/deck/frames/sasaki_ff.jpg"
-    },
-    "sasaki_fs.mp4": {
-      "md5": "99fc3d478c14d0289e64d2746f55425b",
-      "bytes": 1188806,
-      "frame": "media/deck/frames/sasaki_fs.jpg"
-    },
     "choi_ch.mp4": {
       "md5": "bfc7a0d90f28d21bb096f11ee4030e46",
       "bytes": 4810684,
@@ -31,15 +21,25 @@
       "bytes": 4471004,
       "frame": "media/deck/frames/choi_si.jpg"
     },
-    "gulin_ff.mp4": {
-      "md5": "b52b1882ffdee024f1e6ecf17066b86e",
-      "bytes": 2179685,
-      "frame": "media/deck/frames/gulin_ff.jpg"
-    },
     "gulin_cu.mp4": {
       "md5": "62acce717e67b5a5898f9977ecb6efbf",
       "bytes": 1098711,
       "frame": "media/deck/frames/gulin_cu.jpg"
+    },
+    "gulin_ff.mp4": {
+      "md5": "1cdffcd82fb1d3cad936f13b3673e81d",
+      "bytes": 1413805,
+      "frame": "media/deck/frames/gulin_ff.jpg"
+    },
+    "hughes_ff.mp4": {
+      "md5": "e238ca3ee6f6e4efce09dac5ac61526b",
+      "bytes": 1379810,
+      "frame": "media/deck/frames/hughes_ff.jpg"
+    },
+    "hughes_sl.mp4": {
+      "md5": "9e7443092e4176f2f46810c9ae883b05",
+      "bytes": 2003608,
+      "frame": "media/deck/frames/hughes_sl.jpg"
     },
     "rios_si.mp4": {
       "md5": "aadb5a5061328b65fcde68e1bc5fba04",
@@ -51,15 +51,15 @@
       "bytes": 1340806,
       "frame": "media/deck/frames/rios_sl.jpg"
     },
-    "hughes_ff.mp4": {
-      "md5": "e238ca3ee6f6e4efce09dac5ac61526b",
-      "bytes": 1379810,
-      "frame": "media/deck/frames/hughes_ff.jpg"
+    "sasaki_ff.mp4": {
+      "md5": "706ffcd8ac96b6a3be51244105c7b353",
+      "bytes": 762945,
+      "frame": "media/deck/frames/sasaki_ff.jpg"
     },
-    "hughes_sl.mp4": {
-      "md5": "9e7443092e4176f2f46810c9ae883b05",
-      "bytes": 2003608,
-      "frame": "media/deck/frames/hughes_sl.jpg"
+    "sasaki_fs.mp4": {
+      "md5": "e60e1d17cd15ac9e3a1cd0276dabbeda",
+      "bytes": 370281,
+      "frame": "media/deck/frames/sasaki_fs.jpg"
     }
   }
 }

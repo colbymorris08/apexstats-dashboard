@@ -54,22 +54,22 @@
         "bytes": 1991753
       },
       "sasaki_ff.mp4": {
-        "md5": "9a9e5d57020d07cedfe178a3156e2173",
+        "md5": "848ce8ab50b8cf2e81f1b9e0023c47d2",
         "source_url": "https://www.youtube.com/watch?v=-H3FrzEZfDo",
-        "start_sec": 170,
-        "duration_sec": 6,
-        "identity_proof": "Chiba Lotte Marines #17 Roki Sasaki FF \u2014 PacificLeagueTV CF Apr 2023",
+        "start_sec": 166.2,
+        "duration_sec": 3.6,
+        "identity_proof": "Roki Sasaki RHP yellow-glove CF delivery (leg lift\u2192release) PacificLeagueTV \u2014 interview B-roll removed",
         "frame": "media/deck/frames/sasaki_ff.jpg",
-        "bytes": 1118091
+        "bytes": 539921
       },
       "sasaki_fs.mp4": {
-        "md5": "9eba0ecfe72efd701b133912dbef5724",
+        "md5": "74243f357fa5ae572e29b2a018443c28",
         "source_url": "https://www.youtube.com/watch?v=-H3FrzEZfDo",
-        "start_sec": 255,
-        "duration_sec": 6,
-        "identity_proof": "Lotte Sasaki forkball delivery sequence \u2014 ZOZO Marine Stadium NPB broadcast",
+        "start_sec": 142.9,
+        "duration_sec": 3.6,
+        "identity_proof": "Roki Sasaki #17 RHP CF delivery #2 (leg lift\u2192follow-through) \u2014 replaces interview/LHP imposters",
         "frame": "media/deck/frames/sasaki_fs.jpg",
-        "bytes": 1263609
+        "bytes": 543796
       },
       "choi_ch.mp4": {
         "md5": "bfc7a0d90f28d21bb096f11ee4030e46",
@@ -90,13 +90,13 @@
         "bytes": 4471004
       },
       "gulin_ff.mp4": {
-        "md5": "b52b1882ffdee024f1e6ecf17066b86e",
+        "md5": "1cdffcd82fb1d3cad936f13b3673e81d",
         "source_url": "https://www.youtube.com/watch?v=pTS-fYh_6rA",
-        "start_sec": 5,
-        "duration_sec": 6,
-        "identity_proof": "Uni-President Lions Gu Lin Ruei-Yang 156km/h FF \u2014 NOWNEWS CPBL",
+        "start_sec": 4,
+        "duration_sec": 4.0,
+        "identity_proof": "Gu Lin Ruei-Yang FF delivery \u2014 NOWNEWS (trimmed before news cutaway)",
         "frame": "media/deck/frames/gulin_ff.jpg",
-        "bytes": 2179685
+        "bytes": 1413805
       },
       "gulin_cu.mp4": {
         "md5": "62acce717e67b5a5898f9977ecb6efbf",

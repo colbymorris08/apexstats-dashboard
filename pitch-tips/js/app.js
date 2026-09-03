@@ -1560,7 +1560,7 @@ function formatSec(s) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260902p02";
+const VIDEO_CACHE_BUST = "20260903p01";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -1568,8 +1568,8 @@ const VERIFIED_IDENTITY_VIDEOS = {
 
 /** Content-distinct clip pairs for verified identity arms. */
 const SHOWCASE_UNIQUE_CLIPS = {
-  gabriel_moreno: ["media/video/moreno_ff.mp4", "media/video/moreno_ch.mp4"],
-  moreno: ["media/video/moreno_ff.mp4", "media/video/moreno_ch.mp4"],
+  gabriel_moreno: ["media/video/moreno_ch.mp4", "media/video/moreno_ff.mp4"],
+  moreno: ["media/video/moreno_ch.mp4", "media/video/moreno_ff.mp4"],
   chase_burns: ["media/video/burns_ff.mp4", "media/video/burns_sl.mp4"],
   burns: ["media/video/burns_ff.mp4", "media/video/burns_sl.mp4"],
   roki_sasaki: ["media/video/sasaki_ff.mp4", "media/video/sasaki_fs.mp4"],
@@ -2136,9 +2136,11 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   }
 
   if (isMoreno) {
-    // Catcher pre-pitch mitt target (~0.45s); before pitcher windup — not leg-lift apex (~2.4s).
-    tA = Math.min(Math.max(tA || 0.45, 0.40), 0.55);
-    tB = tA;
+    // Pre-pitch mitt set BEFORE windup. CH clip starts moving by ~0.15s; FF stays set longer.
+    if (tip?.anchor_a == null && tip?.tA == null) tA = 0.08;
+    if (tip?.anchor_b == null && tip?.tB == null) tB = 0.25;
+    tA = Math.min(Math.max(Number(tA) || 0.08, 0.02), 0.30);
+    tB = Math.min(Math.max(Number(tB) || 0.25, 0.02), 0.40);
   }
 
   if (/roupp/i.test(pid)) {
@@ -2327,7 +2329,8 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
 }
 
 function compareScrubWindowSpan(playerId) {
-  return /moreno/i.test(playerId || "") ? 4.0 : 1.5;
+  // Catcher pre-pitch mitt window is short; 4s span made Snap/apex land on mid-windup (~3.7s).
+  return /moreno/i.test(playerId || "") ? 1.2 : 1.5;
 }
 
 function wireSynchronizedDeliveryScrubber(player) {
@@ -2752,16 +2755,20 @@ function wireSynchronizedDeliveryScrubber(player) {
     syncMediaAndHUD();
   }
 
-  // Hook Dropdown & Pills
+  // Hook Dropdown & Pills (event delegation — rebuildTipSelectors replaces pill DOM)
   tipDropdown?.addEventListener("change", (e) => {
     applyTipSelection(Number(e.target.value) || 0);
   });
 
-  quickPills?.querySelectorAll(".sync-pill-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
+  if (quickPills && !quickPills.dataset.tipDelegationBound) {
+    quickPills.dataset.tipDelegationBound = "1";
+    quickPills.addEventListener("click", (e) => {
+      const btn = e.target?.closest?.(".sync-pill-btn");
+      if (!btn || !quickPills.contains(btn)) return;
+      e.preventDefault();
       applyTipSelection(Number(btn.dataset.tipIdx) || 0);
     });
-  });
+  }
 
   // Independent per-pane scrubbers
   function onScrubInputA() {

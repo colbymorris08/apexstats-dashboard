@@ -40,9 +40,9 @@ CLIPS: list[tuple[str, str, float, float, str]] = [
     ("burns_sl.mp4", "https://www.youtube.com/watch?v=tknSzW1XimU", 0.5, 6,
      "Chase Burns ~86 MPH breaking delivery — ESPN2 Greenville Regional"),
     # Roki Sasaki — Pacific League TV CF deliveries (avoid HERO INTERVIEW segments ~400s+)
-    ("sasaki_ff.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 167, 6,
+    ("sasaki_ff.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 166.2, 3.8,
      "Chiba Lotte Marines Roki Sasaki CF delivery — ZOZO 160km/h context Apr 2023"),
-    ("sasaki_fs.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 188.5, 6,
+    ("sasaki_fs.mp4", "https://www.youtube.com/watch?v=-H3FrzEZfDo", 142.9, 3.6,
      "Lotte Sasaki CF delivery #2 — yellow glove forkball sequence"),
     # Won-tae Choi — LG Twins KBO SPOTV direct camera
     ("choi_ch.mp4", "https://www.youtube.com/watch?v=HKL1zbTN2y0", 60, 6,
@@ -50,7 +50,7 @@ CLIPS: list[tuple[str, str, float, float, str]] = [
     ("choi_si.mp4", "https://www.youtube.com/watch?v=HKL1zbTN2y0", 180, 6,
      "LG Twins Choi Won-tae sinker/two-seam delivery same outing"),
     # Gu Lin Ruei-Yang — CPBL NOWNEWS broadcast (both pitches same verified outing)
-    ("gulin_ff.mp4", "https://www.youtube.com/watch?v=pTS-fYh_6rA", 5, 6,
+    ("gulin_ff.mp4", "https://www.youtube.com/watch?v=pTS-fYh_6rA", 4, 4,
      "Uni-President Lions Gu Lin Ruei-Yang 156km/h FF — NOWNEWS CPBL"),
     ("gulin_cu.mp4", "https://www.youtube.com/watch?v=pTS-fYh_6rA", 22, 6,
      "Gu Lin Ruei-Yang curve/breaking delivery — same CPBL broadcast CF"),
