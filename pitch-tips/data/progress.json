@@ -10,9 +10,9 @@
   "eta_hours": 493.8,
   "est_total_pitches": 177770,
   "current": {
-    "name": "Merrill Kelly",
+    "name": "Brandon Pfaadt",
     "team": "ARI",
-    "message": "pitcher [2/12] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [3/12] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "656288": {
@@ -336,24 +336,6 @@
       "publishable": true,
       "failed_checks": [],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/caleb_thielbar_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "694297": {
-      "name": "Brandon Pfaadt",
-      "team": "ARI",
-      "n_tracked": 253,
-      "holdout": 0.171,
-      "tips_ge_75": 4,
-      "catcher_tips": 2,
-      "legacy_tips_ge_75": 4,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brandon_pfaadt_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -1698,8 +1680,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/eduardo_rodriguez_poc",
       "schema": "rich_72col",
       "n_current_tracks": 304,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -3284,8 +3266,8 @@
     "ARI": {
       "queued": 12,
       "done": 13,
-      "pitcher_tips": 8,
-      "catcher_tips": 8
+      "pitcher_tips": 11,
+      "catcher_tips": 11
     },
     "COL": {
       "queued": 14,
@@ -3326,12 +3308,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 325,
-    "catcher_tips": 252
+    "pitcher_tips": 328,
+    "catcher_tips": 255
   },
-  "updated_at": "2026-09-04T09:36:36",
+  "updated_at": "2026-09-04T11:11:31",
   "live": {
-    "pitches_done": 270,
+    "pitches_done": 110,
     "pitches_target": null
   },
   "heartbeat": true
