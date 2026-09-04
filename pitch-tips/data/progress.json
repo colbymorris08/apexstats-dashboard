@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 66,
-  "remaining": 687,
+  "remaining": 686,
   "sec_per_pitch": 10.0,
   "eta_hours": 558.2,
   "est_total_pitches": 200970,
   "current": {
-    "name": "Jose Cabrera",
+    "name": "Gerardo Carrillo",
     "team": "ARI",
-    "message": "pitcher [10/12] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [11/12] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -425,6 +425,25 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brandyn_garcia_poc",
       "schema": "rich_72col",
       "n_current_tracks": 138,
+      "ready": true,
+      "state": "complete"
+    },
+    "703615": {
+      "name": "Jose Cabrera",
+      "team": "ARI",
+      "n_tracked": 64,
+      "holdout": 0.111,
+      "tips_ge_75": 4,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout",
+        "placement"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jose_cabrera_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 65,
       "ready": false,
       "state": "tracking"
     }
@@ -2615,9 +2634,9 @@
   "by_team": {
     "ARI": {
       "queued": 12,
-      "done": 12,
-      "pitcher_tips": 28,
-      "catcher_tips": 37
+      "done": 13,
+      "pitcher_tips": 32,
+      "catcher_tips": 39
     },
     "COL": {
       "queued": 14,
@@ -2658,12 +2677,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 66,
-    "catcher_tips": 69
+    "pitcher_tips": 70,
+    "catcher_tips": 71
   },
-  "updated_at": "2026-09-04T22:55:27",
+  "updated_at": "2026-09-04T23:30:01",
   "live": {
-    "pitches_done": 60,
+    "pitches_done": 170,
     "pitches_target": null
   },
   "heartbeat": true
