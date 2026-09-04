@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 66,
-  "remaining": 686,
+  "remaining": 685,
   "sec_per_pitch": 10.0,
   "eta_hours": 558.2,
   "est_total_pitches": 200970,
   "current": {
-    "name": "Gerardo Carrillo",
+    "name": "Justin Martinez",
     "team": "ARI",
-    "message": "pitcher [11/12] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [12/12] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -444,6 +444,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jose_cabrera_poc",
       "schema": "rich_72col",
       "n_current_tracks": 65,
+      "ready": true,
+      "state": "complete"
+    },
+    "672629": {
+      "name": "Gerardo Carrillo",
+      "team": "ARI",
+      "n_tracked": 178,
+      "holdout": 0.136,
+      "tips_ge_75": 5,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/gerardo_carrillo_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 204,
       "ready": false,
       "state": "tracking"
     }
@@ -2634,9 +2652,9 @@
   "by_team": {
     "ARI": {
       "queued": 12,
-      "done": 13,
-      "pitcher_tips": 32,
-      "catcher_tips": 39
+      "done": 14,
+      "pitcher_tips": 37,
+      "catcher_tips": 41
     },
     "COL": {
       "queued": 14,
@@ -2677,12 +2695,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 70,
-    "catcher_tips": 71
+    "pitcher_tips": 75,
+    "catcher_tips": 73
   },
-  "updated_at": "2026-09-04T23:30:01",
+  "updated_at": "2026-09-04T23:43:33",
   "live": {
-    "pitches_done": 170,
+    "pitches_done": 50,
     "pitches_target": null
   },
   "heartbeat": true
