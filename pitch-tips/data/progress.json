@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 66,
-  "remaining": 693,
+  "remaining": 692,
   "sec_per_pitch": 10.0,
   "eta_hours": 558.2,
   "est_total_pitches": 200970,
   "current": {
-    "name": "Kevin Ginkel",
+    "name": "Juan Morillo",
     "team": "ARI",
-    "message": "pitcher [4/12] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [5/12] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -320,6 +320,22 @@
       "n_current_tracks": 184,
       "ready": true,
       "state": "complete"
+    },
+    "656464": {
+      "name": "Kevin Ginkel",
+      "team": "ARI",
+      "n_tracked": 70,
+      "holdout": 0.4,
+      "tips_ge_75": 0,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kevin_ginkel_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 95,
+      "ready": false,
+      "state": "tracking"
     }
   },
   "failed": {
@@ -2508,9 +2524,9 @@
   "by_team": {
     "ARI": {
       "queued": 12,
-      "done": 6,
+      "done": 7,
       "pitcher_tips": 12,
-      "catcher_tips": 17
+      "catcher_tips": 19
     },
     "COL": {
       "queued": 14,
@@ -2552,11 +2568,11 @@
   "phases": null,
   "totals": {
     "pitcher_tips": 50,
-    "catcher_tips": 49
+    "catcher_tips": 51
   },
-  "updated_at": "2026-09-04T20:33:20",
+  "updated_at": "2026-09-04T20:57:24",
   "live": {
-    "pitches_done": 60,
+    "pitches_done": 110,
     "pitches_target": null
   },
   "heartbeat": true
