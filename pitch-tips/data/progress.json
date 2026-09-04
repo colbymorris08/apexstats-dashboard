@@ -10,9 +10,9 @@
   "eta_hours": 493.8,
   "est_total_pitches": 177770,
   "current": {
-    "name": "Eduardo Rodriguez",
+    "name": "Merrill Kelly",
     "team": "ARI",
-    "message": "pitcher [1/12] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [2/12] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "656288": {
@@ -1681,6 +1681,25 @@
       "n_current_tracks": 284,
       "ready": true,
       "state": "complete"
+    },
+    "593958": {
+      "name": "Eduardo Rodriguez",
+      "team": "ARI",
+      "n_tracked": 283,
+      "holdout": 0.222,
+      "tips_ge_75": 1,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 1,
+      "publishable": false,
+      "failed_checks": [
+        "holdout",
+        "placement"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/eduardo_rodriguez_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 304,
+      "ready": false,
+      "state": "tracking"
     }
   },
   "failed": {
@@ -3265,8 +3284,8 @@
     "ARI": {
       "queued": 12,
       "done": 13,
-      "pitcher_tips": 17,
-      "catcher_tips": 11
+      "pitcher_tips": 8,
+      "catcher_tips": 8
     },
     "COL": {
       "queued": 14,
@@ -3307,12 +3326,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 334,
-    "catcher_tips": 255
+    "pitcher_tips": 325,
+    "catcher_tips": 252
   },
-  "updated_at": "2026-09-03T22:58:41",
+  "updated_at": "2026-09-04T09:36:36",
   "live": {
-    "pitches_done": 280,
+    "pitches_done": 270,
     "pitches_target": null
   },
   "heartbeat": true
