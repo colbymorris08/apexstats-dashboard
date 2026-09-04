@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 66,
-  "remaining": 690,
+  "remaining": 689,
   "sec_per_pitch": 10.0,
   "eta_hours": 558.2,
   "est_total_pitches": 200970,
   "current": {
-    "name": "Jonathan Lo\u00e1isiga",
+    "name": "Dennis Santana",
     "team": "ARI",
-    "message": "pitcher [7/12] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [8/12] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -370,6 +370,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/taylor_clarke_poc",
       "schema": "rich_72col",
       "n_current_tracks": 135,
+      "ready": true,
+      "state": "complete"
+    },
+    "642528": {
+      "name": "Jonathan Lo\u00e1isiga",
+      "team": "ARI",
+      "n_tracked": 93,
+      "holdout": 0.222,
+      "tips_ge_75": 5,
+      "catcher_tips": 5,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jonathan_lo\u00e1isiga_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 134,
       "ready": false,
       "state": "tracking"
     }
@@ -2560,9 +2578,9 @@
   "by_team": {
     "ARI": {
       "queued": 12,
-      "done": 9,
-      "pitcher_tips": 15,
-      "catcher_tips": 23
+      "done": 10,
+      "pitcher_tips": 20,
+      "catcher_tips": 28
     },
     "COL": {
       "queued": 14,
@@ -2603,12 +2621,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 53,
-    "catcher_tips": 55
+    "pitcher_tips": 58,
+    "catcher_tips": 60
   },
-  "updated_at": "2026-09-04T21:46:02",
+  "updated_at": "2026-09-04T22:05:06",
   "live": {
-    "pitches_done": 90,
+    "pitches_done": 80,
     "pitches_target": null
   },
   "heartbeat": true
