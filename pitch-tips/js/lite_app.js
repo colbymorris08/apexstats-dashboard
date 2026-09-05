@@ -2220,6 +2220,33 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/gordon_${mapped}${sitSuffix}.mp4`;
   }
 
+  // Enterprise arms with published tip1 (+ situational) exemplars on main
+  const enterprisePrefix = [
+    ["merrill_kelly", "kelly"],
+    ["kelly", "kelly"],
+    ["robbie_ray", "ray"],
+    ["buehler", "buehler"],
+    ["walker_buehler", "buehler"],
+    ["vasquez", "vasquez"],
+    ["randy_vasquez", "vasquez"],
+    ["king", "king"],
+    ["michael_king", "king"],
+    ["matt_festa", "festa"],
+    ["festa", "festa"],
+    ["blake_snell", "snell"],
+    ["snell", "snell"],
+    ["evan_phillips", "phillips"],
+    ["phillips", "phillips"],
+    ["brock_stewart", "stewart"],
+    ["stewart", "stewart"],
+  ];
+  for (const [key, prefix] of enterprisePrefix) {
+    if (normId === key || normId.includes(key)) {
+      const pCode = extractPitchCode(pitchType, prefix);
+      return `media/video/${prefix}_${pCode}${sitSuffix}.mp4`;
+    }
+  }
+
   if (defaultFallback && (defaultFallback.includes(normId) || defaultFallback.includes(playerId))) {
     return defaultFallback;
   }
