@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 66,
-  "remaining": 685,
+  "remaining": 684,
   "sec_per_pitch": 10.0,
-  "eta_hours": 558.2,
-  "est_total_pitches": 200970,
+  "eta_hours": 551.0,
+  "est_total_pitches": 198360,
   "current": {
-    "name": "Justin Martinez",
-    "team": "ARI",
-    "message": "pitcher [12/12] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Tomoyuki Sugano",
+    "team": "COL",
+    "message": "pitcher [1/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -462,8 +462,26 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/gerardo_carrillo_poc",
       "schema": "rich_72col",
       "n_current_tracks": 204,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
+    },
+    "679885": {
+      "name": "Justin Martinez",
+      "team": "ARI",
+      "n_tracked": 58,
+      "holdout": 0.333,
+      "tips_ge_75": 5,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/justin_martinez_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 80,
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -2652,9 +2670,9 @@
   "by_team": {
     "ARI": {
       "queued": 12,
-      "done": 14,
-      "pitcher_tips": 37,
-      "catcher_tips": 41
+      "done": 15,
+      "pitcher_tips": 42,
+      "catcher_tips": 44
     },
     "COL": {
       "queued": 14,
@@ -2695,12 +2713,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 75,
-    "catcher_tips": 73
+    "pitcher_tips": 80,
+    "catcher_tips": 76
   },
-  "updated_at": "2026-09-04T23:43:33",
+  "updated_at": "2026-09-06T00:35:00",
   "live": {
-    "pitches_done": 50,
+    "pitches_done": 277,
     "pitches_target": null
   },
   "heartbeat": true
