@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 66,
-  "remaining": 674,
+  "remaining": 673,
   "sec_per_pitch": 10.0,
   "eta_hours": 551.0,
   "est_total_pitches": 198360,
   "current": {
-    "name": "Blas Casta\u00f1o",
+    "name": "Nick Frasso",
     "team": "COL",
-    "message": "pitcher [11/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [12/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -660,6 +660,25 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jordan_romano_poc",
       "schema": "rich_72col",
       "n_current_tracks": 127,
+      "ready": false,
+      "state": "tracking"
+    },
+    "680604": {
+      "name": "Blas Casta\u00f1o",
+      "team": "COL",
+      "n_tracked": 19,
+      "holdout": 0.2,
+      "tips_ge_75": 8,
+      "catcher_tips": 1,
+      "legacy_tips_ge_75": 8,
+      "publishable": false,
+      "failed_checks": [
+        "holdout",
+        "volume"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blas_casta\u00f1o_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 25,
       "ready": false,
       "state": "tracking"
     }
@@ -2856,9 +2875,9 @@
     },
     "COL": {
       "queued": 14,
-      "done": 10,
-      "pitcher_tips": 42,
-      "catcher_tips": 24
+      "done": 11,
+      "pitcher_tips": 50,
+      "catcher_tips": 25
     },
     "LAD": {
       "queued": 15,
@@ -2893,12 +2912,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 122,
-    "catcher_tips": 100
+    "pitcher_tips": 130,
+    "catcher_tips": 101
   },
-  "updated_at": "2026-09-06T05:11:26",
+  "updated_at": "2026-09-06T05:31:30",
   "live": {
-    "pitches_done": 10,
+    "pitches_done": 120,
     "pitches_target": null
   },
   "heartbeat": true
