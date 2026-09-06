@@ -167,10 +167,10 @@
     "publish_min_calibrated_accuracy": 0.75,
     "provenance": {
       "rule": "Pitcher and Catcher CV Detected Movement Leads (≥75% signal floor).",
-      "publishedPlayers": 50,
+      "publishedPlayers": 51,
       "publishedCatchers": 11,
-      "publishedTips": 212,
-      "publishedCatcherTips": 151
+      "publishedTips": 220,
+      "publishedCatcherTips": 152
     },
     "tierRules": {
       "precisionAlwaysShownWithBaseRate": true,
@@ -2356,6 +2356,948 @@
         "tipSplitBacksTips": true,
         "backedTips": 2,
         "backedCatcherTips": 4
+      }
+    },
+    "blas_casta_o": {
+      "id": "blas_casta_o",
+      "name": "Blas Castaño",
+      "teamId": "unassigned",
+      "throws": "R",
+      "role": "SP",
+      "picked": true,
+      "pickConfidence": 0.2,
+      "tier": "watch",
+      "pitchesModeled": 19,
+      "holdoutAccuracy": 0.2,
+      "summary": "Savant CF PoC: 19 pitches / 1 games. 8 pitcher leads · 1 catcher setup leads (≥75% detected movement separation floor).",
+      "contextCoverage": {
+        "runner_bucket": {
+          "1b": 7,
+          "second_any": 6,
+          "3b": 6
+        },
+        "batter_tag": {
+          "rhh": 10,
+          "lhh": 9
+        },
+        "delivery": {
+          "stretch": 19
+        },
+        "runner_exact": {
+          "1b": 7,
+          "3b": 6,
+          "12": 4,
+          "2b": 2
+        }
+      },
+      "tips": [
+        {
+          "id": "disc-all-lhh-CH-glove_vs_belt_mean",
+          "title": "CH discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+CH"
+          },
+          "lookFor": "On Changeup (CH), glove sits 2 to 3 inches lower below belt seam before leg lift begins vs locked at mid-chest on rest of arsenal.",
+          "predicts": "CH",
+          "confidence": 1.0,
+          "precision": 1.0,
+          "feature": "glove_vs_belt_mean",
+          "threshold": -0.07313811533276773,
+          "high_means_type": false,
+          "n": 9,
+          "nType": 1,
+          "baseline": 0.111,
+          "lift": 9.01,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-all-all-CH-glove_flare_std",
+          "title": "CH discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+CH"
+          },
+          "lookFor": "On Changeup (CH), glove pocket angle is locked rigid from first touch vs flexing during grip dig on rest of arsenal.",
+          "predicts": "CH",
+          "confidence": 0.947,
+          "precision": 0.5,
+          "feature": "glove_flare_std",
+          "threshold": 0.012578965828654178,
+          "high_means_type": false,
+          "n": 19,
+          "nType": 1,
+          "baseline": 0.053,
+          "lift": 17.87,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-lhh-SI-glove_flare_mean",
+          "title": "SI discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+SI"
+          },
+          "lookFor": "On 2-Seam Sinker (SI), glove pocket flares wide outward exposing inner laces vs tightly closed mitt parallel to torso on rest of arsenal.",
+          "predicts": "SI",
+          "confidence": 0.889,
+          "precision": 1.0,
+          "feature": "glove_flare_mean",
+          "threshold": -0.008471863888317567,
+          "high_means_type": true,
+          "n": 9,
+          "nType": 4,
+          "baseline": 0.444,
+          "lift": 2.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-all-all-FC-glove_flare_mean",
+          "title": "FC discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+FC"
+          },
+          "lookFor": "On Cutter (FC), glove is clamped flat and tight against sternum vs flared rim on rest of arsenal.",
+          "predicts": "FC",
+          "confidence": 0.842,
+          "precision": 0.4,
+          "feature": "glove_flare_mean",
+          "threshold": -0.01392172618564753,
+          "high_means_type": false,
+          "n": 19,
+          "nType": 2,
+          "baseline": 0.105,
+          "lift": 8.02,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FC",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-rhh-ST-wrist_speed_mean",
+          "title": "ST discernable [vs righties]",
+          "angle": "CF",
+          "context": [
+            "vs righties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+rhh+ST"
+          },
+          "lookFor": "On Sweeper (ST), hands and wrist remain completely quiet and still at set vs wrist micro-movement on rest of arsenal.",
+          "predicts": "ST",
+          "confidence": 0.8,
+          "precision": 0.667,
+          "feature": "wrist_speed_mean",
+          "threshold": 0.08571696837114438,
+          "high_means_type": false,
+          "n": 10,
+          "nType": 4,
+          "baseline": 0.4,
+          "lift": 2.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "ST",
+          "situationId": "all|rhh",
+          "situationLabel": "vs righties"
+        },
+        {
+          "id": "disc-all-all-FF-wrist_speed_mean",
+          "title": "FF discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), active wrist micro-movement is visible at glove collar vs motionless hands on rest of arsenal.",
+          "predicts": "FF",
+          "confidence": 0.789,
+          "precision": 0.5,
+          "feature": "wrist_speed_mean",
+          "threshold": 0.07514280368994622,
+          "high_means_type": true,
+          "n": 19,
+          "nType": 4,
+          "baseline": 0.211,
+          "lift": 3.74,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-lhh-FF-glove_flare_mean",
+          "title": "FF discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), glove is clamped flat and tight against sternum vs flared rim on rest of arsenal.",
+          "predicts": "FF",
+          "confidence": 0.778,
+          "precision": 0.5,
+          "feature": "glove_flare_mean",
+          "threshold": -0.01345834251924546,
+          "high_means_type": false,
+          "n": 9,
+          "nType": 2,
+          "baseline": 0.222,
+          "lift": 3.5,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-all-lhh-FC-glove_vs_belt_std",
+          "title": "FC discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+FC"
+          },
+          "lookFor": "On Cutter (FC), glove visibly micro-bobbles vertically at set position while securing grip vs motionless hands on rest of arsenal.",
+          "predicts": "FC",
+          "confidence": 0.778,
+          "precision": 0.5,
+          "feature": "glove_vs_belt_std",
+          "threshold": 0.05298460608604043,
+          "high_means_type": true,
+          "n": 9,
+          "nType": 2,
+          "baseline": 0.222,
+          "lift": 3.5,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FC",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        }
+      ],
+      "topLeads": [
+        {
+          "id": "disc-all-lhh-CH-glove_vs_belt_mean",
+          "title": "CH discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+CH"
+          },
+          "lookFor": "On Changeup (CH), glove sits 2 to 3 inches lower below belt seam before leg lift begins vs locked at mid-chest on rest of arsenal.",
+          "predicts": "CH",
+          "confidence": 1.0,
+          "precision": 1.0,
+          "feature": "glove_vs_belt_mean",
+          "threshold": -0.07313811533276773,
+          "high_means_type": false,
+          "n": 9,
+          "nType": 1,
+          "baseline": 0.111,
+          "lift": 9.01,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-all-all-CH-glove_flare_std",
+          "title": "CH discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+CH"
+          },
+          "lookFor": "On Changeup (CH), glove pocket angle is locked rigid from first touch vs flexing during grip dig on rest of arsenal.",
+          "predicts": "CH",
+          "confidence": 0.947,
+          "precision": 0.5,
+          "feature": "glove_flare_std",
+          "threshold": 0.012578965828654178,
+          "high_means_type": false,
+          "n": 19,
+          "nType": 1,
+          "baseline": 0.053,
+          "lift": 17.87,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-lhh-SI-glove_flare_mean",
+          "title": "SI discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+SI"
+          },
+          "lookFor": "On 2-Seam Sinker (SI), glove pocket flares wide outward exposing inner laces vs tightly closed mitt parallel to torso on rest of arsenal.",
+          "predicts": "SI",
+          "confidence": 0.889,
+          "precision": 1.0,
+          "feature": "glove_flare_mean",
+          "threshold": -0.008471863888317567,
+          "high_means_type": true,
+          "n": 9,
+          "nType": 4,
+          "baseline": 0.444,
+          "lift": 2.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-all-all-FC-glove_flare_mean",
+          "title": "FC discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+FC"
+          },
+          "lookFor": "On Cutter (FC), glove is clamped flat and tight against sternum vs flared rim on rest of arsenal.",
+          "predicts": "FC",
+          "confidence": 0.842,
+          "precision": 0.4,
+          "feature": "glove_flare_mean",
+          "threshold": -0.01392172618564753,
+          "high_means_type": false,
+          "n": 19,
+          "nType": 2,
+          "baseline": 0.105,
+          "lift": 8.02,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FC",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-rhh-ST-wrist_speed_mean",
+          "title": "ST discernable [vs righties]",
+          "angle": "CF",
+          "context": [
+            "vs righties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+rhh+ST"
+          },
+          "lookFor": "On Sweeper (ST), hands and wrist remain completely quiet and still at set vs wrist micro-movement on rest of arsenal.",
+          "predicts": "ST",
+          "confidence": 0.8,
+          "precision": 0.667,
+          "feature": "wrist_speed_mean",
+          "threshold": 0.08571696837114438,
+          "high_means_type": false,
+          "n": 10,
+          "nType": 4,
+          "baseline": 0.4,
+          "lift": 2.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "ST",
+          "situationId": "all|rhh",
+          "situationLabel": "vs righties"
+        },
+        {
+          "id": "disc-all-all-FF-wrist_speed_mean",
+          "title": "FF discernable [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+all+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), active wrist micro-movement is visible at glove collar vs motionless hands on rest of arsenal.",
+          "predicts": "FF",
+          "confidence": 0.789,
+          "precision": 0.5,
+          "feature": "wrist_speed_mean",
+          "threshold": 0.07514280368994622,
+          "high_means_type": true,
+          "n": 19,
+          "nType": 4,
+          "baseline": 0.211,
+          "lift": 3.74,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        },
+        {
+          "id": "disc-all-lhh-FF-glove_flare_mean",
+          "title": "FF discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), glove is clamped flat and tight against sternum vs flared rim on rest of arsenal.",
+          "predicts": "FF",
+          "confidence": 0.778,
+          "precision": 0.5,
+          "feature": "glove_flare_mean",
+          "threshold": -0.01345834251924546,
+          "high_means_type": false,
+          "n": 9,
+          "nType": 2,
+          "baseline": 0.222,
+          "lift": 3.5,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-all-lhh-FC-glove_vs_belt_std",
+          "title": "FC discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+FC"
+          },
+          "lookFor": "On Cutter (FC), glove visibly micro-bobbles vertically at set position while securing grip vs motionless hands on rest of arsenal.",
+          "predicts": "FC",
+          "confidence": 0.778,
+          "precision": 0.5,
+          "feature": "glove_vs_belt_std",
+          "threshold": 0.05298460608604043,
+          "high_means_type": true,
+          "n": 9,
+          "nType": 2,
+          "baseline": 0.222,
+          "lift": 3.5,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FC",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        }
+      ],
+      "catcherTips": [
+        {
+          "id": "catch-all-all-SI-catcher_glove_x_mean",
+          "title": "SI via Catcher Setup [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+all+SI"
+          },
+          "lookFor": "On 2-Seam Sinker (SI), catcher shifts target toward arm-side border vs centered target on rest of arsenal.",
+          "predicts": "SI",
+          "confidence": 0.75,
+          "precision": 1.0,
+          "feature": "catcher_glove_x_mean",
+          "threshold": 0.38005142261904756,
+          "high_means_type": false,
+          "n": 19,
+          "nType": 4,
+          "baseline": 0.5,
+          "lift": 1.5,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "all|all",
+          "situationLabel": "all situations"
+        }
+      ],
+      "tipFloor": 0.75,
+      "tipsSource": "empirical_detection_75",
+      "featureWindow": null,
+      "tipValidation": "empirical_movement_discrimination",
+      "situationCoverage": {
+        "arsenal": [
+          "SI",
+          "FF",
+          "ST",
+          "FC",
+          "CH"
+        ],
+        "arsenal_n": 5,
+        "tip_floor": 0.75,
+        "validation": null,
+        "n_tips_ge_floor": 8,
+        "candidates_train": null,
+        "n_failed_holdout": null,
+        "best_situation": null,
+        "situations": [
+          {
+            "id": "none|lhh",
+            "label": "bases empty, LHH up",
+            "runner_bucket": "none",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "none|rhh",
+            "label": "bases empty, RHH up",
+            "runner_bucket": "none",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|lhh",
+            "label": "first only, LHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "lhh",
+            "n": 3,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|rhh",
+            "label": "first only, RHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "rhh",
+            "n": 4,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "second_any|lhh",
+            "label": "any w/ runner on 2nd, LHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "lhh",
+            "n": 6,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "second_any|rhh",
+            "label": "any w/ runner on 2nd, RHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|lhh",
+            "label": "third only, LHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|rhh",
+            "label": "third only, RHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "rhh",
+            "n": 4,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          }
+        ]
+      },
+      "catcherCoverage": {
+        "arsenal": [
+          "SI",
+          "FF",
+          "ST",
+          "FC",
+          "CH"
+        ],
+        "arsenal_n": 5,
+        "tip_floor": 0.75,
+        "validation": null,
+        "n_tips_ge_floor": 1,
+        "candidates_train": null,
+        "n_failed_holdout": null,
+        "best_situation": null,
+        "situations": [
+          {
+            "id": "none|lhh",
+            "label": "bases empty, LHH up",
+            "runner_bucket": "none",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "none|rhh",
+            "label": "bases empty, RHH up",
+            "runner_bucket": "none",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|lhh",
+            "label": "first only, LHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "lhh",
+            "n": 3,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|rhh",
+            "label": "first only, RHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "rhh",
+            "n": 4,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "second_any|lhh",
+            "label": "any w/ runner on 2nd, LHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "lhh",
+            "n": 6,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "second_any|rhh",
+            "label": "any w/ runner on 2nd, RHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|lhh",
+            "label": "third only, LHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|rhh",
+            "label": "third only, RHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "rhh",
+            "n": 4,
+            "arsenal_n": 5,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 5",
+            "status": "insufficient_n",
+            "types": []
+          }
+        ]
+      },
+      "discernableSummary": {
+        "none|lhh": {
+          "label": "bases empty, LHH up",
+          "coverage": "0 of 5",
+          "discernable_types": [],
+          "n": 0
+        },
+        "none|rhh": {
+          "label": "bases empty, RHH up",
+          "coverage": "0 of 5",
+          "discernable_types": [],
+          "n": 0
+        },
+        "1b|lhh": {
+          "label": "first only, LHH up",
+          "coverage": "0 of 5",
+          "discernable_types": [],
+          "n": 3
+        },
+        "1b|rhh": {
+          "label": "first only, RHH up",
+          "coverage": "0 of 5",
+          "discernable_types": [],
+          "n": 4
+        },
+        "second_any|lhh": {
+          "label": "any w/ runner on 2nd, LHH up",
+          "coverage": "0 of 5",
+          "discernable_types": [],
+          "n": 6
+        },
+        "second_any|rhh": {
+          "label": "any w/ runner on 2nd, RHH up",
+          "coverage": "0 of 5",
+          "discernable_types": [],
+          "n": 0
+        },
+        "3b|lhh": {
+          "label": "third only, LHH up",
+          "coverage": "0 of 5",
+          "discernable_types": [],
+          "n": 0
+        },
+        "3b|rhh": {
+          "label": "third only, RHH up",
+          "coverage": "0 of 5",
+          "discernable_types": [],
+          "n": 4
+        }
+      },
+      "poc": true,
+      "pocLive": true,
+      "illustrative": false,
+      "camera": "CF_savant_proof_of_concept",
+      "provenance": {
+        "runDir": "runs/blas_castaño_poc",
+        "sanityGate": "pass",
+        "tipSplitBacksTips": true,
+        "backedTips": 8,
+        "backedCatcherTips": 1
       }
     },
     "brandon_pfaadt": {

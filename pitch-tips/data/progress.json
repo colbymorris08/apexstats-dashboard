@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 66,
-  "remaining": 675,
+  "remaining": 674,
   "sec_per_pitch": 10.0,
   "eta_hours": 551.0,
   "est_total_pitches": 198360,
   "current": {
-    "name": "Jordan Romano",
+    "name": "Blas Casta\u00f1o",
     "team": "COL",
-    "message": "pitcher [10/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [11/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -624,8 +624,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jimmy_herget_poc",
       "schema": "rich_72col",
       "n_current_tracks": 168,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     },
     "677955": {
       "name": "Jaden Hill",
@@ -642,6 +642,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jaden_hill_poc",
       "schema": "rich_72col",
       "n_current_tracks": 92,
+      "ready": true,
+      "state": "complete"
+    },
+    "605447": {
+      "name": "Jordan Romano",
+      "team": "COL",
+      "n_tracked": 120,
+      "holdout": 0.4,
+      "tips_ge_75": 3,
+      "catcher_tips": 1,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jordan_romano_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 127,
       "ready": false,
       "state": "tracking"
     }
@@ -2838,9 +2856,9 @@
     },
     "COL": {
       "queued": 14,
-      "done": 9,
-      "pitcher_tips": 39,
-      "catcher_tips": 23
+      "done": 10,
+      "pitcher_tips": 42,
+      "catcher_tips": 24
     },
     "LAD": {
       "queued": 15,
@@ -2875,12 +2893,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 119,
-    "catcher_tips": 99
+    "pitcher_tips": 122,
+    "catcher_tips": 100
   },
-  "updated_at": "2026-09-06T05:07:55",
+  "updated_at": "2026-09-06T05:11:26",
   "live": {
-    "pitches_done": 110,
+    "pitches_done": 10,
     "pitches_target": null
   },
   "heartbeat": true
