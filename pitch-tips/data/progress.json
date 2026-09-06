@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 66,
-  "remaining": 683,
+  "remaining": 682,
   "sec_per_pitch": 10.0,
   "eta_hours": 551.0,
   "est_total_pitches": 198360,
   "current": {
-    "name": "Ryan Feltner",
+    "name": "Tanner Gordon",
     "team": "COL",
-    "message": "pitcher [2/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [3/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -498,6 +498,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tomoyuki_sugano_poc",
       "schema": "rich_72col",
       "n_current_tracks": 309,
+      "ready": true,
+      "state": "complete"
+    },
+    "663372": {
+      "name": "Ryan Feltner",
+      "team": "COL",
+      "n_tracked": 250,
+      "holdout": 0.206,
+      "tips_ge_75": 9,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 9,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/ryan_feltner_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 289,
       "ready": false,
       "state": "tracking"
     }
@@ -2694,9 +2712,9 @@
     },
     "COL": {
       "queued": 14,
-      "done": 1,
-      "pitcher_tips": 3,
-      "catcher_tips": 2
+      "done": 2,
+      "pitcher_tips": 12,
+      "catcher_tips": 5
     },
     "LAD": {
       "queued": 15,
@@ -2731,12 +2749,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 83,
-    "catcher_tips": 78
+    "pitcher_tips": 92,
+    "catcher_tips": 81
   },
-  "updated_at": "2026-09-06T01:43:41",
+  "updated_at": "2026-09-06T02:24:51",
   "live": {
-    "pitches_done": 240,
+    "pitches_done": 190,
     "pitches_target": null
   },
   "heartbeat": true
