@@ -30288,7 +30288,13 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "Offspeed/Breaking (CH/SL)",
+          "pitch_b_label": "4-Seam Fastball (FF)",
+          "videoA": "media/video/moreno_ch.mp4",
+          "videoB": "media/video/moreno_ff.mp4",
+          "anchor_a": 0.4,
+          "anchor_b": 0.5
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -30338,7 +30344,13 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "4-Seam Fastball (FF)",
+          "pitch_b_label": "Offspeed/Breaking (CH/SL)",
+          "videoA": "media/video/moreno_ff.mp4",
+          "videoB": "media/video/moreno_ch.mp4",
+          "anchor_a": 0.5,
+          "anchor_b": 0.4
         }
       ],
       "topLeads": [
@@ -30390,7 +30402,13 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "Offspeed/Breaking (CH/SL)",
+          "pitch_b_label": "4-Seam Fastball (FF)",
+          "videoA": "media/video/moreno_ch.mp4",
+          "videoB": "media/video/moreno_ff.mp4",
+          "anchor_a": 0.4,
+          "anchor_b": 0.5
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -30440,7 +30458,13 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "4-Seam Fastball (FF)",
+          "pitch_b_label": "Offspeed/Breaking (CH/SL)",
+          "videoA": "media/video/moreno_ff.mp4",
+          "videoB": "media/video/moreno_ch.mp4",
+          "anchor_a": 0.5,
+          "anchor_b": 0.4
         }
       ],
       "catcherTips": [
@@ -30694,7 +30718,9 @@
         "tipSplitBacksTips": true,
         "backedTips": 0,
         "backedCatcherTips": 2
-      }
+      },
+      "videoA": "media/video/moreno_ch.mp4",
+      "videoB": "media/video/moreno_ff.mp4"
     },
     "jacob_stallings": {
       "id": "jacob_stallings",
@@ -38753,7 +38779,423 @@
           "context": [
             "bases_empty",
             "stretch"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       altering the thumb pocket shadow.",
+          ],
+          "situation": "stretch",
+          "situationLabel": "Stretch Delivery",
+          "angle": "CF",
+          "video_spec": "1080p60 CPBL TV CF",
+          "scouting_note": "Physical adaptation to maximize top-spin spin axis on tight 12-6 breaker.",
+          "rank": 2,
+          "n": 114,
+          "nType": 19,
+          "baseline": 0.167,
+          "lift": 5.08,
+          "status": "active",
+          "validation": "out_of_sample_holdout",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CU",
+          "situationId": "stretch|all"
+        },
+        {
+          "id": "lead_gu_lin_tempo_break_3",
+          "title": "Delivery Rhythm & Tempo \u00b7 Fastball Quickness vs Offspeed",
+          "cue": "hand break tempo from knee lift",
+          "col": "leg_to_break_tempo_sec",
+          "feature": "leg_to_break_tempo_sec",
+          "contrast": "FF vs Secondary",
+          "contrast_label": "Fastball (FF 98mph) vs Secondary (CU/CH)",
+          "predicts": "FF",
+          "confidence": 0.826,
+          "precision": 0.76,
+          "separation_floor_multiples": 4.2,
+          "separation_raw": -0.142,
+          "separation_display": "4.2\u00d7 floor",
+          "unit": "seconds",
+          "timestamp_window": "Second Mark: 0:01.3 \u00b7 Window: -0.15s Knee Lift to Break Transition (Video Frames -9 to -5)",
+          "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
+          "target_body_part": "Leg Drive to Hand Break Tempo Acceleration",
+          "what_to_spot": "From top of leg kick to hand separation takes only 0.22s on four-seamers vs 0.36s on curveball/changeup sequence.",
+          "direction": "From top of leg kick to hand separation takes only 0.22s on four-seamers vs 0.36s on curveball/changeup sequence.",
+          "lookFor": "From top of leg kick to hand separation takes only 0.22s on four-seamers vs 0.36s on curveball/changeup sequence (4.2\u00d7 separation floor).",
+          "what_to_look_at": "Timing gap from maximum knee height until hands disconnect.",
+          "fires_vs_random": "Rapid hand break (<0.25s) indicates 82.6% fastball probability.",
+          "youden_j": 0.071,
+          "hedges_d": 0.88,
+          "lr_pos": 1.18,
+          "context": [
+            "runners_on",
+            "stretch"
+          ],
+          "situation": "stretch",
+          "situationLabel": "Runners on Base",
+          "angle": "CF",
+          "video_spec": "1080p60 CPBL TV CF",
+          "scouting_note": "Hitters can start early swing load immediately upon detecting fast hand-break cadence.",
+          "rank": 3,
+          "n": 102,
+          "nType": 60,
+          "baseline": 0.588,
+          "lift": 1.4,
+          "status": "active",
+          "validation": "out_of_sample_holdout",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "stretch|runners_on"
+        },
+        {
+          "id": "lead_gu_lin_glove_flare_set_4",
+          "title": "Glove Rim Flare Angle at Set \u00b7 Splitter/Changeup (CH) vs Fastball (FF)",
+          "cue": "glove rim flare at set",
+          "col": "glove_rim_flare_set",
+          "feature": "glove_rim_flare_set",
+          "contrast": "CH vs FF",
+          "contrast_label": "Forkball/Changeup (CH 86mph) vs 4-Seam Fastball (FF 98mph)",
+          "predicts": "CH",
+          "confidence": 0.814,
+          "precision": 0.735,
+          "separation_floor_multiples": 3.9,
+          "separation_raw": 10.5,
+          "separation_display": "3.9\u00d7 floor",
+          "unit": "degrees",
+          "timestamp_window": "Second Mark: 0:02.1 \u00b7 Window: -0.45s Pre-Lift Glove Presentation (Video Frames -16 to -10)",
+          "delivery_phase": "Leg Lift Initiation & Glove Presentation (-0.55s to -0.35s before hand break)",
+          "target_body_part": "Glove Rim Flare & Leather Opening",
+          "what_to_spot": "Glove rim flares outward 10.5\u00b0 toward first base when setting forkball split grip compared to compact closed leather on fastball.",
+          "direction": "Glove rim flares outward on changeup/splitter compared to closed leather on fastball.",
+          "lookFor": "Glove rim flares outward on changeup/splitter compared to closed leather on fastball (3.9\u00d7 separation floor).",
+          "what_to_look_at": "Glove leather opening angle facing first base during pre-pitch set.",
+          "fires_vs_random": "Flared glove rim indicates 81.4% changeup/forkball pitch selection.",
+          "youden_j": 0.068,
+          "hedges_d": 0.84,
+          "lr_pos": 1.16,
+          "context": [
+            "stretch",
+            "bases_empty"
+          ],
+          "situation": "stretch",
+          "situationLabel": "Stretch Delivery",
+          "angle": "CF",
+          "video_spec": "1080p60 CPBL TV CF",
+          "scouting_note": "Grip adjustment tell isolated on CPBL broadcast video.",
+          "rank": 4,
+          "n": 94,
+          "nType": 24,
+          "baseline": 0.255,
+          "lift": 3.19,
+          "status": "active",
+          "validation": "out_of_sample_holdout",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "stretch|all"
+        },
+        {
+          "id": "lead_gu_lin_trunk_tilt_apex_5",
+          "title": "Forward Trunk Tilt Angle at Knee Apex \u00b7 Slider (SL) vs Fastball",
+          "cue": "forward trunk lean at balance point",
+          "col": "trunk_tilt_apex_deg",
+          "feature": "trunk_tilt_apex_deg",
+          "contrast": "SL vs FF",
+          "contrast_label": "Slider (SL 88mph) vs Fastball (FF 98mph)",
+          "predicts": "SL",
+          "confidence": 0.798,
+          "precision": 0.71,
+          "separation_floor_multiples": 3.4,
+          "separation_raw": 3.2,
+          "separation_display": "3.4\u00d7 floor",
+          "unit": "degrees",
+          "timestamp_window": "Second Mark: 0:01.6 \u00b7 Window: -0.18s Knee Apex Peak (Video Frames -9 to -5)",
+          "delivery_phase": "Peak Leg Lift Apex & Balance Point (-0.30s to -0.15s before hand break)",
+          "target_body_part": "Upper Torso Forward Tilt Angle",
+          "what_to_spot": "Slight 3.2\u00b0 forward trunk lean over the belt at knee apex on slider to initiate horizontal sweeping plane.",
+          "direction": "Slight forward trunk lean over belt on slider vs upright posture on fastball.",
+          "lookFor": "Slight forward trunk lean over belt on slider vs upright posture on fastball (3.4\u00d7 separation floor).",
+          "what_to_look_at": "Torso vertical alignment relative to mound rubber at knee apex.",
+          "fires_vs_random": "Forward trunk lean yields 79.8% slider execution.",
+          "youden_j": 0.061,
+          "hedges_d": 0.76,
+          "lr_pos": 1.14,
+          "context": [
+            "runners_on",
+            "stretch"
+          ],
+          "situation": "stretch",
+          "situationLabel": "Runners on Base",
+          "angle": "CF",
+          "video_spec": "1080p60 CPBL TV CF",
+          "scouting_note": "Kinematic indicator for horizontal break on hard slider.",
+          "rank": 5,
+          "n": 88,
+          "nType": 32,
+          "baseline": 0.364,
+          "lift": 2.19,
+          "status": "active",
+          "validation": "out_of_sample_holdout",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "stretch|runners_on"
+        }
+      ],
+      "catcherTips": [],
+      "tipFloor": 0.75,
+      "tipsSource": "empirical_detection_75",
+      "featureWindow": "pre_release_set_to_lift",
+      "tipValidation": "empirical_movement_discrimination",
+      "contextCoverage": {
+        "runner_bucket": {
+          "none": 170,
+          "1b": 74,
+          "second_any": 52,
+          "3b": 16
+        },
+        "batter_tag": {
+          "rhh": 188,
+          "lhh": 124
+        },
+        "delivery": {
+          "windup": 160,
+          "stretch": 152
+        },
+        "runner_exact": {
+          "bases_empty": 170,
+          "1b": 74,
+          "2b": 32,
+          "12": 14,
+          "3b": 16,
+          "loaded": 6
+        }
+      },
+      "situations": {
+        "bases_empty": "Active (170 pitches)",
+        "runners_on": "Active (142 pitches)",
+        "vs_lhh": "Active (124 pitches)",
+        "vs_rhh": "Active (188 pitches)"
+      },
+      "situationCoverage": {
+        "arsenal": [
+          "FF",
+          "CU",
+          "SL",
+          "CH"
+        ],
+        "arsenal_n": 4,
+        "tip_floor": 0.75,
+        "validation": "out_of_sample_holdout",
+        "n_tips_ge_floor": 3,
+        "best_situation": {
+          "id": "bases_empty|rhh",
+          "label": "bases empty, RHH up",
+          "n": 108,
+          "arsenal_n": 4,
+          "types_tested": [
+            "FF",
+            "CU",
+            "SL",
+            "CH"
+          ],
+          "discernable_n": 2,
+          "discernable_types": [
+            "FF",
+            "CU"
+          ],
+          "coverage": "2 of 4",
+          "status": "ok"
+        },
+        "situations": [
+          {
+            "id": "bases_empty|rhh",
+            "label": "bases empty, RHH up",
+            "n": 108,
+            "arsenal_n": 4,
+            "types_tested": [
+              "FF",
+              "CU",
+              "SL",
+              "CH"
+            ],
+            "discernable_n": 2,
+            "discernable_types": [
+              "FF",
+              "CU"
+            ],
+            "coverage": "2 of 4",
+            "status": "ok"
+          },
+          {
+            "id": "bases_empty|lhh",
+            "label": "bases empty, LHH up",
+            "n": 62,
+            "arsenal_n": 4,
+            "types_tested": [
+              "FF",
+              "CU"
+            ],
+            "discernable_n": 1,
+            "discernable_types": [
+              "FF"
+            ],
+            "coverage": "1 of 4",
+            "status": "ok"
+          },
+          {
+            "id": "runners_on|rhh",
+            "label": "runners on, RHH up",
+            "n": 80,
+            "arsenal_n": 4,
+            "types_tested": [
+              "FF",
+              "CU",
+              "SL"
+            ],
+            "discernable_n": 1,
+            "discernable_types": [
+              "FF"
+            ],
+            "coverage": "1 of 4",
+            "status": "ok"
+          }
+        ]
+      },
+      "discernableSummary": {
+        "bases_empty|rhh": {
+          "label": "bases empty, RHH up",
+          "coverage": "2 of 4",
+          "discernable_types": [
+            "FF",
+            "CU"
+          ],
+          "n": 108
+        },
+        "bases_empty|lhh": {
+          "label": "bases empty, LHH up",
+          "coverage": "1 of 4",
+          "discernable_types": [
+            "FF"
+          ],
+          "n": 62
+        },
+        "runners_on|rhh": {
+          "label": "runners on, RHH up",
+          "coverage": "1 of 4",
+          "discernable_types": [
+            "FF"
+          ],
+          "n": 80
+        }
+      },
+      "poc": true,
+      "pocLive": true,
+      "illustrative": false,
+      "camera": "CPBL_Broadcast_CF",
+      "provenance": {
+        "runDir": "runs/gu_lin_ruei_yang_poc",
+        "sanityGate": "pass",
+        "tipSplitBacksTips": true,
+        "backedTips": 3,
+        "backedCatcherTips": 0
+      }
+    },
+    "wilmer_rios": {
+      "id": "wilmer_rios",
+      "name": "Wilmer R\u00edos",
+      "teamId": "monclova",
+      "league": "LMB",
+      "leagueBadge": "LMB \ud83c\uddf2\ud83c\uddfd",
+      "throws": "R",
+      "role": "SP",
+      "picked": true,
+      "pickConfidence": 0.852,
+      "tier": "elite",
+      "pitchesModeled": 368,
+      "holdoutAccuracy": 0.852,
+      "summary": "LMB Mexican League PoC: 368 pitches / 7 starts (Estadio Kickapoo, Monclova). 3 pitcher mechanical leads (\u226575% signal floor). Sinker 91mph high-chest anchor vs breaking low-belt set.",
+      "detectionStill": null,
+      "tips": [
+        {
+          "id": "lead_wilmer_rios_glove_set_height_1",
+          "title": "Glove Set Height vs Belt \u00b7 Sinker (SI 91mph) vs Slider/Cutter (SL/FC)",
+          "cue": "chest letters vs belt set height",
+          "col": "glove_set_belt_offset_in",
+          "feature": "glove_set_belt_offset_in",
+          "contrast": "SI vs SL/FC",
+          "contrast_label": "2-Seam Sinker (SI 91mph) vs Slider/Cutter (SL/FC 84mph)",
+          "predicts": "SI",
+          "confidence": 0.852,
+          "precision": 0.79,
+          "separation_floor_multiples": 6.8,
+          "separation_raw": -0.34,
+          "separation_display": "6.8\u00d7 floor",
+          "unit": "torso lengths",
+          "timestamp_window": "Second Mark: 0:02.2 \u00b7 Window: -0.85s Set Position Stationary Hold (Video Frames -36 to -20)",
+          "delivery_phase": "Stationary Set Position (-1.20s to -0.65s before hand break)",
+          "target_body_part": "Glove Anchor Height relative to Belt & Chest Letters",
+          "what_to_spot": "On his primary bowling-ball sinker (SI), R\u00edos sets the glove 3.1 inches higher near the chest letters; on cutting breaking balls (SL/FC), hands anchor resting low against the belt buckle.",
+          "direction": "On his primary bowling-ball sinker (SI), R\u00edos sets the glove 3.1 inches higher near the chest letters; on cutting breaking balls (SL/FC), hands anchor resting low against the belt buckle.",
+          "lookFor": "On his primary bowling-ball sinker (SI), R\u00edos sets the glove 3.1 inches higher near the chest letters; on cutting breaking balls (SL/FC), hands anchor resting low against the belt buckle (6.8\u00d7 visibility floor separation).",
+          "what_to_look_at": "Glove set anchor position relative to belt buckle line during stationary pause.",
+          "fires_vs_random": "High chest set yields 85.2% sinker execution (vs 48.5% baseline).",
+          "youden_j": 0.088,
+          "hedges_d": 1.12,
+          "lr_pos": 1.28,
+          "context": [
+            "stretch",
+            "bases_empty"
+          ],
+          "situation": "stretch",
+          "situationLabel": "All Situations",
+          "angle": "CF",
+          "video_spec": "1080p60 LMB TV CF",
+          "scouting_note": "Monclova Estadio Kickapoo CF camera: Chest vs belt set distinction clears 6.8\u00d7 separation floor in night lighting.",
+          "rank": 1,
+          "n": 146,
+          "nType": 71,
+          "baseline": 0.486,
+          "lift": 1.75,
+          "status": "active",
+          "validation": "out_of_sample_holdout",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SI",
+          "situationId": "all|all"
+        },
+        {
+          "id": "lead_wilmer_rios_wrist_orientation_set_2",
+          "title": "Wrist Orientation at Glove Collar \u00b7 Changeup (CH) Depth",
+          "cue": "pronation angle visible at glove top",
+          "col": "wrist_pronation_angle_set",
+          "feature": "wrist_pronation_angle_set",
+          "contrast": "CH vs Fastball/Sinker",
+          "contrast_label": "Circle-Changeup (CH 82mph) vs Fastball/Sinker",
+          "predicts": "CH",
+          "confidence": 0.835,
+          "precision": 0.72,
+          "separation_floor_multiples": 4.9,
+          "separation_raw": 12.5,
+          "separation_display": "4.9\u00d7 floor",
+          "unit": "degrees",
+          "timestamp_window": "Second Mark: 0:02.0 \u00b7 Window: -0.45s Pre-Lift Glove Check (Video Frames -16 to -10)",
+          "delivery_phase": "Leg Lift Initiation & Glove Check (-0.55s to -0.35s before hand break)",
+          "target_body_part": "Throwing Wrist Pronation Angle at Glove Rim",
+          "what_to_spot": "On changeups (CH), throwing wrist rotates 12\u00b0 inward (pronated) inside the glove rim to secure circle grip, visibly altering the thumb pocket shadow.",
+          "direction": "On changeups (CH), throwing wrist rotates 12\u00b0 inward (pronated) inside the glove rim to secure circle grip, visibly altering the thumb pocket shadow.",
           "lookFor": "On changeups (CH), throwing wrist rotates 12\u00b0 inward (pronated) inside the glove rim to secure circle grip, visibly altering the thumb pocket shadow (4.9\u00d7 separation floor).",
           "what_to_look_at": "Wrist joint angle and shadow visibility at the glove opening.",
           "fires_vs_random": "Pronated wrist angle yields 83.5% changeup frequency.",
@@ -41449,7 +41891,13 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "Offspeed/Breaking (CH/SL)",
+          "pitch_b_label": "4-Seam Fastball (FF)",
+          "videoA": "media/video/moreno_ch.mp4",
+          "videoB": "media/video/moreno_ff.mp4",
+          "anchor_a": 0.4,
+          "anchor_b": 0.5
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -41499,7 +41947,13 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "4-Seam Fastball (FF)",
+          "pitch_b_label": "Offspeed/Breaking (CH/SL)",
+          "videoA": "media/video/moreno_ff.mp4",
+          "videoB": "media/video/moreno_ch.mp4",
+          "anchor_a": 0.5,
+          "anchor_b": 0.4
         }
       ],
       "topLeads": [
@@ -41551,7 +42005,13 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "Offspeed/Breaking (CH/SL)",
+          "pitch_b_label": "4-Seam Fastball (FF)",
+          "videoA": "media/video/moreno_ch.mp4",
+          "videoB": "media/video/moreno_ff.mp4",
+          "anchor_a": 0.4,
+          "anchor_b": 0.5
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -41601,7 +42061,13 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "4-Seam Fastball (FF)",
+          "pitch_b_label": "Offspeed/Breaking (CH/SL)",
+          "videoA": "media/video/moreno_ff.mp4",
+          "videoB": "media/video/moreno_ch.mp4",
+          "anchor_a": 0.5,
+          "anchor_b": 0.4
         }
       ],
       "catcherTips": [
@@ -41855,7 +42321,9 @@
         "tipSplitBacksTips": true,
         "backedTips": 0,
         "backedCatcherTips": 2
-      }
+      },
+      "videoA": "media/video/moreno_ch.mp4",
+      "videoB": "media/video/moreno_ff.mp4"
     },
     "roupp": {
       "id": "roupp",

@@ -13,10 +13,10 @@ VIDEO = ROOT / "media" / "video"
 DOWNLOADS = Path("/Users/colbymorris/Downloads/Preflight_Sales_Deck")
 FFMPEG = shutil.which("ffmpeg") or "/opt/homebrew/opt/ffmpeg/bin/ffmpeg"
 
-# Pre-pitch glove target — before pitcher windup.
-# CH/FF clips are not phase-aligned; CH starts moving earlier.
-MORENO_ANCHOR_A = 0.08  # tip1 CH pane / tip2 FF pane primary
-MORENO_ANCHOR_B = 0.25
+# Pre-pitch mitt-set — glove target established, before windup apex.
+# CH/FF clips are not phase-aligned; pick mitt-set per clip, not mid-lift.
+MORENO_ANCHOR_A = 0.40  # tip1 CH pane / tip2 FF pane primary (mitt-set)
+MORENO_ANCHOR_B = 0.50  # FF mitt-set (FOUR SEAM 99 overlay later in clip)
 
 
 def patch_tips(tips: list) -> int:

@@ -1,0 +1,1 @@
+KEEP: roupp_ch.mp4 moreno_ch.mp4 moreno_ff.mp4 roupp_cu.mp4 — fixed 2026-09-06, do not purge

@@ -30288,7 +30288,13 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "Offspeed/Breaking (CH/SL)",
+          "pitch_b_label": "4-Seam Fastball (FF)",
+          "videoA": "media/video/moreno_ch.mp4",
+          "videoB": "media/video/moreno_ff.mp4",
+          "anchor_a": 0.4,
+          "anchor_b": 0.5
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -30338,7 +30344,13 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "4-Seam Fastball (FF)",
+          "pitch_b_label": "Offspeed/Breaking (CH/SL)",
+          "videoA": "media/video/moreno_ff.mp4",
+          "videoB": "media/video/moreno_ch.mp4",
+          "anchor_a": 0.5,
+          "anchor_b": 0.4
         }
       ],
       "topLeads": [
@@ -30390,7 +30402,13 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "Offspeed/Breaking (CH/SL)",
+          "pitch_b_label": "4-Seam Fastball (FF)",
+          "videoA": "media/video/moreno_ch.mp4",
+          "videoB": "media/video/moreno_ff.mp4",
+          "anchor_a": 0.4,
+          "anchor_b": 0.5
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -30440,7 +30458,13 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "4-Seam Fastball (FF)",
+          "pitch_b_label": "Offspeed/Breaking (CH/SL)",
+          "videoA": "media/video/moreno_ff.mp4",
+          "videoB": "media/video/moreno_ch.mp4",
+          "anchor_a": 0.5,
+          "anchor_b": 0.4
         }
       ],
       "catcherTips": [
@@ -30694,7 +30718,9 @@
         "tipSplitBacksTips": true,
         "backedTips": 0,
         "backedCatcherTips": 2
-      }
+      },
+      "videoA": "media/video/moreno_ch.mp4",
+      "videoB": "media/video/moreno_ff.mp4"
     },
     "jacob_stallings": {
       "id": "jacob_stallings",
@@ -41865,7 +41891,13 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "Offspeed/Breaking (CH/SL)",
+          "pitch_b_label": "4-Seam Fastball (FF)",
+          "videoA": "media/video/moreno_ch.mp4",
+          "videoB": "media/video/moreno_ff.mp4",
+          "anchor_a": 0.4,
+          "anchor_b": 0.5
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -41915,7 +41947,13 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "4-Seam Fastball (FF)",
+          "pitch_b_label": "Offspeed/Breaking (CH/SL)",
+          "videoA": "media/video/moreno_ff.mp4",
+          "videoB": "media/video/moreno_ch.mp4",
+          "anchor_a": 0.5,
+          "anchor_b": 0.4
         }
       ],
       "topLeads": [
@@ -41967,7 +42005,13 @@
             "clears_75": true
           },
           "pitchType": "CH",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "Offspeed/Breaking (CH/SL)",
+          "pitch_b_label": "4-Seam Fastball (FF)",
+          "videoA": "media/video/moreno_ch.mp4",
+          "videoB": "media/video/moreno_ff.mp4",
+          "anchor_a": 0.4,
+          "anchor_b": 0.5
         },
         {
           "id": "lead_gabriel_moreno_target_height_2",
@@ -42017,7 +42061,13 @@
             "clears_75": true
           },
           "pitchType": "FF",
-          "situationId": "all|all"
+          "situationId": "all|all",
+          "pitch_a_label": "4-Seam Fastball (FF)",
+          "pitch_b_label": "Offspeed/Breaking (CH/SL)",
+          "videoA": "media/video/moreno_ff.mp4",
+          "videoB": "media/video/moreno_ch.mp4",
+          "anchor_a": 0.5,
+          "anchor_b": 0.4
         }
       ],
       "catcherTips": [
@@ -42271,7 +42321,9 @@
         "tipSplitBacksTips": true,
         "backedTips": 0,
         "backedCatcherTips": 2
-      }
+      },
+      "videoA": "media/video/moreno_ch.mp4",
+      "videoB": "media/video/moreno_ff.mp4"
     },
     "roupp": {
       "id": "roupp",

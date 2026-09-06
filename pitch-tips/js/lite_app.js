@@ -2308,12 +2308,12 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   }
 
   if (isMoreno) {
-    // Pre-pitch mitt set BEFORE windup. CH clip starts moving by ~0.15s; FF stays set longer.
+    // Pre-pitch mitt set BEFORE windup. Apex must stay on mitt-set, not mid-lift.
     // Do NOT force identical anchors — clips are not phase-aligned.
-    if (tip?.anchor_a == null && tip?.tA == null) tA = 0.08;
-    if (tip?.anchor_b == null && tip?.tB == null) tB = 0.25;
-    tA = Math.min(Math.max(Number(tA) || 0.08, 0.02), 0.30);
-    tB = Math.min(Math.max(Number(tB) || 0.25, 0.02), 0.40);
+    if (tip?.anchor_a == null && tip?.tA == null) tA = 0.40;
+    if (tip?.anchor_b == null && tip?.tB == null) tB = 0.50;
+    tA = Math.min(Math.max(Number(tA) || 0.40, 0.15), 1.20);
+    tB = Math.min(Math.max(Number(tB) || 0.50, 0.15), 1.20);
   }
 
   if (/roupp/i.test(pid)) {
@@ -2502,8 +2502,9 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
 }
 
 function compareScrubWindowSpan(playerId) {
-  // Catcher pre-pitch mitt window is short; 4s span made Snap/apex land on mid-windup (~3.7s).
-  return /moreno/i.test(playerId || "") ? 1.2 : 1.5;
+  // Catcher: apex stays on mitt-set (~0.4–0.5s); wider span lets scrub reach through delivery.
+  // Prior 1.2s span cut off before windup finished — targets looked invisible mid-compare.
+  return /moreno/i.test(playerId || "") ? 3.5 : 1.5;
 }
 
 function wireSynchronizedDeliveryScrubber(player) {
