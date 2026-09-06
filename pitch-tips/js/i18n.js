@@ -144,7 +144,7 @@ const PREFLIGHT_TRANSLATIONS = {
 
     modal_badge: "🔒 Confidential Scouting Pilot Request",
     modal_title: "Request Preflight Scouting Pilot & Access",
-    modal_desc: "Inquire about 2027 College Licensing (k–k range), Conference Lockout Exclusivity (k–k range), or Pro Enterprise Deployments. A signed mutual NDA is executed prior to video sharing.",
+    modal_desc: "Inquire about Tier 1 (College Standard License), Tier 2 (Conference Lockout Exclusivity), Tier 3 (National Monopoly), or Tier 4 (Pro Enterprise Deployments). A signed mutual NDA is executed prior to video sharing.",
     modal_lbl_name: "Full Name *",
     modal_lbl_org: "Organization / School *",
     modal_lbl_email: "Work / Official Email *",
@@ -299,7 +299,7 @@ const PREFLIGHT_TRANSLATIONS = {
 
     modal_badge: "🔒 守秘義務契約（NDA）に基づくパイロット申請",
     modal_title: "Preflight スカウティングパイロット申請",
-    modal_desc: "2027年大学ライセンス（5,000〜15,000ドル）、カンファレンス独占権（18,000〜35,000ドル）、プロ球団向け導入プランについてのお問い合わせ。動画共有前に双方署名の秘密保持契約（NDA）を締結します。",
+    modal_desc: "2027年大学ライセンス（Tier 1）、カンファレンス独占権（Tier 2）、全国独占（Tier 3）、プロ球団向け導入（Tier 4）についてのお問い合わせ。動画共有前に双方署名の秘密保持契約（NDA）を締結します。",
     modal_lbl_name: "お名前 *",
     modal_lbl_org: "ご所属（球団名・大学名） *",
     modal_lbl_email: "公式・業務メールアドレス *",
@@ -454,7 +454,7 @@ const PREFLIGHT_TRANSLATIONS = {
 
     modal_badge: "🔒 비밀유지협약(NDA) 기반 파일럿 신청",
     modal_title: "Preflight 전력분석 파일럿 및 접근 권한 신청",
-    modal_desc: "2027년 대학 라이선스(k–k), 콘퍼런스 독점권(k–k) 또는 프로 구단 도입 문의. 영상 공유 전 상호 서명된 비밀유지협약(NDA)을 체결합니다.",
+    modal_desc: "2027년 대학 라이선스(Tier 1), 콘퍼런스 독점권(Tier 2), 전국 독점(Tier 3) 또는 프로 구단 도입(Tier 4) 문의. 영상 공유 전 상호 서명된 비밀유지협약(NDA)을 체결합니다.",
     modal_lbl_name: "성함 *",
     modal_lbl_org: "소속 구단 / 대학명 *",
     modal_lbl_email: "공식 / 업무용 이메일 *",
@@ -609,7 +609,7 @@ const PREFLIGHT_TRANSLATIONS = {
 
     modal_badge: "🔒 Solicitud de Piloto Confidencial",
     modal_title: "Solicitar Piloto de Scouting Preflight",
-    modal_desc: "Consulte sobre licencias colegiales 2027 (k–k), exclusividad de conferencia (k–k) o implementaciones profesionales. Se firma un acuerdo de confidencialidad mutuo (NDA).",
+    modal_desc: "Consulte sobre Tier 1 (licencia colegial), Tier 2 (exclusividad de conferencia), Tier 3 (monopolio nacional) o Tier 4 (implementaciones profesionales). Se firma un acuerdo de confidencialidad mutuo (NDA).",
     modal_lbl_name: "Nombre Completo *",
     modal_lbl_org: "Organización / Universidad *",
     modal_lbl_email: "Correo Institucional / Profesional *",
@@ -764,7 +764,7 @@ const PREFLIGHT_TRANSLATIONS = {
 
     modal_badge: "🔒 機密情蒐專案申請",
     modal_title: "申請 Preflight 情蒐試用專案與權限",
-    modal_desc: "洽詢 2027 年大學授權方案（5,000–15,000 美元區間）、聯盟獨家鎖定授權（18,000–35,000 美元區間）或職業球團部署。影片分享前將簽署雙方保密協定（NDA）。",
+    modal_desc: "洽詢 2027 年大學授權方案（Tier 1）、聯盟獨家鎖定授權（Tier 2）、全國獨占（Tier 3）或職業球團部署（Tier 4）。影片分享前將簽署雙方保密協定（NDA）。",
     modal_lbl_name: "姓名 *",
     modal_lbl_org: "所屬單位 / 學校 / 球團 *",
     modal_lbl_email: "官方 / 公務電子郵件 *",

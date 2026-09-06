@@ -655,9 +655,9 @@ function ensurePilotModal() {
             <label for="pilot-tier">Tier of Interest *</label>
             <select id="pilot-tier">
               <option value="College Tier 1: Standard Team License">College Tier 1: Standard Team License</option>
-              <option value="College Tier 2: Conference Exclusivity Premium" selected>College Tier 2: Conference Exclusivity Premium ("Monopolize Your Conference")</option>
+              <option value="College Tier 2: Conference Exclusivity" selected>College Tier 2: Conference Exclusivity ("Monopolize Your Conference")</option>
               <option value="College Tier 3: National Monopoly Sole Contract">College Tier 3: National Monopoly Sole Contract</option>
-              <option value="Pro / Enterprise Deployment (MLB / NPB / KBO / CPBL / Winter Leagues)">Pro / Enterprise Deployment (MLB / NPB / KBO / CPBL / Winter Leagues)</option>
+              <option value="Tier 4: Pro / Enterprise Deployment (MLB / NPB / KBO / CPBL / Winter Leagues)">Tier 4: Pro / Enterprise Deployment (MLB / NPB / KBO / CPBL / Winter Leagues)</option>
             </select>
           </div>
 
