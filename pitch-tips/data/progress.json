@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 66,
-  "remaining": 672,
+  "remaining": 671,
   "sec_per_pitch": 10.0,
   "eta_hours": 551.0,
   "est_total_pitches": 198360,
   "current": {
-    "name": "Mason Adams",
+    "name": "Mark Manfredi",
     "team": "COL",
-    "message": "pitcher [13/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [14/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -697,6 +697,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/nick_frasso_poc",
       "schema": "rich_72col",
       "n_current_tracks": 148,
+      "ready": false,
+      "state": "tracking"
+    },
+    "690279": {
+      "name": "Mason Adams",
+      "team": "COL",
+      "n_tracked": 91,
+      "holdout": 0.061,
+      "tips_ge_75": 5,
+      "catcher_tips": 4,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/mason_adams_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 102,
       "ready": false,
       "state": "tracking"
     }
@@ -2893,9 +2911,9 @@
     },
     "COL": {
       "queued": 14,
-      "done": 12,
-      "pitcher_tips": 51,
-      "catcher_tips": 29
+      "done": 13,
+      "pitcher_tips": 56,
+      "catcher_tips": 33
     },
     "LAD": {
       "queued": 15,
@@ -2930,10 +2948,10 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 131,
-    "catcher_tips": 105
+    "pitcher_tips": 136,
+    "catcher_tips": 109
   },
-  "updated_at": "2026-09-06T05:45:03",
+  "updated_at": "2026-09-06T05:59:06",
   "live": {
     "pitches_done": 90,
     "pitches_target": null
