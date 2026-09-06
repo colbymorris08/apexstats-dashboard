@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 66,
-  "remaining": 684,
+  "remaining": 683,
   "sec_per_pitch": 10.0,
   "eta_hours": 551.0,
   "est_total_pitches": 198360,
   "current": {
-    "name": "Tomoyuki Sugano",
+    "name": "Ryan Feltner",
     "team": "COL",
-    "message": "pitcher [1/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [2/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -482,6 +482,24 @@
       "n_current_tracks": 80,
       "ready": true,
       "state": "complete"
+    },
+    "608372": {
+      "name": "Tomoyuki Sugano",
+      "team": "COL",
+      "n_tracked": 277,
+      "holdout": 0.263,
+      "tips_ge_75": 3,
+      "catcher_tips": 2,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tomoyuki_sugano_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 309,
+      "ready": false,
+      "state": "tracking"
     }
   },
   "failed": {
@@ -2676,9 +2694,9 @@
     },
     "COL": {
       "queued": 14,
-      "done": 0,
-      "pitcher_tips": 0,
-      "catcher_tips": 0
+      "done": 1,
+      "pitcher_tips": 3,
+      "catcher_tips": 2
     },
     "LAD": {
       "queued": 15,
@@ -2713,12 +2731,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 80,
-    "catcher_tips": 76
+    "pitcher_tips": 83,
+    "catcher_tips": 78
   },
-  "updated_at": "2026-09-06T00:35:00",
+  "updated_at": "2026-09-06T01:43:41",
   "live": {
-    "pitches_done": 277,
+    "pitches_done": 240,
     "pitches_target": null
   },
   "heartbeat": true
