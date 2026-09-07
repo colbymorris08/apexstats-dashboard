@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 67,
-  "remaining": 666,
+  "remaining": 665,
   "sec_per_pitch": 10.0,
   "eta_hours": 536.5,
   "est_total_pitches": 193140,
   "current": {
-    "name": "Emmet Sheehan",
+    "name": "Tyler Glasnow",
     "team": "LAD",
-    "message": "pitcher [4/15] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [6/15] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -807,6 +807,25 @@
       "n_current_tracks": 73,
       "ready": true,
       "state": "complete"
+    },
+    "686218": {
+      "name": "Emmet Sheehan",
+      "team": "LAD",
+      "n_tracked": 215,
+      "holdout": 0.341,
+      "tips_ge_75": 3,
+      "catcher_tips": 3,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout",
+        "placement"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/emmet_sheehan_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 250,
+      "ready": false,
+      "state": "tracking"
     }
   },
   "failed": {
@@ -3252,9 +3271,9 @@
     },
     "LAD": {
       "queued": 15,
-      "done": 8,
-      "pitcher_tips": 23,
-      "catcher_tips": 30
+      "done": 9,
+      "pitcher_tips": 26,
+      "catcher_tips": 33
     },
     "SD": {
       "queued": 14,
@@ -3277,12 +3296,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 157,
-    "catcher_tips": 131
+    "pitcher_tips": 160,
+    "catcher_tips": 134
   },
-  "updated_at": "2026-09-07T17:18:44",
+  "updated_at": "2026-09-07T17:46:19",
   "live": {
-    "pitches_done": 210,
+    "pitches_done": 110,
     "pitches_target": null
   },
   "heartbeat": true
