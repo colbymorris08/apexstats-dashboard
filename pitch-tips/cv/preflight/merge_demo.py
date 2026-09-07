@@ -279,8 +279,12 @@ def _clean_tip(t: dict, player_name: str, is_catcher: bool = False) -> dict:
                 "catcher_hip_y_mean": f"Catcher crouch depth and body center height adjusts on {pred} vs standard stance",
                 "catcher_glove_speed_mean": f"Catcher pre-pitch glove motion dynamics differentiate {pred} vs arsenal",
                 "catcher_glove_speed_p90": f"Catcher glove adjustment speed prior to set position distinguishes {pred} vs arsenal",
+                "cmitt_target_lateral_plate_widths": f"Catcher mitt target lateral offset (plate-width units) separates {pred} vs arsenal",
+                "cmitt_target_height_plate_widths": f"Catcher mitt target height (plate-width units) separates {pred} vs arsenal",
+                "cmitt_target_lateral_drift_plate_widths": f"Catcher mitt lateral drift within the set window separates {pred} vs arsenal",
+                "cmitt_target_lateral_late_minus_early": f"Catcher mitt late-vs-early lateral walk separates {pred} vs arsenal",
             }
-            tip["lookFor"] = cue_map.get(feat, f"Pre-pitch catcher physical posture and target alignment indicates {pred}")
+            tip["lookFor"] = cue_map.get(feat, f"Pre-pitch catcher mitt target (parts_gear) indicates {pred}")
     else:
         if not tip.get("title"):
             tip["title"] = f"{pred} via Delivery Variance [{sit_label}]"
@@ -304,7 +308,7 @@ def main() -> None:
         except Exception:
             pass
 
-    # 1. Process Pitcher PoC runs
+    # 1. Process Pitcher PoC runs (+ catcher_* mitt reports separately below)
     for report_path in sorted(RUNS.glob("*_poc/report.json")):
         if "catcher_" in report_path.parent.name:
             continue

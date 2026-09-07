@@ -285,6 +285,66 @@ def _feature_vector(track_csv: Path) -> dict[str, Any]:
         return {}
     out: dict[str, Any] = dict(window_features(df.iloc[win.start : win.end]))
 
+    # Detector mitt target (parts_gear.pt boxes). Empty/NaN when boxes absent;
+    # pose-based catcher_* remain retracted and are not used for discovery.
+    if "cmitt_cx" in df.columns and "cplate_cx" in df.columns:
+        try:
+            from preflight.catcher_target import MITT_CONF, PLATE_CONF, mitt_target
+
+            def _box(row: dict, prefix: str, conf_floor: float) -> dict | None:
+                try:
+                    conf = float(row.get(f"{prefix}_conf") or 0.0)
+                    cx = float(row.get(f"{prefix}_cx"))
+                    cy = float(row.get(f"{prefix}_cy"))
+                    bw = float(row.get(f"{prefix}_bw"))
+                except (TypeError, ValueError):
+                    return None
+                if conf < conf_floor:
+                    return None
+                return {"cx": cx, "cy": cy, "bw": bw, "conf": conf}
+
+            frames = []
+            for row in df.to_dict("records"):
+                try:
+                    fr = int(row.get("frame"))
+                except (TypeError, ValueError):
+                    continue
+                frames.append(
+                    {
+                        "frame": fr,
+                        "mitt": _box(row, "cmitt", MITT_CONF),
+                        "plate": _box(row, "cplate", PLATE_CONF),
+                    }
+                )
+            mt = mitt_target(frames, int(win.start), int(win.end))
+            out["cmitt_target_lateral_plate_widths"] = (
+                float(mt.lateral) if mt.lateral is not None else float("nan")
+            )
+            out["cmitt_target_height_plate_widths"] = (
+                float(mt.height) if mt.height is not None else float("nan")
+            )
+            out["cmitt_target_lateral_drift_plate_widths"] = (
+                float(mt.lateral_drift) if mt.lateral_drift is not None else float("nan")
+            )
+            out["cmitt_target_lateral_late_minus_early"] = (
+                float(mt.lateral_late_minus_early)
+                if mt.lateral_late_minus_early is not None
+                else float("nan")
+            )
+            out["cmitt_n_frames"] = float(mt.n_frames)
+            out["cmitt_reason"] = mt.reason
+        except Exception:
+            out.update(
+                {
+                    "cmitt_target_lateral_plate_widths": float("nan"),
+                    "cmitt_target_height_plate_widths": float("nan"),
+                    "cmitt_target_lateral_drift_plate_widths": float("nan"),
+                    "cmitt_target_lateral_late_minus_early": float("nan"),
+                    "cmitt_n_frames": 0.0,
+                    "cmitt_reason": "error",
+                }
+            )
+
     seg = preset_segment(df, win)
     if seg is None:
         # No usable pre-set footage. Emit NaN rather than 0.0 so these pitches

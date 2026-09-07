@@ -27,7 +27,7 @@ def patch_tips(tips: list) -> int:
         tid = tip.get("id", "")
         if "moreno" not in tid and "moreno" not in tip.get("title", "").lower():
             continue
-        if "target_shift" in tid or "lateral" in tip.get("title", "").lower():
+        if "cmitt_lateral" in tid or "lateral" or "cmitt_target_lateral" in (tip.get("feature") or "") in tip.get("title", "").lower():
             tip["pitch_a_label"] = "Offspeed/Breaking (CH/SL)"
             tip["pitch_b_label"] = "4-Seam Fastball (FF)"
             tip["videoA"] = "media/video/moreno_ch.mp4"
@@ -35,7 +35,7 @@ def patch_tips(tips: list) -> int:
             tip["anchor_a"] = MORENO_ANCHOR_A
             tip["anchor_b"] = MORENO_ANCHOR_B
             n += 1
-        elif "target_height" in tid or "crouch" in tip.get("title", "").lower():
+        elif "cmitt_height" in tid or "height" in tid or "cmitt_target_height" in (tip.get("feature") or "") in tip.get("title", "").lower():
             tip["pitch_a_label"] = "4-Seam Fastball (FF)"
             tip["pitch_b_label"] = "Offspeed/Breaking (CH/SL)"
             tip["videoA"] = "media/video/moreno_ff.mp4"

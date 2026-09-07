@@ -29,7 +29,8 @@ HOLDOUT_BASELINE_MARGIN = 0.08
 MIN_HOLDOUT_FIRES = 3
 MIN_HOLDOUT_TYPE_N = 3
 PITCHER_FEATURE_PREFIXES = ("glove", "wrist", "cheek", "pitchcom")
-CATCHER_FEATURE_PREFIXES = ("catcher",)
+# Mitt-box cues only (parts_gear.pt). Pose-based catcher_* stay retracted.
+CATCHER_FEATURE_PREFIXES = ("cmitt_target_",)
 FEATURE_PREFIXES = PITCHER_FEATURE_PREFIXES  # default for pitcher tips
 
 
@@ -449,6 +450,26 @@ def _look_for(pitch_type: str, feat: str, high: bool, ctx_tags: list[str]) -> st
             f"On {pname} ({pitch_type}), catcher executes a sharp late glove repositioning before lift vs rock-still target on rest of arsenal."
             if high else
             f"On {pname} ({pitch_type}), catcher locks into early static target hold vs late adjustments on rest of arsenal."
+        ),
+        "cmitt_target_lateral_plate_widths": (
+            f"On {pname} ({pitch_type}), catcher mitt target sits wider off the plate edge (plate-width units) vs more centered on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), catcher mitt target sits more centered on the plate vs wider off-edge set on rest of arsenal."
+        ),
+        "cmitt_target_height_plate_widths": (
+            f"On {pname} ({pitch_type}), catcher mitt target sits higher above the plate vs lower dirt-level set on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), catcher mitt target sits lower toward the dirt vs higher chest-level set on rest of arsenal."
+        ),
+        "cmitt_target_lateral_drift_plate_widths": (
+            f"On {pname} ({pitch_type}), catcher mitt wanders laterally before lift vs tight lateral lock on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), catcher mitt holds a tight lateral lock vs wandering target on rest of arsenal."
+        ),
+        "cmitt_target_lateral_late_minus_early": (
+            f"On {pname} ({pitch_type}), catcher mitt drifts late toward the open side before lift vs early-set hold on rest of arsenal."
+            if high else
+            f"On {pname} ({pitch_type}), catcher mitt settles early and holds vs late lateral drift on rest of arsenal."
         ),
     }
 

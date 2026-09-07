@@ -39,7 +39,9 @@ All other roster arms remain enterprise-locked (`SHOWCASE_ARM_IDS` / `SHOWCASE_I
 | Gausman holdout republish | Showcase tips wired for demo; pipeline holdout still failed — full re-run left to tracking agents. |
 | HTTP proxy to baseballsavant | Intermittent `ProxyError 403` via env proxy — work around with `NO_PROXY=*` / unset proxy for fetches. |
 
-## UX fixes (prior pass, still shipped)
-- Tip #1–5 pills: event delegation
-- Moreno scrub window 1.2s; distinct CH/FF pre-pitch anchors
-- Tip copy honesty: 6.8in lateral shift not visually measurable on these CF stills
+## Closed 2026-09-07
+| Item | Status |
+|------|--------|
+| Mitt publish gap (Moreno) | `cmitt_target_*` wired into catcher discovery prefixes + `_feature_vector`; showcase/lite ship real mitt tips (no fabricated 6.8in `catcher_target_shift_x_in`). |
+| Enterprise tip1 `runners_on` | Tip1 A/B `*_runners_on.mp4` hardlinked from distinct `runner_1b` / canon B-side maps; site filter `loaded`/`12`/`13`/`23` resolves suffix. |
+| Roupp apex timing | Tip1 anchors CU@3.00s / SI@2.10s (leg-lift); removed forced 3.40 near-release override; scrub span 2.8s. |
