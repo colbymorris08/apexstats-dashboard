@@ -236,6 +236,8 @@ PRO_MLB_PLAYER_ID_OVERRIDES: dict[str, int] = {
     # 2026 draftees; people/search often returns [] until they are indexed.
     "devin bell": 838647,
     "maddox molony": 814829,
+    "jackson flora": 814176,  # SF Giants / San Jose (may move levels)
+    "aaron shortridge": 663336,  # PIT / Altoona AA
 }
 # Normalized client name -> people/search query (API spelling differs from the roster sheet).
 PRO_MLB_PEOPLE_SEARCH_ALIASES: dict[str, str] = {
@@ -337,12 +339,21 @@ MANUAL_PRO_CLIENTS: list[dict[str, str]] = [
     {
         "name": "Aaron Shortridge",
         "position": "RHP",
-        "level": "Rk",
-        "league": "Florida Complex League",
-        "minor_affiliate": "FCL Nationals",
-        "major_affiliate": "Washington Nationals",
+        "level": "AA",
+        "league": "Eastern League",
+        "minor_affiliate": "Altoona Curve",
+        "major_affiliate": "Pittsburgh Pirates",
         "agent": "",
-    }
+    },
+    {
+        "name": "Jackson Flora",
+        "position": "RHP",
+        "level": "A",
+        "league": "California League",
+        "minor_affiliate": "San Jose Giants",
+        "major_affiliate": "San Francisco Giants",
+        "agent": "AK",
+    },
 ]
 
 # Rows missing from AmateurList.xlsx but tracked on the dashboard (Oregon, etc.).
@@ -419,15 +430,6 @@ SUMMER_AMATEUR_OVERRIDES: dict[str, dict[str, Any]] = {
         "schedule_url": "https://wclstats.com/sports/bsb/2026/teams/wenatcheeapplesox",
         "stats_source": "wcl",
         "wcl_team_id": "xjbohafz57d8cauh",
-    },
-    "jackson flora": {
-        "summer_team": "Marion Berries",
-        "summer_league": "West Coast League",
-        "team_level": "WCL",
-        "schedule_url": "https://wclstats.com/sports/bsb/2026/teams/marionberries",
-        "stats_source": "wcl",
-        "wcl_team_id": "txq616nqlxf0lsiv",
-        "name_aliases": ["Hudson Flora"],
     },
     "brayden jaksa": {
         "summer_team": "Harwich Mariners",
