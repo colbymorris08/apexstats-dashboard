@@ -816,95 +816,51 @@ const CATCHER_SHOWCASE_DATA = {
     team: "ARI",
     teamName: "Arizona Diamondbacks",
     role: "Primary Starter",
-    totalIndicators: 7,
+    totalIndicators: 2,
     tells: [
       {
-        id: "target_shift",
-        name: "Pre-Pitch Target Shift (Glove-Side Offset)",
+        id: "cmitt_lateral",
+        name: "Pre-Pitch Mitt Lateral Target (Plate-Width Offset)",
         signal: "100%",
         contrast: "Changeup (CH) vs. Fastball (FF)",
-        situation: "vs. Left-Handed Hitters (LHH)",
-        sample: "n=52 pitches",
-        metric1: "+7.8 in",
-        metric1Lbl: "Glove-Side Target Shift",
+        situation: "vs. Left-Handed Hitters · First only",
+        sample: "n=19 measured mitt windows",
+        metric1: "cmitt lateral",
+        metric1Lbl: "Plate-Width Lateral Offset",
         metric2: "100%",
         metric2Lbl: "Predictive Signal Floor",
-        metric3: "0.48 m",
-        metric3Lbl: "Target Y (Low-Away)",
+        metric3: "parts_gear.pt",
+        metric3Lbl: "Detector Source (catcher_mitt)",
         metric4: "CH vs FF",
         metric4Lbl: "Primary Pitch Contrast",
-        targetA: { x: -38, y: 35, label: "CH Target (Glove-Side / Low)", color: "#3ecf8e" },
-        targetB: { x: 10, y: -15, label: "FF Target (Arm-Side / Belt)", color: "#3d8bfd" },
+        targetA: { x: -38, y: 35, label: "CH Target (Wider Off-Edge)", color: "#3ecf8e" },
+        targetB: { x: 10, y: -15, label: "FF Target (Centered)", color: "#3d8bfd" },
         stanceA: { width: 140, height: 75, depth: "Deep Wide Base" },
         stanceB: { width: 110, height: 85, depth: "Standard Base" },
-        observation: "Before Eduardo Rodriguez or starting staff come set, Moreno establishes his primary glove target noticeably wider glove-side (outside border to LHH) on Changeups compared to 4-Seam Fastballs.",
-        takeaway: "When Moreno sets target >6 inches glove-side before the pitcher settles into the stretch, off-speed probability is 94%+. LHH hitters can eliminate the high inside fastball."
+        observation: "Measured cmitt_target_lateral_plate_widths: Moreno’s mitt sits wider off the plate edge on Changeups vs a more centered set on four-seam fastballs (pose-guarded mitt boxes; not pitcher pose).",
+        takeaway: "When Moreno’s mitt target is wider off-edge before the pitcher settles, CH probability rises sharply vs arsenal baseline."
       },
       {
-        id: "target_height",
-        name: "Glove Target Elevation (Offspeed vs Fastball)",
-        signal: "89.5%",
-        contrast: "CH / SL vs. Fastball (FF)",
+        id: "cmitt_height",
+        name: "Pre-Pitch Mitt Target Height (Plate-Width)",
+        signal: "82.6%",
+        contrast: "Fastball (FF) vs. Offspeed",
         situation: "All Game Situations",
-        sample: "n=40 pitches",
-        metric1: "+5.4 in",
-        metric1Lbl: "Vertical Target Offset",
-        metric2: "89.5%",
-        metric2Lbl: "Signal Floor (5.8× Sep)",
-        metric3: "0.78 m",
-        metric3Lbl: "Target Y (Chest High)",
-        metric4: "CH/SL vs FF",
-        metric4Lbl: "Contrast Pair (d=0.94)",
-        targetA: { x: -15, y: -25, label: "CH/SL Target (High Glove Setup)", color: "#e8a23a" },
-        targetB: { x: -25, y: 35, label: "FF Target (Low Knee Setup)", color: "#3ecf8e" },
-        stanceA: { width: 125, height: 82, depth: "Elevated Target Setup" },
-        stanceB: { width: 145, height: 72, depth: "Low Knee Target" },
-        observation: "Moreno sets his mitt target 4.2 inches higher at chest level before pitch execution on Changeups and Sliders (CH/SL), compared to a low-knee target on Fastballs (FF).",
-        takeaway: "Empirical discrimination rate of 88.9% (vs 32% baseline offspeed mix) with 5.8× visibility floor separation."
-      },
-      {
-        id: "stance_width",
-        name: "Crouch Stance Width & Base Timing",
-        signal: "100%",
-        contrast: "Changeup (CH) vs. Arsenal",
-        situation: "All Game Situations",
-        sample: "n=48 pitches",
-        metric1: "+14.2%",
-        metric1Lbl: "Wider Crouch Base",
-        metric2: "0.94 m",
-        metric2Lbl: "Lower-Body Spread",
-        metric3: "100%",
-        metric3Lbl: "Signal Accuracy (10× Lift)",
-        metric4: "All Counts",
-        metric4Lbl: "Situation Coverage (d=1.12)",
-        targetA: { x: -30, y: 40, label: "CH Crouch (Wide / Deep)", color: "#3ecf8e" },
-        targetB: { x: 0, y: 0, label: "Arsenal Baseline", color: "#e8a23a" },
-        stanceA: { width: 155, height: 70, depth: "Wide Blocking Base" },
-        stanceB: { width: 115, height: 88, depth: "Neutral Posture" },
-        observation: "Moreno establishes a 14% wider lower-body crouch stance (0.94m spread) before pitch execution on Changeups (CH) to prepare for low dirt blocks, compared to his standard narrow stance on Fastballs.",
-        takeaway: "Moreno widens his base early to prepare for low-in-the-dirt off-speed blocks. Hitters and 2B runners recognize the base spread before hand break."
-      },
-      {
-        id: "stillness_timing",
-        name: "Stance Stillness & Settling Timing",
-        signal: "85.7%",
-        contrast: "Early Settle (Offspeed) vs. Late Adjust (Fastball)",
-        situation: "All Game Situations & Stretch",
-        sample: "n=42 pitches",
-        metric1: "≥0.42 s",
-        metric1Lbl: "Early Target Stillness",
-        metric2: "85.7%",
-        metric2Lbl: "Discrimination Rate",
-        metric3: "5.2× floor",
-        metric3Lbl: "Separation Metric",
-        metric4: "Offspeed vs FF",
-        metric4Lbl: "Youden J = +0.714",
-        targetA: { x: -10, y: 15, label: "Early Static Hold (≥0.42s)", color: "#3ecf8e" },
-        targetB: { x: 5, y: -5, label: "Late Micro-Adjust (≤0.18s)", color: "#3d8bfd" },
-        stanceA: { width: 145, height: 78, depth: "Static Locked Stance" },
-        stanceB: { width: 120, height: 82, depth: "Active Micro-Adjust Stance" },
-        observation: "Moreno locks into a completely motionless crouch & target ≥0.42s prior to leg lift on offspeed pitches; fastball targets exhibit continuous micro-movements until ≤0.18s before release.",
-        takeaway: "Pre-delivery target stillness duration provides high-reliability early indication of pitch selection (85.7% accuracy, Hedges d=0.86)."
+        sample: "n=77 measured mitt windows",
+        metric1: "cmitt height",
+        metric1Lbl: "Plate-Width Vertical Offset",
+        metric2: "82.6%",
+        metric2Lbl: "Signal Floor (nType=11)",
+        metric3: "parts_gear.pt",
+        metric3Lbl: "Detector Source (catcher_mitt)",
+        metric4: "FF vs Offspeed",
+        metric4Lbl: "Contrast Pair",
+        targetA: { x: -25, y: 35, label: "FF Target (Lower / Dirt)", color: "#3ecf8e" },
+        targetB: { x: -15, y: -25, label: "Offspeed Target (Higher)", color: "#e8a23a" },
+        stanceA: { width: 125, height: 82, depth: "Low Knee Target" },
+        stanceB: { width: 145, height: 72, depth: "Elevated Target Setup" },
+        observation: "Measured cmitt_target_height_plate_widths: on FF, mitt sits lower toward the dirt vs higher chest-level set on the rest of the arsenal.",
+        takeaway: "Low mitt height before lift is the FF tell; higher mitt set flags offspeed / breaking."
       }
     ]
   }
@@ -1850,7 +1806,7 @@ function ensureFiveTips(player) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260903p02";
+const VIDEO_CACHE_BUST = "20260907mitt1";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -1903,6 +1859,14 @@ const NON_MLB_VIDEO_PREFIX = {
 
 const PLAYER_PITCH_FILE_MAP = {
   pfaadt: { cu: "ch", fs: "st" },
+  snell: { ch: "cu" },
+  stewart: { ch: "st" },
+  buehler: { ff: "fc" },
+  kelly: { si: "ch" },
+  ray: { ff: "sl" },
+  king: { ch: "st" },
+  vasquez: { ch: "si" },
+  festa: { ch: "st" },
 };
 
 /** Showcase arms with no clip files in repo — compare panes stay empty. */
@@ -2243,7 +2207,8 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   for (const [key, prefix] of enterprisePrefix) {
     if (normId === key || normId.includes(key)) {
       const pCode = extractPitchCode(pitchType, prefix);
-      return `media/video/${prefix}_${pCode}${sitSuffix}.mp4`;
+      const mapped = mapPlayerPitchFile(prefix, pCode);
+      return `media/video/${prefix}_${mapped}${sitSuffix}.mp4`;
     }
   }
 
@@ -2317,9 +2282,9 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   }
 
   if (/roupp/i.test(pid)) {
-    // Metadata second-mark 0:02.1 is still set; peak lift in the CF clip is ~3.4s.
-    if (tA < 3.15) tA = 3.40;
-    if (tB < 3.15) tB = 3.40;
+    // Per-clip leg-lift apex (CU slower than SI). Do NOT force 3.40 — that is near release.
+    if (tip?.anchor_a == null && tip?.tA == null) tA = 3.00;
+    if (tip?.anchor_b == null && tip?.tB == null) tB = 2.10;
   }
 
   const vComp = player?.videoCompare || {};
@@ -2503,8 +2468,10 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
 
 function compareScrubWindowSpan(playerId) {
   // Catcher: apex stays on mitt-set (~0.4–0.5s); wider span lets scrub reach through delivery.
-  // Prior 1.2s span cut off before windup finished — targets looked invisible mid-compare.
-  return /moreno/i.test(playerId || "") ? 3.5 : 1.5;
+  // Roupp: tip tell is at leg-lift; need enough lead-in to see set → lift.
+  if (/moreno/i.test(playerId || "")) return 3.5;
+  if (/roupp/i.test(playerId || "")) return 2.8;
+  return 1.5;
 }
 
 function wireSynchronizedDeliveryScrubber(player) {

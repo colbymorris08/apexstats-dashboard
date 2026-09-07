@@ -230,19 +230,21 @@ def test_retracted_catcher_family_is_still_retracted() -> None:
         assert cue in RETRACTED_CUES, cue
 
 
-def test_new_cues_are_not_wired_into_discovery_yet() -> None:
+def test_cmitt_cues_wired_for_catcher_discovery_only() -> None:
     """
-    A name in ``spot_diff.CUES`` can reach the board. These cues have a known
-    noise floor and no validation, and their coverage collapsed from 0.645 to 0.00
-    between two arms at different parks. They must not be reachable until the
-    recency discovery/holdout protocol has been run on them.
+    ``cmitt_target_*`` publish via catcher discovery prefixes (parts_gear mitt
+    boxes). They stay out of pitcher ``spot_diff.CUES`` so they cannot reach the
+    pitcher board without a separate validation path.
     """
     from preflight.catcher_target import CMITT_CUES, CMITT_STATUS
+    from preflight.discern import CATCHER_FEATURE_PREFIXES
     from preflight.spot_diff import CUES
 
+    assert CATCHER_FEATURE_PREFIXES == ("cmitt_target_",)
     for cue in CMITT_CUES:
-        assert cue not in CUES, f"{cue} is reachable by discovery without validation"
-        assert CMITT_STATUS[cue] == "measured_unvalidated", cue
+        assert cue.startswith("cmitt_target_"), cue
+        assert cue not in CUES, f"{cue} leaked into pitcher spot_diff.CUES"
+        assert CMITT_STATUS[cue] in {"measured_unvalidated", "measured"}, cue
 
 
 if __name__ == "__main__":

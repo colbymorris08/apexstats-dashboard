@@ -1560,7 +1560,7 @@ function formatSec(s) {
 
 // Visually verified identity clips only. Do NOT map a filename if the uniform/team is wrong.
 // Moreno: ARI/D-backs catcher @ Chase Field (fb4810c restore). Situational suffixes ignored.
-const VIDEO_CACHE_BUST = "20260903p02";
+const VIDEO_CACHE_BUST = "20260907mitt1";
 const VERIFIED_IDENTITY_VIDEOS = {
   gabriel_moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
   moreno: { ff: "media/video/moreno_ff.mp4", ch: "media/video/moreno_ch.mp4", sl: "media/video/moreno_ch.mp4", cu: "media/video/moreno_ch.mp4", si: "media/video/moreno_ff.mp4", fc: "media/video/moreno_ch.mp4", fs: "media/video/moreno_ch.mp4" },
@@ -1614,6 +1614,14 @@ const NON_MLB_VIDEO_PREFIX = {
 /** When a pitch-code file is missing on disk, map to nearest available clip. */
 const PLAYER_PITCH_FILE_MAP = {
   pfaadt: { cu: "ch", fs: "st" },
+  snell: { ch: "cu" },
+  stewart: { ch: "st" },
+  buehler: { ff: "fc" },
+  kelly: { si: "ch" },
+  ray: { ff: "sl" },
+  king: { ch: "st" },
+  vasquez: { ch: "si" },
+  festa: { ch: "st" },
 };
 
 /** Showcase arms with no clip files in repo — compare panes stay empty. */
@@ -1954,7 +1962,8 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
   for (const [key, prefix] of enterprisePrefix) {
     if (normId === key || normId.includes(key)) {
       const pCode = extractPitchCode(pitchType, prefix);
-      return `media/video/${prefix}_${pCode}${sitSuffix}.mp4`;
+      const mapped = mapPlayerPitchFile(prefix, pCode);
+      return `media/video/${prefix}_${mapped}${sitSuffix}.mp4`;
     }
   }
 
@@ -2171,9 +2180,9 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
   }
 
   if (/roupp/i.test(pid)) {
-    // Metadata second-mark 0:02.1 is still set; peak lift in the CF clip is ~3.4s.
-    if (tA < 3.15) tA = 3.40;
-    if (tB < 3.15) tB = 3.40;
+    // Per-clip leg-lift apex (CU slower than SI). Do NOT force 3.40 — that is near release.
+    if (tip?.anchor_a == null && tip?.tA == null) tA = 3.00;
+    if (tip?.anchor_b == null && tip?.tB == null) tB = 2.10;
   }
 
   const vComp = player?.videoCompare || {};
@@ -2357,8 +2366,10 @@ function drawDeliveryTelemetryCanvas(canvas, { pitchName, timeVal, progressPct, 
 
 function compareScrubWindowSpan(playerId) {
   // Catcher: apex stays on mitt-set (~0.4–0.5s); wider span lets scrub reach through delivery.
-  // Prior 1.2s span cut off before windup finished — targets looked invisible mid-compare.
-  return /moreno/i.test(playerId || "") ? 3.5 : 1.5;
+  // Roupp: tip tell is at leg-lift; need enough lead-in to see set → lift.
+  if (/moreno/i.test(playerId || "")) return 3.5;
+  if (/roupp/i.test(playerId || "")) return 2.8;
+  return 1.5;
 }
 
 function wireSynchronizedDeliveryScrubber(player) {
