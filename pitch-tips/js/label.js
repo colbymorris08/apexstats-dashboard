@@ -307,7 +307,7 @@ function buildExport() {
 }
 
 function downloadJson() {
-  const set = new URLSearchParams(location.search).get("set") || "multileague";
+  const set = new URLSearchParams(location.search).get("set") || "parts";
   const data = buildExport();
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
@@ -367,13 +367,9 @@ function goNextUnlabeled() {
   alert("Every frame in this manifest has boxes. Export the JSON and I'll pull a fresh pool.");
 }
 
+// Real CF stills only — synthetic multi-league SVG stick-frames are not
+// used for YOLO fine-tune labeling (those files remain on disk unused).
 const MANIFESTS = {
-  multileague: "data/label_manifest_multileague.json",
-  ncaa: "data/label_manifest_ncaa.json",
-  npb: "data/label_manifest_npb.json",
-  kbo: "data/label_manifest_kbo.json",
-  cpbl: "data/label_manifest_cpbl.json",
-  lmb: "data/label_manifest_lmb.json",
   parts: "data/label_manifest.json",
   gloves: "data/label_manifest_gloves.json",
   hands: "data/label_manifest_hands.json",
@@ -394,18 +390,18 @@ function highlightActiveDatasetButton(activeSet) {
 
 async function main() {
   loadStore();
-  const set = new URLSearchParams(location.search).get("set") || "multileague";
+  const set = new URLSearchParams(location.search).get("set") || "parts";
   highlightActiveDatasetButton(set);
 
   const v = Date.now();
-  const manifestUrl = (MANIFESTS[set] || MANIFESTS.multileague) + `?v=${v}`;
+  const manifestUrl = (MANIFESTS[set] || MANIFESTS.parts) + `?v=${v}`;
   try {
     const res = await fetch(manifestUrl, { cache: "no-store" });
     if (!res.ok) throw new Error("Manifest load failed");
     state.manifest = await res.json();
   } catch (err) {
-    console.warn("Falling back to multileague manifest:", err);
-    const res = await fetch(MANIFESTS.multileague + `?v=${v}`, { cache: "no-store" });
+    console.warn("Falling back to parts manifest:", err);
+    const res = await fetch(MANIFESTS.parts + `?v=${v}`, { cache: "no-store" });
     state.manifest = await res.json();
   }
 
