@@ -186,24 +186,25 @@ SLIDES = [
 </div>""",
     },
     {
-        "title": "How Long to Complete One Team",
-        "subhead": "Measured wall-clock — San Diego Padres full-site matrix (2026-09-07).",
+        "title": "How Long to Complete One Team (Full Staff)",
+        "subhead": "Measured wall-clock — Colorado Rockies zero-tip1 staff (2026-09-07).",
         "bullets": [
-            "**Timed team:** San Diego Padres — **4 pitchers** (King, Vásquez, Ray, Buehler) + **2 catchers** (Díaz, Campusano)",
-            "**Included:** filters `bases_empty` / `runners_on` / `runner_1b` / `runner_2b` · **n≈10** samples per cell · **5 tips** per pitcher · dated exemplars · identity + pitch-type match",
-            "**Pitcher matrix:** **100/100** cells published (5 pitch codes × canon + 4 filters)",
-            "**Wall-clock:** **~1h 8m** end-to-end (acquire → verify/tip publish → deploy)",
-            "**Breakdown:** acquire **~14 min** · verify/tip publish **~1–2 min** · catcher videos + deploy **~40–50 min** (incl. GitHub push / approvals)",
-            "**Catchers:** tip A/B CF videos live; cmitt remine queued (no mitt boxes on these CF crops)",
+            "**Timed team:** Colorado Rockies — **12 pitchers** (zero tip1 before start) + **2 catchers** (Romo, Stallings)",
+            "**Pitchers:** Castaño, Bernardino, Hill, Herget, Romano, Mejia, Manfredi, Adams, Frasso, Feltner, Sugano, Agnos",
+            "**Why this team:** No demo roster had 10+ arms with **0** published tip1 prefixes. COL’s remaining 12 live-roster arms were untouched; Gordon/Hughes had prior tip1 showcase and were **excluded**",
+            "**Included:** filters `bases_empty` / `runners_on` / `runner_1b` / `runner_2b` · **n≈10** samples/cell · up to **5 tips**/pitcher · identity + pitch-type match",
+            "**Pitcher matrix:** **275/300** cells published (gaps = no Savant play_ids for that filter×pitch)",
+            "**Wall-clock:** **1h 29m** end-to-end (acquire → tip wire → phased GitHub push/purge under disk floor)",
+            "**Prior note:** SD Padres slide timed only **4 already-partial** arms — not a full untouched staff benchmark",
         ],
         "extra_html": """
 <div class="coverage-grid">
-  <div class="stat-card"><div class="stat-num">1h 8m</div><div class="stat-label">Wall-Clock</div></div>
-  <div class="stat-card"><div class="stat-num">4+2</div><div class="stat-label">Pitchers + Catchers</div></div>
-  <div class="stat-card"><div class="stat-num">100</div><div class="stat-label">Pitcher Cells</div></div>
+  <div class="stat-card"><div class="stat-num">1h 29m</div><div class="stat-label">Wall-Clock</div></div>
+  <div class="stat-card"><div class="stat-num">12+2</div><div class="stat-label">Pitchers + Catchers</div></div>
+  <div class="stat-card"><div class="stat-num">275</div><div class="stat-label">Pitcher Cells</div></div>
   <div class="stat-card"><div class="stat-num">≈10</div><div class="stat-label">Samples / Filter</div></div>
 </div>
-<p class="signal-caption">SD Padres · n≈10 → dated exemplar · 5 tips/arm · GitHub-as-archive</p>""",
+<p class="signal-caption">COL Rockies · zero-tip1 staff · n≈10 → dated exemplar · GitHub-as-archive · Padres was partial</p>""",
     },
     {
         "title": "Request Enterprise Scouting Pilot Access",

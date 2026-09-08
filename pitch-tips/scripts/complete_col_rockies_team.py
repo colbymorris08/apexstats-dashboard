@@ -39,7 +39,7 @@ TMP = ROOT / "runs" / "col_rockies_exemplars" / "_tmp_clips"
 META_DIR = ROOT / "runs" / "col_rockies_exemplars"
 # Soft floor: purge tmp / stop expanding a cell. Hard floor: abort.
 MIN_FREE_GB = 14.0
-HARD_FREE_GB = 12.5
+HARD_FREE_GB = 11.0
 N_SAMPLE = 10
 UA = {"User-Agent": "PreflightCV/0.7 (+col-rockies-team)"}
 
@@ -477,8 +477,16 @@ def process_arm(arm: dict, session: requests.Session, filters: list[str]) -> lis
             fname = filt or "canon"
             sit = f"_{filt}" if filt else ""
             dest = VIDEO / f"{arm['prefix']}_{code}{sit}.mp4"
+            meta_p = META_DIR / f"{arm['prefix']}_{code}{sit}.mp4.json"
+            if meta_p.exists():
+                try:
+                    m = json.loads(meta_p.read_text())
+                    if (m.get("n_downloaded_ok") or 0) >= 3:
+                        print(f"  skip archived {meta_p.name} (ok={m.get('n_downloaded_ok')})")
+                        continue
+                except Exception:
+                    pass
             if dest.is_file() and dest.stat().st_size > 50_000:
-                meta_p = META_DIR / f"{dest.name}.json"
                 if meta_p.exists() or filt != "bases_empty":
                     print(f"  skip existing {dest.name}")
                     continue

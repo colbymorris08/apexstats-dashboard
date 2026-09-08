@@ -7,6 +7,12 @@
   "phases": {
     "acquire_phase1_sec": 1793.6,
     "acquire_phase1_cells": 140,
-    "acquire_phase1_at": "2026-09-08T01:50:20Z"
-  }
+    "acquire_phase1_at": "2026-09-08T01:50:20Z",
+    "acquire_complete_sec": 5360.0,
+    "pitcher_cells": 275,
+    "catcher_cells": 12,
+    "total_cells": 287,
+    "elapsed_hm": "1h 29m"
+  },
+  "ended_at": "2026-09-08T02:49:47Z"
 }
