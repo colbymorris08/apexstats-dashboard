@@ -1900,7 +1900,13 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     return `media/video/roupp_${mapped}${sitSuffix}.mp4`;
   }
 
-  if (normId.includes("webb") || normId.includes("logan_webb")) {
+  // Jacob Webb (CHC) before Logan Webb — avoid prefix collision
+  if (normId.includes("jacob_webb") || normId === "jwebb") {
+    const pCode = extractPitchCode(pitchType, "jwebb");
+    return `media/video/jwebb_${pCode}${sitSuffix}.mp4`;
+  }
+
+  if ((normId.includes("webb") || normId.includes("logan_webb")) && !normId.includes("jacob")) {
     const pCode = extractPitchCode(pitchType, "webb");
     const mapped = pCode === "cu" ? "sl" : (pCode === "fs" ? "si" : pCode);
     return `media/video/webb_${mapped}${sitSuffix}.mp4`;
@@ -1960,6 +1966,64 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     ["diaz", "diaz"],
     ["luis_campusano", "campusano"],
     ["campusano", "campusano"],
+    // Chicago Cubs full staff (2026-09-07 timed untouched-team benchmark)
+    ["shota_imanaga", "imanaga"],
+    ["imanaga", "imanaga"],
+    ["matthew_boyd", "boyd"],
+    ["boyd", "boyd"],
+    ["kevin_gausman", "gausman"],
+    ["colin_rea", "rea"],
+    ["rea", "rea"],
+    ["clay_holmes", "holmes"],
+    ["holmes", "holmes"],
+    ["aaron_civale", "civale"],
+    ["civale", "civale"],
+    ["javier_assad", "assad"],
+    ["assad", "assad"],
+    ["daniel_palencia", "palencia"],
+    ["palencia", "palencia"],
+    ["caleb_thielbar", "thielbar"],
+    ["thielbar", "thielbar"],
+    ["jacob_webb", "jwebb"],
+    ["ryan_zeferjahn", "zeferjahn"],
+    ["zeferjahn", "zeferjahn"],
+    ["david_peterson", "peterson"],
+    ["peterson", "peterson"],
+    ["ryan_rolison", "rolison"],
+    ["rolison", "rolison"],
+    ["trent_thornton", "thornton"],
+    ["thornton", "thornton"],
+    ["carson_kelly", "ckelly"],
+    ["ckelly", "ckelly"],
+    ["miguel_amaya", "amaya"],
+    ["amaya", "amaya"],
+    // Colorado Rockies full-staff matrix (2026-09-07 timed benchmark)
+    ["blas_casta", "castano"],
+    ["castano", "castano"],
+    ["brennan_bernardino", "bernardino"],
+    ["bernardino", "bernardino"],
+    ["jaden_hill", "hill"],
+    ["jimmy_herget", "herget"],
+    ["herget", "herget"],
+    ["jordan_romano", "romano"],
+    ["romano", "romano"],
+    ["juan_mejia", "mejia"],
+    ["mejia", "mejia"],
+    ["mark_manfredi", "manfredi"],
+    ["manfredi", "manfredi"],
+    ["mason_adams", "adams"],
+    ["nick_frasso", "frasso"],
+    ["frasso", "frasso"],
+    ["ryan_feltner", "feltner"],
+    ["feltner", "feltner"],
+    ["tomoyuki_sugano", "sugano"],
+    ["sugano", "sugano"],
+    ["zach_agnos", "agnos"],
+    ["agnos", "agnos"],
+    ["drew_romo", "romo"],
+    ["romo", "romo"],
+    ["jacob_stallings", "stallings"],
+    ["stallings", "stallings"],
   ];
   for (const [key, prefix] of enterprisePrefix) {
     if (normId === key || normId.includes(key)) {
@@ -2187,8 +2251,8 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
     if (tip?.anchor_b == null && tip?.tB == null) tB = 2.10;
   }
 
-  if (/\b(king|vasquez|ray|buehler|diaz|campusano)\b/i.test(pid)) {
-    // Pre-set through delivery window for SD Padres matrix.
+  if (/\b(king|vasquez|ray|buehler|diaz|campusano|castano|bernardino|jaden_hill|herget|romano|mejia|manfredi|mason_adams|frasso|feltner|sugano|agnos|romo|stallings)\b/i.test(pid)) {
+    // Pre-set through delivery window for team matrix arms.
     if (tip?.anchor_a == null && tip?.tA == null) tA = 2.40;
     if (tip?.anchor_b == null && tip?.tB == null) tB = 2.20;
   }

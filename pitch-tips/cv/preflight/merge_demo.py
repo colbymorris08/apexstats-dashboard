@@ -90,10 +90,21 @@ ROSTER = {
     "Carson Seymour": ("carson_seymour", "sf", "R"),
     "Reiver Sanmartin": ("reiver_sanmartin", "sf", "L"),
     "Jason Foley": ("jason_foley", "sf", "R"),
-    # CHC
-    "Ryan Zeferjahn": ("ryan_zeferjahn", "chc", "R"),
-    "Jacob Webb": ("jacob_webb", "chc", "R"),
+    # CHC — full 2026 active pitching staff
+    "Shota Imanaga": ("shota_imanaga", "chc", "L"),
+    "Matthew Boyd": ("matthew_boyd", "chc", "L"),
+    "Kevin Gausman": ("kevin_gausman", "chc", "R"),
+    "Colin Rea": ("colin_rea", "chc", "R"),
+    "Clay Holmes": ("clay_holmes", "chc", "R"),
+    "Aaron Civale": ("aaron_civale", "chc", "R"),
+    "Javier Assad": ("javier_assad", "chc", "R"),
+    "Daniel Palencia": ("daniel_palencia", "chc", "R"),
     "Caleb Thielbar": ("caleb_thielbar", "chc", "L"),
+    "Jacob Webb": ("jacob_webb", "chc", "R"),
+    "Ryan Zeferjahn": ("ryan_zeferjahn", "chc", "R"),
+    "David Peterson": ("david_peterson", "chc", "L"),
+    "Ryan Rolison": ("ryan_rolison", "chc", "L"),
+    "Trent Thornton": ("trent_thornton", "chc", "R"),
     # DET
     "Tarik Skubal": ("skubal", "det", "L"),
     "Casey Mize": ("mize", "det", "R"),
@@ -125,6 +136,8 @@ CATCHER_ROSTER = {
     "Curt Casali": ("curt_casali", "sf", "backup"),
     "Drew Romo": ("drew_romo", "col", "starter"),
     "Jacob Stallings": ("jacob_stallings", "col", "backup"),
+    "Carson Kelly": ("carson_kelly", "chc", "starter"),
+    "Miguel Amaya": ("miguel_amaya", "chc", "backup"),
 }
 
 TEAM_META = {

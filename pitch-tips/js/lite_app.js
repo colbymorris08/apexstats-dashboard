@@ -2205,6 +2205,32 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     ["diaz", "diaz"],
     ["luis_campusano", "campusano"],
     ["campusano", "campusano"],
+    ["blas_casta", "castano"],
+    ["castano", "castano"],
+    ["brennan_bernardino", "bernardino"],
+    ["bernardino", "bernardino"],
+    ["jaden_hill", "hill"],
+    ["jimmy_herget", "herget"],
+    ["herget", "herget"],
+    ["jordan_romano", "romano"],
+    ["romano", "romano"],
+    ["juan_mejia", "mejia"],
+    ["mejia", "mejia"],
+    ["mark_manfredi", "manfredi"],
+    ["manfredi", "manfredi"],
+    ["mason_adams", "adams"],
+    ["nick_frasso", "frasso"],
+    ["frasso", "frasso"],
+    ["ryan_feltner", "feltner"],
+    ["feltner", "feltner"],
+    ["tomoyuki_sugano", "sugano"],
+    ["sugano", "sugano"],
+    ["zach_agnos", "agnos"],
+    ["agnos", "agnos"],
+    ["drew_romo", "romo"],
+    ["romo", "romo"],
+    ["jacob_stallings", "stallings"],
+    ["stallings", "stallings"],
   ];
   for (const [key, prefix] of enterprisePrefix) {
     if (normId === key || normId.includes(key)) {
@@ -2289,8 +2315,8 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
     if (tip?.anchor_b == null && tip?.tB == null) tB = 2.10;
   }
 
-  if (/\b(king|vasquez|ray|buehler|diaz|campusano)\b/i.test(pid)) {
-    // Pre-set through delivery window for SD Padres matrix.
+  if (/\b(king|vasquez|ray|buehler|diaz|campusano|castano|bernardino|jaden_hill|herget|romano|mejia|manfredi|mason_adams|frasso|feltner|sugano|agnos|romo|stallings)\b/i.test(pid)) {
+    // Pre-set through delivery window for team matrix arms.
     if (tip?.anchor_a == null && tip?.tA == null) tA = 2.40;
     if (tip?.anchor_b == null && tip?.tB == null) tB = 2.20;
   }

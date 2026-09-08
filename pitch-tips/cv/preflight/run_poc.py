@@ -1034,6 +1034,12 @@ def main() -> int:
         action="store_true",
         help="Skip download/track; join context onto existing features.csv and remine tips",
     )
+    p.add_argument(
+        "--mlbam",
+        type=int,
+        default=None,
+        help="Optional MLBAM id — skip Chadwick playerid_lookup when set",
+    )
     args = p.parse_args()
     run_poc(
         args.pitcher,
@@ -1043,6 +1049,7 @@ def main() -> int:
         remine_only=args.remine_only,
         games=args.games,
         quota=args.quota,
+        mlbam=args.mlbam,
     )
     return 0
 

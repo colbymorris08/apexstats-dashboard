@@ -186,6 +186,26 @@ SLIDES = [
 </div>""",
     },
     {
+        "title": "How Long to Complete One Team",
+        "subhead": "Measured wall-clock — San Diego Padres full-site matrix (2026-09-07).",
+        "bullets": [
+            "**Timed team:** San Diego Padres — **4 pitchers** (King, Vásquez, Ray, Buehler) + **2 catchers** (Díaz, Campusano)",
+            "**Included:** filters `bases_empty` / `runners_on` / `runner_1b` / `runner_2b` · **n≈10** samples per cell · **5 tips** per pitcher · dated exemplars · identity + pitch-type match",
+            "**Pitcher matrix:** **100/100** cells published (5 pitch codes × canon + 4 filters)",
+            "**Wall-clock:** **~1h 8m** end-to-end (acquire → verify/tip publish → deploy)",
+            "**Breakdown:** acquire **~14 min** · verify/tip publish **~1–2 min** · catcher videos + deploy **~40–50 min** (incl. GitHub push / approvals)",
+            "**Catchers:** tip A/B CF videos live; cmitt remine queued (no mitt boxes on these CF crops)",
+        ],
+        "extra_html": """
+<div class="coverage-grid">
+  <div class="stat-card"><div class="stat-num">1h 8m</div><div class="stat-label">Wall-Clock</div></div>
+  <div class="stat-card"><div class="stat-num">4+2</div><div class="stat-label">Pitchers + Catchers</div></div>
+  <div class="stat-card"><div class="stat-num">100</div><div class="stat-label">Pitcher Cells</div></div>
+  <div class="stat-card"><div class="stat-num">≈10</div><div class="stat-label">Samples / Filter</div></div>
+</div>
+<p class="signal-caption">SD Padres · n≈10 → dated exemplar · 5 tips/arm · GitHub-as-archive</p>""",
+    },
+    {
         "title": "Request Enterprise Scouting Pilot Access",
         "subhead": "Verified clips, independent scrubbers, and full situational dossiers.",
         "bullets": [
@@ -220,7 +240,7 @@ SLIDES = [
     },
 ]
 
-assert len(SLIDES) == 11, f"Expected 11 slides, got {len(SLIDES)}"
+assert len(SLIDES) == 12, f"Expected 12 slides, got {len(SLIDES)}"
 
 
 def md_bold(text: str) -> str:
@@ -432,7 +452,7 @@ def build_html() -> str:
     parts = [HTML_HEAD]
     for i, slide in enumerate(SLIDES, 1):
         parts.append(f'<section class="slide" data-slide="{i}" id="slide-{i}">')
-        parts.append(f'<div class="slide-num">{i} / 11</div>')
+        parts.append(f'<div class="slide-num">{i} / {len(SLIDES)}</div>')
         parts.append(f"<h1>{html_bold(slide['title'])}</h1>")
         parts.append(f"<p class=\"subhead\">{html_bold(slide['subhead'])}</p>")
         if slide.get("extra_html"):
@@ -465,7 +485,7 @@ def build_readme() -> str:
         How to open:
           • Double-click Preflight_Sales_Deck.html (opens in Safari, Chrome, or Firefox)
           • Use ← → arrow keys, Space, or the Prev/Next buttons to navigate
-          • 11 slides total — slide counter shown bottom-right
+          • 12 slides total — slide counter shown bottom-right
 
         How to present fullscreen:
           • Chrome/Safari: View → Enter Full Screen (or F11 in Chrome)
@@ -481,7 +501,7 @@ def build_readme() -> str:
           • 11 pages — one slide per page, dark theme preserved
 
         Individual slide PDFs:
-          • slides_pdf/slide_01.pdf through slide_11.pdf
+          • slides_pdf/slide_01.pdf through slide_12.pdf
           • Useful for email attachments or Google Slides import one-at-a-time
 
 
@@ -555,7 +575,7 @@ def build_pptx(path: Path) -> None:
 
         num_box = s.shapes.add_textbox(Inches(11.5), Inches(6.8), Inches(1.5), Inches(0.4))
         num_tf = num_box.text_frame
-        num_tf.text = f"{i} / 11"
+        num_tf.text = f"{i} / {len(SLIDES)}"
         num_p = num_tf.paragraphs[0]
         num_p.font.size = Pt(11)
         num_p.font.color.rgb = RGBColor(148, 163, 184)
