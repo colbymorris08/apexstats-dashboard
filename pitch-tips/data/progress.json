@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 720,
   "nlwest_pitchers": 70,
-  "remaining": 672,
+  "remaining": 671,
   "sec_per_pitch": 10.0,
   "eta_hours": 540.5,
   "est_total_pitches": 194590,
   "current": {
-    "name": "Merrill Kelly",
+    "name": "Brandon Pfaadt",
     "team": "ARI",
-    "message": "pitcher [2/13] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [3/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -857,8 +857,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/eduardo_rodriguez_poc",
       "schema": "rich_72col",
       "n_current_tracks": 302,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -3297,8 +3297,8 @@
   "by_team": {
     "ARI": {
       "queued": 13,
-      "done": 13,
-      "pitcher_tips": 35,
+      "done": 14,
+      "pitcher_tips": 40,
       "catcher_tips": 30
     },
     "COL": {
@@ -3334,12 +3334,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 169,
+    "pitcher_tips": 174,
     "catcher_tips": 131
   },
-  "updated_at": "2026-09-08T15:18:29",
+  "updated_at": "2026-09-08T16:04:38",
   "live": {
-    "pitches_done": 220,
+    "pitches_done": 260,
     "pitches_target": null
   },
   "heartbeat": true
