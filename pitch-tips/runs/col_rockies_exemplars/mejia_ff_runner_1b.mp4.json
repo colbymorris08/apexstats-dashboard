@@ -1,0 +1,17 @@
+{
+  "file": "mejia_ff_runner_1b.mp4",
+  "player": "Juan Mejia",
+  "mlbam": 675848,
+  "prefix": "mejia",
+  "pitch_code": "ff",
+  "filter": "runner_1b",
+  "play_id": "cd1ecc68-13cb-3b2c-aa0c-098256b7bb10",
+  "game_date": "2026-09-02",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 9,
+  "n_downloaded_ok": 9,
+  "source": "features",
+  "md5": "fcda6c5437bdc76d6d221a4ca989cc1d",
+  "bytes": 3761218,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

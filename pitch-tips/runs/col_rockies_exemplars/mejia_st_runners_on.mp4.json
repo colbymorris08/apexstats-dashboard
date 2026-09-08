@@ -1,0 +1,17 @@
+{
+  "file": "mejia_st_runners_on.mp4",
+  "player": "Juan Mejia",
+  "mlbam": 675848,
+  "prefix": "mejia",
+  "pitch_code": "st",
+  "filter": "runners_on",
+  "play_id": "ed9b3138-e737-30a3-a937-3a4881e90944",
+  "game_date": "2026-09-02",
+  "pitch_type_statcast": "ST",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "features",
+  "md5": "502dad9881182c15e5c000e607fe6ec5",
+  "bytes": 4550622,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

@@ -1,0 +1,17 @@
+{
+  "file": "manfredi_ff_bases_empty.mp4",
+  "player": "Mark Manfredi",
+  "mlbam": 815081,
+  "prefix": "manfredi",
+  "pitch_code": "ff",
+  "filter": "bases_empty",
+  "play_id": "f64c1d34-96db-3aad-9d28-27e89dacbaf8",
+  "game_date": "2026-09-06",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "f9a18ef06fe4f46278f390cf45e8d88e",
+  "bytes": 4666205,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

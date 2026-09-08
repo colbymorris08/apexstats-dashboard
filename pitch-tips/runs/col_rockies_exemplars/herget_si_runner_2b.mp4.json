@@ -1,0 +1,17 @@
+{
+  "file": "herget_si_runner_2b.mp4",
+  "player": "Jimmy Herget",
+  "mlbam": 623474,
+  "prefix": "herget",
+  "pitch_code": "si",
+  "filter": "runner_2b",
+  "play_id": "0a2e2980-a4ea-38bd-b617-cad399d68b40",
+  "game_date": "2026-09-02",
+  "pitch_type_statcast": "SI",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "features",
+  "md5": "782f554bf09ced0ccd39f49dc4041746",
+  "bytes": 4927374,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

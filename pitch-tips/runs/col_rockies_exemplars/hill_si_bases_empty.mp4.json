@@ -1,0 +1,17 @@
+{
+  "file": "hill_si_bases_empty.mp4",
+  "player": "Jaden Hill",
+  "mlbam": 677955,
+  "prefix": "hill",
+  "pitch_code": "si",
+  "filter": "bases_empty",
+  "play_id": "d434f032-6cb3-3247-92f6-fac6f0e469d5",
+  "game_date": "2026-09-05",
+  "pitch_type_statcast": "SI",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "a356d2f4cef24dc52502e568d790a03f",
+  "bytes": 5499818,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

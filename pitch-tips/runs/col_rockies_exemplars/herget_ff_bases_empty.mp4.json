@@ -1,0 +1,17 @@
+{
+  "file": "herget_ff_bases_empty.mp4",
+  "player": "Jimmy Herget",
+  "mlbam": 623474,
+  "prefix": "herget",
+  "pitch_code": "ff",
+  "filter": "bases_empty",
+  "play_id": "d799a7ec-05a2-3349-a6bc-986ff6a7a223",
+  "game_date": "2026-08-29",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "ad7117cc25c4cbee123748dcaff3ac21",
+  "bytes": 4165652,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

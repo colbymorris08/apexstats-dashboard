@@ -1,0 +1,17 @@
+{
+  "file": "romano_ff_runner_2b.mp4",
+  "player": "Jordan Romano",
+  "mlbam": 605447,
+  "prefix": "romano",
+  "pitch_code": "ff",
+  "filter": "runner_2b",
+  "play_id": "8c06b448-6551-3c43-9e51-c01251af8285",
+  "game_date": "2026-09-01",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "features",
+  "md5": "74ef475f615fda9a4e5a7cce0906241d",
+  "bytes": 5775573,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

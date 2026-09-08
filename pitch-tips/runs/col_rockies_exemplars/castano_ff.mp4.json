@@ -1,0 +1,17 @@
+{
+  "file": "castano_ff.mp4",
+  "player": "Blas Casta\u00f1o",
+  "mlbam": 680604,
+  "prefix": "castano",
+  "pitch_code": "ff",
+  "filter": "canon",
+  "play_id": "6111669c-823d-3d10-be3e-73f873e30007",
+  "game_date": "2026-09-02",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 9,
+  "n_downloaded_ok": 9,
+  "source": "statcast+live",
+  "md5": "d09842912cf0e23eaade2163a6db2406",
+  "bytes": 4659221,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

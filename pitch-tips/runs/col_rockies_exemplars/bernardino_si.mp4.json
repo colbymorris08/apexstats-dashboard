@@ -1,0 +1,17 @@
+{
+  "file": "bernardino_si.mp4",
+  "player": "Brennan Bernardino",
+  "mlbam": 657514,
+  "prefix": "bernardino",
+  "pitch_code": "si",
+  "filter": "canon",
+  "play_id": "22bed124-d7ee-3267-b169-c60457049fff",
+  "game_date": "2026-09-05",
+  "pitch_type_statcast": "SI",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "525c0842d13d1a1363ca579776e97f11",
+  "bytes": 11251246,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

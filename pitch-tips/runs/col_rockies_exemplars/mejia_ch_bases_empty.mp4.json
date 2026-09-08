@@ -1,0 +1,17 @@
+{
+  "file": "mejia_ch_bases_empty.mp4",
+  "player": "Juan Mejia",
+  "mlbam": 675848,
+  "prefix": "mejia",
+  "pitch_code": "ch",
+  "filter": "bases_empty",
+  "play_id": "19c7f3d9-9253-3b8a-883a-b72a970fc755",
+  "game_date": "2026-08-05",
+  "pitch_type_statcast": "CH",
+  "n_sampled": 5,
+  "n_downloaded_ok": 5,
+  "source": "statcast+live",
+  "md5": "7f5c2ca4d1291e9e78905688f1982895",
+  "bytes": 4279473,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

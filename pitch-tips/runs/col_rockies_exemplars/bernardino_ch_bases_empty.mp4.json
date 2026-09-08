@@ -1,0 +1,17 @@
+{
+  "file": "bernardino_ch_bases_empty.mp4",
+  "player": "Brennan Bernardino",
+  "mlbam": 657514,
+  "prefix": "bernardino",
+  "pitch_code": "ch",
+  "filter": "bases_empty",
+  "play_id": "c5e54922-0ef4-3fc9-9942-ab01268539f1",
+  "game_date": "2026-08-29",
+  "pitch_type_statcast": "CH",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "58bf2dcca171269ba8f335bfdd67e169",
+  "bytes": 5180877,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

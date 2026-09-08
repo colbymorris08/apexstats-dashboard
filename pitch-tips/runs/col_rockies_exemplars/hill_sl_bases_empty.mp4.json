@@ -1,0 +1,17 @@
+{
+  "file": "hill_sl_bases_empty.mp4",
+  "player": "Jaden Hill",
+  "mlbam": 677955,
+  "prefix": "hill",
+  "pitch_code": "sl",
+  "filter": "bases_empty",
+  "play_id": "cc303c5b-6638-30ac-9917-962d546c5a2b",
+  "game_date": "2026-09-05",
+  "pitch_type_statcast": "SL",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "fb708d3c93ed6de13bd58e3544a3e3ec",
+  "bytes": 4508774,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

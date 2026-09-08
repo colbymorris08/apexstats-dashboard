@@ -1,0 +1,17 @@
+{
+  "file": "mejia_sl_runner_1b.mp4",
+  "player": "Juan Mejia",
+  "mlbam": 675848,
+  "prefix": "mejia",
+  "pitch_code": "sl",
+  "filter": "runner_1b",
+  "play_id": "84ecb1ea-3b89-34bc-8cc0-68e622d7f342",
+  "game_date": "2026-06-21",
+  "pitch_type_statcast": "SL",
+  "n_sampled": 2,
+  "n_downloaded_ok": 2,
+  "source": "statcast+live",
+  "md5": "a26d3fed138bd5d008993fb48de9f996",
+  "bytes": 5093142,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

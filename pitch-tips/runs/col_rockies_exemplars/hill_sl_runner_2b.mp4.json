@@ -1,0 +1,17 @@
+{
+  "file": "hill_sl_runner_2b.mp4",
+  "player": "Jaden Hill",
+  "mlbam": 677955,
+  "prefix": "hill",
+  "pitch_code": "sl",
+  "filter": "runner_2b",
+  "play_id": "d9096eeb-75bd-30d0-aa49-0bd0df62b0db",
+  "game_date": "2026-09-02",
+  "pitch_type_statcast": "SL",
+  "n_sampled": 7,
+  "n_downloaded_ok": 7,
+  "source": "features",
+  "md5": "6f1ba9dde388f3bd6bd524ea782c0086",
+  "bytes": 3679129,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

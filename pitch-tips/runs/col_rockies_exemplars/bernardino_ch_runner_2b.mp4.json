@@ -1,0 +1,17 @@
+{
+  "file": "bernardino_ch_runner_2b.mp4",
+  "player": "Brennan Bernardino",
+  "mlbam": 657514,
+  "prefix": "bernardino",
+  "pitch_code": "ch",
+  "filter": "runner_2b",
+  "play_id": "cc23edf5-3d0f-3c64-b5ee-23c575128cf4",
+  "game_date": "2026-08-31",
+  "pitch_type_statcast": "CH",
+  "n_sampled": 6,
+  "n_downloaded_ok": 6,
+  "source": "features",
+  "md5": "eab58e74f7de91217c6dc3af4a8c01bd",
+  "bytes": 5223865,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

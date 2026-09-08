@@ -1,0 +1,17 @@
+{
+  "file": "hill_ff.mp4",
+  "player": "Jaden Hill",
+  "mlbam": 677955,
+  "prefix": "hill",
+  "pitch_code": "ff",
+  "filter": "canon",
+  "play_id": "e01b2035-6532-3e54-a527-6909d9d0703c",
+  "game_date": "2026-08-29",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "cdd5255fac430469867262d7d5c8af75",
+  "bytes": 4806953,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

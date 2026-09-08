@@ -1,0 +1,17 @@
+{
+  "file": "manfredi_ff_runner_1b.mp4",
+  "player": "Mark Manfredi",
+  "mlbam": 815081,
+  "prefix": "manfredi",
+  "pitch_code": "ff",
+  "filter": "runner_1b",
+  "play_id": "f11b5faa-c015-3812-9025-ff08a258871c",
+  "game_date": "2026-08-31",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "features",
+  "md5": "67eb67967a38e3a2440fb088fc68045c",
+  "bytes": 8071856,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

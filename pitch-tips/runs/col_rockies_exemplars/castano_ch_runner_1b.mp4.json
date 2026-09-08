@@ -1,0 +1,17 @@
+{
+  "file": "castano_ch_runner_1b.mp4",
+  "player": "Blas Casta\u00f1o",
+  "mlbam": 680604,
+  "prefix": "castano",
+  "pitch_code": "ch",
+  "filter": "runner_1b",
+  "play_id": "8e66719c-3b29-3860-8cdb-4b8bea4852fd",
+  "game_date": "2026-06-14",
+  "pitch_type_statcast": "CH",
+  "n_sampled": 4,
+  "n_downloaded_ok": 4,
+  "source": "statcast+live",
+  "md5": "11b7cdce9e66a56bb94df40ac0333a85",
+  "bytes": 4044404,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

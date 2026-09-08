@@ -1,0 +1,17 @@
+{
+  "file": "castano_si_runner_1b.mp4",
+  "player": "Blas Casta\u00f1o",
+  "mlbam": 680604,
+  "prefix": "castano",
+  "pitch_code": "si",
+  "filter": "runner_1b",
+  "play_id": "419a3c67-10a6-3cc2-804f-f82ce0326b6a",
+  "game_date": "2026-09-06",
+  "pitch_type_statcast": "SI",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "4af9e8a14a9f6228bacb3b761bc50e49",
+  "bytes": 4392899,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

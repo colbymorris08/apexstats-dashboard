@@ -1,0 +1,17 @@
+{
+  "file": "mejia_ff.mp4",
+  "player": "Juan Mejia",
+  "mlbam": 675848,
+  "prefix": "mejia",
+  "pitch_code": "ff",
+  "filter": "canon",
+  "play_id": "9274a6df-4736-3b3d-9ec5-b69dd7483086",
+  "game_date": "2026-09-06",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "a027990236d8123c7416ebc07d311fe0",
+  "bytes": 4219559,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

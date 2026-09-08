@@ -1,0 +1,17 @@
+{
+  "file": "romano_ff_bases_empty.mp4",
+  "player": "Jordan Romano",
+  "mlbam": 605447,
+  "prefix": "romano",
+  "pitch_code": "ff",
+  "filter": "bases_empty",
+  "play_id": "f6fcca91-f53f-3427-8823-71162a3f556c",
+  "game_date": "2026-09-04",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "61a236d4fe579f6078a7a5cf1a3d3826",
+  "bytes": 5295390,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

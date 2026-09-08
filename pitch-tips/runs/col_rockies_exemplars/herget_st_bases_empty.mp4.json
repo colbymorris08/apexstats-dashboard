@@ -1,0 +1,17 @@
+{
+  "file": "herget_st_bases_empty.mp4",
+  "player": "Jimmy Herget",
+  "mlbam": 623474,
+  "prefix": "herget",
+  "pitch_code": "st",
+  "filter": "bases_empty",
+  "play_id": "f9a88afa-5f78-3498-b532-033dca3b48fb",
+  "game_date": "2026-09-06",
+  "pitch_type_statcast": "ST",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "12b63477a5fad448f9cbcedf8ea29f07",
+  "bytes": 4893400,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

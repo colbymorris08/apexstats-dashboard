@@ -1,0 +1,17 @@
+{
+  "file": "bernardino_si_bases_empty.mp4",
+  "player": "Brennan Bernardino",
+  "mlbam": 657514,
+  "prefix": "bernardino",
+  "pitch_code": "si",
+  "filter": "bases_empty",
+  "play_id": "7d67e341-80cb-339e-8fc4-3cfa0ed9edd9",
+  "game_date": "2026-08-31",
+  "pitch_type_statcast": "SI",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "40c1a32b03babe10cb71dcdfea504e45",
+  "bytes": 4523125,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

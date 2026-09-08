@@ -1,0 +1,17 @@
+{
+  "file": "bernardino_fc.mp4",
+  "player": "Brennan Bernardino",
+  "mlbam": 657514,
+  "prefix": "bernardino",
+  "pitch_code": "fc",
+  "filter": "canon",
+  "play_id": "b9656cc8-0ca2-34c7-8857-4f1944e171a0",
+  "game_date": "2026-09-05",
+  "pitch_type_statcast": "FC",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "9f02ab6c5d4a60e7f2ed023576120899",
+  "bytes": 4192553,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

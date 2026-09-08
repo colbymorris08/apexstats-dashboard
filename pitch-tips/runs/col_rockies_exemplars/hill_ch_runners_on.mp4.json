@@ -1,0 +1,17 @@
+{
+  "file": "hill_ch_runners_on.mp4",
+  "player": "Jaden Hill",
+  "mlbam": 677955,
+  "prefix": "hill",
+  "pitch_code": "ch",
+  "filter": "runners_on",
+  "play_id": "eaae11d7-4eb2-3dea-b5ed-b25cc72b6701",
+  "game_date": "2026-09-02",
+  "pitch_type_statcast": "CH",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "features",
+  "md5": "ae13026cc0bb7cda20c29070f470accf",
+  "bytes": 7711851,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

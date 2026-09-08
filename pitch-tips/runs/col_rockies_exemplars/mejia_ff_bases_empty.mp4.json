@@ -1,0 +1,17 @@
+{
+  "file": "mejia_ff_bases_empty.mp4",
+  "player": "Juan Mejia",
+  "mlbam": 675848,
+  "prefix": "mejia",
+  "pitch_code": "ff",
+  "filter": "bases_empty",
+  "play_id": "932aaaaa-4bca-3a55-8c92-85d135977e5f",
+  "game_date": "2026-09-06",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "9a40bce74a1e5b02de35df1a5ed1655d",
+  "bytes": 5671303,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

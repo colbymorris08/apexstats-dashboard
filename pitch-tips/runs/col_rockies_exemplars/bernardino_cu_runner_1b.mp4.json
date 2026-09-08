@@ -1,0 +1,17 @@
+{
+  "file": "bernardino_cu_runner_1b.mp4",
+  "player": "Brennan Bernardino",
+  "mlbam": 657514,
+  "prefix": "bernardino",
+  "pitch_code": "cu",
+  "filter": "runner_1b",
+  "play_id": "aa56a298-9629-3f67-87a2-285fb515e48a",
+  "game_date": "2026-09-04",
+  "pitch_type_statcast": "CU",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "82ede14c979622e9dffa8176508498c7",
+  "bytes": 4798060,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

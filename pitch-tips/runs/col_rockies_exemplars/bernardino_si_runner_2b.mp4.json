@@ -1,0 +1,17 @@
+{
+  "file": "bernardino_si_runner_2b.mp4",
+  "player": "Brennan Bernardino",
+  "mlbam": 657514,
+  "prefix": "bernardino",
+  "pitch_code": "si",
+  "filter": "runner_2b",
+  "play_id": "eb80190f-5bb0-398a-a73c-8fcde5fc89ae",
+  "game_date": "2026-09-01",
+  "pitch_type_statcast": "SI",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "features",
+  "md5": "7f4a03ab8dad36968ffcbc8d4c6188f3",
+  "bytes": 5463506,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

@@ -1,0 +1,17 @@
+{
+  "file": "manfredi_sl.mp4",
+  "player": "Mark Manfredi",
+  "mlbam": 815081,
+  "prefix": "manfredi",
+  "pitch_code": "sl",
+  "filter": "canon",
+  "play_id": "8d283c0d-db6d-3a8e-8897-dc3b60fba54a",
+  "game_date": "2026-08-31",
+  "pitch_type_statcast": "SL",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "96fdfb17b42788cdd20155b4d2fe44e3",
+  "bytes": 4791082,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

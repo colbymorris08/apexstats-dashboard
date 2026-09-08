@@ -1,0 +1,17 @@
+{
+  "file": "hill_ff_runner_2b.mp4",
+  "player": "Jaden Hill",
+  "mlbam": 677955,
+  "prefix": "hill",
+  "pitch_code": "ff",
+  "filter": "runner_2b",
+  "play_id": "ebf1e45d-d808-3c9b-aaf6-cabe20c2dc78",
+  "game_date": "2026-09-02",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "features",
+  "md5": "2f6927682b316a88b97816b1ff1c9ea3",
+  "bytes": 5283479,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

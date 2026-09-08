@@ -1,0 +1,17 @@
+{
+  "file": "herget_st.mp4",
+  "player": "Jimmy Herget",
+  "mlbam": 623474,
+  "prefix": "herget",
+  "pitch_code": "st",
+  "filter": "canon",
+  "play_id": "b93cb596-9606-34a0-bd71-a48aa2c13f1e",
+  "game_date": "2026-09-06",
+  "pitch_type_statcast": "ST",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "f0b4097ad3afbfc2f69ac1122c778acf",
+  "bytes": 4486426,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

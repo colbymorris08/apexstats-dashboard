@@ -56,3 +56,11 @@ All other roster arms remain enterprise-locked (`SHOWCASE_ARM_IDS` / `SHOWCASE_I
 | Mitt/cmitt | Detector returned no mitt boxes on these CF crops — remine queued; prior catcher tips retained |
 | Disk | GitHub-as-archive; local purge after push; ≥15 GB floor |
 
+
+## In progress 2026-09-07 — Colorado Rockies full-staff benchmark
+| Item | Status |
+|------|--------|
+| Team | **Colorado Rockies** — 12 pitchers with **zero** prior tip1 videos (+ Gordon/Hughes had tip1 showcase, excluded from timed set) + catchers Romo, Stallings |
+| Pitchers | Castaño, Bernardino, Hill, Herget, Romano, Mejia, Manfredi, Adams, Frasso, Feltner, Sugano, Agnos |
+| Note | Padres slide was a **partial matrix refresh** of already-started arms — not a full untouched staff |
+| Disk | Phased push+purge under ≥12.5 GB hard floor (target ≥15 GB) |

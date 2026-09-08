@@ -1,0 +1,17 @@
+{
+  "file": "herget_ff_runners_on.mp4",
+  "player": "Jimmy Herget",
+  "mlbam": 623474,
+  "prefix": "herget",
+  "pitch_code": "ff",
+  "filter": "runners_on",
+  "play_id": "d9356beb-2e59-3757-9a5f-87ba13e74824",
+  "game_date": "2026-09-02",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "features",
+  "md5": "0effe4b01ad288b9d4526b50ad825ac0",
+  "bytes": 5054779,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

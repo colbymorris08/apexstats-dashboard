@@ -1,0 +1,17 @@
+{
+  "file": "manfredi_ff.mp4",
+  "player": "Mark Manfredi",
+  "mlbam": 815081,
+  "prefix": "manfredi",
+  "pitch_code": "ff",
+  "filter": "canon",
+  "play_id": "29b291b9-952a-3307-966e-e52a13363da2",
+  "game_date": "2026-09-06",
+  "pitch_type_statcast": "FF",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "e0a2dfd41dadab6d73c767e68e270165",
+  "bytes": 7031173,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

@@ -1,0 +1,17 @@
+{
+  "file": "castano_st_runner_2b.mp4",
+  "player": "Blas Casta\u00f1o",
+  "mlbam": 680604,
+  "prefix": "castano",
+  "pitch_code": "st",
+  "filter": "runner_2b",
+  "play_id": "d82ba845-8c86-3845-9d76-48bb79135bd5",
+  "game_date": "2026-06-11",
+  "pitch_type_statcast": "ST",
+  "n_sampled": 2,
+  "n_downloaded_ok": 2,
+  "source": "statcast+live",
+  "md5": "b8194ff1ea60aea4707cddbb8f4be92e",
+  "bytes": 4551690,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

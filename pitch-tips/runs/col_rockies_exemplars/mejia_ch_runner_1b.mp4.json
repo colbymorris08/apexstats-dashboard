@@ -1,0 +1,17 @@
+{
+  "file": "mejia_ch_runner_1b.mp4",
+  "player": "Juan Mejia",
+  "mlbam": 675848,
+  "prefix": "mejia",
+  "pitch_code": "ch",
+  "filter": "runner_1b",
+  "play_id": "6bed5bd3-7f5d-39d0-b724-c7dce7f71efe",
+  "game_date": "2026-06-02",
+  "pitch_type_statcast": "CH",
+  "n_sampled": 1,
+  "n_downloaded_ok": 1,
+  "source": "statcast+live",
+  "md5": "6c0f391bd1a0699e997f428be9e13c72",
+  "bytes": 4144494,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

@@ -1,0 +1,17 @@
+{
+  "file": "herget_sl_runner_2b.mp4",
+  "player": "Jimmy Herget",
+  "mlbam": 623474,
+  "prefix": "herget",
+  "pitch_code": "sl",
+  "filter": "runner_2b",
+  "play_id": "ad2b9e32-5ee4-3f45-94e9-a7cd55de736f",
+  "game_date": "2026-09-02",
+  "pitch_type_statcast": "SL",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "features",
+  "md5": "d2bc7e6f606fd6883208e7bde2b6ea28",
+  "bytes": 5203960,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

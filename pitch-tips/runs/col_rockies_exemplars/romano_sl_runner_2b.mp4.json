@@ -1,0 +1,17 @@
+{
+  "file": "romano_sl_runner_2b.mp4",
+  "player": "Jordan Romano",
+  "mlbam": 605447,
+  "prefix": "romano",
+  "pitch_code": "sl",
+  "filter": "runner_2b",
+  "play_id": "66792030-f54b-32a1-ba32-be88c0389cc4",
+  "game_date": "2026-09-01",
+  "pitch_type_statcast": "SL",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "features",
+  "md5": "81c2948767ac52bc661c681d02f99fd4",
+  "bytes": 5134341,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

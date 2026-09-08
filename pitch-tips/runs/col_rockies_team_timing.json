@@ -1,0 +1,12 @@
+{
+  "team": "COL",
+  "name": "Colorado Rockies",
+  "started_at": "2026-09-08T01:20:27Z",
+  "start_epoch": 1788830427,
+  "scope": "12 pitchers zero-tip1 + 2 catchers; Gordon/Hughes excluded",
+  "phases": {
+    "acquire_phase1_sec": 1793.6,
+    "acquire_phase1_cells": 140,
+    "acquire_phase1_at": "2026-09-08T01:50:20Z"
+  }
+}

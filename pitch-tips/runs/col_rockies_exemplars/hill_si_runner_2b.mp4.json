@@ -1,0 +1,17 @@
+{
+  "file": "hill_si_runner_2b.mp4",
+  "player": "Jaden Hill",
+  "mlbam": 677955,
+  "prefix": "hill",
+  "pitch_code": "si",
+  "filter": "runner_2b",
+  "play_id": "d1d7baa0-24eb-39cc-9821-1b90bbe7d3b0",
+  "game_date": "2026-08-29",
+  "pitch_type_statcast": "SI",
+  "n_sampled": 8,
+  "n_downloaded_ok": 8,
+  "source": "features",
+  "md5": "1ca3d0b9ff47d2b4cfd5cdb8b78efca9",
+  "bytes": 8012362,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

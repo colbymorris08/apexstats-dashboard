@@ -1,0 +1,17 @@
+{
+  "file": "romano_sl_bases_empty.mp4",
+  "player": "Jordan Romano",
+  "mlbam": 605447,
+  "prefix": "romano",
+  "pitch_code": "sl",
+  "filter": "bases_empty",
+  "play_id": "6ff905bc-dab3-3fe4-9c5f-389bce171364",
+  "game_date": "2026-09-04",
+  "pitch_type_statcast": "SL",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "ae2a75de3cb79ce01f9c0ea0f3b84e2e",
+  "bytes": 4988800,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}

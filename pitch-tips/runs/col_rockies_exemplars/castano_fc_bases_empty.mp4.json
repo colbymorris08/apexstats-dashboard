@@ -1,0 +1,17 @@
+{
+  "file": "castano_fc_bases_empty.mp4",
+  "player": "Blas Casta\u00f1o",
+  "mlbam": 680604,
+  "prefix": "castano",
+  "pitch_code": "fc",
+  "filter": "bases_empty",
+  "play_id": "b3299f86-f2b5-3bdf-9694-3b2aa7f73220",
+  "game_date": "2026-09-06",
+  "pitch_type_statcast": "FC",
+  "n_sampled": 10,
+  "n_downloaded_ok": 10,
+  "source": "statcast+live",
+  "md5": "850e61856ec89c40b5db187f4f78e22e",
+  "bytes": 4485554,
+  "identity_gate": "statcast_pitcher_id+pitch_type join"
+}
