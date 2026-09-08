@@ -10,9 +10,9 @@
   "eta_hours": 540.5,
   "est_total_pitches": 194590,
   "current": {
-    "name": "Juan Morillo",
+    "name": "Taylor Clarke",
     "team": "ARI",
-    "message": "pitcher [5/13] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [6/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -190,24 +190,6 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jovani_mor\u00e1n_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "664199": {
-      "name": "Taylor Clarke",
-      "team": "ARI",
-      "n_tracked": 101,
-      "holdout": 0.0,
-      "tips_ge_75": 1,
-      "catcher_tips": 1,
-      "legacy_tips_ge_75": 1,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/taylor_clarke_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -857,6 +839,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kevin_ginkel_poc",
       "schema": "rich_72col",
       "n_current_tracks": 107,
+      "ready": true,
+      "state": "complete"
+    },
+    "666661": {
+      "name": "Juan Morillo",
+      "team": "ARI",
+      "n_tracked": 136,
+      "holdout": 0.353,
+      "tips_ge_75": 1,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 1,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/juan_morillo_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 161,
       "ready": false,
       "state": "tracking"
     }
@@ -3299,7 +3299,7 @@
       "queued": 13,
       "done": 14,
       "pitcher_tips": 43,
-      "catcher_tips": 25
+      "catcher_tips": 24
     },
     "COL": {
       "queued": 14,
@@ -3335,11 +3335,11 @@
   "phases": null,
   "totals": {
     "pitcher_tips": 177,
-    "catcher_tips": 126
+    "catcher_tips": 125
   },
-  "updated_at": "2026-09-08T17:02:22",
+  "updated_at": "2026-09-08T17:38:00",
   "live": {
-    "pitches_done": 130,
+    "pitches_done": 100,
     "pitches_target": null
   },
   "heartbeat": true
