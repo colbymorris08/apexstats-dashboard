@@ -202,7 +202,7 @@
       "leagueBadge": "MLB ⚾",
       "division": "NL West",
       "tipCount": 14,
-      "avgConfidence": 0.835,
+      "avgConfidence": 0.837,
       "playersWithTips": 4,
       "players": [
         "eduardo_rodriguez",
@@ -1046,25 +1046,25 @@
       "picked": true,
       "pickConfidence": 0.2,
       "tier": "watch",
-      "pitchesModeled": 220,
+      "pitchesModeled": 222,
       "holdoutAccuracy": 0.2,
-      "summary": "Savant CF PoC: 220 pitches / 9 games. 5 pitcher leads · 0 catcher setup leads (≥75% detected movement separation floor).",
+      "summary": "Savant CF PoC: 222 pitches / 9 games. 5 pitcher leads · 0 catcher setup leads (≥75% detected movement separation floor).",
       "contextCoverage": {
         "runner_bucket": {
           "second_any": 118,
-          "1b": 61,
+          "1b": 63,
           "3b": 24,
           "other": 17
         },
         "batter_tag": {
-          "lhh": 161,
-          "rhh": 59
+          "lhh": 162,
+          "rhh": 60
         },
         "delivery": {
-          "stretch": 220
+          "stretch": 222
         },
         "runner_exact": {
-          "1b": 61,
+          "1b": 63,
           "2b": 47,
           "loaded": 40,
           "3b": 24,
@@ -1074,6 +1074,40 @@
         }
       },
       "tips": [
+        {
+          "id": "disc-all-rhh-CU-glove_flare_std",
+          "title": "CU discernable [vs righties]",
+          "angle": "CF",
+          "context": [
+            "vs righties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+rhh+CU"
+          },
+          "lookFor": "On Curveball (CU), glove pocket flexes and expands during grip dig vs rigid angle on rest of arsenal.",
+          "predicts": "CU",
+          "confidence": 0.85,
+          "precision": 0.25,
+          "feature": "glove_flare_std",
+          "threshold": 0.03372697142581533,
+          "high_means_type": true,
+          "n": 60,
+          "nType": 5,
+          "baseline": 0.083,
+          "lift": 10.24,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CU",
+          "situationId": "all|rhh",
+          "situationLabel": "vs righties"
+        },
         {
           "id": "disc-all-all-SI-cheek_motion_mean",
           "title": "SI discernable [all situations]",
@@ -1093,7 +1127,7 @@
           "feature": "cheek_motion_mean",
           "threshold": 0.0013694,
           "high_means_type": false,
-          "n": 220,
+          "n": 222,
           "nType": 1,
           "baseline": 0.167,
           "lift": 4.99,
@@ -1107,40 +1141,6 @@
           "pitchType": "SI",
           "situationId": "all|all",
           "situationLabel": "all situations"
-        },
-        {
-          "id": "disc-all-rhh-CU-glove_flare_std",
-          "title": "CU discernable [vs righties]",
-          "angle": "CF",
-          "context": [
-            "vs righties"
-          ],
-          "tipKind": "pitcher",
-          "stratum": {
-            "kind": "situation_pitcher",
-            "value": "all+rhh+CU"
-          },
-          "lookFor": "On Curveball (CU), glove pocket flexes and expands during grip dig vs rigid angle on rest of arsenal.",
-          "predicts": "CU",
-          "confidence": 0.831,
-          "precision": 0.222,
-          "feature": "glove_flare_std",
-          "threshold": 0.033648007727991106,
-          "high_means_type": true,
-          "n": 59,
-          "nType": 5,
-          "baseline": 0.085,
-          "lift": 9.78,
-          "status": "active",
-          "validation": "empirical_detection_75",
-          "modelScope": "per_pitcher",
-          "gates": {
-            "tip_floor": 0.75,
-            "clears_75": true
-          },
-          "pitchType": "CU",
-          "situationId": "all|rhh",
-          "situationLabel": "vs righties"
         },
         {
           "id": "disc-1b-lhh-FC-pitchcom_mean_isi",
@@ -1158,15 +1158,15 @@
           },
           "lookFor": "In vs lefties, first only, from the set:  On Cutter (FC), wide pauses (>1.0s) occur between PitchCom presses vs tightly clustered taps on rest of arsenal.",
           "predicts": "FC",
-          "confidence": 0.806,
+          "confidence": 0.811,
           "precision": 0.2,
           "feature": "pitchcom_mean_isi",
-          "threshold": 8.665104166666667,
+          "threshold": 8.672222222222222,
           "high_means_type": true,
-          "n": 41,
+          "n": 42,
           "nType": 4,
-          "baseline": 0.111,
-          "lift": 7.26,
+          "baseline": 0.108,
+          "lift": 7.51,
           "status": "active",
           "validation": "situation_one_vs_rest",
           "modelScope": "per_pitcher",
@@ -1194,15 +1194,15 @@
           },
           "lookFor": "In vs lefties, first only, from the set:  On Curveball (CU), active wrist micro-movement is visible at glove collar vs motionless hands on rest of arsenal.",
           "predicts": "CU",
-          "confidence": 0.805,
+          "confidence": 0.81,
           "precision": 0.333,
           "feature": "wrist_speed_mean",
-          "threshold": 0.07199814880033815,
+          "threshold": 0.07205645574976187,
           "high_means_type": true,
-          "n": 41,
+          "n": 42,
           "nType": 6,
-          "baseline": 0.146,
-          "lift": 5.51,
+          "baseline": 0.143,
+          "lift": 5.66,
           "status": "active",
           "validation": "situation_one_vs_rest",
           "modelScope": "per_pitcher",
@@ -1253,6 +1253,40 @@
       ],
       "topLeads": [
         {
+          "id": "disc-all-rhh-CU-glove_flare_std",
+          "title": "CU discernable [vs righties]",
+          "angle": "CF",
+          "context": [
+            "vs righties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+rhh+CU"
+          },
+          "lookFor": "On Curveball (CU), glove pocket flexes and expands during grip dig vs rigid angle on rest of arsenal.",
+          "predicts": "CU",
+          "confidence": 0.85,
+          "precision": 0.25,
+          "feature": "glove_flare_std",
+          "threshold": 0.03372697142581533,
+          "high_means_type": true,
+          "n": 60,
+          "nType": 5,
+          "baseline": 0.083,
+          "lift": 10.24,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CU",
+          "situationId": "all|rhh",
+          "situationLabel": "vs righties"
+        },
+        {
           "id": "disc-all-all-SI-cheek_motion_mean",
           "title": "SI discernable [all situations]",
           "angle": "CF",
@@ -1271,7 +1305,7 @@
           "feature": "cheek_motion_mean",
           "threshold": 0.0013694,
           "high_means_type": false,
-          "n": 220,
+          "n": 222,
           "nType": 1,
           "baseline": 0.167,
           "lift": 4.99,
@@ -1285,40 +1319,6 @@
           "pitchType": "SI",
           "situationId": "all|all",
           "situationLabel": "all situations"
-        },
-        {
-          "id": "disc-all-rhh-CU-glove_flare_std",
-          "title": "CU discernable [vs righties]",
-          "angle": "CF",
-          "context": [
-            "vs righties"
-          ],
-          "tipKind": "pitcher",
-          "stratum": {
-            "kind": "situation_pitcher",
-            "value": "all+rhh+CU"
-          },
-          "lookFor": "On Curveball (CU), glove pocket flexes and expands during grip dig vs rigid angle on rest of arsenal.",
-          "predicts": "CU",
-          "confidence": 0.831,
-          "precision": 0.222,
-          "feature": "glove_flare_std",
-          "threshold": 0.033648007727991106,
-          "high_means_type": true,
-          "n": 59,
-          "nType": 5,
-          "baseline": 0.085,
-          "lift": 9.78,
-          "status": "active",
-          "validation": "empirical_detection_75",
-          "modelScope": "per_pitcher",
-          "gates": {
-            "tip_floor": 0.75,
-            "clears_75": true
-          },
-          "pitchType": "CU",
-          "situationId": "all|rhh",
-          "situationLabel": "vs righties"
         },
         {
           "id": "disc-1b-lhh-FC-pitchcom_mean_isi",
@@ -1336,15 +1336,15 @@
           },
           "lookFor": "In vs lefties, first only, from the set:  On Cutter (FC), wide pauses (>1.0s) occur between PitchCom presses vs tightly clustered taps on rest of arsenal.",
           "predicts": "FC",
-          "confidence": 0.806,
+          "confidence": 0.811,
           "precision": 0.2,
           "feature": "pitchcom_mean_isi",
-          "threshold": 8.665104166666667,
+          "threshold": 8.672222222222222,
           "high_means_type": true,
-          "n": 41,
+          "n": 42,
           "nType": 4,
-          "baseline": 0.111,
-          "lift": 7.26,
+          "baseline": 0.108,
+          "lift": 7.51,
           "status": "active",
           "validation": "situation_one_vs_rest",
           "modelScope": "per_pitcher",
@@ -1372,15 +1372,15 @@
           },
           "lookFor": "In vs lefties, first only, from the set:  On Curveball (CU), active wrist micro-movement is visible at glove collar vs motionless hands on rest of arsenal.",
           "predicts": "CU",
-          "confidence": 0.805,
+          "confidence": 0.81,
           "precision": 0.333,
           "feature": "wrist_speed_mean",
-          "threshold": 0.07199814880033815,
+          "threshold": 0.07205645574976187,
           "high_means_type": true,
-          "n": 41,
+          "n": 42,
           "nType": 6,
-          "baseline": 0.146,
-          "lift": 5.51,
+          "baseline": 0.143,
+          "lift": 5.66,
           "status": "active",
           "validation": "situation_one_vs_rest",
           "modelScope": "per_pitcher",
@@ -1453,7 +1453,7 @@
           "label": "first only, LHH up",
           "runner_bucket": "1b",
           "batter_tag": "lhh",
-          "n": 41,
+          "n": 42,
           "arsenal_n": 5,
           "types_tested": [
             "CH",
@@ -1474,60 +1474,60 @@
               "pitch_type": "CH",
               "n": 13,
               "discernable": false,
-              "accuracy": 0.683,
+              "accuracy": 0.667,
               "feature": "glove_flare_std",
-              "precision": 0.5,
-              "threshold": 0.02079701033096621,
+              "precision": 0.467,
+              "threshold": 0.02096616213561526,
               "high_means_type": true,
-              "baseline": 0.317,
+              "baseline": 0.31,
               "status": "ok"
             },
             {
               "pitch_type": "FF",
-              "n": 11,
+              "n": 12,
               "discernable": false,
-              "accuracy": 0.585,
+              "accuracy": 0.595,
               "feature": "glove_vs_belt_std",
-              "precision": 0.286,
-              "threshold": 0.046583306379933964,
+              "precision": 0.333,
+              "threshold": 0.046317002102754856,
               "high_means_type": true,
-              "baseline": 0.268,
+              "baseline": 0.286,
               "status": "ok"
             },
             {
               "pitch_type": "FC",
               "n": 6,
               "discernable": true,
-              "accuracy": 0.806,
+              "accuracy": 0.811,
               "feature": "pitchcom_mean_isi",
               "precision": 0.2,
-              "threshold": 8.665104166666667,
+              "threshold": 8.672222222222222,
               "high_means_type": true,
-              "baseline": 0.111,
+              "baseline": 0.108,
               "status": "ok"
             },
             {
               "pitch_type": "SI",
               "n": 5,
               "discernable": false,
-              "accuracy": 0.683,
+              "accuracy": 0.69,
               "feature": "glove_vs_belt_std",
               "precision": 0.278,
-              "threshold": 0.03217659619924079,
+              "threshold": 0.03220640868761353,
               "high_means_type": false,
-              "baseline": 0.122,
+              "baseline": 0.119,
               "status": "ok"
             },
             {
               "pitch_type": "CU",
               "n": 6,
               "discernable": true,
-              "accuracy": 0.805,
+              "accuracy": 0.81,
               "feature": "wrist_speed_mean",
               "precision": 0.333,
-              "threshold": 0.07199814880033815,
+              "threshold": 0.07205645574976187,
               "high_means_type": true,
-              "baseline": 0.146,
+              "baseline": 0.143,
               "status": "ok"
             }
           ]
@@ -1566,7 +1566,7 @@
             "label": "first only, LHH up",
             "runner_bucket": "1b",
             "batter_tag": "lhh",
-            "n": 41,
+            "n": 42,
             "arsenal_n": 5,
             "types_tested": [
               "CH",
@@ -1587,60 +1587,60 @@
                 "pitch_type": "CH",
                 "n": 13,
                 "discernable": false,
-                "accuracy": 0.683,
+                "accuracy": 0.667,
                 "feature": "glove_flare_std",
-                "precision": 0.5,
-                "threshold": 0.02079701033096621,
+                "precision": 0.467,
+                "threshold": 0.02096616213561526,
                 "high_means_type": true,
-                "baseline": 0.317,
+                "baseline": 0.31,
                 "status": "ok"
               },
               {
                 "pitch_type": "FF",
-                "n": 11,
+                "n": 12,
                 "discernable": false,
-                "accuracy": 0.585,
+                "accuracy": 0.595,
                 "feature": "glove_vs_belt_std",
-                "precision": 0.286,
-                "threshold": 0.046583306379933964,
+                "precision": 0.333,
+                "threshold": 0.046317002102754856,
                 "high_means_type": true,
-                "baseline": 0.268,
+                "baseline": 0.286,
                 "status": "ok"
               },
               {
                 "pitch_type": "FC",
                 "n": 6,
                 "discernable": true,
-                "accuracy": 0.806,
+                "accuracy": 0.811,
                 "feature": "pitchcom_mean_isi",
                 "precision": 0.2,
-                "threshold": 8.665104166666667,
+                "threshold": 8.672222222222222,
                 "high_means_type": true,
-                "baseline": 0.111,
+                "baseline": 0.108,
                 "status": "ok"
               },
               {
                 "pitch_type": "SI",
                 "n": 5,
                 "discernable": false,
-                "accuracy": 0.683,
+                "accuracy": 0.69,
                 "feature": "glove_vs_belt_std",
                 "precision": 0.278,
-                "threshold": 0.03217659619924079,
+                "threshold": 0.03220640868761353,
                 "high_means_type": false,
-                "baseline": 0.122,
+                "baseline": 0.119,
                 "status": "ok"
               },
               {
                 "pitch_type": "CU",
                 "n": 6,
                 "discernable": true,
-                "accuracy": 0.805,
+                "accuracy": 0.81,
                 "feature": "wrist_speed_mean",
                 "precision": 0.333,
-                "threshold": 0.07199814880033815,
+                "threshold": 0.07205645574976187,
                 "high_means_type": true,
-                "baseline": 0.146,
+                "baseline": 0.143,
                 "status": "ok"
               }
             ]
@@ -1650,7 +1650,7 @@
             "label": "first only, RHH up",
             "runner_bucket": "1b",
             "batter_tag": "rhh",
-            "n": 10,
+            "n": 11,
             "arsenal_n": 5,
             "types_tested": [
               "SI"
@@ -1901,7 +1901,7 @@
             "label": "first only, LHH up",
             "runner_bucket": "1b",
             "batter_tag": "lhh",
-            "n": 41,
+            "n": 42,
             "arsenal_n": 5,
             "types_tested": [
               "CH",
@@ -1921,7 +1921,7 @@
             "label": "first only, RHH up",
             "runner_bucket": "1b",
             "batter_tag": "rhh",
-            "n": 10,
+            "n": 11,
             "arsenal_n": 5,
             "types_tested": [
               "SI"
@@ -2023,13 +2023,13 @@
             "FC",
             "CU"
           ],
-          "n": 41
+          "n": 42
         },
         "1b|rhh": {
           "label": "first only, RHH up",
           "coverage": "0 of 5",
           "discernable_types": [],
-          "n": 10
+          "n": 11
         },
         "second_any|lhh": {
           "label": "any w/ runner on 2nd, LHH up",
