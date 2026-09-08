@@ -45,3 +45,14 @@ All other roster arms remain enterprise-locked (`SHOWCASE_ARM_IDS` / `SHOWCASE_I
 | Mitt publish gap (Moreno) | `cmitt_target_*` wired into catcher discovery prefixes + `_feature_vector`; showcase/lite ship real mitt tips (no fabricated 6.8in `catcher_target_shift_x_in`). |
 | Enterprise tip1 `runners_on` | Tip1 A/B `*_runners_on.mp4` hardlinked from distinct `runner_1b` / canon B-side maps; site filter `loaded`/`12`/`13`/`23` resolves suffix. |
 | Roupp apex timing | Tip1 anchors CU@3.00s / SI@2.10s (leg-lift); removed forced 3.40 near-release override; scrub span 2.8s. |
+
+## Closed 2026-09-07 — San Diego Padres team matrix
+| Item | Status |
+|------|--------|
+| Team | **San Diego Padres** — King, Vásquez, Ray, Buehler + catchers Díaz, Campusano |
+| Pitcher video matrix | **100/100** cells (5 pitch codes × canon+4 filters); n≈10 sample → dated exemplar |
+| Tips | **5 top tips / pitcher** published on full site |
+| Catchers | Tip A/B videos published (canon+bases_empty+runners_on); anchors 0.40/0.50s |
+| Mitt/cmitt | Detector returned no mitt boxes on these CF crops — remine queued; prior catcher tips retained |
+| Disk | GitHub-as-archive; local purge after push; ≥15 GB floor |
+

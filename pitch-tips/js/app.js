@@ -1616,11 +1616,7 @@ const PLAYER_PITCH_FILE_MAP = {
   pfaadt: { cu: "ch", fs: "st" },
   snell: { ch: "cu" },
   stewart: { ch: "st" },
-  buehler: { ff: "fc" },
   kelly: { si: "ch" },
-  ray: { ff: "sl" },
-  king: { ch: "st" },
-  vasquez: { ch: "si" },
   festa: { ch: "st" },
 };
 
@@ -1811,6 +1807,7 @@ function extractPitchCode(pitchType, playerKey) {
   if (/sweep/i.test(first)) return "st";
   if (/sink|\bsi\b/i.test(first)) return "si";
   if (/cutter|\bfc\b/i.test(first)) return "fc";
+  if (/knuckle|\bkc\b/i.test(first)) return "cu";
   if (/\bff\b|four|fastball|\bfast\b/i.test(p)) return "ff";
   if (/split|fork|\bfs\b/i.test(p)) return "fs";
   if (/\bst\b|sweeper/i.test(p)) return "st";
@@ -1820,6 +1817,7 @@ function extractPitchCode(pitchType, playerKey) {
   if (/sweep/i.test(p)) return "st";
   if (/sink|\bsi\b/i.test(p)) return "si";
   if (/cutter|\bfc\b/i.test(p)) return "fc";
+  if (/knuckle|\bkc\b/i.test(p)) return "cu";
   return "ff";
 }
 
@@ -1958,6 +1956,10 @@ function resolveVideoForPitch(playerId, pitchType, defaultFallback, contextFilte
     ["phillips", "phillips"],
     ["brock_stewart", "stewart"],
     ["stewart", "stewart"],
+    ["elias_diaz", "diaz"],
+    ["diaz", "diaz"],
+    ["luis_campusano", "campusano"],
+    ["campusano", "campusano"],
   ];
   for (const [key, prefix] of enterprisePrefix) {
     if (normId === key || normId.includes(key)) {
@@ -2183,6 +2185,12 @@ function parseTipTimingsAndLabels(tip, player, contextFilter = "") {
     // Per-clip leg-lift apex (CU slower than SI). Do NOT force 3.40 — that is near release.
     if (tip?.anchor_a == null && tip?.tA == null) tA = 3.00;
     if (tip?.anchor_b == null && tip?.tB == null) tB = 2.10;
+  }
+
+  if (/\b(king|vasquez|ray|buehler|diaz|campusano)\b/i.test(pid)) {
+    // Pre-set through delivery window for SD Padres matrix.
+    if (tip?.anchor_a == null && tip?.tA == null) tA = 2.40;
+    if (tip?.anchor_b == null && tip?.tB == null) tB = 2.20;
   }
 
   const vComp = player?.videoCompare || {};
