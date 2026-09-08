@@ -480,6 +480,97 @@ function deriveDeliveryTiming(tip) {
   return { deliveryPhase: phase, timestampWindow: window };
 }
 
+/**
+ * Spatial conversions for tip UI (do not invent inches for degrees/seconds).
+ * Torso scale: sales-deck convention 0.06 torso lengths ≈ 4.8 in → 80 in / torso.
+ * Plate scale: MLB home plate = 17 in wide.
+ */
+const TIP_TORSO_LENGTH_INCHES = 80;
+const TIP_PLATE_WIDTH_INCHES = 17;
+
+function formatSignedInches(inches, digits = 1) {
+  if (inches == null || !Number.isFinite(inches)) return null;
+  const rounded = Math.round(inches * 10 ** digits) / 10 ** digits;
+  const sign = rounded > 0 ? "+" : "";
+  return `${sign}${rounded} in`;
+}
+
+function tipInchesDifference(tip) {
+  const raw = tip?.separation_raw;
+  if (raw == null || !Number.isFinite(Number(raw))) {
+    return { label: "—", sub: "No separation magnitude", isInches: false };
+  }
+  const n = Number(raw);
+  const unit = String(tip.unit || "").toLowerCase().trim();
+  const hedges =
+    tip.hedges_d != null ? `Cohen's d = ${tip.hedges_d}` : tip.d != null ? `d = ${tip.d}` : null;
+
+  if (unit === "inches" || unit === "in" || unit.startsWith("inches")) {
+    return {
+      label: formatSignedInches(n),
+      sub: hedges || "Average inches of difference",
+      isInches: true,
+    };
+  }
+  if (unit === "torso lengths" || unit === "torso length") {
+    return {
+      label: formatSignedInches(n * TIP_TORSO_LENGTH_INCHES),
+      sub: hedges || `from ${n > 0 ? "+" : ""}${n} torso lengths (1 torso ≈ ${TIP_TORSO_LENGTH_INCHES} in)`,
+      isInches: true,
+    };
+  }
+  if (unit === "plate widths" || unit === "plate width") {
+    return {
+      label: formatSignedInches(n * TIP_PLATE_WIDTH_INCHES),
+      sub: hedges || `from ${n > 0 ? "+" : ""}${n} plate widths (plate = ${TIP_PLATE_WIDTH_INCHES} in)`,
+      isInches: true,
+    };
+  }
+  if (unit) {
+    const sign = n > 0 ? "+" : "";
+    return {
+      label: `${sign}${n} ${tip.unit}`,
+      sub: hedges || "Native unit (not convertible to inches)",
+      isInches: false,
+    };
+  }
+  return { label: "—", sub: "Unit unknown", isInches: false };
+}
+
+function tipSecondsBeforeRelease(tip) {
+  const explicit =
+    tip?.seconds_before_release ?? tip?.actionability_sec ?? tip?.sec_before_release;
+  if (explicit != null && Number.isFinite(Number(explicit))) {
+    const s = Math.abs(Number(explicit));
+    return { label: `${s}s`, sub: "before release" };
+  }
+
+  const { deliveryPhase, timestampWindow } = deriveDeliveryTiming(tip || {});
+  const blob = [tip?.timestamp_window, tip?.delivery_phase, tip?.tell_window, timestampWindow, deliveryPhase]
+    .filter(Boolean)
+    .join(" · ");
+
+  const windowMatch = blob.match(/Window:\s*(-?\d+(?:\.\d+)?)\s*s/i);
+  if (windowMatch) {
+    return { label: `${Math.abs(parseFloat(windowMatch[1]))}s`, sub: "tell window before release" };
+  }
+
+  const rangeMatch = blob.match(/\((-?\d+(?:\.\d+)?)s\s+to\s+(-?\d+(?:\.\d+)?)s/i);
+  if (rangeMatch) {
+    const a = Math.abs(parseFloat(rangeMatch[1]));
+    const b = Math.abs(parseFloat(rangeMatch[2]));
+    const mid = Math.round(((a + b) / 2) * 100) / 100;
+    return { label: `${mid}s`, sub: "mid tell window before release" };
+  }
+
+  const beforeMatch = blob.match(/(-?\d+(?:\.\d+)?)\s*s\s+before\s+(?:pitch\s+)?release/i);
+  if (beforeMatch) {
+    return { label: `${Math.abs(parseFloat(beforeMatch[1]))}s`, sub: "before release" };
+  }
+
+  return { label: "—", sub: "Timing not in tip metadata" };
+}
+
 function renderTip(tip, angleLabels = {}, rankIndex = null) {
   const rank = tip.rank || (rankIndex != null ? rankIndex : 1);
   const conf = tip.confidence || 0.75;
@@ -490,33 +581,19 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
     ? (tip.context || []).join(", ")
     : "all situations";
 
-  // Delivery phase & timestamp
   const { deliveryPhase, timestampWindow } = deriveDeliveryTiming(tip);
-
-  // Target body part
   const targetBodyPart = tip.target_body_part || tip.body_part || tip.anatomical_location || tip.what_to_look_at || "Pitcher Delivery Geometry & Glove Set";
-
-  // Exact pitch contrast
   const exactPitchContrast = tip.contrast_label || tip.contrast || (tip.predicts ? `${tip.predicts} vs Arsenal Mix` : "Primary vs Secondary");
-
-  // Plain-English visual description
   const visualDescription = tip.what_to_spot || tip.spot_the_difference || tip.lookFor || tip.behavior || tip.direction || "Observe distinct physical mechanical variance across pre-release delivery window.";
   const sideBySideGuide = tip.side_by_side_guide || "";
 
-  // Exact stats & separation magnitude
-  const mult = tip.separation_floor_multiples || 4.8;
-  const sepDisplay = tip.separation_display || `${mult}× visibility floor`;
-  const physicalMagnitude = tip.unit && tip.separation_raw != null
-    ? `${tip.separation_raw > 0 ? "+" : ""}${tip.separation_raw} ${tip.unit} (~${Math.abs(Math.round(tip.separation_raw * 45 * 10) / 10)} in) / ${sepDisplay}`
-    : `+0.06 torso lengths (~2.8 in) / ${sepDisplay}`;
-  const hedgesD = tip.hedges_d != null ? `Cohen's d = ${tip.hedges_d}` : (tip.d != null ? `d = ${tip.d}` : "≥4.8× Scout Visibility Floor");
+  const inchesDiff = tipInchesDifference(tip);
+  const secondsBefore = tipSecondsBeforeRelease(tip);
+  const sepDisplay = inchesDiff.label;
 
   const accuracyPct = Math.round(conf * 1000) / 10;
   const baselinePct = tip.baseline != null ? Math.round(tip.baseline * 1000) / 10 : 33.3;
   const liftVal = tip.lift != null ? `+${Math.round((tip.lift - 1) * 1000) / 10}% Lift (${tip.lift}×)` : `+${Math.round((accuracyPct - baselinePct) * 10) / 10}% Lift`;
-  const validationText = tip.validation
-    ? (tip.validation === "out_of_sample_holdout" ? "Multi-Game Holdout" : tip.validation.replace(/_/g, " "))
-    : "Multi-Game Holdout";
   const sampleN = tip.n || tip.n_total || 75;
 
   const scoutNote = tip.scouting_note || tip.note || "";
@@ -543,7 +620,6 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
         </button>
       </div>
 
-      <!-- Delivery Phase & Video Timestamp Window -->
       <div class="lead-phase-bar">
         <div class="phase-item">
           <span class="phase-label">⏱ Delivery Phase:</span>
@@ -555,24 +631,22 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
         </div>
       </div>
 
-      <!-- Plain-English Visual Description -->
       <div class="lead-desc-box">
         <div class="desc-heading">👁️ What to Spot in Video (Scouting &amp; In-Game Recognition):</div>
         <p class="desc-text">${visualDescription}</p>
         ${sideBySideGuide ? `<p class="desc-sync-guide"><strong>Side-by-Side Video Sync:</strong> ${sideBySideGuide}</p>` : ""}
       </div>
 
-      <!-- Exact Stats & Separation Magnitude Grid -->
       <div class="lead-stats-grid">
         <div class="lead-stat-cell">
-          <div class="stat-label">Physical Magnitude</div>
-          <div class="stat-value highlight">${physicalMagnitude}</div>
-          <div class="stat-sub">${hedgesD}</div>
+          <div class="stat-label">Avg. Difference</div>
+          <div class="stat-value highlight">${inchesDiff.label}</div>
+          <div class="stat-sub">${inchesDiff.sub}</div>
         </div>
         <div class="lead-stat-cell">
           <div class="stat-label">Predictive Accuracy</div>
           <div class="stat-value text-good">${accuracyPct}% Signal</div>
-          <div class="stat-sub">Clears ≥75% Signal Floor</div>
+          <div class="stat-sub">Sample n=${sampleN}</div>
         </div>
         <div class="lead-stat-cell">
           <div class="stat-label">Predictive Lift</div>
@@ -580,16 +654,16 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
           <div class="stat-sub">vs ${baselinePct}% baseline mix</div>
         </div>
         <div class="lead-stat-cell">
-          <div class="stat-label">Holdout Validation</div>
-          <div class="stat-value text-white">${validationText}</div>
-          <div class="stat-sub">Sample n=${sampleN} (FDR α=0.10)</div>
+          <div class="stat-label">Seconds Before Release</div>
+          <div class="stat-value text-white">${secondsBefore.label}</div>
+          <div class="stat-sub">${secondsBefore.sub}</div>
         </div>
       </div>
 
-      <!-- Meta Badges & Contrast -->
       <div class="meta" style="display:flex; flex-wrap:wrap; gap:0.35rem 0.6rem; margin-top:0.7rem;">
         <span class="badge ${confClass}">${accuracyPct}% signal</span>
         <span class="badge ok">${sepDisplay}</span>
+        <span class="badge ok">${secondsBefore.label} before release</span>
         <span class="badge">${angle} · ${angleName}</span>
         <span>Contrast: <strong style="color:var(--text);">${exactPitchContrast}</strong></span>
         <span>Context: <strong style="color:var(--text);">${contexts}</strong></span>
@@ -776,8 +850,9 @@ function renderShowcaseCard(player, team) {
   const badgeLabel = isCatcher ? "SHOWCASE CATCHER" : `SHOWCASE · ${leagueTag}`;
   const btnLabel = isCatcher ? "View Catcher Setup Dossier →" : "View Mechanical Breakdown →";
   const videoSpec = topTip?.video_spec || (player.league === "NPB" ? "1080p60 Pacific League TV CF" : player.league === "NCAA" ? "1080p60 Synergy / ESPN+ CF" : player.league === "KBO" ? "1080p60 SPOTV CF" : player.league === "CPBL" ? "1080p60 CPBL TV CF" : player.league === "LMB" ? "1080p60 Jonron TV CF" : "CF Multi-Start");
-  const sepLabel = topTip?.separation_display || (topTip?.separation_floor_multiples ? `${topTip.separation_floor_multiples}× floor` : "Verified Lead");
+  const sepLabel = tipInchesDifference(topTip || {}).label;
   const dVal = topTip?.hedges_d != null ? ` · d=${topTip.hedges_d}` : "";
+  const secLabel = tipSecondsBeforeRelease(topTip || {}).label;
   const contrastTag = topTip?.contrast_label ? `<div style="font-size:0.8rem; font-weight:600; color:var(--text); margin-bottom:0.35rem;"><span style="color:var(--accent);">Contrast:</span> ${topTip.contrast_label}</div>` : "";
 
   return `
@@ -793,6 +868,7 @@ function renderShowcaseCard(player, team) {
         <div class="meta" style="margin-bottom:1rem; display:flex; flex-wrap:wrap; gap:0.35rem;">
           <span class="badge hot">${conf} Signal</span>
           <span class="badge ok">${sepLabel}${dVal}</span>
+          <span class="badge ok">${secLabel} before release</span>
           <span class="badge" style="font-size:0.74rem;">📹 ${videoSpec}</span>
         </div>
       </div>
@@ -1154,7 +1230,8 @@ function wireLiteBoard(data) {
       const isCatcher = lead.player.role === "C";
       const roleStr = isCatcher ? `Catcher · ${lead.team?.abbr || "ARI"}` : `${lead.player.throws || "R"}HP · ${lead.team?.abbr || "MLB"}`;
       const badgeStr = isCatcher ? "SHOWCASE CATCHER" : "SHOWCASE ARM";
-      const sepLabel = lead.separation_display || (lead.separation_floor_multiples ? `${lead.separation_floor_multiples}× floor` : "Verified Lead");
+      const sepLabel = tipInchesDifference(lead).label;
+      const secLabel = tipSecondsBeforeRelease(lead).label;
       const { deliveryPhase, timestampWindow } = deriveDeliveryTiming(lead);
       const targetBodyPart = lead.target_body_part || lead.body_part || lead.what_to_look_at || lead.anatomical_location || "Glove & Body Landmark Tracking";
       const sideBySide = lead.side_by_side_guide
@@ -1171,6 +1248,7 @@ function wireLiteBoard(data) {
           <span class="badge ${confClass}">${pct(conf)} signal</span>
           <span class="badge ok">${roleStr}</span>
           <span class="badge ok">${sepLabel}</span>
+          <span class="badge ok">${secLabel} before release</span>
           <span class="badge badge-phase" style="color:var(--accent); border-color:rgba(59,130,246,0.35); background:rgba(59,130,246,0.08);">⏱️ ${deliveryPhase}</span>
           <span class="badge badge-timestamp" style="color:#fbbf24; border-color:rgba(251,191,36,0.35); background:rgba(251,191,36,0.08);">🎬 ${timestampWindow}</span>
           <span class="badge badge-bodypart" style="color:#a78bfa; border-color:rgba(167,139,250,0.35); background:rgba(167,139,250,0.08);">🎯 ${targetBodyPart}</span>
@@ -2767,7 +2845,7 @@ function wireSynchronizedDeliveryScrubber(player) {
       targetBodyPartEl.textContent = tip.target_body_part || tip.body_part || tip.what_to_look_at || "Pitcher Delivery Geometry & Glove Set";
     }
     if (separationBadge) {
-      separationBadge.textContent = tip.separation_display || (tip.separation_floor_multiples ? `${tip.separation_floor_multiples}× Separation Floor` : "+5.2× Signal Floor");
+      separationBadge.textContent = tipInchesDifference(tip).label;
     }
     if (contrastBadge) {
       contrastBadge.textContent = tip.contrast_label || tip.contrast || `${pitchA} vs ${pitchB}`;
@@ -3147,14 +3225,15 @@ function hydrateRankedLeadsTable(player, data, { locked = false } = {}) {
       root.innerHTML = filtered.map((t, i) => {
         const rank = t.rank || (i + 1);
         const conf = Math.round((t.confidence || 0.85) * 100);
-        const mult = t.separation_floor_multiples || 4.8;
+        const inches = tipInchesDifference(t).label;
+        const sec = tipSecondsBeforeRelease(t).label;
         return `<tr>
           <td style="font-family:var(--mono); font-weight:700; color:var(--accent);">#${rank}</td>
           <td style="font-weight:600; color:#fff;">${t.contrast_label || t.contrast || t.title}</td>
           <td style="color:#94a3b8;">${t.target_body_part || "Glove Set & Delivery"}</td>
           <td style="font-size:0.85rem; color:#cbd5e1;">${t.what_to_spot || t.cue || t.lookFor}</td>
           <td style="font-family:var(--mono); color:var(--good); font-weight:700;">${conf}%</td>
-          <td style="font-family:var(--mono); color:#60a5fa;">${mult}× floor</td>
+          <td style="font-family:var(--mono); color:#60a5fa;">${inches}<div style="font-size:0.72rem;color:#94a3b8;font-weight:500;">${sec} before release</div></td>
           <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${i})" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
         </tr>`;
       }).join("");
@@ -3227,18 +3306,21 @@ function wireLitePlayer(data) {
     const holdoutEl = document.getElementById("telemetry-holdout");
     const effectEl = document.getElementById("telemetry-effect");
     const sampleEl = document.getElementById("telemetry-sample");
+    const secondsEl = document.getElementById("telemetry-seconds");
 
     if (holdoutEl) {
       const acc = player.holdoutAccuracy != null ? pct(player.holdoutAccuracy) : (tips[0]?.confidence ? pct(tips[0].confidence) : "≥75.0%");
       holdoutEl.textContent = acc;
     }
     if (effectEl) {
-      const topMult = tips[0]?.separation_floor_multiples;
-      effectEl.textContent = topMult ? `${topMult}× Floor` : (tips[0]?.separation_display || "3.5× Floor");
+      effectEl.textContent = tipInchesDifference(tips[0] || {}).label;
     }
     if (sampleEl) {
       const n = player.pitchesModeled || 75;
       sampleEl.textContent = `${n} Pitches`;
+    }
+    if (secondsEl) {
+      secondsEl.textContent = tipSecondsBeforeRelease(tips[0] || {}).label;
     }
 
     try {

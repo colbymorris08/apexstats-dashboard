@@ -549,6 +549,98 @@ function deriveDeliveryTiming(tip) {
   return { deliveryPhase: phase, timestampWindow: window };
 }
 
+/**
+ * Spatial conversions for tip UI (do not invent inches for degrees/seconds).
+ * Torso scale: sales-deck convention 0.06 torso lengths ≈ 4.8 in → 80 in / torso.
+ * Plate scale: MLB home plate = 17 in wide.
+ */
+const TIP_TORSO_LENGTH_INCHES = 80;
+const TIP_PLATE_WIDTH_INCHES = 17;
+
+function formatSignedInches(inches, digits = 1) {
+  if (inches == null || !Number.isFinite(inches)) return null;
+  const rounded = Math.round(inches * 10 ** digits) / 10 ** digits;
+  const sign = rounded > 0 ? "+" : "";
+  return `${sign}${rounded} in`;
+}
+
+function tipInchesDifference(tip) {
+  const raw = tip?.separation_raw;
+  if (raw == null || !Number.isFinite(Number(raw))) {
+    return { label: "—", sub: "No separation magnitude", isInches: false };
+  }
+  const n = Number(raw);
+  const unit = String(tip.unit || "").toLowerCase().trim();
+  const hedges =
+    tip.hedges_d != null ? `Cohen's d = ${tip.hedges_d}` : tip.d != null ? `d = ${tip.d}` : null;
+
+  if (unit === "inches" || unit === "in" || unit.startsWith("inches")) {
+    return {
+      label: formatSignedInches(n),
+      sub: hedges || "Average inches of difference",
+      isInches: true,
+    };
+  }
+  if (unit === "torso lengths" || unit === "torso length") {
+    return {
+      label: formatSignedInches(n * TIP_TORSO_LENGTH_INCHES),
+      sub: hedges || `from ${n > 0 ? "+" : ""}${n} torso lengths (1 torso ≈ ${TIP_TORSO_LENGTH_INCHES} in)`,
+      isInches: true,
+    };
+  }
+  if (unit === "plate widths" || unit === "plate width") {
+    return {
+      label: formatSignedInches(n * TIP_PLATE_WIDTH_INCHES),
+      sub: hedges || `from ${n > 0 ? "+" : ""}${n} plate widths (plate = ${TIP_PLATE_WIDTH_INCHES} in)`,
+      isInches: true,
+    };
+  }
+  // Degrees / seconds / rates: show native unit — never fake inches
+  if (unit) {
+    const sign = n > 0 ? "+" : "";
+    return {
+      label: `${sign}${n} ${tip.unit}`,
+      sub: hedges || "Native unit (not convertible to inches)",
+      isInches: false,
+    };
+  }
+  return { label: "—", sub: "Unit unknown", isInches: false };
+}
+
+function tipSecondsBeforeRelease(tip) {
+  const explicit =
+    tip?.seconds_before_release ?? tip?.actionability_sec ?? tip?.sec_before_release;
+  if (explicit != null && Number.isFinite(Number(explicit))) {
+    const s = Math.abs(Number(explicit));
+    return { label: `${s}s`, sub: "before release" };
+  }
+
+  const { deliveryPhase, timestampWindow } = deriveDeliveryTiming(tip || {});
+  const blob = [tip?.timestamp_window, tip?.delivery_phase, tip?.tell_window, timestampWindow, deliveryPhase]
+    .filter(Boolean)
+    .join(" · ");
+
+  const windowMatch = blob.match(/Window:\s*(-?\d+(?:\.\d+)?)\s*s/i);
+  if (windowMatch) {
+    return { label: `${Math.abs(parseFloat(windowMatch[1]))}s`, sub: "tell window before release" };
+  }
+
+  const rangeMatch = blob.match(/\((-?\d+(?:\.\d+)?)s\s+to\s+(-?\d+(?:\.\d+)?)s/i);
+  if (rangeMatch) {
+    const a = Math.abs(parseFloat(rangeMatch[1]));
+    const b = Math.abs(parseFloat(rangeMatch[2]));
+    const mid = Math.round(((a + b) / 2) * 100) / 100;
+    return { label: `${mid}s`, sub: "mid tell window before release" };
+  }
+
+  const beforeMatch = blob.match(/(-?\d+(?:\.\d+)?)\s*s\s+before\s+(?:pitch\s+)?release/i);
+  if (beforeMatch) {
+    return { label: `${Math.abs(parseFloat(beforeMatch[1]))}s`, sub: "before release" };
+  }
+
+  return { label: "—", sub: "Timing not in tip metadata" };
+}
+
 function renderTip(tip, angleLabels = {}, rankIndex = null) {
   const rank = tip.rank || (rankIndex != null ? rankIndex : 1);
   const conf = tip.confidence || 0.75;
@@ -569,20 +661,13 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
   const visualDescription = tip.spot_the_difference || tip.what_to_spot || tip.lookFor || tip.behavior || tip.direction || "Observe physical mechanical variance across pre-release delivery window.";
   const sideBySideGuide = tip.side_by_side_guide || "";
 
-  // Exact stats & separation magnitude
-  const mult = tip.separation_floor_multiples || 4.2;
-  const sepDisplay = tip.separation_display || `${mult}× floor`;
-  const physicalMagnitude = tip.unit && tip.separation_raw != null
-    ? `${tip.separation_raw > 0 ? "+" : ""}${tip.separation_raw} ${tip.unit} (${sepDisplay})`
-    : `${sepDisplay} separation`;
-  const hedgesD = tip.hedges_d != null ? `Cohen's d = ${tip.hedges_d}` : (tip.d != null ? `d = ${tip.d}` : "≥4.0× Scout Visibility Floor");
+  const inchesDiff = tipInchesDifference(tip);
+  const secondsBefore = tipSecondsBeforeRelease(tip);
+  const sepDisplay = inchesDiff.label;
 
   const accuracyPct = Math.round(conf * 1000) / 10;
   const baselinePct = tip.baseline != null ? Math.round(tip.baseline * 1000) / 10 : 33.3;
   const liftVal = tip.lift != null ? `${tip.lift}× Lift` : `+${Math.round((accuracyPct - baselinePct) * 10) / 10}% Lift`;
-  const validationText = tip.validation
-    ? (tip.validation === "out_of_sample_holdout" ? "Multi-Game Holdout" : tip.validation.replace(/_/g, " "))
-    : "Multi-Game Holdout";
   const sampleN = tip.n || tip.n_total || 40;
 
   const scoutNote = tip.scouting_note || tip.note || "";
@@ -622,17 +707,17 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
         ${sideBySideGuide ? `<p class="desc-sync-guide"><strong>Side-by-Side Video Sync:</strong> ${sideBySideGuide}</p>` : ""}
       </div>
 
-      <!-- Exact Stats & Separation Magnitude Grid -->
+      <!-- Exact Stats Grid: inches + seconds before release -->
       <div class="lead-stats-grid">
         <div class="lead-stat-cell">
-          <div class="stat-label">Physical Magnitude</div>
-          <div class="stat-value highlight">${physicalMagnitude}</div>
-          <div class="stat-sub">${hedgesD}</div>
+          <div class="stat-label">Avg. Difference</div>
+          <div class="stat-value highlight">${inchesDiff.label}</div>
+          <div class="stat-sub">${inchesDiff.sub}</div>
         </div>
         <div class="lead-stat-cell">
           <div class="stat-label">Predictive Accuracy</div>
           <div class="stat-value text-good">${accuracyPct}% Signal</div>
-          <div class="stat-sub">Clears ≥75% Signal Floor</div>
+          <div class="stat-sub">Sample n=${sampleN}</div>
         </div>
         <div class="lead-stat-cell">
           <div class="stat-label">Predictive Lift</div>
@@ -640,9 +725,9 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
           <div class="stat-sub">vs ${baselinePct}% baseline mix</div>
         </div>
         <div class="lead-stat-cell">
-          <div class="stat-label">Holdout Validation</div>
-          <div class="stat-value text-white">${validationText}</div>
-          <div class="stat-sub">Sample n=${sampleN} (FDR α=0.10)</div>
+          <div class="stat-label">Seconds Before Release</div>
+          <div class="stat-value text-white">${secondsBefore.label}</div>
+          <div class="stat-sub">${secondsBefore.sub}</div>
         </div>
       </div>
 
@@ -650,6 +735,7 @@ function renderTip(tip, angleLabels = {}, rankIndex = null) {
       <div class="meta" style="display:flex; flex-wrap:wrap; gap:0.35rem 0.6rem; margin-top:0.7rem;">
         <span class="badge ${confClass}">${accuracyPct}% signal</span>
         <span class="badge ok">${sepDisplay}</span>
+        <span class="badge ok">${secondsBefore.label} before release</span>
         <span class="badge">${angle} · ${angleName}</span>
         <span>Contrast: <strong style="color:var(--text);">${tip.contrast_label || tip.contrast || tip.predicts || ""}</strong></span>
         <span>Context: <strong style="color:var(--text);">${contexts}</strong></span>
@@ -1500,7 +1586,8 @@ function wireTeamPage(data) {
         <h4><a href="player.html?id=${encodeURIComponent(t.playerId)}${liteParam}">${t.playerName}</a> — ${t.title || t.cue}</h4>
         <div class="meta">
           <span class="badge hot">${pct(t.confidence || 0.75)} signal</span>
-          <span class="badge ok">${t.separation_display || `${t.separation_floor_multiples || 3.0}× floor`}</span>
+          <span class="badge ok">${tipInchesDifference(t).label}</span>
+          <span class="badge ok">${tipSecondsBeforeRelease(t).label} before release</span>
           <span class="badge">${t.angle || "CF"}</span>
           <span>Contrast: <strong>${t.contrast_label || t.contrast || t.predicts}</strong></span>
         </div>
@@ -2706,7 +2793,7 @@ function wireSynchronizedDeliveryScrubber(player) {
       targetBodyPartEl.textContent = tip.target_body_part || tip.body_part || tip.what_to_look_at || "Pitcher Delivery Geometry & Glove Set";
     }
     if (separationBadge) {
-      separationBadge.textContent = tip.separation_display || (tip.separation_floor_multiples ? `${tip.separation_floor_multiples}× Separation Floor` : "+5.2× Signal Floor");
+      separationBadge.textContent = tipInchesDifference(tip).label;
     }
     if (contrastBadge) {
       contrastBadge.textContent = tip.contrast_label || tip.contrast || `${pitchA} vs ${pitchB}`;
@@ -3086,7 +3173,7 @@ function wirePlayerPage(data) {
   }
 
   if (lede) {
-    const topFloor = tips[0]?.separation_floor_multiples ? ` · max separation ${tips[0].separation_floor_multiples}× floor` : "";
+    const topFloor = tips[0] ? ` · avg difference ${tipInchesDifference(tips[0]).label}` : "";
     if (player.role === "C") {
       const roleName = player.roleType === "starter" ? "Primary Starter" : "Backup Catcher";
       lede.innerHTML = `${team?.name || ""} · Catcher (${roleName}) · <strong>${tips.length}</strong> Catcher Setup Indicators (≥75% signal floor)<br>${player.summary}`;
@@ -3178,14 +3265,15 @@ function wirePlayerPage(data) {
         root.innerHTML = filteredTips.map((t, i) => {
           const rank = t.rank || (i + 1);
           const conf = Math.round((t.confidence || 0.85) * 100);
-          const mult = t.separation_floor_multiples || 4.8;
+          const inches = tipInchesDifference(t).label;
+          const sec = tipSecondsBeforeRelease(t).label;
           return `<tr>
             <td style="font-family:var(--mono); font-weight:700; color:var(--accent);">#${rank}</td>
             <td style="font-weight:600; color:#fff;">${t.contrast_label || t.contrast || t.title}</td>
             <td style="color:#94a3b8;">${t.target_body_part || "Glove Set & Delivery"}</td>
             <td style="font-size:0.85rem; color:#cbd5e1;">${t.what_to_spot || t.cue || t.lookFor}</td>
             <td style="font-family:var(--mono); color:var(--good); font-weight:700;">${conf}%</td>
-            <td style="font-family:var(--mono); color:#60a5fa;">${mult}× floor</td>
+            <td style="font-family:var(--mono); color:#60a5fa;">${inches}<div style="font-size:0.72rem;color:#94a3b8;font-weight:500;">${sec} before release</div></td>
             <td><button type="button" class="btn-compare-sync" onclick="window.selectScrubberTip(${i})" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:rgba(59,130,246,0.15); border:1px solid #3b82f6; color:#93c5fd; border-radius:4px; cursor:pointer;">Compare</button></td>
           </tr>`;
         }).join("");

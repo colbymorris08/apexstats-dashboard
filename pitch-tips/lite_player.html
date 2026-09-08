@@ -80,9 +80,9 @@
                 <div style="font-size: 0.75rem; color: var(--good); margin-top: 0.15rem;">Out-of-sample validated</div>
               </div>
               <div style="background: var(--bg-elev); padding: 0.85rem 1rem; border-radius: 4px; border-left: 3px solid #3d8bfd;">
-                <div style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Max Effect Size</div>
-                <div id="telemetry-effect" style="font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: #fff; margin-top: 0.2rem;">5.9× Floor</div>
-                <div style="font-size: 0.75rem; color: #3d8bfd; margin-top: 0.15rem;">Separation magnitude</div>
+                <div style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Avg. Difference</div>
+                <div id="telemetry-effect" style="font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: #fff; margin-top: 0.2rem;">+5.0 in</div>
+                <div style="font-size: 0.75rem; color: #3d8bfd; margin-top: 0.15rem;">Average inches of difference</div>
               </div>
               <div style="background: var(--bg-elev); padding: 0.85rem 1rem; border-radius: 4px; border-left: 3px solid var(--accent);">
                 <div style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Pitches Modeled</div>
@@ -90,9 +90,9 @@
                 <div style="font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem;">Broadcast CF PoC</div>
               </div>
               <div style="background: var(--bg-elev); padding: 0.85rem 1rem; border-radius: 4px; border-left: 3px solid var(--warn);">
-                <div style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Temporal Window</div>
-                <div style="font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: #fff; margin-top: 0.2rem;">0s Leakage</div>
-                <div style="font-size: 0.75rem; color: var(--warn); margin-top: 0.15rem;">Strictly pre-release</div>
+                <div style="font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;">Seconds Before Release</div>
+                <div id="telemetry-seconds" style="font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: #fff; margin-top: 0.2rem;">0.28s</div>
+                <div style="font-size: 0.75rem; color: var(--warn); margin-top: 0.15rem;">Tell window timing</div>
               </div>
             </div>
           </div>
@@ -123,7 +123,7 @@
                 <div class="sync-focus-target">
                   <span class="sync-focus-label">🎯 Focus Target:</span>
                   <strong id="sync-target-body-part" class="sync-focus-value">—</strong>
-                  <span id="sync-separation-badge" class="badge hot">+5.4× Separation Floor</span>
+                  <span id="sync-separation-badge" class="badge hot">+5.0 in</span>
                 </div>
                 <div class="sync-pitch-contrast-badge" id="sync-pitch-contrast">
                   PITCH A vs PITCH B
@@ -238,7 +238,7 @@
                     <th>Target Body Part</th>
                     <th>Visual Tell (What to Spot)</th>
                     <th>Signal</th>
-                    <th>Separation</th>
+                    <th>Avg. Diff / Timing</th>
                     <th>Action</th>
                   </tr>
                 </thead>
