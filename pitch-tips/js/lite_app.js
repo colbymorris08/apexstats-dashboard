@@ -2545,8 +2545,6 @@ function wireSynchronizedDeliveryScrubber(player) {
   const sliderProgress = sliderProgressA || document.getElementById("sync-slider-progress");
   const apexLabelA = document.getElementById("sync-apex-label-a");
   const apexLabelB = document.getElementById("sync-apex-label-b");
-  const snapApexA = document.getElementById("sync-snap-apex-a");
-  const snapApexB = document.getElementById("sync-snap-apex-b");
   const apexMarker = document.getElementById("sync-apex-marker");
   const apexTag = document.getElementById("sync-apex-tag");
   const lblStart = document.getElementById("sync-lbl-start");
@@ -2585,7 +2583,6 @@ function wireSynchronizedDeliveryScrubber(player) {
   const playBtn = document.getElementById("sync-play-btn");
   const playIcon = document.getElementById("sync-play-icon");
   const playText = document.getElementById("sync-play-text");
-  const snapApexBtn = document.getElementById("sync-snap-apex-btn");
   const stepBackBtn = document.getElementById("sync-step-back-btn");
   const stepFwdBtn = document.getElementById("sync-step-fwd-btn");
 
@@ -2969,28 +2966,6 @@ function wireSynchronizedDeliveryScrubber(player) {
     scrubSlider.addEventListener("input", onScrubInputA);
     scrubSlider.addEventListener("change", onScrubInputA);
   }
-
-  function snapPaneToApex(pane) {
-    if (pane === "a") {
-      if (isPlayingA) stopPlayA();
-      setScrubPctA(50);
-      updatePaneA();
-    } else {
-      if (isPlayingB) stopPlayB();
-      setScrubPctB(50);
-      updatePaneB();
-    }
-  }
-  function snapBothToApex() {
-    if (isPlayingA) stopPlayA();
-    if (isPlayingB) stopPlayB();
-    setScrubPctA(50);
-    setScrubPctB(50);
-    syncMediaAndHUD();
-  }
-  snapApexBtn?.addEventListener("click", snapBothToApex);
-  snapApexA?.addEventListener("click", () => snapPaneToApex("a"));
-  snapApexB?.addEventListener("click", () => snapPaneToApex("b"));
 
   // Step -0.1s and +0.1s per pane (≈3.333% of ±1.5s window)
   stepBackBtn?.addEventListener("click", () => {
