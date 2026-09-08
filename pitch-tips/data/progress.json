@@ -3,16 +3,16 @@
   "scope": "NL West first \u2192 rest of MLB",
   "season": 2026,
   "games": 8,
-  "queue_total": 711,
-  "nlwest_pitchers": 67,
-  "remaining": 662,
+  "queue_total": 720,
+  "nlwest_pitchers": 70,
+  "remaining": 672,
   "sec_per_pitch": 10.0,
-  "eta_hours": 532.5,
-  "est_total_pitches": 191690,
+  "eta_hours": 540.5,
+  "est_total_pitches": 194590,
   "current": {
     "name": "Eduardo Rodriguez",
     "team": "ARI",
-    "message": "pitcher [1/12] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [1/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -152,25 +152,6 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/randy_v\u00e1squez_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "694297": {
-      "name": "Brandon Pfaadt",
-      "team": "ARI",
-      "n_tracked": 118,
-      "holdout": 0.417,
-      "tips_ge_75": 1,
-      "catcher_tips": 6,
-      "legacy_tips_ge_75": 1,
-      "publishable": false,
-      "failed_checks": [
-        "holdout",
-        "placement"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brandon_pfaadt_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -838,10 +819,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blake_snell_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 86,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     },
     "623465": {
       "name": "Evan Phillips",
@@ -856,10 +837,10 @@
         "holdout"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/evan_phillips_poc",
-      "schema": "rich_72col",
-      "n_current_tracks": 121,
-      "ready": true,
-      "state": "complete"
+      "schema": "stale",
+      "n_current_tracks": 0,
+      "ready": false,
+      "state": "empty"
     }
   },
   "failed": {
@@ -3297,10 +3278,10 @@
   },
   "by_team": {
     "ARI": {
-      "queued": 12,
-      "done": 14,
-      "pitcher_tips": 41,
-      "catcher_tips": 41
+      "queued": 13,
+      "done": 13,
+      "pitcher_tips": 38,
+      "catcher_tips": 30
     },
     "COL": {
       "queued": 14,
@@ -3321,13 +3302,13 @@
       "catcher_tips": 9
     },
     "SF": {
-      "queued": 12,
+      "queued": 14,
       "done": 1,
       "pitcher_tips": 1,
       "catcher_tips": 1
     },
     "OTH": {
-      "queued": 644,
+      "queued": 650,
       "done": 3,
       "pitcher_tips": 12,
       "catcher_tips": 11
@@ -3335,12 +3316,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 175,
-    "catcher_tips": 142
+    "pitcher_tips": 172,
+    "catcher_tips": 131
   },
-  "updated_at": "2026-09-08T07:35:40",
+  "updated_at": "2026-09-08T14:19:47",
   "live": {
-    "pitches_done": 110,
+    "pitches_done": 250,
     "pitches_target": null
   },
   "heartbeat": true
