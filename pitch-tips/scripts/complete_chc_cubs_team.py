@@ -421,12 +421,19 @@ def publish_exemplar(arm: dict, code: str, filt_name: str | None, candidates: li
         shutil.rmtree(cell_tmp, ignore_errors=True)
     cell_tmp.mkdir(parents=True, exist_ok=True)
 
+    # Newest-first early stop: publish requires 1 dated exemplar; keep trying
+    # up to N_SAMPLE candidates but stop once we have a good decode (quality intact).
+    ordered = sorted(candidates, key=lambda x: x.get("game_date") or "", reverse=True)
+    max_try = int(os.environ.get("CHC_VID_MAX_TRY", str(N_SAMPLE)))
+    need_ok = int(os.environ.get("CHC_VID_NEED_OK", "1"))
     downloaded: list[tuple[dict, Path]] = []
-    for cand in candidates:
+    for cand in ordered[:max_try]:
         try:
             path = download_play_clip(cand["play_id"], cell_tmp, session=session)
             if is_decodable(path) and path.stat().st_size > 50_000:
                 downloaded.append((cand, path))
+                if len(downloaded) >= need_ok:
+                    break
         except Exception as e:
             print(f"    fail {cand['play_id'][:8]}… {e}")
         if free_gb() < MIN_FREE_GB:
@@ -437,7 +444,6 @@ def publish_exemplar(arm: dict, code: str, filt_name: str | None, candidates: li
         shutil.rmtree(cell_tmp, ignore_errors=True)
         return None
 
-    downloaded.sort(key=lambda x: x[0].get("game_date") or "", reverse=True)
     best_meta, best_path = downloaded[0]
     try:
         best_bytes = best_path.read_bytes()
@@ -494,6 +500,18 @@ def process_arm(arm: dict, session: requests.Session, filters: list[str]) -> lis
             dest = VIDEO / f"{arm['prefix']}_{code}{sit}.mp4"
             if dest.is_file() and dest.stat().st_size > 50_000:
                 print(f"  skip existing {dest.name}")
+                results.append(
+                    {
+                        "file": dest.name,
+                        "player": arm["name"],
+                        "mlbam": arm["mlbam"],
+                        "prefix": arm["prefix"],
+                        "pitch_code": code,
+                        "filter": fname,
+                        "skipped_existing": True,
+                        "bytes": dest.stat().st_size,
+                    }
+                )
                 continue
             print(f"  cell {code}/{fname} (statcast={sc})")
             cands = []

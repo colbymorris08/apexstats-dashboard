@@ -57,10 +57,24 @@ All other roster arms remain enterprise-locked (`SHOWCASE_ARM_IDS` / `SHOWCASE_I
 | Disk | GitHub-as-archive; local purge after push; ≥15 GB floor |
 
 
-## In progress 2026-09-07 — Colorado Rockies full-staff benchmark
+## Closed 2026-09-07 — Colorado Rockies full-staff benchmark (replaces Padres slide)
 | Item | Status |
 |------|--------|
-| Team | **Colorado Rockies** — 12 pitchers with **zero** prior tip1 videos (+ Gordon/Hughes had tip1 showcase, excluded from timed set) + catchers Romo, Stallings |
+| Team | **Colorado Rockies** — **12 pitchers** with **zero** prior tip1 videos (Gordon/Hughes prior tip1 showcase **excluded**) + catchers **Romo, Stallings** |
 | Pitchers | Castaño, Bernardino, Hill, Herget, Romano, Mejia, Manfredi, Adams, Frasso, Feltner, Sugano, Agnos |
+| Pitcher cells | **275/300** on GitHub (gaps = no Savant play_ids for filter×pitch) |
+| Catchers | 12 tip A/B CF videos (canon + bases_empty + runners_on) |
+| Wall-clock | **1h 29m** timed end-to-end (phased under disk floor) |
 | Note | Padres slide was a **partial matrix refresh** of already-started arms — not a full untouched staff |
-| Disk | Phased push+purge under ≥12.5 GB hard floor (target ≥15 GB) |
+| Deploy | origin `4dad247` (+ phase1 `e28c3c8`); preflight gh-pages phase1 `7c28f2f` |
+
+## Closed 2026-09-07 — Colorado Rockies full-staff benchmark (replaces Padres slide)
+| Item | Status |
+|------|--------|
+| Team | **Colorado Rockies** — **12 pitchers** with **zero** prior tip1 (Gordon/Hughes prior tip1 **excluded**) + catchers **Romo, Stallings** |
+| Pitchers | Castaño, Bernardino, Hill, Herget, Romano, Mejia, Manfredi, Adams, Frasso, Feltner, Sugano, Agnos |
+| Pitcher cells | **275/300** on GitHub origin (gaps = no Savant play_ids) |
+| Catchers | 12 tip A/B CF videos |
+| Wall-clock | **1h 29m** (phased under disk floor) |
+| Note | Padres was a **partial matrix refresh** of already-started arms |
+| Deploy | origin `e28c3c8` / `5f2b521` / `4dad247`; preflight gh-pages phase1 `7c28f2f` |

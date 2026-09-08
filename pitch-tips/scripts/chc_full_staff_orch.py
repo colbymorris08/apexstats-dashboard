@@ -54,16 +54,53 @@ def start_unix() -> float:
     return t
 
 
+def tip_sample_n() -> int:
+    # Speed path: n≈12 is enough for 5 tips; override with CHC_TIP_SAMPLE.
+    try:
+        return max(8, min(60, int(os.environ.get("CHC_TIP_SAMPLE", "12"))))
+    except ValueError:
+        return 12
+
+
 def run_poc(display: str, work: Path, mlbam: int) -> int:
     _clear_proxy()
     report = work / "report.json"
     feats = work / "features.csv"
-    if report.exists() and feats.exists() and feats.stat().st_size > 10_000:
+    sample_n = tip_sample_n()
+    if feats.exists() and feats.stat().st_size > 2_000:
         n = sum(1 for _ in feats.open()) - 1
-        if n >= 40:
-            log(f"SKIP tip {display}: features={n}")
-            return 0
-    log(f"TIP START {display} mlbam={mlbam} free={free_gb():.1f}GB")
+        # Skip re-tracking when we already have enough pitches for tips.
+        if n >= max(10, sample_n - 2):
+            if report.exists():
+                log(f"SKIP tip {display}: features={n} report=yes")
+                return 0
+            log(f"REMINE tip {display}: features={n} (no report)")
+            rc = subprocess.call(
+                [
+                    sys.executable,
+                    "-u",
+                    str(ROOT / "cv" / "preflight" / "run_poc.py"),
+                    "--pitcher",
+                    display,
+                    "--season",
+                    "2026",
+                    "--sample",
+                    str(sample_n),
+                    "--mlbam",
+                    str(mlbam),
+                    "--work",
+                    str(work),
+                    "--remine-only",
+                ],
+                cwd=str(ROOT),
+                env={**os.environ, "NO_PROXY": "*", "no_proxy": "*", "PYTHONUNBUFFERED": "1"},
+            )
+            clips = work / "clips"
+            if clips.exists():
+                shutil.rmtree(clips, ignore_errors=True)
+            log(f"REMINE DONE {display} rc={rc} free={free_gb():.1f}GB")
+            return rc
+    log(f"TIP START {display} mlbam={mlbam} sample={sample_n} free={free_gb():.1f}GB")
     t0 = time.time()
     rc = subprocess.call(
         [
@@ -74,14 +111,27 @@ def run_poc(display: str, work: Path, mlbam: int) -> int:
             display,
             "--season",
             "2026",
-            "--quota",
+            "--sample",
+            str(sample_n),
             "--mlbam",
             str(mlbam),
             "--work",
             str(work),
         ],
         cwd=str(ROOT),
-        env={**os.environ, "NO_PROXY": "*", "no_proxy": "*", "HTTP_PROXY": "", "HTTPS_PROXY": "", "http_proxy": "", "https_proxy": ""},
+        env={
+            **os.environ,
+            "NO_PROXY": "*",
+            "no_proxy": "*",
+            "HTTP_PROXY": "",
+            "HTTPS_PROXY": "",
+            "http_proxy": "",
+            "https_proxy": "",
+            "ALL_PROXY": "",
+            "all_proxy": "",
+            "PYTHONUNBUFFERED": "1",
+            "CHC_TIP_SAMPLE": str(sample_n),
+        },
     )
     clips = work / "clips"
     if clips.exists():
@@ -107,7 +157,7 @@ def run_catcher(display: str, work: Path, mlbam: int) -> int:
             season=2026,
             games=6,
             work=work,
-            sample=40,
+            sample=int(os.environ.get("CHC_CATCHER_SAMPLE", "12")),
         )
         rc = 0
     except Exception as e:
@@ -191,6 +241,24 @@ def main() -> int:
         log(f"DEPLOY error {e}")
 
     elapsed = time.time() - t0
+    # Only stamp a "done" summary when we actually published something
+    ok_tips = sum(1 for c in tip_rcs if c == 0)
+    if len(video_metas) < 10 and ok_tips < 3:
+        log(f"ORCH INCOMPLETE tips_ok={ok_tips} videos={len(video_metas)} — not writing final summary")
+        (META / "full_staff_partial.json").write_text(
+            json.dumps(
+                {
+                    "status": "incomplete",
+                    "ok_tips": ok_tips,
+                    "n_video_exemplars": len(video_metas),
+                    "elapsed_sec": round(elapsed, 1),
+                    "tip_exit_codes": tip_rcs,
+                },
+                indent=2,
+            )
+        )
+        return 1
+
     summary = {
         "team": "Chicago Cubs",
         "division": "NL Central",
@@ -205,6 +273,7 @@ def main() -> int:
         "free_gb_end": round(free_gb(), 2),
         "deploy": hashes,
         "tip_exit_codes": tip_rcs,
+        "tip_mode": f"sample_{tip_sample_n()}",
     }
     (META / "full_staff_summary.json").write_text(json.dumps(summary, indent=2))
     log(f"ORCH DONE {summary['elapsed_hm']} exemplars={len(video_metas)}")
