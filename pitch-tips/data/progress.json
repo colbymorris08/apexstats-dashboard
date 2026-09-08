@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 711,
   "nlwest_pitchers": 67,
-  "remaining": 664,
+  "remaining": 663,
   "sec_per_pitch": 10.0,
   "eta_hours": 536.5,
   "est_total_pitches": 193140,
   "current": {
-    "name": "Jack Dreyer",
+    "name": "Alex Vesia",
     "team": "LAD",
-    "message": "pitcher [7/15] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [8/15] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -842,8 +842,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tyler_glasnow_poc",
       "schema": "rich_72col",
       "n_current_tracks": 151,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     }
   },
   "failed": {
@@ -3289,8 +3289,8 @@
     },
     "LAD": {
       "queued": 15,
-      "done": 10,
-      "pitcher_tips": 31,
+      "done": 11,
+      "pitcher_tips": 33,
       "catcher_tips": 37
     },
     "SD": {
@@ -3314,12 +3314,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 165,
+    "pitcher_tips": 167,
     "catcher_tips": 138
   },
-  "updated_at": "2026-09-07T18:15:02",
+  "updated_at": "2026-09-07T18:39:23",
   "live": {
-    "pitches_done": 105,
+    "pitches_done": 90,
     "pitches_target": null
   },
   "heartbeat": true

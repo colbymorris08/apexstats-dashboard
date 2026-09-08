@@ -167,10 +167,10 @@
     "publish_min_calibrated_accuracy": 0.75,
     "provenance": {
       "rule": "Pitcher and Catcher CV Detected Movement Leads (≥75% signal floor).",
-      "publishedPlayers": 62,
+      "publishedPlayers": 63,
       "publishedCatchers": 11,
-      "publishedTips": 255,
-      "publishedCatcherTips": 190
+      "publishedTips": 257,
+      "publishedCatcherTips": 194
     },
     "tierRules": {
       "precisionAlwaysShownWithBaseRate": true,
@@ -256,10 +256,11 @@
       "league": "MLB",
       "leagueBadge": "MLB ⚾",
       "division": "NL West",
-      "tipCount": 34,
-      "avgConfidence": 0.828,
-      "playersWithTips": 9,
+      "tipCount": 36,
+      "avgConfidence": 0.827,
+      "playersWithTips": 10,
       "players": [
+        "alex_vesia",
         "blake_snell",
         "brock_stewart",
         "evan_phillips",
@@ -281,7 +282,7 @@
       "league": "MLB",
       "leagueBadge": "MLB ⚾",
       "division": "NL West",
-      "tipCount": 30,
+      "tipCount": 33,
       "avgConfidence": 0.849,
       "playersWithTips": 6,
       "players": [
@@ -421,6 +422,931 @@
     }
   ],
   "players": {
+    "alex_vesia": {
+      "id": "alex_vesia",
+      "name": "Alex Vesia",
+      "teamId": "lad",
+      "throws": "L",
+      "role": "SP",
+      "picked": true,
+      "pickConfidence": 0.167,
+      "tier": "watch",
+      "pitchesModeled": 100,
+      "holdoutAccuracy": 0.167,
+      "summary": "Savant CF PoC: 100 pitches / 11 games. 2 pitcher leads · 4 catcher setup leads (≥75% detected movement separation floor).",
+      "contextCoverage": {
+        "runner_bucket": {
+          "second_any": 75,
+          "other": 15,
+          "3b": 5,
+          "1b": 5
+        },
+        "batter_tag": {
+          "lhh": 59,
+          "rhh": 41
+        },
+        "delivery": {
+          "stretch": 100
+        },
+        "runner_exact": {
+          "loaded": 31,
+          "23": 18,
+          "12": 16,
+          "13": 15,
+          "2b": 10,
+          "3b": 5,
+          "1b": 5
+        }
+      },
+      "tips": [
+        {
+          "id": "disc-all-lhh-CH-pitchcom_mean_isi",
+          "title": "CH discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+CH"
+          },
+          "lookFor": "On Changeup (CH), PitchCom taps occur in rapid back-to-back cluster vs wide pauses on rest of arsenal.",
+          "predicts": "CH",
+          "confidence": 0.868,
+          "precision": 0.167,
+          "feature": "pitchcom_mean_isi",
+          "threshold": 3.1709781209781207,
+          "high_means_type": false,
+          "n": 59,
+          "nType": 1,
+          "baseline": 0.026,
+          "lift": 33.38,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-second_any-rhh-SL-glove_flare_std",
+          "title": "SL discernable [any w/ runner on 2nd, RHH up]",
+          "angle": "CF",
+          "context": [
+            "second_any",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "second_any+rhh+SL"
+          },
+          "lookFor": "In vs righties, any time a runner is on second, from the set:  On Slider (SL), glove pocket angle is locked rigid from first touch vs flexing during grip dig on rest of arsenal.",
+          "predicts": "SL",
+          "confidence": 0.767,
+          "precision": 0.571,
+          "feature": "glove_flare_std",
+          "threshold": 0.015618894128386872,
+          "high_means_type": false,
+          "n": 30,
+          "nType": 9,
+          "baseline": 0.3,
+          "lift": 2.56,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "second_any|rhh",
+          "situationLabel": "any w/ runner on 2nd, RHH up"
+        }
+      ],
+      "topLeads": [
+        {
+          "id": "disc-all-lhh-CH-pitchcom_mean_isi",
+          "title": "CH discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+CH"
+          },
+          "lookFor": "On Changeup (CH), PitchCom taps occur in rapid back-to-back cluster vs wide pauses on rest of arsenal.",
+          "predicts": "CH",
+          "confidence": 0.868,
+          "precision": 0.167,
+          "feature": "pitchcom_mean_isi",
+          "threshold": 3.1709781209781207,
+          "high_means_type": false,
+          "n": 59,
+          "nType": 1,
+          "baseline": 0.026,
+          "lift": 33.38,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "disc-second_any-rhh-SL-glove_flare_std",
+          "title": "SL discernable [any w/ runner on 2nd, RHH up]",
+          "angle": "CF",
+          "context": [
+            "second_any",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "second_any+rhh+SL"
+          },
+          "lookFor": "In vs righties, any time a runner is on second, from the set:  On Slider (SL), glove pocket angle is locked rigid from first touch vs flexing during grip dig on rest of arsenal.",
+          "predicts": "SL",
+          "confidence": 0.767,
+          "precision": 0.571,
+          "feature": "glove_flare_std",
+          "threshold": 0.015618894128386872,
+          "high_means_type": false,
+          "n": 30,
+          "nType": 9,
+          "baseline": 0.3,
+          "lift": 2.56,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "second_any|rhh",
+          "situationLabel": "any w/ runner on 2nd, RHH up"
+        }
+      ],
+      "catcherTips": [
+        {
+          "id": "catch-all-lhh-CH-catcher_stance_mean",
+          "title": "CH via Catcher Setup [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+lhh+CH"
+          },
+          "lookFor": "On Changeup (CH), catcher establishes a noticeably wider base stance vs narrow compact stance on rest of arsenal.",
+          "predicts": "CH",
+          "confidence": 0.781,
+          "precision": 0.143,
+          "feature": "catcher_stance_mean",
+          "threshold": 0.020082405816868938,
+          "high_means_type": true,
+          "n": 59,
+          "nType": 2,
+          "baseline": 0.062,
+          "lift": 12.6,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "CH",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
+        },
+        {
+          "id": "catch-second_any-lhh-FF-catcher_hip_y_mean",
+          "title": "FF via catcher setup [any w/ runner on 2nd, LHH up]",
+          "angle": "CF",
+          "context": [
+            "second_any",
+            "lhh",
+            "stretch"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "second_any+lhh+FF"
+          },
+          "lookFor": "In vs lefties, any time a runner is on second, from the set:  On 4-Seam Fastball (FF), catcher drops deep into a one-knee stance on dirt vs standard higher crouch on rest of arsenal.",
+          "predicts": "FF",
+          "confidence": 0.778,
+          "precision": 0.714,
+          "feature": "catcher_hip_y_mean",
+          "threshold": 0.5646816477936243,
+          "high_means_type": false,
+          "n": 32,
+          "nType": 7,
+          "baseline": 0.389,
+          "lift": 2.0,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "second_any|lhh",
+          "situationLabel": "any w/ runner on 2nd, LHH up"
+        },
+        {
+          "id": "catch-second_any-rhh-SL-catcher_glove_speed_p90",
+          "title": "SL via catcher setup [any w/ runner on 2nd, RHH up]",
+          "angle": "CF",
+          "context": [
+            "second_any",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "second_any+rhh+SL"
+          },
+          "lookFor": "In vs righties, any time a runner is on second, from the set:  On Slider (SL), catcher executes a sharp late glove repositioning before lift vs rock-still target on rest of arsenal.",
+          "predicts": "SL",
+          "confidence": 0.778,
+          "precision": 0.556,
+          "feature": "catcher_glove_speed_p90",
+          "threshold": 0.21467644615384618,
+          "high_means_type": true,
+          "n": 30,
+          "nType": 5,
+          "baseline": 0.278,
+          "lift": 2.8,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "second_any|rhh",
+          "situationLabel": "any w/ runner on 2nd, RHH up",
+          "alsoHoldsFor": [
+            "lhh"
+          ],
+          "sameTipBothHands": true
+        },
+        {
+          "id": "catch-second_any-lhh-SL-catcher_glove_speed_p90",
+          "title": "SL via catcher setup [any w/ runner on 2nd, LHH up]",
+          "angle": "CF",
+          "context": [
+            "second_any",
+            "lhh",
+            "stretch"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "second_any+lhh+SL"
+          },
+          "lookFor": "In vs lefties, any time a runner is on second, from the set:  On Slider (SL), catcher executes a sharp late glove repositioning before lift vs rock-still target on rest of arsenal.",
+          "predicts": "SL",
+          "confidence": 0.765,
+          "precision": 1.0,
+          "feature": "catcher_glove_speed_p90",
+          "threshold": 0.05511911111111111,
+          "high_means_type": true,
+          "n": 32,
+          "nType": 9,
+          "baseline": 0.529,
+          "lift": 1.45,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "second_any|lhh",
+          "situationLabel": "any w/ runner on 2nd, LHH up",
+          "alsoHoldsFor": [
+            "rhh"
+          ],
+          "sameTipBothHands": true
+        }
+      ],
+      "tipFloor": 0.75,
+      "tipsSource": "empirical_detection_75",
+      "featureWindow": null,
+      "tipValidation": "empirical_movement_discrimination",
+      "situationCoverage": {
+        "arsenal": [
+          "FF",
+          "SL",
+          "CH"
+        ],
+        "arsenal_n": 3,
+        "tip_floor": 0.75,
+        "validation": null,
+        "n_tips_ge_floor": 2,
+        "candidates_train": null,
+        "n_failed_holdout": null,
+        "best_situation": {
+          "id": "second_any|rhh",
+          "label": "any w/ runner on 2nd, RHH up",
+          "runner_bucket": "second_any",
+          "batter_tag": "rhh",
+          "n": 30,
+          "arsenal_n": 3,
+          "types_tested": [
+            "FF",
+            "SL",
+            "CH"
+          ],
+          "discernable_n": 1,
+          "discernable_types": [
+            "SL"
+          ],
+          "coverage": "1 of 3",
+          "status": "ok",
+          "types": [
+            {
+              "pitch_type": "FF",
+              "n": 11,
+              "discernable": false,
+              "accuracy": 0.7,
+              "feature": "glove_flare_std",
+              "precision": 0.583,
+              "threshold": 0.01837182002144206,
+              "high_means_type": true,
+              "baseline": 0.367,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "SL",
+              "n": 9,
+              "discernable": true,
+              "accuracy": 0.767,
+              "feature": "glove_flare_std",
+              "precision": 0.571,
+              "threshold": 0.015618894128386872,
+              "high_means_type": false,
+              "baseline": 0.3,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "CH",
+              "n": 10,
+              "discernable": false,
+              "accuracy": 0.64,
+              "feature": "pitchcom_tap_count",
+              "precision": 0.5,
+              "threshold": 4.118055555555555,
+              "high_means_type": true,
+              "baseline": 0.36,
+              "status": "ok"
+            }
+          ]
+        },
+        "situations": [
+          {
+            "id": "none|lhh",
+            "label": "bases empty, LHH up",
+            "runner_bucket": "none",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "none|rhh",
+            "label": "bases empty, RHH up",
+            "runner_bucket": "none",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|lhh",
+            "label": "first only, LHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|rhh",
+            "label": "first only, RHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "rhh",
+            "n": 5,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "second_any|lhh",
+            "label": "any w/ runner on 2nd, LHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "lhh",
+            "n": 32,
+            "arsenal_n": 3,
+            "types_tested": [
+              "FF",
+              "SL"
+            ],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "FF",
+                "n": 13,
+                "discernable": false,
+                "accuracy": 0.708,
+                "feature": "pitchcom_tap_rate",
+                "precision": 0.667,
+                "threshold": 6.630983083486095,
+                "high_means_type": true,
+                "baseline": 0.5,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SL",
+                "n": 17,
+                "discernable": false,
+                "accuracy": 0.667,
+                "feature": "pitchcom_tap_rate",
+                "precision": 0.667,
+                "threshold": 6.588622850610706,
+                "high_means_type": false,
+                "baseline": 0.458,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "CH",
+                "n": 2,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "insufficient_n"
+              }
+            ]
+          },
+          {
+            "id": "second_any|rhh",
+            "label": "any w/ runner on 2nd, RHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "rhh",
+            "n": 30,
+            "arsenal_n": 3,
+            "types_tested": [
+              "FF",
+              "SL",
+              "CH"
+            ],
+            "discernable_n": 1,
+            "discernable_types": [
+              "SL"
+            ],
+            "coverage": "1 of 3",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "FF",
+                "n": 11,
+                "discernable": false,
+                "accuracy": 0.7,
+                "feature": "glove_flare_std",
+                "precision": 0.583,
+                "threshold": 0.01837182002144206,
+                "high_means_type": true,
+                "baseline": 0.367,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SL",
+                "n": 9,
+                "discernable": true,
+                "accuracy": 0.767,
+                "feature": "glove_flare_std",
+                "precision": 0.571,
+                "threshold": 0.015618894128386872,
+                "high_means_type": false,
+                "baseline": 0.3,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "CH",
+                "n": 10,
+                "discernable": false,
+                "accuracy": 0.64,
+                "feature": "pitchcom_tap_count",
+                "precision": 0.5,
+                "threshold": 4.118055555555555,
+                "high_means_type": true,
+                "baseline": 0.36,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "id": "3b|lhh",
+            "label": "third only, LHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "lhh",
+            "n": 4,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|rhh",
+            "label": "third only, RHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          }
+        ]
+      },
+      "catcherCoverage": {
+        "arsenal": [
+          "FF",
+          "SL",
+          "CH"
+        ],
+        "arsenal_n": 3,
+        "tip_floor": 0.75,
+        "validation": null,
+        "n_tips_ge_floor": 4,
+        "candidates_train": null,
+        "n_failed_holdout": null,
+        "best_situation": {
+          "id": "second_any|lhh",
+          "label": "any w/ runner on 2nd, LHH up",
+          "runner_bucket": "second_any",
+          "batter_tag": "lhh",
+          "n": 32,
+          "arsenal_n": 3,
+          "types_tested": [
+            "FF",
+            "SL"
+          ],
+          "discernable_n": 2,
+          "discernable_types": [
+            "FF",
+            "SL"
+          ],
+          "coverage": "2 of 3",
+          "status": "ok",
+          "types": [
+            {
+              "pitch_type": "FF",
+              "n": 13,
+              "discernable": true,
+              "accuracy": 0.778,
+              "feature": "catcher_hip_y_mean",
+              "precision": 0.714,
+              "threshold": 0.5646816477936243,
+              "high_means_type": false,
+              "baseline": 0.389,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "SL",
+              "n": 17,
+              "discernable": true,
+              "accuracy": 0.765,
+              "feature": "catcher_glove_speed_p90",
+              "precision": 1.0,
+              "threshold": 0.05511911111111111,
+              "high_means_type": true,
+              "baseline": 0.529,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "CH",
+              "n": 2,
+              "discernable": false,
+              "accuracy": null,
+              "feature": null,
+              "status": "insufficient_n"
+            }
+          ]
+        },
+        "situations": [
+          {
+            "id": "none|lhh",
+            "label": "bases empty, LHH up",
+            "runner_bucket": "none",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "none|rhh",
+            "label": "bases empty, RHH up",
+            "runner_bucket": "none",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|lhh",
+            "label": "first only, LHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "lhh",
+            "n": 0,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "1b|rhh",
+            "label": "first only, RHH up",
+            "runner_bucket": "1b",
+            "batter_tag": "rhh",
+            "n": 5,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "second_any|lhh",
+            "label": "any w/ runner on 2nd, LHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "lhh",
+            "n": 32,
+            "arsenal_n": 3,
+            "types_tested": [
+              "FF",
+              "SL"
+            ],
+            "discernable_n": 2,
+            "discernable_types": [
+              "FF",
+              "SL"
+            ],
+            "coverage": "2 of 3",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "FF",
+                "n": 13,
+                "discernable": true,
+                "accuracy": 0.778,
+                "feature": "catcher_hip_y_mean",
+                "precision": 0.714,
+                "threshold": 0.5646816477936243,
+                "high_means_type": false,
+                "baseline": 0.389,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SL",
+                "n": 17,
+                "discernable": true,
+                "accuracy": 0.765,
+                "feature": "catcher_glove_speed_p90",
+                "precision": 1.0,
+                "threshold": 0.05511911111111111,
+                "high_means_type": true,
+                "baseline": 0.529,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "CH",
+                "n": 2,
+                "discernable": false,
+                "accuracy": null,
+                "feature": null,
+                "status": "insufficient_n"
+              }
+            ]
+          },
+          {
+            "id": "second_any|rhh",
+            "label": "any w/ runner on 2nd, RHH up",
+            "runner_bucket": "second_any",
+            "batter_tag": "rhh",
+            "n": 30,
+            "arsenal_n": 3,
+            "types_tested": [
+              "FF",
+              "SL",
+              "CH"
+            ],
+            "discernable_n": 1,
+            "discernable_types": [
+              "SL"
+            ],
+            "coverage": "1 of 3",
+            "status": "ok",
+            "types": [
+              {
+                "pitch_type": "FF",
+                "n": 11,
+                "discernable": false,
+                "accuracy": 0.722,
+                "feature": "catcher_glove_speed_p90",
+                "precision": 0.625,
+                "threshold": 0.1791756233766234,
+                "high_means_type": false,
+                "baseline": 0.389,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SL",
+                "n": 9,
+                "discernable": true,
+                "accuracy": 0.778,
+                "feature": "catcher_glove_speed_p90",
+                "precision": 0.556,
+                "threshold": 0.21467644615384618,
+                "high_means_type": true,
+                "baseline": 0.278,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "CH",
+                "n": 10,
+                "discernable": false,
+                "accuracy": 0.591,
+                "feature": "catcher_glove_y_mean",
+                "precision": 0.4,
+                "threshold": 0.5279306810702586,
+                "high_means_type": true,
+                "baseline": 0.318,
+                "status": "ok"
+              }
+            ]
+          },
+          {
+            "id": "3b|lhh",
+            "label": "third only, LHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "lhh",
+            "n": 4,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          },
+          {
+            "id": "3b|rhh",
+            "label": "third only, RHH up",
+            "runner_bucket": "3b",
+            "batter_tag": "rhh",
+            "n": 0,
+            "arsenal_n": 3,
+            "types_tested": [],
+            "discernable_n": 0,
+            "discernable_types": [],
+            "coverage": "0 of 3",
+            "status": "insufficient_n",
+            "types": []
+          }
+        ]
+      },
+      "discernableSummary": {
+        "none|lhh": {
+          "label": "bases empty, LHH up",
+          "coverage": "0 of 3",
+          "discernable_types": [],
+          "n": 0
+        },
+        "none|rhh": {
+          "label": "bases empty, RHH up",
+          "coverage": "0 of 3",
+          "discernable_types": [],
+          "n": 0
+        },
+        "1b|lhh": {
+          "label": "first only, LHH up",
+          "coverage": "0 of 3",
+          "discernable_types": [],
+          "n": 0
+        },
+        "1b|rhh": {
+          "label": "first only, RHH up",
+          "coverage": "0 of 3",
+          "discernable_types": [],
+          "n": 5
+        },
+        "second_any|lhh": {
+          "label": "any w/ runner on 2nd, LHH up",
+          "coverage": "0 of 3",
+          "discernable_types": [],
+          "n": 32
+        },
+        "second_any|rhh": {
+          "label": "any w/ runner on 2nd, RHH up",
+          "coverage": "1 of 3",
+          "discernable_types": [
+            "SL"
+          ],
+          "n": 30
+        },
+        "3b|lhh": {
+          "label": "third only, LHH up",
+          "coverage": "0 of 3",
+          "discernable_types": [],
+          "n": 4
+        },
+        "3b|rhh": {
+          "label": "third only, RHH up",
+          "coverage": "0 of 3",
+          "discernable_types": [],
+          "n": 0
+        }
+      },
+      "poc": true,
+      "pocLive": true,
+      "illustrative": false,
+      "camera": "CF_savant_proof_of_concept",
+      "provenance": {
+        "runDir": "runs/alex_vesia_poc",
+        "sanityGate": "pass",
+        "tipSplitBacksTips": true,
+        "backedTips": 2,
+        "backedCatcherTips": 4
+      }
+    },
     "blake_snell": {
       "id": "blake_snell",
       "name": "Blake Snell",
@@ -31646,47 +32572,7 @@
           },
           "pitchType": "FF",
           "situationId": "1b|lhh",
-          "situationLabel": "first only, LHH up",
-          "rank": 1,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
-        },
-        {
-          "id": "auto-windup-batter-rhh-glove_flare_mean-SI-FF",
-          "rank": 2,
-          "title": "glove flare mean → SI vs FF [rhh]",
-          "cue": "glove flare mean → SI vs FF [rhh]",
-          "angle": "CF",
-          "context": [
-            "rhh",
-            "windup"
-          ],
-          "lookFor": "In vs righties, from the windup: watch how far the glove sits off the torso midline — wider glove flare exposing laces indicates SI; the opposite presentation indicates FF.",
-          "what_to_look_at": "In vs righties, from the windup: watch how far the glove sits off the torso midline — wider glove flare exposing laces indicates SI; the opposite presentation indicates FF.",
-          "predicts": "SI",
-          "contrast": "SI vs FF",
-          "contrast_label": "SI vs FF",
-          "confidence": 0.833,
-          "n": 6,
-          "baseline": 0.273,
-          "lift": 3.06,
-          "status": "active",
-          "validation": "game_holdout_poc",
-          "modelScope": "per_pitcher",
-          "pitchType": "SI",
-          "gates": {
-            "early": true,
-            "two_strike": true,
-            "early_need": 0.75,
-            "two_strike_need": 0.75
-          },
-          "situation": "rhh",
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery",
-          "anchor_a": 2.4,
-          "anchor_b": 2.2
+          "situationLabel": "first only, LHH up"
         },
         {
           "id": "disc-3b-lhh-ST-glove_flare_mean",
@@ -31722,12 +32608,7 @@
           },
           "pitchType": "ST",
           "situationId": "3b|lhh",
-          "situationLabel": "third only, LHH up",
-          "rank": 3,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "third only, LHH up"
         },
         {
           "id": "disc-all-rhh-FF-pitchcom_mean_isi",
@@ -31761,12 +32642,7 @@
           },
           "pitchType": "FF",
           "situationId": "all|rhh",
-          "situationLabel": "vs righties",
-          "rank": 4,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "vs righties"
         },
         {
           "id": "disc-second_any-rhh-CH-glove_flare_mean",
@@ -31802,12 +32678,7 @@
           },
           "pitchType": "CH",
           "situationId": "second_any|rhh",
-          "situationLabel": "any w/ runner on 2nd, RHH up",
-          "rank": 5,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "any w/ runner on 2nd, RHH up"
         }
       ],
       "topLeads": [
@@ -33044,11 +33915,6 @@
         "tipSplitBacksTips": true,
         "backedTips": 4,
         "backedCatcherTips": 3
-      },
-      "videoExemplarDates": {
-        "min": "2026-08-14",
-        "max": "2026-09-06",
-        "n_meta": 25
       }
     },
     "nick_frasso": {
@@ -33993,12 +34859,7 @@
           },
           "pitchType": "FC",
           "situationId": "all|all",
-          "situationLabel": "all situations",
-          "rank": 1,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "all situations"
         },
         {
           "id": "disc-all-lhh-SI-cheek_motion_mean",
@@ -34032,12 +34893,7 @@
           },
           "pitchType": "SI",
           "situationId": "all|lhh",
-          "situationLabel": "vs lefties",
-          "rank": 2,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "vs lefties"
         },
         {
           "id": "disc-1b-lhh-SI-glove_vs_belt_std",
@@ -34073,12 +34929,7 @@
           },
           "pitchType": "SI",
           "situationId": "1b|lhh",
-          "situationLabel": "first only, LHH up",
-          "rank": 3,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "first only, LHH up"
         },
         {
           "id": "disc-all-all-SL-cheek_motion_std",
@@ -34112,12 +34963,7 @@
           },
           "pitchType": "SL",
           "situationId": "all|all",
-          "situationLabel": "all situations",
-          "rank": 4,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "all situations"
         },
         {
           "id": "disc-all-rhh-CH-pitchcom_tap_count",
@@ -34151,12 +34997,77 @@
           },
           "pitchType": "CH",
           "situationId": "all|rhh",
-          "situationLabel": "vs righties",
-          "rank": 5,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "vs righties"
+        },
+        {
+          "id": "disc-second_any-rhh-SL-glove_vs_belt_mean",
+          "title": "SL discernable [any w/ runner on 2nd, RHH up]",
+          "angle": "CF",
+          "context": [
+            "second_any",
+            "rhh",
+            "stretch"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "second_any+rhh+SL"
+          },
+          "lookFor": "In vs righties, any time a runner is on second, from the set:  On Slider (SL), glove sits 2 to 3 inches lower below belt seam before leg lift begins vs locked at mid-chest on rest of arsenal.",
+          "predicts": "SL",
+          "confidence": 0.75,
+          "precision": 0.7,
+          "feature": "glove_vs_belt_mean",
+          "threshold": 0.022806182419148786,
+          "high_means_type": false,
+          "n": 32,
+          "nType": 12,
+          "baseline": 0.375,
+          "lift": 2.0,
+          "status": "active",
+          "validation": "situation_one_vs_rest",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "second_any|rhh",
+          "situationLabel": "any w/ runner on 2nd, RHH up"
+        },
+        {
+          "id": "disc-all-lhh-SL-cheek_motion_mean",
+          "title": "SL discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+SL"
+          },
+          "lookFor": "On Slider (SL), face locks into immediate motionless stillness vs visible jaw/cheek motion on rest of arsenal.",
+          "predicts": "SL",
+          "confidence": 0.75,
+          "precision": 0.5,
+          "feature": "cheek_motion_mean",
+          "threshold": 0.0032858333333333333,
+          "high_means_type": false,
+          "n": 167,
+          "nType": 1,
+          "baseline": 0.25,
+          "lift": 3.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
         }
       ],
       "topLeads": [
@@ -35582,11 +36493,6 @@
         "tipSplitBacksTips": true,
         "backedTips": 7,
         "backedCatcherTips": 3
-      },
-      "videoExemplarDates": {
-        "min": "2026-08-15",
-        "max": "2026-09-01",
-        "n_meta": 24
       }
     },
     "robbie_ray": {
@@ -35627,42 +36533,6 @@
       },
       "tips": [
         {
-          "id": "auto-windup-runner_batter-1b-lhh-glove_vs_belt_std-SL-FF",
-          "rank": 1,
-          "title": "glove vs belt std → SL vs FF [1b+lhh+windup]",
-          "cue": "glove vs belt std → SL vs FF [1b+lhh+windup]",
-          "angle": "CF",
-          "context": [
-            "1b",
-            "lhh",
-            "windup"
-          ],
-          "lookFor": "In vs lefties, first only, from the windup: watch how stable glove height stays at set — immediate motionless set hold indicates SL; the opposite pattern indicates FF.",
-          "what_to_look_at": "In vs lefties, first only, from the windup: watch how stable glove height stays at set — immediate motionless set hold indicates SL; the opposite pattern indicates FF.",
-          "predicts": "SL",
-          "contrast": "SL vs FF",
-          "contrast_label": "SL vs FF",
-          "confidence": 1.0,
-          "n": 6,
-          "baseline": 0.714,
-          "lift": 1.4,
-          "status": "active",
-          "validation": "game_holdout_poc",
-          "modelScope": "per_pitcher",
-          "pitchType": "SL",
-          "gates": {
-            "early": true,
-            "two_strike": true,
-            "early_need": 0.794,
-            "two_strike_need": 0.834
-          },
-          "situation": "1b",
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery",
-          "anchor_a": 2.4,
-          "anchor_b": 2.2
-        },
-        {
           "id": "disc-second_any-lhh-SI-glove_vs_belt_mean",
           "title": "SI discernable [any w/ runner on 2nd, LHH up]",
           "angle": "CF",
@@ -35696,12 +36566,7 @@
           },
           "pitchType": "SI",
           "situationId": "second_any|lhh",
-          "situationLabel": "any w/ runner on 2nd, LHH up",
-          "rank": 2,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "any w/ runner on 2nd, LHH up"
         },
         {
           "id": "disc-3b-rhh-SI-glove_flare_std",
@@ -35737,12 +36602,7 @@
           },
           "pitchType": "SI",
           "situationId": "3b|rhh",
-          "situationLabel": "third only, RHH up",
-          "rank": 3,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "third only, RHH up"
         },
         {
           "id": "disc-3b-rhh-CH-glove_flare_mean",
@@ -35778,12 +36638,7 @@
           },
           "pitchType": "CH",
           "situationId": "3b|rhh",
-          "situationLabel": "third only, RHH up",
-          "rank": 4,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "third only, RHH up"
         },
         {
           "id": "disc-3b-rhh-KC-glove_flare_mean",
@@ -35819,12 +36674,7 @@
           },
           "pitchType": "KC",
           "situationId": "3b|rhh",
-          "situationLabel": "third only, RHH up",
-          "rank": 5,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "third only, RHH up"
         }
       ],
       "topLeads": [
@@ -37017,11 +37867,6 @@
         "tipSplitBacksTips": true,
         "backedTips": 4,
         "backedCatcherTips": 2
-      },
-      "videoExemplarDates": {
-        "min": "2026-08-24",
-        "max": "2026-09-05",
-        "n_meta": 21
       }
     },
     "feltner": {
@@ -46521,12 +47366,7 @@
           },
           "pitchType": "SL",
           "situationId": "all|all",
-          "situationLabel": "all situations",
-          "rank": 1,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "all situations"
         },
         {
           "id": "disc-all-all-CH-cheek_motion_mean",
@@ -46560,12 +47400,7 @@
           },
           "pitchType": "CH",
           "situationId": "all|all",
-          "situationLabel": "all situations",
-          "rank": 2,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "all situations"
         },
         {
           "id": "disc-all-all-SI-cheek_motion_mean",
@@ -46599,12 +47434,7 @@
           },
           "pitchType": "SI",
           "situationId": "all|all",
-          "situationLabel": "all situations",
-          "rank": 3,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "all situations"
         },
         {
           "id": "disc-1b-lhh-SL-glove_flare_std",
@@ -46640,12 +47470,7 @@
           },
           "pitchType": "SL",
           "situationId": "1b|lhh",
-          "situationLabel": "first only, LHH up",
-          "rank": 4,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "first only, LHH up"
         },
         {
           "id": "disc-all-rhh-CH-pitchcom_tap_count",
@@ -46679,12 +47504,41 @@
           },
           "pitchType": "CH",
           "situationId": "all|rhh",
-          "situationLabel": "vs righties",
-          "rank": 5,
-          "anchor_a": 2.4,
-          "anchor_b": 2.2,
-          "video_spec": "1080p60 MLB CF (dated exemplar)",
-          "timestamp_window": "pre-set through delivery"
+          "situationLabel": "vs righties"
+        },
+        {
+          "id": "disc-all-lhh-FC-cheek_motion_mean",
+          "title": "FC discernable [vs lefties]",
+          "angle": "CF",
+          "context": [
+            "vs lefties"
+          ],
+          "tipKind": "pitcher",
+          "stratum": {
+            "kind": "situation_pitcher",
+            "value": "all+lhh+FC"
+          },
+          "lookFor": "On Cutter (FC), face locks into immediate motionless stillness vs visible jaw/cheek motion on rest of arsenal.",
+          "predicts": "FC",
+          "confidence": 0.75,
+          "precision": 0.5,
+          "feature": "cheek_motion_mean",
+          "threshold": 0.0005551470588235295,
+          "high_means_type": false,
+          "n": 157,
+          "nType": 1,
+          "baseline": 0.25,
+          "lift": 3.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "per_pitcher",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FC",
+          "situationId": "all|lhh",
+          "situationLabel": "vs lefties"
         }
       ],
       "topLeads": [
@@ -47803,11 +48657,6 @@
         "tipSplitBacksTips": true,
         "backedTips": 6,
         "backedCatcherTips": 1
-      },
-      "videoExemplarDates": {
-        "min": "2026-08-23",
-        "max": "2026-09-04",
-        "n_meta": 21
       }
     },
     "yamamoto": {
@@ -52897,7 +53746,7 @@
       "tier": "operational",
       "pitchesModeled": 19,
       "holdoutAccuracy": 0.82,
-      "summary": "Savant CF Catcher Setup PoC: 19 pitches / 1 games. 6 pre-pitch setup leads (≥75% detected movement floor). Target placement, stance width, crouch depth. Padres team publish: catcher tip videos live; mitt-box remine queued.",
+      "summary": "Savant CF Catcher Setup PoC: 19 pitches / 1 games. 6 pre-pitch setup leads (≥75% detected movement floor). Target placement, stance width, crouch depth.",
       "tips": [
         {
           "id": "c-elias_diaz-all-lhh-KC-catcher_glove_x_mean",
@@ -52935,19 +53784,14 @@
           "cue": "Catcher target shifted wide to glove-side corner",
           "target_body_part": "Catcher Target Lateral Alignment (Glove-Side Offset)",
           "what_to_look_at": "Catcher Target Lateral Alignment (Glove-Side Offset)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "direction": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on knuckle curve. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 1,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-rhh-SL-catcher_glove_speed_mean",
@@ -52985,19 +53829,14 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for slider. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal",
-          "rank": 2,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Slider vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-rhh-KC-catcher_glove_y_mean",
@@ -53035,19 +53874,14 @@
           "cue": "Catcher target held high at chest level",
           "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
           "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "direction": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for knuckle curve. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 3,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-all-KC-catcher_hip_y_mean",
@@ -53085,19 +53919,14 @@
           "cue": "Catcher sets in taller upright crouch stance",
           "target_body_part": "Catcher Hip Elevation & Posture",
           "what_to_look_at": "Catcher Hip Elevation & Posture",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Crouch Setup (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "direction": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher hips elevated in high crouch. Pitch B (Arsenal Baseline): Catcher dropped low on one knee in dirt.",
           "scouting_note": "Taller crouch posture presets the catcher to receive elevated pitches on knuckle curve. Watch catcher hip height before pitcher starts delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 4,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-lhh-FF-catcher_glove_speed_mean",
@@ -53135,19 +53964,59 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 4-seam fastball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal",
-          "rank": 5,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "4-Seam Fastball vs Arsenal"
+        },
+        {
+          "id": "c-elias_diaz-all-all-SL-catcher_glove_x_mean",
+          "title": "SL via Catcher Setup [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+all+SL"
+          },
+          "lookFor": "On Slider (SL), catcher shifts target toward arm-side border; on the rest of the arsenal, target is centered (2.7× visibility floor separation).",
+          "predicts": "SL",
+          "confidence": 0.75,
+          "precision": 0.6,
+          "feature": "catcher_glove_x_mean",
+          "threshold": 0.47151151667959923,
+          "high_means_type": false,
+          "n": 19,
+          "nType": 4,
+          "baseline": 0.333,
+          "lift": 2.25,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "all|all",
+          "situationLabel": "all situations",
+          "cue": "Catcher target shifted toward arm-side corner",
+          "target_body_part": "Catcher Target Lateral Alignment (Arm-Side Offset)",
+          "what_to_look_at": "Catcher Target Lateral Alignment (Arm-Side Offset)",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
+          "what_to_spot": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "spot_the_difference": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "direction": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
+          "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on slider. Watch catcher target offset before leg lift.",
+          "contrast_label": "Slider (SL) vs Arsenal Baseline",
+          "contrast": "Slider vs Arsenal"
         }
       ],
       "catcherTips": [
@@ -53187,19 +54056,14 @@
           "cue": "Catcher target shifted wide to glove-side corner",
           "target_body_part": "Catcher Target Lateral Alignment (Glove-Side Offset)",
           "what_to_look_at": "Catcher Target Lateral Alignment (Glove-Side Offset)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "direction": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on knuckle curve. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 1,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-rhh-SL-catcher_glove_speed_mean",
@@ -53237,19 +54101,14 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for slider. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal",
-          "rank": 2,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Slider vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-rhh-KC-catcher_glove_y_mean",
@@ -53287,19 +54146,14 @@
           "cue": "Catcher target held high at chest level",
           "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
           "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "direction": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for knuckle curve. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 3,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-all-KC-catcher_hip_y_mean",
@@ -53337,19 +54191,14 @@
           "cue": "Catcher sets in taller upright crouch stance",
           "target_body_part": "Catcher Hip Elevation & Posture",
           "what_to_look_at": "Catcher Hip Elevation & Posture",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Crouch Setup (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "direction": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher hips elevated in high crouch. Pitch B (Arsenal Baseline): Catcher dropped low on one knee in dirt.",
           "scouting_note": "Taller crouch posture presets the catcher to receive elevated pitches on knuckle curve. Watch catcher hip height before pitcher starts delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 4,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-lhh-FF-catcher_glove_speed_mean",
@@ -53387,19 +54236,59 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 4-seam fastball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal",
-          "rank": 5,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "4-Seam Fastball vs Arsenal"
+        },
+        {
+          "id": "c-elias_diaz-all-all-SL-catcher_glove_x_mean",
+          "title": "SL via Catcher Setup [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+all+SL"
+          },
+          "lookFor": "On Slider (SL), catcher shifts target toward arm-side border; on the rest of the arsenal, target is centered (2.7× visibility floor separation).",
+          "predicts": "SL",
+          "confidence": 0.75,
+          "precision": 0.6,
+          "feature": "catcher_glove_x_mean",
+          "threshold": 0.47151151667959923,
+          "high_means_type": false,
+          "n": 19,
+          "nType": 4,
+          "baseline": 0.333,
+          "lift": 2.25,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "all|all",
+          "situationLabel": "all situations",
+          "cue": "Catcher target shifted toward arm-side corner",
+          "target_body_part": "Catcher Target Lateral Alignment (Arm-Side Offset)",
+          "what_to_look_at": "Catcher Target Lateral Alignment (Arm-Side Offset)",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
+          "what_to_spot": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "spot_the_difference": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "direction": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
+          "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on slider. Watch catcher target offset before leg lift.",
+          "contrast_label": "Slider (SL) vs Arsenal Baseline",
+          "contrast": "Slider vs Arsenal"
         }
       ],
       "tipFloor": 0.75,
@@ -53432,8 +54321,7 @@
         "tipSplitBacksTips": true,
         "backedTips": 6,
         "backedCatcherTips": 6
-      },
-      "videoExemplarNote": "Tip A/B CF exemplars published; cmitt remine pending (no mitt boxes on these CF crops)."
+      }
     },
     "gabriel_moreno": {
       "id": "gabriel_moreno",
@@ -54291,7 +55179,7 @@
       "tier": "operational",
       "pitchesModeled": 17,
       "holdoutAccuracy": 0.82,
-      "summary": "Savant CF Catcher Setup PoC: 17 pitches / 1 games. 6 pre-pitch setup leads (≥75% detected movement floor). Target placement, stance width, crouch depth. Padres team publish: catcher tip videos live; mitt-box remine queued.",
+      "summary": "Savant CF Catcher Setup PoC: 17 pitches / 1 games. 6 pre-pitch setup leads (≥75% detected movement floor). Target placement, stance width, crouch depth.",
       "tips": [
         {
           "id": "c-luis_campusano-all-all-SL-catcher_glove_y_mean",
@@ -54329,19 +55217,14 @@
           "cue": "Catcher target held high at chest level",
           "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
           "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "spot_the_difference": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "direction": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for slider. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal",
-          "rank": 1,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Slider vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-ST-catcher_hip_y_mean",
@@ -54379,19 +55262,14 @@
           "cue": "Catcher drops into deep one-knee crouch in dirt",
           "target_body_part": "Catcher Hip Depth & One-Knee Stance",
           "what_to_look_at": "Catcher Hip Depth & One-Knee Stance",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Crouch Setup (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "spot_the_difference": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "direction": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher left knee flat on the dirt in deep crouch. Pitch B (Arsenal Baseline): Standard two-foot elevated crouch.",
           "scouting_note": "Deep one-knee posture prepares catcher to smother low dirt balls on sweeper. Watch catcher stance depth before delivery starts.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal",
-          "rank": 2,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Sweeper vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-CH-catcher_stance_mean",
@@ -54429,19 +55307,14 @@
           "cue": "Narrow compact catcher stance base",
           "target_body_part": "Catcher Stance Width & Base Footing",
           "what_to_look_at": "Catcher Stance Width & Base Footing",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Stance Formation (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "spot_the_difference": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "direction": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "side_by_side_guide": "Pitch A (Changeup - CH): Compact foot width directly under hips. Pitch B (Arsenal Baseline): Wide, splayed foot stance.",
           "scouting_note": "Compact stance maintains mobility for framing strikes on changeup. Watch catcher foot spacing before pitcher comes set.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal",
-          "rank": 3,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Changeup vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-SI-catcher_glove_speed_p90",
@@ -54479,19 +55352,14 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 2-seam sinker. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal",
-          "rank": 4,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "2-Seam Sinker vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-lhh-SI-catcher_glove_x_mean",
@@ -54529,19 +55397,60 @@
           "cue": "Catcher target shifted toward arm-side corner",
           "target_body_part": "Catcher Target Lateral Alignment (Arm-Side Offset)",
           "what_to_look_at": "Catcher Target Lateral Alignment (Arm-Side Offset)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
           "what_to_spot": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "spot_the_difference": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "direction": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on 2-seam sinker. Watch catcher target offset before leg lift.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal",
-          "rank": 5,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "2-Seam Sinker vs Arsenal"
+        },
+        {
+          "id": "c-luis_campusano-none-all-FF-catcher_glove_y_mean",
+          "title": "FF via Catcher Setup [bases empty]",
+          "angle": "CF",
+          "context": [
+            "bases empty",
+            "windup"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "none+all+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), catcher sets mitt target high at chest level; on the rest of the arsenal, target is held low at the knees (7.2× visibility floor separation).",
+          "predicts": "FF",
+          "confidence": 0.75,
+          "precision": 0.333,
+          "feature": "catcher_glove_y_mean",
+          "threshold": 0.562390744047619,
+          "high_means_type": true,
+          "n": 11,
+          "nType": 1,
+          "baseline": 0.125,
+          "lift": 6.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "none|all",
+          "situationLabel": "bases empty",
+          "cue": "Catcher target held high at chest level",
+          "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
+          "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
+          "what_to_spot": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "spot_the_difference": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "direction": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
+          "scouting_note": "High mitt placement presets an elevated target zone for 4-seam fastball. Watch the catcher's initial target presentation before leg lift.",
+          "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
+          "contrast": "4-Seam Fastball vs Arsenal"
         }
       ],
       "catcherTips": [
@@ -54581,19 +55490,14 @@
           "cue": "Catcher target held high at chest level",
           "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
           "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "spot_the_difference": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "direction": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for slider. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal",
-          "rank": 1,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Slider vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-ST-catcher_hip_y_mean",
@@ -54631,19 +55535,14 @@
           "cue": "Catcher drops into deep one-knee crouch in dirt",
           "target_body_part": "Catcher Hip Depth & One-Knee Stance",
           "what_to_look_at": "Catcher Hip Depth & One-Knee Stance",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Crouch Setup (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "spot_the_difference": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "direction": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher left knee flat on the dirt in deep crouch. Pitch B (Arsenal Baseline): Standard two-foot elevated crouch.",
           "scouting_note": "Deep one-knee posture prepares catcher to smother low dirt balls on sweeper. Watch catcher stance depth before delivery starts.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal",
-          "rank": 2,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Sweeper vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-CH-catcher_stance_mean",
@@ -54681,19 +55580,14 @@
           "cue": "Narrow compact catcher stance base",
           "target_body_part": "Catcher Stance Width & Base Footing",
           "what_to_look_at": "Catcher Stance Width & Base Footing",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Stance Formation (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "spot_the_difference": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "direction": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "side_by_side_guide": "Pitch A (Changeup - CH): Compact foot width directly under hips. Pitch B (Arsenal Baseline): Wide, splayed foot stance.",
           "scouting_note": "Compact stance maintains mobility for framing strikes on changeup. Watch catcher foot spacing before pitcher comes set.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal",
-          "rank": 3,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Changeup vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-SI-catcher_glove_speed_p90",
@@ -54731,19 +55625,14 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 2-seam sinker. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal",
-          "rank": 4,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "2-Seam Sinker vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-lhh-SI-catcher_glove_x_mean",
@@ -54781,19 +55670,60 @@
           "cue": "Catcher target shifted toward arm-side corner",
           "target_body_part": "Catcher Target Lateral Alignment (Arm-Side Offset)",
           "what_to_look_at": "Catcher Target Lateral Alignment (Arm-Side Offset)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
           "what_to_spot": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "spot_the_difference": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "direction": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on 2-seam sinker. Watch catcher target offset before leg lift.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal",
-          "rank": 5,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "2-Seam Sinker vs Arsenal"
+        },
+        {
+          "id": "c-luis_campusano-none-all-FF-catcher_glove_y_mean",
+          "title": "FF via Catcher Setup [bases empty]",
+          "angle": "CF",
+          "context": [
+            "bases empty",
+            "windup"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "none+all+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), catcher sets mitt target high at chest level; on the rest of the arsenal, target is held low at the knees (7.2× visibility floor separation).",
+          "predicts": "FF",
+          "confidence": 0.75,
+          "precision": 0.333,
+          "feature": "catcher_glove_y_mean",
+          "threshold": 0.562390744047619,
+          "high_means_type": true,
+          "n": 11,
+          "nType": 1,
+          "baseline": 0.125,
+          "lift": 6.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "none|all",
+          "situationLabel": "bases empty",
+          "cue": "Catcher target held high at chest level",
+          "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
+          "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
+          "what_to_spot": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "spot_the_difference": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "direction": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
+          "scouting_note": "High mitt placement presets an elevated target zone for 4-seam fastball. Watch the catcher's initial target presentation before leg lift.",
+          "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
+          "contrast": "4-Seam Fastball vs Arsenal"
         }
       ],
       "tipFloor": 0.75,
@@ -54828,8 +55758,7 @@
         "tipSplitBacksTips": true,
         "backedTips": 6,
         "backedCatcherTips": 6
-      },
-      "videoExemplarNote": "Tip A/B CF exemplars published; cmitt remine pending (no mitt boxes on these CF crops)."
+      }
     },
     "patrick_bailey": {
       "id": "patrick_bailey",
@@ -72246,7 +73175,7 @@
       "tier": "operational",
       "pitchesModeled": 19,
       "holdoutAccuracy": 0.82,
-      "summary": "Savant CF Catcher Setup PoC: 19 pitches / 1 games. 6 pre-pitch setup leads (≥75% detected movement floor). Target placement, stance width, crouch depth. Padres team publish: catcher tip videos live; mitt-box remine queued.",
+      "summary": "Savant CF Catcher Setup PoC: 19 pitches / 1 games. 6 pre-pitch setup leads (≥75% detected movement floor). Target placement, stance width, crouch depth.",
       "tips": [
         {
           "id": "c-elias_diaz-all-lhh-KC-catcher_glove_x_mean",
@@ -72284,19 +73213,14 @@
           "cue": "Catcher target shifted wide to glove-side corner",
           "target_body_part": "Catcher Target Lateral Alignment (Glove-Side Offset)",
           "what_to_look_at": "Catcher Target Lateral Alignment (Glove-Side Offset)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "direction": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on knuckle curve. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 1,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-rhh-SL-catcher_glove_speed_mean",
@@ -72334,19 +73258,14 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for slider. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal",
-          "rank": 2,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Slider vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-rhh-KC-catcher_glove_y_mean",
@@ -72384,19 +73303,14 @@
           "cue": "Catcher target held high at chest level",
           "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
           "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "direction": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for knuckle curve. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 3,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-all-KC-catcher_hip_y_mean",
@@ -72434,19 +73348,14 @@
           "cue": "Catcher sets in taller upright crouch stance",
           "target_body_part": "Catcher Hip Elevation & Posture",
           "what_to_look_at": "Catcher Hip Elevation & Posture",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Crouch Setup (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "direction": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher hips elevated in high crouch. Pitch B (Arsenal Baseline): Catcher dropped low on one knee in dirt.",
           "scouting_note": "Taller crouch posture presets the catcher to receive elevated pitches on knuckle curve. Watch catcher hip height before pitcher starts delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 4,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-lhh-FF-catcher_glove_speed_mean",
@@ -72484,19 +73393,59 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 4-seam fastball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal",
-          "rank": 5,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "4-Seam Fastball vs Arsenal"
+        },
+        {
+          "id": "c-elias_diaz-all-all-SL-catcher_glove_x_mean",
+          "title": "SL via Catcher Setup [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+all+SL"
+          },
+          "lookFor": "On Slider (SL), catcher shifts target toward arm-side border; on the rest of the arsenal, target is centered (2.7× visibility floor separation).",
+          "predicts": "SL",
+          "confidence": 0.75,
+          "precision": 0.6,
+          "feature": "catcher_glove_x_mean",
+          "threshold": 0.47151151667959923,
+          "high_means_type": false,
+          "n": 19,
+          "nType": 4,
+          "baseline": 0.333,
+          "lift": 2.25,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "all|all",
+          "situationLabel": "all situations",
+          "cue": "Catcher target shifted toward arm-side corner",
+          "target_body_part": "Catcher Target Lateral Alignment (Arm-Side Offset)",
+          "what_to_look_at": "Catcher Target Lateral Alignment (Arm-Side Offset)",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
+          "what_to_spot": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "spot_the_difference": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "direction": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
+          "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on slider. Watch catcher target offset before leg lift.",
+          "contrast_label": "Slider (SL) vs Arsenal Baseline",
+          "contrast": "Slider vs Arsenal"
         }
       ],
       "catcherTips": [
@@ -72536,19 +73485,14 @@
           "cue": "Catcher target shifted wide to glove-side corner",
           "target_body_part": "Catcher Target Lateral Alignment (Glove-Side Offset)",
           "what_to_look_at": "Catcher Target Lateral Alignment (Glove-Side Offset)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "direction": "On Knuckle Curve (KC), the catcher sets his mitt 5 to 7 inches wider toward the glove-side edge of the plate before the pitcher begins delivery; on other pitches, the target is aligned central or arm-side.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt aligned wide outside on glove-side border. Pitch B (Arsenal Baseline): Catcher mitt centered over plate.",
           "scouting_note": "Wide glove-side setup prepares for fading or breaking movement on knuckle curve. Look at target alignment 1.0s prior to delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 1,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-rhh-SL-catcher_glove_speed_mean",
@@ -72586,19 +73530,14 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On Slider (SL), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for slider. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal",
-          "rank": 2,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Slider vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-rhh-KC-catcher_glove_y_mean",
@@ -72636,19 +73575,14 @@
           "cue": "Catcher target held high at chest level",
           "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
           "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "direction": "On Knuckle Curve (KC), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for knuckle curve. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 3,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-all-KC-catcher_hip_y_mean",
@@ -72686,19 +73620,14 @@
           "cue": "Catcher sets in taller upright crouch stance",
           "target_body_part": "Catcher Hip Elevation & Posture",
           "what_to_look_at": "Catcher Hip Elevation & Posture",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Crouch Setup (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "spot_the_difference": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "direction": "On Knuckle Curve (KC), the catcher sets up in a taller, elevated crouch posture with hips raised 4 inches higher; on other pitches, he sinks into a deep one-knee stance.",
           "side_by_side_guide": "Pitch A (Knuckle Curve - KC): Catcher hips elevated in high crouch. Pitch B (Arsenal Baseline): Catcher dropped low on one knee in dirt.",
           "scouting_note": "Taller crouch posture presets the catcher to receive elevated pitches on knuckle curve. Watch catcher hip height before pitcher starts delivery.",
           "contrast_label": "Knuckle Curve (KC) vs Arsenal Baseline",
-          "contrast": "Knuckle Curve vs Arsenal",
-          "rank": 4,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Knuckle Curve vs Arsenal"
         },
         {
           "id": "c-elias_diaz-all-lhh-FF-catcher_glove_speed_mean",
@@ -72736,19 +73665,59 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On 4-Seam Fastball (FF), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 4-seam fastball. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
-          "contrast": "4-Seam Fastball vs Arsenal",
-          "rank": 5,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "4-Seam Fastball vs Arsenal"
+        },
+        {
+          "id": "c-elias_diaz-all-all-SL-catcher_glove_x_mean",
+          "title": "SL via Catcher Setup [all situations]",
+          "angle": "CF",
+          "context": [
+            "all situations"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "all+all+SL"
+          },
+          "lookFor": "On Slider (SL), catcher shifts target toward arm-side border; on the rest of the arsenal, target is centered (2.7× visibility floor separation).",
+          "predicts": "SL",
+          "confidence": 0.75,
+          "precision": 0.6,
+          "feature": "catcher_glove_x_mean",
+          "threshold": 0.47151151667959923,
+          "high_means_type": false,
+          "n": 19,
+          "nType": 4,
+          "baseline": 0.333,
+          "lift": 2.25,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "SL",
+          "situationId": "all|all",
+          "situationLabel": "all situations",
+          "cue": "Catcher target shifted toward arm-side corner",
+          "target_body_part": "Catcher Target Lateral Alignment (Arm-Side Offset)",
+          "what_to_look_at": "Catcher Target Lateral Alignment (Arm-Side Offset)",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
+          "what_to_spot": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "spot_the_difference": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "direction": "On Slider (SL), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
+          "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
+          "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on slider. Watch catcher target offset before leg lift.",
+          "contrast_label": "Slider (SL) vs Arsenal Baseline",
+          "contrast": "Slider vs Arsenal"
         }
       ],
       "tipFloor": 0.75,
@@ -72781,8 +73750,7 @@
         "tipSplitBacksTips": true,
         "backedTips": 6,
         "backedCatcherTips": 6
-      },
-      "videoExemplarNote": "Tip A/B CF exemplars published; cmitt remine pending (no mitt boxes on these CF crops)."
+      }
     },
     "gabriel_moreno": {
       "id": "gabriel_moreno",
@@ -73640,7 +74608,7 @@
       "tier": "operational",
       "pitchesModeled": 17,
       "holdoutAccuracy": 0.82,
-      "summary": "Savant CF Catcher Setup PoC: 17 pitches / 1 games. 6 pre-pitch setup leads (≥75% detected movement floor). Target placement, stance width, crouch depth. Padres team publish: catcher tip videos live; mitt-box remine queued.",
+      "summary": "Savant CF Catcher Setup PoC: 17 pitches / 1 games. 6 pre-pitch setup leads (≥75% detected movement floor). Target placement, stance width, crouch depth.",
       "tips": [
         {
           "id": "c-luis_campusano-all-all-SL-catcher_glove_y_mean",
@@ -73678,19 +74646,14 @@
           "cue": "Catcher target held high at chest level",
           "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
           "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "spot_the_difference": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "direction": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for slider. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal",
-          "rank": 1,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Slider vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-ST-catcher_hip_y_mean",
@@ -73728,19 +74691,14 @@
           "cue": "Catcher drops into deep one-knee crouch in dirt",
           "target_body_part": "Catcher Hip Depth & One-Knee Stance",
           "what_to_look_at": "Catcher Hip Depth & One-Knee Stance",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Crouch Setup (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "spot_the_difference": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "direction": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher left knee flat on the dirt in deep crouch. Pitch B (Arsenal Baseline): Standard two-foot elevated crouch.",
           "scouting_note": "Deep one-knee posture prepares catcher to smother low dirt balls on sweeper. Watch catcher stance depth before delivery starts.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal",
-          "rank": 2,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Sweeper vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-CH-catcher_stance_mean",
@@ -73778,19 +74736,14 @@
           "cue": "Narrow compact catcher stance base",
           "target_body_part": "Catcher Stance Width & Base Footing",
           "what_to_look_at": "Catcher Stance Width & Base Footing",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Stance Formation (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "spot_the_difference": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "direction": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "side_by_side_guide": "Pitch A (Changeup - CH): Compact foot width directly under hips. Pitch B (Arsenal Baseline): Wide, splayed foot stance.",
           "scouting_note": "Compact stance maintains mobility for framing strikes on changeup. Watch catcher foot spacing before pitcher comes set.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal",
-          "rank": 3,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Changeup vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-SI-catcher_glove_speed_p90",
@@ -73828,19 +74781,14 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 2-seam sinker. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal",
-          "rank": 4,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "2-Seam Sinker vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-lhh-SI-catcher_glove_x_mean",
@@ -73878,19 +74826,60 @@
           "cue": "Catcher target shifted toward arm-side corner",
           "target_body_part": "Catcher Target Lateral Alignment (Arm-Side Offset)",
           "what_to_look_at": "Catcher Target Lateral Alignment (Arm-Side Offset)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
           "what_to_spot": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "spot_the_difference": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "direction": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on 2-seam sinker. Watch catcher target offset before leg lift.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal",
-          "rank": 5,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "2-Seam Sinker vs Arsenal"
+        },
+        {
+          "id": "c-luis_campusano-none-all-FF-catcher_glove_y_mean",
+          "title": "FF via Catcher Setup [bases empty]",
+          "angle": "CF",
+          "context": [
+            "bases empty",
+            "windup"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "none+all+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), catcher sets mitt target high at chest level; on the rest of the arsenal, target is held low at the knees (7.2× visibility floor separation).",
+          "predicts": "FF",
+          "confidence": 0.75,
+          "precision": 0.333,
+          "feature": "catcher_glove_y_mean",
+          "threshold": 0.562390744047619,
+          "high_means_type": true,
+          "n": 11,
+          "nType": 1,
+          "baseline": 0.125,
+          "lift": 6.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "none|all",
+          "situationLabel": "bases empty",
+          "cue": "Catcher target held high at chest level",
+          "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
+          "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
+          "what_to_spot": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "spot_the_difference": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "direction": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
+          "scouting_note": "High mitt placement presets an elevated target zone for 4-seam fastball. Watch the catcher's initial target presentation before leg lift.",
+          "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
+          "contrast": "4-Seam Fastball vs Arsenal"
         }
       ],
       "catcherTips": [
@@ -73930,19 +74919,14 @@
           "cue": "Catcher target held high at chest level",
           "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
           "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "spot_the_difference": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "direction": "On Slider (SL), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
           "side_by_side_guide": "Pitch A (Slider - SL): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
           "scouting_note": "High mitt placement presets an elevated target zone for slider. Watch the catcher's initial target presentation before leg lift.",
           "contrast_label": "Slider (SL) vs Arsenal Baseline",
-          "contrast": "Slider vs Arsenal",
-          "rank": 1,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Slider vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-ST-catcher_hip_y_mean",
@@ -73980,19 +74964,14 @@
           "cue": "Catcher drops into deep one-knee crouch in dirt",
           "target_body_part": "Catcher Hip Depth & One-Knee Stance",
           "what_to_look_at": "Catcher Hip Depth & One-Knee Stance",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Crouch Setup (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "spot_the_difference": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "direction": "On Sweeper (ST), the catcher drops his hips 4 to 5 inches lower into a deep one-knee stance on the dirt; on other pitches, he maintains a standard upright crouch.",
           "side_by_side_guide": "Pitch A (Sweeper - ST): Catcher left knee flat on the dirt in deep crouch. Pitch B (Arsenal Baseline): Standard two-foot elevated crouch.",
           "scouting_note": "Deep one-knee posture prepares catcher to smother low dirt balls on sweeper. Watch catcher stance depth before delivery starts.",
           "contrast_label": "Sweeper (ST) vs Arsenal Baseline",
-          "contrast": "Sweeper vs Arsenal",
-          "rank": 2,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Sweeper vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-CH-catcher_stance_mean",
@@ -74030,19 +75009,14 @@
           "cue": "Narrow compact catcher stance base",
           "target_body_part": "Catcher Stance Width & Base Footing",
           "what_to_look_at": "Catcher Stance Width & Base Footing",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Catcher Stance Formation (0:00.5 to 0:01.8 into clip)",
           "what_to_spot": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "spot_the_difference": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "direction": "On Changeup (CH), the catcher maintains a narrow, agile foot spacing beneath his shoulders; on other pitches, he splays his feet into a wide blocking stance.",
           "side_by_side_guide": "Pitch A (Changeup - CH): Compact foot width directly under hips. Pitch B (Arsenal Baseline): Wide, splayed foot stance.",
           "scouting_note": "Compact stance maintains mobility for framing strikes on changeup. Watch catcher foot spacing before pitcher comes set.",
           "contrast_label": "Changeup (CH) vs Arsenal Baseline",
-          "contrast": "Changeup vs Arsenal",
-          "rank": 3,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "Changeup vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-all-SI-catcher_glove_speed_p90",
@@ -74080,19 +75054,14 @@
           "cue": "Late catcher glove repositioning before pitcher lift",
           "target_body_part": "Catcher Glove Movement & Framing Shift",
           "what_to_look_at": "Catcher Glove Movement & Framing Shift",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Pre-Delivery Setup (0:00.8 to 0:02.0 into clip)",
           "what_to_spot": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "spot_the_difference": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "direction": "On 2-Seam Sinker (SI), the catcher makes an active late glove repositioning / snap right before the pitcher lifts his front leg; on other pitches, the target remains completely static and calm.",
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher visibly jerks/adjusts mitt right before lift. Pitch B (Arsenal Baseline): Catcher holds quiet, motionless target.",
           "scouting_note": "Late adjustment occurs when catcher fine-tunes blocking or framing target for 2-seam sinker. Watch catcher glove motion right before pitcher's leg kick.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal",
-          "rank": 4,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "2-Seam Sinker vs Arsenal"
         },
         {
           "id": "c-luis_campusano-all-lhh-SI-catcher_glove_x_mean",
@@ -74130,19 +75099,60 @@
           "cue": "Catcher target shifted toward arm-side corner",
           "target_body_part": "Catcher Target Lateral Alignment (Arm-Side Offset)",
           "what_to_look_at": "Catcher Target Lateral Alignment (Arm-Side Offset)",
-          "timestamp_window": "pre-pitch mitt/setup through delivery",
+          "timestamp_window": "Early Battery Setup (0:00.5 to 0:01.5 into clip)",
           "what_to_spot": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "spot_the_difference": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "direction": "On 2-Seam Sinker (SI), the catcher shifts his mitt target 5 to 7 inches toward the arm-side plate boundary; on other pitches, target sits central or glove-side.",
           "side_by_side_guide": "Pitch A (2-Seam Sinker - SI): Catcher mitt set on arm-side corner. Pitch B (Arsenal Baseline): Catcher mitt centered or glove-side.",
           "scouting_note": "Arm-side setup positions the battery for running sinkers or fastballs on 2-seam sinker. Watch catcher target offset before leg lift.",
           "contrast_label": "2-Seam Sinker (SI) vs Arsenal Baseline",
-          "contrast": "2-Seam Sinker vs Arsenal",
-          "rank": 5,
-          "anchor_a": 0.4,
-          "anchor_b": 0.5,
-          "video_spec": "1080p60 MLB CF catcher target window",
-          "scrub_span_sec": 3.5
+          "contrast": "2-Seam Sinker vs Arsenal"
+        },
+        {
+          "id": "c-luis_campusano-none-all-FF-catcher_glove_y_mean",
+          "title": "FF via Catcher Setup [bases empty]",
+          "angle": "CF",
+          "context": [
+            "bases empty",
+            "windup"
+          ],
+          "tipKind": "catcher",
+          "stratum": {
+            "kind": "situation_catcher",
+            "value": "none+all+FF"
+          },
+          "lookFor": "On 4-Seam Fastball (FF), catcher sets mitt target high at chest level; on the rest of the arsenal, target is held low at the knees (7.2× visibility floor separation).",
+          "predicts": "FF",
+          "confidence": 0.75,
+          "precision": 0.333,
+          "feature": "catcher_glove_y_mean",
+          "threshold": 0.562390744047619,
+          "high_means_type": true,
+          "n": 11,
+          "nType": 1,
+          "baseline": 0.125,
+          "lift": 6.0,
+          "status": "active",
+          "validation": "empirical_detection_75",
+          "modelScope": "catcher_setup",
+          "gates": {
+            "tip_floor": 0.75,
+            "clears_75": true
+          },
+          "pitchType": "FF",
+          "situationId": "none|all",
+          "situationLabel": "bases empty",
+          "cue": "Catcher target held high at chest level",
+          "target_body_part": "Catcher Glove Target Elevation (Chest vs Knees)",
+          "what_to_look_at": "Catcher Glove Target Elevation (Chest vs Knees)",
+          "timestamp_window": "Catcher Setup Window (0:00.5 to 0:01.8 into clip)",
+          "what_to_spot": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "spot_the_difference": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "direction": "On 4-Seam Fastball (FF), the catcher establishes his primary mitt target 4 to 6 inches higher at chest level before the pitcher starts his delivery; on other pitches, the mitt is held low near the knees.",
+          "side_by_side_guide": "Pitch A (4-Seam Fastball - FF): Catcher mitt held at chest height. Pitch B (Arsenal Baseline): Catcher mitt held low below knees.",
+          "scouting_note": "High mitt placement presets an elevated target zone for 4-seam fastball. Watch the catcher's initial target presentation before leg lift.",
+          "contrast_label": "4-Seam Fastball (FF) vs Arsenal Baseline",
+          "contrast": "4-Seam Fastball vs Arsenal"
         }
       ],
       "tipFloor": 0.75,
@@ -74177,8 +75187,7 @@
         "tipSplitBacksTips": true,
         "backedTips": 6,
         "backedCatcherTips": 6
-      },
-      "videoExemplarNote": "Tip A/B CF exemplars published; cmitt remine pending (no mitt boxes on these CF crops)."
+      }
     },
     "patrick_bailey": {
       "id": "patrick_bailey",
