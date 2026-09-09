@@ -10,9 +10,9 @@
   "eta_hours": 540.5,
   "est_total_pitches": 194590,
   "current": {
-    "name": "Derek Law",
-    "team": "ARI",
-    "message": "pitcher [13/13] last 8 games \u00b7 set + coming-set tracks"
+    "name": "Tomoyuki Sugano",
+    "team": "COL",
+    "message": "pitcher [1/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -190,24 +190,6 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jovani_mor\u00e1n_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "608372": {
-      "name": "Tomoyuki Sugano",
-      "team": "COL",
-      "n_tracked": 277,
-      "holdout": 0.263,
-      "tips_ge_75": 3,
-      "catcher_tips": 2,
-      "legacy_tips_ge_75": 3,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/tomoyuki_sugano_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -875,6 +857,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/justin_martinez_poc",
       "schema": "rich_72col",
       "n_current_tracks": 96,
+      "ready": false,
+      "state": "tracking"
+    },
+    "571882": {
+      "name": "Derek Law",
+      "team": "ARI",
+      "n_tracked": 67,
+      "holdout": 0.296,
+      "tips_ge_75": 5,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/derek_law_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 74,
       "ready": false,
       "state": "tracking"
     }
@@ -3315,15 +3315,15 @@
   "by_team": {
     "ARI": {
       "queued": 13,
-      "done": 15,
-      "pitcher_tips": 38,
+      "done": 16,
+      "pitcher_tips": 43,
       "catcher_tips": 3
     },
     "COL": {
       "queued": 14,
-      "done": 14,
-      "pitcher_tips": 58,
-      "catcher_tips": 36
+      "done": 13,
+      "pitcher_tips": 55,
+      "catcher_tips": 34
     },
     "LAD": {
       "queued": 15,
@@ -3352,12 +3352,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 172,
-    "catcher_tips": 104
+    "pitcher_tips": 174,
+    "catcher_tips": 102
   },
-  "updated_at": "2026-09-08T20:20:41",
+  "updated_at": "2026-09-08T21:15:26",
   "live": {
-    "pitches_done": 60,
+    "pitches_done": 250,
     "pitches_target": null
   },
   "heartbeat": true
