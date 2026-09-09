@@ -1,16 +1,16 @@
-# Daily ~3:04 AM Pacific (+ ~3:34 AM backup): rebuild JSON, push site, PDF + email.
-# GitHub Actions schedule crons are evaluated in UTC.
-# 10:04 UTC = 3:04 AM PDT (UTC-7) / 2:04 AM PST (UTC-8)
-# 10:34 UTC = 3:34 AM PDT (UTC-7) / 2:34 AM PST (UTC-8)
+# Daily ~1:04 AM PST (+ ~1:34 AM PST backup): rebuild JSON, push site, PDF + email.
+# GitHub Actions schedule crons are evaluated in UTC (fixed offset, not DST-aware).
+# 09:04 UTC = 1:04 AM PST (UTC-8) / 2:04 AM PDT (UTC-7)
+# 09:34 UTC = 1:34 AM PST (UTC-8) / 2:34 AM PDT (UTC-7)
 # Off :00/:15/:30 to reduce cron contention. Email dedup = one message per report date.
 name: Apex daily
 
 on:
   schedule:
-    # 3:04 AM PDT (10:04 UTC)
-    - cron: "4 10 * * *"
-    # Backup at 3:34 AM PDT (10:34 UTC); dedupes email if primary already sent.
-    - cron: "34 10 * * *"
+    # 1:04 AM PST (09:04 UTC)
+    - cron: "4 9 * * *"
+    # Backup at 1:34 AM PST (09:34 UTC); dedupes email if primary already sent.
+    - cron: "34 9 * * *"
   workflow_dispatch:
 
 permissions:
