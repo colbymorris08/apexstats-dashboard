@@ -10,9 +10,9 @@
   "eta_hours": 544.6,
   "est_total_pitches": 196040,
   "current": {
-    "name": "Justin Martinez",
+    "name": "Derek Law",
     "team": "ARI",
-    "message": "pitcher [10/11] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [11/11] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -555,24 +555,6 @@
       "ready": false,
       "state": "empty"
     },
-    "571882": {
-      "name": "Derek Law",
-      "team": "ARI",
-      "n_tracked": 67,
-      "holdout": 0.296,
-      "tips_ge_75": 5,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 5,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/derek_law_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
     "608372": {
       "name": "Tomoyuki Sugano",
       "team": "COL",
@@ -769,6 +751,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brandyn_garcia_poc",
       "schema": "rich_72col",
       "n_current_tracks": 144,
+      "ready": true,
+      "state": "complete"
+    },
+    "679885": {
+      "name": "Justin Martinez",
+      "team": "ARI",
+      "n_tracked": 73,
+      "holdout": 0.333,
+      "tips_ge_75": 2,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 2,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/justin_martinez_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 96,
       "ready": false,
       "state": "tracking"
     }
@@ -3210,7 +3210,7 @@
     "ARI": {
       "queued": 11,
       "done": 15,
-      "pitcher_tips": 46,
+      "pitcher_tips": 43,
       "catcher_tips": 3
     },
     "COL": {
@@ -3246,12 +3246,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 151,
+    "pitcher_tips": 148,
     "catcher_tips": 81
   },
-  "updated_at": "2026-09-09T16:53:14",
+  "updated_at": "2026-09-09T17:10:18",
   "live": {
-    "pitches_done": 70,
+    "pitches_done": 60,
     "pitches_target": null
   },
   "heartbeat": true
