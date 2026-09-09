@@ -10,9 +10,9 @@
   "eta_hours": 544.6,
   "est_total_pitches": 196040,
   "current": {
-    "name": "Brandon Pfaadt",
+    "name": "Kevin Ginkel",
     "team": "ARI",
-    "message": "pitcher [3/11] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [4/11] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -518,22 +518,6 @@
       "ready": false,
       "state": "empty"
     },
-    "656464": {
-      "name": "Kevin Ginkel",
-      "team": "ARI",
-      "n_tracked": 79,
-      "holdout": 0.6,
-      "tips_ge_75": 0,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 0,
-      "publishable": true,
-      "failed_checks": [],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/kevin_ginkel_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
     "666661": {
       "name": "Juan Morillo",
       "team": "ARI",
@@ -769,6 +753,24 @@
       "n_current_tracks": 302,
       "ready": true,
       "state": "complete"
+    },
+    "694297": {
+      "name": "Brandon Pfaadt",
+      "team": "ARI",
+      "n_tracked": 263,
+      "holdout": 0.121,
+      "tips_ge_75": 5,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brandon_pfaadt_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 314,
+      "ready": false,
+      "state": "tracking"
     }
   },
   "failed": {
@@ -3208,7 +3210,7 @@
     "ARI": {
       "queued": 11,
       "done": 15,
-      "pitcher_tips": 38,
+      "pitcher_tips": 43,
       "catcher_tips": 3
     },
     "COL": {
@@ -3244,12 +3246,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 143,
+    "pitcher_tips": 148,
     "catcher_tips": 81
   },
-  "updated_at": "2026-09-09T13:40:37",
+  "updated_at": "2026-09-09T14:04:53",
   "live": {
-    "pitches_done": 260,
+    "pitches_done": 70,
     "pitches_target": null
   },
   "heartbeat": true
