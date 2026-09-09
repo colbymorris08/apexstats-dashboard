@@ -10,9 +10,9 @@
   "eta_hours": 540.5,
   "est_total_pitches": 194590,
   "current": {
-    "name": "Jonathan Lo\u00e1isiga",
+    "name": "Dennis Santana",
     "team": "ARI",
-    "message": "pitcher [7/13] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [8/13] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -190,25 +190,6 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jovani_mor\u00e1n_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "642701": {
-      "name": "Dennis Santana",
-      "team": "ARI",
-      "n_tracked": 85,
-      "holdout": 0.375,
-      "tips_ge_75": 7,
-      "catcher_tips": 4,
-      "legacy_tips_ge_75": 7,
-      "publishable": false,
-      "failed_checks": [
-        "holdout",
-        "placement"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/dennis_santana_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -857,6 +838,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/taylor_clarke_poc",
       "schema": "rich_72col",
       "n_current_tracks": 138,
+      "ready": true,
+      "state": "complete"
+    },
+    "642528": {
+      "name": "Jonathan Lo\u00e1isiga",
+      "team": "ARI",
+      "n_tracked": 100,
+      "holdout": 0.278,
+      "tips_ge_75": 6,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 6,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jonathan_lo\u00e1isiga_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 139,
       "ready": false,
       "state": "tracking"
     }
@@ -3298,8 +3297,8 @@
     "ARI": {
       "queued": 13,
       "done": 14,
-      "pitcher_tips": 42,
-      "catcher_tips": 19
+      "pitcher_tips": 41,
+      "catcher_tips": 15
     },
     "COL": {
       "queued": 14,
@@ -3334,12 +3333,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 176,
-    "catcher_tips": 120
+    "pitcher_tips": 175,
+    "catcher_tips": 116
   },
-  "updated_at": "2026-09-08T18:06:09",
+  "updated_at": "2026-09-08T18:24:12",
   "live": {
-    "pitches_done": 90,
+    "pitches_done": 70,
     "pitches_target": null
   },
   "heartbeat": true
