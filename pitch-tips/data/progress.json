@@ -10,9 +10,9 @@
   "eta_hours": 540.5,
   "est_total_pitches": 194590,
   "current": {
-    "name": "Mason Adams",
+    "name": "Mark Manfredi",
     "team": "COL",
-    "message": "pitcher [13/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [14/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -190,24 +190,6 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jovani_mor\u00e1n_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "815081": {
-      "name": "Mark Manfredi",
-      "team": "COL",
-      "n_tracked": 100,
-      "holdout": 0.125,
-      "tips_ge_75": 2,
-      "catcher_tips": 3,
-      "legacy_tips_ge_75": 2,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/mark_manfredi_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -874,6 +856,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/nick_frasso_poc",
       "schema": "rich_72col",
       "n_current_tracks": 147,
+      "ready": true,
+      "state": "complete"
+    },
+    "690279": {
+      "name": "Mason Adams",
+      "team": "COL",
+      "n_tracked": 134,
+      "holdout": 0.245,
+      "tips_ge_75": 5,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 5,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/mason_adams_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 145,
       "ready": false,
       "state": "tracking"
     }
@@ -3321,8 +3321,8 @@
     "COL": {
       "queued": 14,
       "done": 13,
-      "pitcher_tips": 50,
-      "catcher_tips": 3
+      "pitcher_tips": 53,
+      "catcher_tips": 0
     },
     "LAD": {
       "queued": 15,
@@ -3351,12 +3351,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 174,
-    "catcher_tips": 71
+    "pitcher_tips": 177,
+    "catcher_tips": 68
   },
-  "updated_at": "2026-09-10T10:17:43",
+  "updated_at": "2026-09-10T10:55:23",
   "live": {
-    "pitches_done": 130,
+    "pitches_done": 100,
     "pitches_target": null
   },
   "heartbeat": true
