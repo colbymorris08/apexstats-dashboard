@@ -10,9 +10,9 @@
   "eta_hours": 540.5,
   "est_total_pitches": 194590,
   "current": {
-    "name": "Nick Frasso",
+    "name": "Mason Adams",
     "team": "COL",
-    "message": "pitcher [12/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [13/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -190,24 +190,6 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jovani_mor\u00e1n_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "690279": {
-      "name": "Mason Adams",
-      "team": "COL",
-      "n_tracked": 91,
-      "holdout": 0.061,
-      "tips_ge_75": 5,
-      "catcher_tips": 4,
-      "legacy_tips_ge_75": 5,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/mason_adams_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -858,8 +840,8 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jordan_romano_poc",
       "schema": "rich_72col",
       "n_current_tracks": 119,
-      "ready": false,
-      "state": "tracking"
+      "ready": true,
+      "state": "complete"
     },
     "680604": {
       "name": "Blas Casta\u00f1o",
@@ -876,6 +858,22 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blas_casta\u00f1o_poc",
       "schema": "rich_72col",
       "n_current_tracks": 55,
+      "ready": true,
+      "state": "complete"
+    },
+    "693308": {
+      "name": "Nick Frasso",
+      "team": "COL",
+      "n_tracked": 122,
+      "holdout": 0.2,
+      "tips_ge_75": 0,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 0,
+      "publishable": true,
+      "failed_checks": [],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/nick_frasso_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 147,
       "ready": false,
       "state": "tracking"
     }
@@ -3323,8 +3321,8 @@
     "COL": {
       "queued": 14,
       "done": 13,
-      "pitcher_tips": 55,
-      "catcher_tips": 7
+      "pitcher_tips": 50,
+      "catcher_tips": 3
     },
     "LAD": {
       "queued": 15,
@@ -3353,12 +3351,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 179,
-    "catcher_tips": 75
+    "pitcher_tips": 174,
+    "catcher_tips": 71
   },
-  "updated_at": "2026-09-10T09:52:07",
+  "updated_at": "2026-09-10T10:17:43",
   "live": {
-    "pitches_done": 110,
+    "pitches_done": 130,
     "pitches_target": null
   },
   "heartbeat": true
