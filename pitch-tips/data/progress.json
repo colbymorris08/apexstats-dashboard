@@ -10,9 +10,9 @@
   "eta_hours": 540.5,
   "est_total_pitches": 194590,
   "current": {
-    "name": "Jordan Romano",
+    "name": "Blas Casta\u00f1o",
     "team": "COL",
-    "message": "pitcher [10/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [11/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -190,25 +190,6 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jovani_mor\u00e1n_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "680604": {
-      "name": "Blas Casta\u00f1o",
-      "team": "COL",
-      "n_tracked": 19,
-      "holdout": 0.2,
-      "tips_ge_75": 8,
-      "catcher_tips": 1,
-      "legacy_tips_ge_75": 8,
-      "publishable": false,
-      "failed_checks": [
-        "holdout",
-        "volume"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/blas_casta\u00f1o_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -877,6 +858,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jaden_hill_poc",
       "schema": "rich_72col",
       "n_current_tracks": 113,
+      "ready": true,
+      "state": "complete"
+    },
+    "605447": {
+      "name": "Jordan Romano",
+      "team": "COL",
+      "n_tracked": 112,
+      "holdout": 0.455,
+      "tips_ge_75": 6,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 6,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jordan_romano_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 119,
       "ready": false,
       "state": "tracking"
     }
@@ -3324,8 +3323,8 @@
     "COL": {
       "queued": 14,
       "done": 13,
-      "pitcher_tips": 51,
-      "catcher_tips": 12
+      "pitcher_tips": 49,
+      "catcher_tips": 11
     },
     "LAD": {
       "queued": 15,
@@ -3354,12 +3353,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 175,
-    "catcher_tips": 80
+    "pitcher_tips": 173,
+    "catcher_tips": 79
   },
-  "updated_at": "2026-09-10T09:12:57",
+  "updated_at": "2026-09-10T09:23:59",
   "live": {
-    "pitches_done": 110,
+    "pitches_done": 40,
     "pitches_target": null
   },
   "heartbeat": true
