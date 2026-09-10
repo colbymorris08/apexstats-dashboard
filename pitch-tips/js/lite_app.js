@@ -32,6 +32,8 @@ const SHOWCASE_IDS = [
   "gu_lin",
   "wilmer_rios",
   "rios",
+  "dereck_rodriguez",
+  "dereck",
   "hughes",
   "gabriel_hughes",
 ];
@@ -81,6 +83,13 @@ const PLAYER_ALIASES = {
   trevor_bauer: "wilmer_rios",
   trevorbauer: "wilmer_rios",
   "trevor-bauer": "wilmer_rios",
+  dereck_rodriguez: "dereck_rodriguez",
+  dereckrodriguez: "dereck_rodriguez",
+  "dereck-rodriguez": "dereck_rodriguez",
+  dereck: "dereck_rodriguez",
+  rodriguez_lmb: "dereck_rodriguez",
+  chihuahua_rodriguez: "dereck_rodriguez",
+  dorados_rodriguez: "dereck_rodriguez",
 
   // MLB Showcase & Pitchers
   roupp: "roupp",
@@ -300,6 +309,12 @@ function isShowcaseArm(id) {
   const aliased = PLAYER_ALIASES[clean];
   if (aliased && SHOWCASE_IDS.includes(aliased)) return true;
   return false;
+}
+
+/** After Preflight login, unlock every modeled arm (matches full site). Public visitors stay on showcase allowlist. */
+function isUnlockedArm(id) {
+  if (typeof window.preflightAuthCheck === "function" && window.preflightAuthCheck()) return true;
+  return isShowcaseArm(id);
 }
 
 function resolvePlayer(data, requestedId) {
@@ -1134,10 +1149,10 @@ function wireLiteLanding(data) {
   fillSelect(
     playerSel,
     playerList(data)
-      .filter((p) => isShowcaseArm(p.id))
+      .filter((p) => isUnlockedArm(p.id))
       .map((p) => ({
         id: p.id,
-        label: `${p.name} (${teamById(data, p.teamId)?.abbr || ""})${isShowcaseArm(p.id) ? (p.role === "C" ? " ★ SHOWCASE CATCHER" : " ★ SHOWCASE") : ""}`,
+        label: `${p.name} (${teamById(data, p.teamId)?.abbr || ""})${isUnlockedArm(p.id) ? (p.role === "C" ? " ★ SHOWCASE CATCHER" : " ★ SHOWCASE") : ""}`,
       })),
     { valueKey: "id", labelKey: "label", blank: "Choose a player" }
   );
@@ -1148,10 +1163,10 @@ function wireLiteLanding(data) {
       fillSelect(
         playerSel,
         playerList(data)
-          .filter((p) => isShowcaseArm(p.id))
+          .filter((p) => isUnlockedArm(p.id))
           .map((p) => ({
             id: p.id,
-            label: `${p.name} (${teamById(data, p.teamId)?.abbr || ""})${isShowcaseArm(p.id) ? (p.role === "C" ? " ★ SHOWCASE CATCHER" : " ★ SHOWCASE") : ""}`,
+            label: `${p.name} (${teamById(data, p.teamId)?.abbr || ""})${isUnlockedArm(p.id) ? (p.role === "C" ? " ★ SHOWCASE CATCHER" : " ★ SHOWCASE") : ""}`,
           })),
         { valueKey: "id", labelKey: "label", blank: "Choose a player" }
       );
@@ -1160,10 +1175,10 @@ function wireLiteLanding(data) {
     fillSelect(
       playerSel,
       playersForTeam(data, tid)
-        .filter((p) => isShowcaseArm(p.id))
+        .filter((p) => isUnlockedArm(p.id))
         .map((p) => ({
           id: p.id,
-          label: `${p.name}${isShowcaseArm(p.id) ? (p.role === "C" ? " ★ SHOWCASE CATCHER" : " ★ SHOWCASE") : ""}`,
+          label: `${p.name}${isUnlockedArm(p.id) ? (p.role === "C" ? " ★ SHOWCASE CATCHER" : " ★ SHOWCASE") : ""}`,
         })),
       { valueKey: "id", labelKey: "label", blank: "Choose a player" }
     );
@@ -1282,7 +1297,7 @@ function updateLiteCoverageRibbon(data) {
   const allPlayers = playerList(data);
   const pitchers = allPlayers.filter((p) => p.role !== "C");
   const catchers = allPlayers.filter((p) => p.role === "C");
-  const showcaseCount = allPlayers.filter((p) => isShowcaseArm(p.id)).length;
+  const showcaseCount = allPlayers.filter((p) => isUnlockedArm(p.id)).length;
 
   const nlWestIds = new Set(["ari", "col", "lad", "sd", "sf"]);
   const nlWestTracked = (data.teams || []).filter(
@@ -1363,7 +1378,7 @@ function wireLiteTeams(data) {
 
         const pitcherPills = pitchers
           .map((p) => {
-            const isShow = isShowcaseArm(p.id);
+            const isShow = isUnlockedArm(p.id);
             const badgeCls = isShow ? "leads" : "";
             const lockIcon = isShow ? "★ " : "🔒 ";
             const countLabel = isShow ? `UNLOCKED` : `Enterprise`;
@@ -1377,7 +1392,7 @@ function wireLiteTeams(data) {
 
         const catcherPills = catchers
           .map((c) => {
-            const isShow = isShowcaseArm(c.id);
+            const isShow = isUnlockedArm(c.id);
             const badgeCls = isShow ? "leads" : "";
             const lockIcon = isShow ? "★ " : "🔒 ";
             const countLabel = isShow ? `UNLOCKED` : `Enterprise`;
@@ -1469,7 +1484,7 @@ function wireLiteTeam(data) {
   if (grid) {
     grid.innerHTML = pitchers
       .map((p) => {
-        const isShow = isShowcaseArm(p.id);
+        const isShow = isUnlockedArm(p.id);
         const tips = playerTips(p);
         const badge = isShow
           ? `<span class="lite-badge-showcase">★ UNLOCKED SHOWCASE</span>`
@@ -1497,7 +1512,7 @@ function wireLiteTeam(data) {
   if (catcherGrid) {
     catcherGrid.innerHTML = catchers
       .map((c) => {
-        const isShow = isShowcaseArm(c.id);
+        const isShow = isUnlockedArm(c.id);
         const tips = playerTips(c);
         const badge = isShow
           ? `<span class="lite-badge-showcase">★ UNLOCKED</span>`
@@ -3275,7 +3290,7 @@ function wireLitePlayer(data) {
     backTeam.href = team ? `lite_team.html?id=${encodeURIComponent(team.id)}` : "lite_teams.html";
   }
 
-  const isShow = isShowcaseArm(player.id) || isShowcaseArm(id);
+  const isShow = isUnlockedArm(player.id) || isUnlockedArm(id);
   const lockSection = document.getElementById("lite-lock-section");
   const unlockedSection = document.getElementById("lite-unlocked-section");
 

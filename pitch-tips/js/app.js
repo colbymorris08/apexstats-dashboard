@@ -270,6 +270,13 @@ function checkIsLiteMode() {
 
 const isLiteMode = checkIsLiteMode();
 
+/** Full site: all arms unlocked after auth. Lite: showcase allowlist unless authenticated. */
+function isUnlockedArm(id) {
+  if (!isLiteMode) return true;
+  if (typeof window.preflightAuthCheck === "function" && window.preflightAuthCheck()) return true;
+  return isShowcaseArm(id);
+}
+
 async function loadDemo() {
   const v = Date.now();
   const isSubdir = location.pathname.includes("/lite/") || location.pathname.endsWith("/lite");
@@ -1031,13 +1038,13 @@ function wirePicksTable(data) {
   const players = playerList(data)
     .filter((p) => p.role !== "C")
     .sort((a, b) => {
-      const aUnlocked = isShowcaseArm(a.id) ? 1 : 0;
-      const bUnlocked = isShowcaseArm(b.id) ? 1 : 0;
+      const aUnlocked = isUnlockedArm(a.id) ? 1 : 0;
+      const bUnlocked = isUnlockedArm(b.id) ? 1 : 0;
       if (aUnlocked !== bUnlocked) return bUnlocked - aUnlocked;
       return playerTips(b).length - playerTips(a).length || (b.pitchesModeled || 0) - (a.pitchesModeled || 0);
     });
 
-  const showcaseCount = players.filter((p) => isShowcaseArm(p.id)).length;
+  const showcaseCount = players.filter((p) => isUnlockedArm(p.id)).length;
 
   if (summary) {
     summary.innerHTML = `<strong>${showcaseCount} Showcase Profiles Unlocked</strong> · <strong>${players.length} Total Arms Modeled</strong> across MLB &amp; Partner Leagues · Real-time sub-pixel computer vision tracking`;
@@ -1046,7 +1053,7 @@ function wirePicksTable(data) {
   root.innerHTML = players
     .map((p) => {
       const team = teamById(data, p.teamId);
-      const isShowcase = isShowcaseArm(p.id);
+      const isShowcase = isUnlockedArm(p.id);
       const tips = playerTips(p);
 
       // Pitcher column: Name + Link + Badge
@@ -1126,7 +1133,7 @@ function wireCatcherPicksTable(data) {
       .slice(0, 40)
       .map(
         ({ player, team, tip }) => {
-          const isShowcase = isShowcaseArm(player.id);
+          const isShowcase = isUnlockedArm(player.id);
           const link = isShowcase
             ? `<a href="player.html?id=${encodeURIComponent(player.id)}${isLiteMode ? "&lite=1" : ""}">${player.name}</a>`
             : `<a href="#" onclick="window.openEnterpriseModal('${player.name.replace(/'/g, "\\'")}'); return false;">${player.name} 🔒</a>`;
@@ -1156,7 +1163,7 @@ function wireLanding(data) {
 
   fillSelect(teamSel, data.teams, { valueKey: "id", labelKey: "name", blank: "Choose a team" });
   
-  const allPitchers = playerList(data).filter((p) => isShowcaseArm(p.id));
+  const allPitchers = playerList(data).filter((p) => isUnlockedArm(p.id));
   const pitcherOpts = allPitchers.map((p) => {
     return {
       id: p.id,
@@ -1179,7 +1186,7 @@ function wireLanding(data) {
       fillSelect(playerSel, pitcherOpts, { valueKey: "id", labelKey: "label", blank: "Choose a pitcher" });
       return;
     }
-    const teamPitchers = playersForTeam(data, tid).filter((p) => isShowcaseArm(p.id)).map((p) => {
+    const teamPitchers = playersForTeam(data, tid).filter((p) => isUnlockedArm(p.id)).map((p) => {
       return { id: p.id, label: `✨ [UNLOCKED] ${p.name}` };
     });
     fillSelect(playerSel, teamPitchers, { valueKey: "id", labelKey: "label", blank: "Choose a pitcher" });
@@ -1220,7 +1227,7 @@ function renderTeamCoverageCard(data, t) {
   const pitcherPills = pitchers
     .map((p) => {
       const tips = playerTips(p);
-      const isShowcase = isShowcaseArm(p.id);
+      const isShowcase = isUnlockedArm(p.id);
       let badgeCls = tips.length > 0 ? "leads" : "";
       let countLabel = tips.length > 0 ? `${tips.length} leads` : `${p.pitchesModeled || 0} p`;
       let lockIcon = "";
@@ -1250,7 +1257,7 @@ function renderTeamCoverageCard(data, t) {
   const catcherPills = catchers
     .map((c) => {
       const tips = playerTips(c);
-      const isShowcase = isShowcaseArm(c.id);
+      const isShowcase = isUnlockedArm(c.id);
       const countLabel = isShowcase ? "✨ UNLOCKED" : (tips.length > 0 ? `${tips.length} setup cues` : "Enterprise");
       const liteParam = isLiteMode ? "&lite=1" : "";
       if (!isShowcase) {
@@ -1512,7 +1519,7 @@ function wireTeamPage(data) {
     grid.innerHTML = pitchers
       .map((p) => {
         const tips = playerTips(p);
-        const isShowcase = isShowcaseArm(p.id);
+        const isShowcase = isUnlockedArm(p.id);
         const badgeHtml = isShowcase
           ? `<span class="unlocked-tag">✨ 100% Unlocked Showcase</span>`
           : `<button type="button" class="lock-tag" onclick="window.openEnterpriseModal('${p.name.replace(/'/g, "\\'")}'); return false;">🔒 Enterprise Locked</button>`;
@@ -1541,7 +1548,7 @@ function wireTeamPage(data) {
       .map((c) => {
         const cTips = playerTips(c);
         const roleLabel = c.roleType === "starter" ? "Primary Starter" : "Backup Catcher";
-        const isShowcase = isShowcaseArm(c.id);
+        const isShowcase = isUnlockedArm(c.id);
         if (!isShowcase) {
           return `
       <a class="tile" href="#" onclick="window.openEnterpriseModal('${c.name.replace(/'/g, "\\'")}'); return false;">
@@ -1568,7 +1575,7 @@ function wireTeamPage(data) {
   if (tipRoot) {
     tipRoot.innerHTML = allTips
       .map((t) => {
-        const isShowcase = isShowcaseArm(t.playerId);
+        const isShowcase = isUnlockedArm(t.playerId);
         if (!isShowcase) {
           return `
       <article class="tip" style="opacity: 0.75; border-left: 3px solid var(--warn);">
@@ -1618,7 +1625,7 @@ function wireTeamPage(data) {
     catcherRoot.innerHTML =
       catcherTips
         .map((t) => {
-          const isShowcase = isShowcaseArm(t.playerId);
+          const isShowcase = isUnlockedArm(t.playerId);
           const nameHtml = isShowcase
             ? `<a href="player.html?id=${encodeURIComponent(t.playerId)}${liteParam}">${t.playerName}</a>`
             : `<span>${t.playerName} 🔒</span>`;
@@ -3163,7 +3170,7 @@ function wirePlayerPage(data) {
     return;
   }
 
-  const isShowcase = isShowcaseArm(player.id) || isShowcaseArm(id);
+  const isShowcase = isUnlockedArm(player.id) || isUnlockedArm(id);
   const tips = rankedTipsForPlayer(player, {});
 
   if (title) {
