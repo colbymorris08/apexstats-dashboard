@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 720,
   "nlwest_pitchers": 68,
-  "remaining": 672,
+  "remaining": 671,
   "sec_per_pitch": 10.0,
   "eta_hours": 544.6,
   "est_total_pitches": 196040,
   "current": {
-    "name": "Juan Mejia",
+    "name": "Brennan Bernardino",
     "team": "COL",
-    "message": "pitcher [5/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [6/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -841,6 +841,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/zach_agnos_poc",
       "schema": "rich_72col",
       "n_current_tracks": 216,
+      "ready": true,
+      "state": "complete"
+    },
+    "675848": {
+      "name": "Juan Mejia",
+      "team": "COL",
+      "n_tracked": 106,
+      "holdout": 0.417,
+      "tips_ge_75": 2,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 2,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/juan_mejia_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 120,
       "ready": false,
       "state": "tracking"
     }
@@ -3287,8 +3305,8 @@
     },
     "COL": {
       "queued": 14,
-      "done": 11,
-      "pitcher_tips": 45,
+      "done": 12,
+      "pitcher_tips": 47,
       "catcher_tips": 13
     },
     "LAD": {
@@ -3318,12 +3336,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 169,
+    "pitcher_tips": 171,
     "catcher_tips": 81
   },
-  "updated_at": "2026-09-09T21:02:10",
+  "updated_at": "2026-09-09T21:22:14",
   "live": {
-    "pitches_done": 100,
+    "pitches_done": 90,
     "pitches_target": null
   },
   "heartbeat": true
