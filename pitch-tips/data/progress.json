@@ -10,9 +10,9 @@
   "eta_hours": 540.5,
   "est_total_pitches": 194590,
   "current": {
-    "name": "Jaden Hill",
+    "name": "Jordan Romano",
     "team": "COL",
-    "message": "pitcher [9/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [10/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -190,24 +190,6 @@
         "placement"
       ],
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jovani_mor\u00e1n_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
-    "605447": {
-      "name": "Jordan Romano",
-      "team": "COL",
-      "n_tracked": 120,
-      "holdout": 0.4,
-      "tips_ge_75": 3,
-      "catcher_tips": 1,
-      "legacy_tips_ge_75": 3,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jordan_romano_poc",
       "schema": "stale",
       "n_current_tracks": 0,
       "ready": false,
@@ -877,6 +859,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jimmy_herget_poc",
       "schema": "rich_72col",
       "n_current_tracks": 157,
+      "ready": true,
+      "state": "complete"
+    },
+    "677955": {
+      "name": "Jaden Hill",
+      "team": "COL",
+      "n_tracked": 104,
+      "holdout": 0.0,
+      "tips_ge_75": 4,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 4,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jaden_hill_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 113,
       "ready": false,
       "state": "tracking"
     }
@@ -3324,8 +3324,8 @@
     "COL": {
       "queued": 14,
       "done": 13,
-      "pitcher_tips": 50,
-      "catcher_tips": 13
+      "pitcher_tips": 51,
+      "catcher_tips": 12
     },
     "LAD": {
       "queued": 15,
@@ -3354,12 +3354,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 174,
-    "catcher_tips": 81
+    "pitcher_tips": 175,
+    "catcher_tips": 80
   },
-  "updated_at": "2026-09-10T08:35:10",
+  "updated_at": "2026-09-10T09:12:57",
   "live": {
-    "pitches_done": 100,
+    "pitches_done": 110,
     "pitches_target": null
   },
   "heartbeat": true
