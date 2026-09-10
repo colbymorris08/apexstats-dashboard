@@ -188,14 +188,53 @@ def cue_of(entry: dict) -> str:
 
 def is_retracted(entry: dict) -> str | None:
     """Reason this entry may not be published, or None if it is allowed."""
-    return RETRACTED_CUES.get(cue_of(entry))
+    cue = cue_of(entry)
+    if not cue:
+        return None
+    if cue in RETRACTED_CUES:
+        return RETRACTED_CUES[cue]
+    for fam in ("pitchcom_", "cheek_motion_", "catcher_", "glove_angle_"):
+        if cue.startswith(fam):
+            return f"cue is in the retracted {fam.rstrip('_')} family"
+    return None
 
 
 def scrub_coverage(cov: dict) -> tuple[dict, int]:
-    """Preserve coverage and discerned types for sales prototype display."""
+    """Drop retracted features from situation/type coverage trees."""
     if not cov:
         return cov, 0
-    return json.loads(json.dumps(cov)), 0
+    removed = 0
+
+    def walk(node):
+        nonlocal removed
+        if isinstance(node, dict):
+            feat = str(node.get("feature") or "")
+            if feat and is_retracted({"feature": feat}):
+                removed += 1
+                return None
+            out = {}
+            for k, v in node.items():
+                cleaned = walk(v)
+                if cleaned is not None:
+                    out[k] = cleaned
+            # Recompute discernable lists if present
+            if "types" in out and isinstance(out["types"], list):
+                disc = [t for t in out["types"] if t.get("discernable") and t.get("feature") and not is_retracted(t)]
+                out["discernable_n"] = len(disc)
+                out["discernable_types"] = [t.get("pitch_type") for t in disc if t.get("pitch_type")]
+                arsenal_n = out.get("arsenal_n") or len(out.get("types") or [])
+                out["coverage"] = f"{len(disc)} of {arsenal_n}"
+            return out
+        if isinstance(node, list):
+            out = []
+            for item in node:
+                cleaned = walk(item)
+                if cleaned is not None:
+                    out.append(cleaned)
+            return out
+        return node
+
+    return walk(json.loads(json.dumps(cov))), removed
 
 
 def scrub_detection_still(still: dict | None, tips: list[dict]) -> tuple[dict | None, bool]:

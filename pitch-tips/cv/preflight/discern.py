@@ -28,14 +28,43 @@ MIN_SLICE_N_TRAIN = 6
 HOLDOUT_BASELINE_MARGIN = 0.08
 MIN_HOLDOUT_FIRES = 3
 MIN_HOLDOUT_TYPE_N = 3
-PITCHER_FEATURE_PREFIXES = ("glove", "wrist", "cheek", "pitchcom")
+# cheek_* / pitchcom_* stay retracted on Savant CF — never enter tip scoring.
+# PitchCom requires continuous club 4K (pre-set visible); broadcast clips start after set.
+PITCHER_FEATURE_PREFIXES = ("glove", "wrist")
 # Mitt-box cues only (parts_gear.pt). Pose-based catcher_* stay retracted.
 CATCHER_FEATURE_PREFIXES = ("cmitt_target_",)
 FEATURE_PREFIXES = PITCHER_FEATURE_PREFIXES  # default for pitcher tips
 
+_RETRACTED_FEATURE_PREFIXES = ("pitchcom_", "cheek_motion_", "catcher_", "glove_angle_")
+
 
 def _feature_cols(df: pd.DataFrame, prefixes: tuple[str, ...] = FEATURE_PREFIXES) -> list[str]:
-    return [c for c in df.columns if c.startswith(prefixes)]
+    cols = [c for c in df.columns if c.startswith(prefixes)]
+    return [c for c in cols if not c.startswith(_RETRACTED_FEATURE_PREFIXES)]
+
+
+def _resolve_feature_direction_conflicts(tips: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """At most one pitch may claim a (situation, feature, direction) vs-rest story."""
+    best: dict[tuple, dict[str, Any]] = {}
+    order: list[tuple] = []
+    for tip in tips:
+        feat = tip.get("feature")
+        if not feat:
+            key = ("passthrough", id(tip))
+            best[key] = tip
+            order.append(key)
+            continue
+        sit = tip.get("situationId") or tip.get("situationLabel") or str(tip.get("context") or "")
+        direction = tip.get("high_means_type")
+        key = (sit, feat, bool(direction))
+        conf = float(tip.get("confidence") or tip.get("accuracy") or 0)
+        prev = best.get(key)
+        if prev is None:
+            best[key] = tip
+            order.append(key)
+        elif conf > float(prev.get("confidence") or prev.get("accuracy") or 0):
+            best[key] = tip
+    return [best[k] for k in order if k in best]
 
 
 def _best_one_vs_rest(
@@ -347,6 +376,8 @@ def evaluate_situations_validated(
     }
 
 def _look_for(pitch_type: str, feat: str, high: bool, ctx_tags: list[str]) -> str:
+    if feat.startswith(("pitchcom_", "cheek_motion_", "catcher_", "glove_angle_")):
+        raise ValueError(f"refusing tip copy for retracted feature {feat}")
     prefix = context_phrase(ctx_tags)
     pname = {
         "FF": "4-Seam Fastball",
@@ -777,6 +808,7 @@ def evaluate_situations(
                 tip["alsoHoldsFor"] = [s for s in sides if s != tip["context"][1]]
                 tip["sameTipBothHands"] = True
 
+    tips = _resolve_feature_direction_conflicts(tips)
     tips.sort(key=lambda t: (t["confidence"], t["nType"]), reverse=True)
 
     return {

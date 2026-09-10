@@ -479,7 +479,7 @@ def _mine_slice(
     if len(sub) < MIN_STRATUM_N:
         return tips
     base_rate = float(sub_all["pitch_type"].value_counts(normalize=True).iloc[0])
-    feature_cols = [c for c in sub.columns if c.startswith(("glove", "wrist", "cheek", "pitchcom"))]
+    feature_cols = [c for c in sub.columns if c.startswith(("glove", "wrist"))]
     for col in feature_cols:
         ma = sub.loc[sub["pitch_type"] == a, col].mean()
         mb = sub.loc[sub["pitch_type"] == b, col].mean()
@@ -879,7 +879,7 @@ def run_poc(
         train, test = feat_df.iloc[:mid], feat_df.iloc[mid:]
 
     base_rate = float(feat_df["pitch_type"].value_counts(normalize=True).iloc[0])
-    fcols = [c for c in feat_df.columns if c.startswith(("glove", "wrist", "cheek", "pitchcom"))]
+    fcols = [c for c in feat_df.columns if c.startswith(("glove", "wrist"))]
     holdout_acc = 0.0
     if len(train) and len(test) and fcols:
         means = train.groupby("pitch_type")[fcols].mean()

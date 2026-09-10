@@ -840,9 +840,36 @@ function wireSituationCoverage(player) {
 window.paintSituationBreakdown = wireSituationCoverage;
 window.paintArsenal = wireSituationCoverage;
 
+function isRetractedTip(tip) {
+  if (!tip) return true;
+  const feat = String(tip.feature || tip.cue || "").toLowerCase();
+  if (
+    feat.startsWith("pitchcom_") ||
+    feat.startsWith("cheek_motion_") ||
+    feat.startsWith("catcher_") ||
+    feat.startsWith("glove_angle_")
+  ) {
+    return true;
+  }
+  const blob = [
+    tip.lookFor,
+    tip.what_to_spot,
+    tip.direction,
+    tip.behavior,
+    tip.title,
+    tip.spot_the_difference,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+  return /pitch\s*-?\s*com/.test(blob);
+}
+
 function playerTips(player) {
-  const t = player.tips || player.topLeads || player.signals || player.keyDifferences || [];
-  const c = player.catcherTips || [];
+  const t = (player.tips || player.topLeads || player.signals || player.keyDifferences || []).filter(
+    (x) => !isRetractedTip(x)
+  );
+  const c = (player.catcherTips || []).filter((x) => !isRetractedTip(x));
   if (t.length && c.length) {
     const seen = new Set(t.map((x) => x.id || x.title || x.cue));
     const merged = [...t];

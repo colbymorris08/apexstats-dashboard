@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]  # pitch-tips/
 sys.path.insert(0, str(ROOT / "cv"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from preflight.provenance import evidence_for, scrub_coverage, scrub_detection_still, slug
+from preflight.provenance import evidence_for, scrub_coverage, scrub_detection_still, slug, is_retracted
 from populate_showcase_players import generate_showcase_players, TEAMS_TO_ADD
 
 RUNS = ROOT / "runs"
@@ -348,8 +348,10 @@ def main() -> None:
             tips = [_clean_tip(t, name, is_catcher=False) for t in ev["tips"]]
         else:
             tips = []
+        tips = [t for t in tips if not is_retracted(t)]
 
         catcher_tips = [_clean_tip(t, name, is_catcher=True) for t in ev["catcherTips"]]
+        catcher_tips = [t for t in catcher_tips if not is_retracted(t)]
 
         sit_cov, _ = scrub_coverage(dict(rep.get("situation_coverage") or {}))
         cat_cov, _ = scrub_coverage(dict(rep.get("catcher_coverage") or {}))
