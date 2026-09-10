@@ -5,14 +5,14 @@
   "games": 8,
   "queue_total": 720,
   "nlwest_pitchers": 70,
-  "remaining": 671,
+  "remaining": 670,
   "sec_per_pitch": 10.0,
   "eta_hours": 540.5,
   "est_total_pitches": 194590,
   "current": {
-    "name": "Jimmy Herget",
+    "name": "Jaden Hill",
     "team": "COL",
-    "message": "pitcher [8/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [9/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -861,6 +861,24 @@
       "n_current_tracks": 262,
       "ready": true,
       "state": "complete"
+    },
+    "623474": {
+      "name": "Jimmy Herget",
+      "team": "COL",
+      "n_tracked": 142,
+      "holdout": 0.0,
+      "tips_ge_75": 1,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 1,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/jimmy_herget_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 157,
+      "ready": false,
+      "state": "tracking"
     }
   },
   "failed": {
@@ -3305,8 +3323,8 @@
     },
     "COL": {
       "queued": 14,
-      "done": 12,
-      "pitcher_tips": 49,
+      "done": 13,
+      "pitcher_tips": 50,
       "catcher_tips": 13
     },
     "LAD": {
@@ -3336,12 +3354,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 173,
+    "pitcher_tips": 174,
     "catcher_tips": 81
   },
-  "updated_at": "2026-09-10T08:12:06",
+  "updated_at": "2026-09-10T08:35:10",
   "live": {
-    "pitches_done": 140,
+    "pitches_done": 100,
     "pitches_target": null
   },
   "heartbeat": true
