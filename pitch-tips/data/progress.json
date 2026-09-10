@@ -10,9 +10,9 @@
   "eta_hours": 544.6,
   "est_total_pitches": 196040,
   "current": {
-    "name": "Brennan Bernardino",
+    "name": "Gabriel Hughes",
     "team": "COL",
-    "message": "pitcher [6/14] last 8 games \u00b7 set + coming-set tracks"
+    "message": "pitcher [7/14] last 8 games \u00b7 set + coming-set tracks"
   },
   "done": {
     "683352": {
@@ -555,24 +555,6 @@
       "ready": false,
       "state": "empty"
     },
-    "687312": {
-      "name": "Gabriel Hughes",
-      "team": "COL",
-      "n_tracked": 225,
-      "holdout": 0.188,
-      "tips_ge_75": 5,
-      "catcher_tips": 0,
-      "legacy_tips_ge_75": 5,
-      "publishable": false,
-      "failed_checks": [
-        "holdout"
-      ],
-      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/gabriel_hughes_poc",
-      "schema": "stale",
-      "n_current_tracks": 0,
-      "ready": false,
-      "state": "empty"
-    },
     "623474": {
       "name": "Jimmy Herget",
       "team": "COL",
@@ -859,6 +841,24 @@
       "work": "/Users/colbymorris/apexstats/pitch-tips/runs/juan_mejia_poc",
       "schema": "rich_72col",
       "n_current_tracks": 120,
+      "ready": true,
+      "state": "complete"
+    },
+    "657514": {
+      "name": "Brennan Bernardino",
+      "team": "COL",
+      "n_tracked": 93,
+      "holdout": 0.2,
+      "tips_ge_75": 3,
+      "catcher_tips": 0,
+      "legacy_tips_ge_75": 3,
+      "publishable": false,
+      "failed_checks": [
+        "holdout"
+      ],
+      "work": "/Users/colbymorris/apexstats/pitch-tips/runs/brennan_bernardino_poc",
+      "schema": "rich_72col",
+      "n_current_tracks": 112,
       "ready": false,
       "state": "tracking"
     }
@@ -3306,7 +3306,7 @@
     "COL": {
       "queued": 14,
       "done": 12,
-      "pitcher_tips": 47,
+      "pitcher_tips": 45,
       "catcher_tips": 13
     },
     "LAD": {
@@ -3336,12 +3336,12 @@
   },
   "phases": null,
   "totals": {
-    "pitcher_tips": 171,
+    "pitcher_tips": 169,
     "catcher_tips": 81
   },
-  "updated_at": "2026-09-09T21:22:14",
+  "updated_at": "2026-09-09T22:11:23",
   "live": {
-    "pitches_done": 90,
+    "pitches_done": 210,
     "pitches_target": null
   },
   "heartbeat": true
