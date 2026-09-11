@@ -1325,32 +1325,32 @@
       "throws": "R",
       "role": "SP",
       "picked": true,
-      "pickConfidence": 0.121,
+      "pickConfidence": 0.182,
       "tier": "watch",
-      "pitchesModeled": 263,
-      "holdoutAccuracy": 0.121,
-      "summary": "Savant CF PoC: 263 pitches / 9 games. 3 pitcher leads · 0 catcher setup leads (≥75% detected movement separation floor).",
+      "pitchesModeled": 261,
+      "holdoutAccuracy": 0.182,
+      "summary": "Savant CF PoC: 261 pitches / 9 games. 3 pitcher leads · 0 catcher setup leads (≥75% detected movement separation floor).",
       "contextCoverage": {
         "runner_bucket": {
           "second_any": 137,
-          "1b": 51,
+          "1b": 50,
           "other": 47,
-          "3b": 28
+          "3b": 27
         },
         "batter_tag": {
           "lhh": 137,
-          "rhh": 126
+          "rhh": 124
         },
         "delivery": {
-          "stretch": 263
+          "stretch": 261
         },
         "runner_exact": {
           "12": 53,
-          "1b": 51,
+          "1b": 50,
           "13": 47,
           "loaded": 35,
-          "3b": 28,
           "23": 27,
+          "3b": 27,
           "2b": 22
         }
       },
@@ -1374,7 +1374,7 @@
           "confidence": 0.824,
           "precision": 0.333,
           "feature": "glove_vs_belt_mean",
-          "threshold": -0.018056703574897002,
+          "threshold": -0.01805670357489698,
           "high_means_type": false,
           "n": 51,
           "nType": 5,
@@ -1408,7 +1408,7 @@
           "confidence": 0.763,
           "precision": 0.1,
           "feature": "glove_flare_std",
-          "threshold": 0.028841958917965906,
+          "threshold": 0.028841958917965954,
           "high_means_type": true,
           "n": 137,
           "nType": 8,
@@ -1444,7 +1444,7 @@
           "confidence": 0.75,
           "precision": 0.5,
           "feature": "glove_vs_belt_mean",
-          "threshold": 0.08614981827327692,
+          "threshold": 0.08614981827327695,
           "high_means_type": true,
           "n": 24,
           "nType": 6,
@@ -1482,7 +1482,7 @@
           "confidence": 0.824,
           "precision": 0.333,
           "feature": "glove_vs_belt_mean",
-          "threshold": -0.018056703574897002,
+          "threshold": -0.01805670357489698,
           "high_means_type": false,
           "n": 51,
           "nType": 5,
@@ -1516,7 +1516,7 @@
           "confidence": 0.763,
           "precision": 0.1,
           "feature": "glove_flare_std",
-          "threshold": 0.028841958917965906,
+          "threshold": 0.028841958917965954,
           "high_means_type": true,
           "n": 137,
           "nType": 8,
@@ -1552,7 +1552,7 @@
           "confidence": 0.75,
           "precision": 0.5,
           "feature": "glove_vs_belt_mean",
-          "threshold": 0.08614981827327692,
+          "threshold": 0.08614981827327695,
           "high_means_type": true,
           "n": 24,
           "nType": 6,
@@ -1579,8 +1579,8 @@
         "arsenal": [
           "CH",
           "FF",
-          "SI",
           "CU",
+          "SI",
           "ST"
         ],
         "arsenal_n": 5,
@@ -1596,8 +1596,8 @@
           "types_tested": [
             "CH",
             "FF",
-            "SI",
             "CU",
+            "SI",
             "ST"
           ],
           "discernable_n": 1,
@@ -1608,13 +1608,25 @@
           "status": "ok",
           "types": [
             {
+              "pitch_type": "CH",
+              "n": 8,
+              "discernable": false,
+              "accuracy": 0.549,
+              "feature": "glove_flare_std",
+              "precision": 0.222,
+              "threshold": 0.018113840263662605,
+              "high_means_type": false,
+              "baseline": 0.157,
+              "status": "ok"
+            },
+            {
               "pitch_type": "FF",
               "n": 9,
               "discernable": false,
               "accuracy": 0.627,
               "feature": "glove_flare_mean",
               "precision": 0.222,
-              "threshold": 0.010775589169075997,
+              "threshold": 0.010775589169076023,
               "high_means_type": false,
               "baseline": 0.176,
               "status": "ok"
@@ -1626,9 +1638,21 @@
               "accuracy": 0.824,
               "feature": "glove_vs_belt_mean",
               "precision": 0.333,
-              "threshold": -0.018056703574897002,
+              "threshold": -0.01805670357489698,
               "high_means_type": false,
               "baseline": 0.098,
+              "status": "ok"
+            },
+            {
+              "pitch_type": "SI",
+              "n": 16,
+              "discernable": false,
+              "accuracy": 0.588,
+              "feature": "glove_flare_mean",
+              "precision": 0.381,
+              "threshold": 0.013014091617372688,
+              "high_means_type": false,
+              "baseline": 0.314,
               "status": "ok"
             },
             {
@@ -1638,7 +1662,7 @@
               "accuracy": 0.529,
               "feature": "wrist_speed_p90",
               "precision": 0.296,
-              "threshold": 0.10807832995951416,
+              "threshold": 0.10807832995951418,
               "high_means_type": false,
               "baseline": 0.255,
               "status": "ok"
@@ -1694,22 +1718,28 @@
             "status": "ok",
             "types": [
               {
+                "pitch_type": "CH",
+                "n": 10,
+                "discernable": false,
+                "accuracy": 0.625,
+                "feature": "glove_vs_belt_mean",
+                "precision": 0.545,
+                "threshold": 0.07688447592090988,
+                "high_means_type": false,
+                "baseline": 0.417,
+                "status": "ok"
+              },
+              {
                 "pitch_type": "FF",
                 "n": 6,
                 "discernable": true,
                 "accuracy": 0.75,
                 "feature": "glove_vs_belt_mean",
                 "precision": 0.5,
-                "threshold": 0.08614981827327692,
+                "threshold": 0.08614981827327695,
                 "high_means_type": true,
                 "baseline": 0.25,
                 "status": "ok"
-              },
-              {
-                "pitch_type": "SI",
-                "n": 3,
-                "discernable": false,
-                "status": "insufficient_n"
               },
               {
                 "pitch_type": "CU",
@@ -1718,10 +1748,16 @@
                 "accuracy": 0.667,
                 "feature": "glove_flare_std",
                 "precision": 0.333,
-                "threshold": 0.022733141545415652,
+                "threshold": 0.022733141545415676,
                 "high_means_type": true,
                 "baseline": 0.208,
                 "status": "ok"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 3,
+                "discernable": false,
+                "status": "insufficient_n"
               },
               {
                 "pitch_type": "ST",
@@ -1761,7 +1797,7 @@
                 "accuracy": 0.588,
                 "feature": "glove_vs_belt_mean",
                 "precision": 0.333,
-                "threshold": 0.06435504909414512,
+                "threshold": 0.06435504909414515,
                 "high_means_type": true,
                 "baseline": 0.235,
                 "status": "ok"
@@ -1773,13 +1809,25 @@
                 "status": "insufficient_n"
               },
               {
+                "pitch_type": "SI",
+                "n": 6,
+                "discernable": false,
+                "accuracy": 0.647,
+                "feature": "wrist_speed_p90",
+                "precision": 0.5,
+                "threshold": 0.054385371212121246,
+                "high_means_type": false,
+                "baseline": 0.353,
+                "status": "ok"
+              },
+              {
                 "pitch_type": "ST",
                 "n": 4,
                 "discernable": false,
                 "accuracy": 0.647,
                 "feature": "glove_vs_belt_std",
                 "precision": 0.333,
-                "threshold": 0.048271374294289564,
+                "threshold": 0.048271374294289605,
                 "high_means_type": true,
                 "baseline": 0.235,
                 "status": "ok"
@@ -1796,8 +1844,8 @@
             "types_tested": [
               "CH",
               "FF",
-              "SI",
               "CU",
+              "SI",
               "ST"
             ],
             "discernable_n": 0,
@@ -1806,15 +1854,63 @@
             "status": "ok",
             "types": [
               {
+                "pitch_type": "CH",
+                "n": 14,
+                "discernable": false,
+                "accuracy": 0.585,
+                "feature": "glove_vs_belt_mean",
+                "precision": 0.333,
+                "threshold": 0.07937020300455147,
+                "high_means_type": true,
+                "baseline": 0.264,
+                "status": "ok"
+              },
+              {
                 "pitch_type": "FF",
                 "n": 11,
                 "discernable": false,
                 "accuracy": 0.642,
                 "feature": "wrist_speed_p90",
                 "precision": 0.278,
-                "threshold": 0.11439896320346318,
+                "threshold": 0.11439896320346321,
                 "high_means_type": true,
                 "baseline": 0.208,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "CU",
+                "n": 15,
+                "discernable": false,
+                "accuracy": 0.623,
+                "feature": "glove_vs_belt_std",
+                "precision": 0.368,
+                "threshold": 0.049665631779657174,
+                "high_means_type": true,
+                "baseline": 0.283,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 7,
+                "discernable": false,
+                "accuracy": 0.566,
+                "feature": "wrist_speed_mean",
+                "precision": 0.214,
+                "threshold": 0.03984638895984978,
+                "high_means_type": false,
+                "baseline": 0.132,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "ST",
+                "n": 6,
+                "discernable": false,
+                "accuracy": 0.623,
+                "feature": "glove_flare_std",
+                "precision": 0.15,
+                "threshold": 0.01720891493285564,
+                "high_means_type": true,
+                "baseline": 0.113,
                 "status": "ok"
               }
             ]
@@ -1829,8 +1925,8 @@
             "types_tested": [
               "CH",
               "FF",
-              "SI",
               "CU",
+              "SI",
               "ST"
             ],
             "discernable_n": 1,
@@ -1841,13 +1937,25 @@
             "status": "ok",
             "types": [
               {
+                "pitch_type": "CH",
+                "n": 8,
+                "discernable": false,
+                "accuracy": 0.549,
+                "feature": "glove_flare_std",
+                "precision": 0.222,
+                "threshold": 0.018113840263662605,
+                "high_means_type": false,
+                "baseline": 0.157,
+                "status": "ok"
+              },
+              {
                 "pitch_type": "FF",
                 "n": 9,
                 "discernable": false,
                 "accuracy": 0.627,
                 "feature": "glove_flare_mean",
                 "precision": 0.222,
-                "threshold": 0.010775589169075997,
+                "threshold": 0.010775589169076023,
                 "high_means_type": false,
                 "baseline": 0.176,
                 "status": "ok"
@@ -1859,9 +1967,21 @@
                 "accuracy": 0.824,
                 "feature": "glove_vs_belt_mean",
                 "precision": 0.333,
-                "threshold": -0.018056703574897002,
+                "threshold": -0.01805670357489698,
                 "high_means_type": false,
                 "baseline": 0.098,
+                "status": "ok"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 16,
+                "discernable": false,
+                "accuracy": 0.588,
+                "feature": "glove_flare_mean",
+                "precision": 0.381,
+                "threshold": 0.013014091617372688,
+                "high_means_type": false,
+                "baseline": 0.314,
                 "status": "ok"
               },
               {
@@ -1871,7 +1991,7 @@
                 "accuracy": 0.529,
                 "feature": "wrist_speed_p90",
                 "precision": 0.296,
-                "threshold": 0.10807832995951416,
+                "threshold": 0.10807832995951418,
                 "high_means_type": false,
                 "baseline": 0.255,
                 "status": "ok"
@@ -1895,13 +2015,19 @@
             "status": "ok",
             "types": [
               {
-                "pitch_type": "FF",
-                "n": 2,
+                "pitch_type": "CH",
+                "n": 4,
                 "discernable": false,
-                "status": "insufficient_n"
+                "accuracy": 0.667,
+                "feature": "glove_vs_belt_mean",
+                "precision": 0.4,
+                "threshold": 0.05571631297248332,
+                "high_means_type": false,
+                "baseline": 0.267,
+                "status": "ok"
               },
               {
-                "pitch_type": "SI",
+                "pitch_type": "FF",
                 "n": 2,
                 "discernable": false,
                 "status": "insufficient_n"
@@ -1913,10 +2039,16 @@
                 "accuracy": 0.667,
                 "feature": "glove_vs_belt_mean",
                 "precision": 0.625,
-                "threshold": 0.06222439828683635,
+                "threshold": 0.06222439828683636,
                 "high_means_type": true,
                 "baseline": 0.467,
                 "status": "ok"
+              },
+              {
+                "pitch_type": "SI",
+                "n": 2,
+                "discernable": false,
+                "status": "insufficient_n"
               },
               {
                 "pitch_type": "ST",
@@ -1946,8 +2078,8 @@
         "arsenal": [
           "CH",
           "FF",
-          "SI",
           "CU",
+          "SI",
           "ST"
         ],
         "arsenal_n": 5,
@@ -2028,8 +2160,8 @@
             "types_tested": [
               "CH",
               "FF",
-              "SI",
               "CU",
+              "SI",
               "ST"
             ],
             "discernable_n": 0,
@@ -2048,8 +2180,8 @@
             "types_tested": [
               "CH",
               "FF",
-              "SI",
               "CU",
+              "SI",
               "ST"
             ],
             "discernable_n": 0,
@@ -2134,10 +2266,8 @@
         },
         "3b|lhh": {
           "label": "third only, LHH up",
-          "coverage": "1 of 5",
-          "discernable_types": [
-            "CH"
-          ],
+          "coverage": "0 of 5",
+          "discernable_types": [],
           "n": 15
         },
         "3b|rhh": {
