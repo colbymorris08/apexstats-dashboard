@@ -13136,10 +13136,10 @@
       "throws": "R",
       "role": "SP",
       "picked": true,
-      "pickConfidence": 0.2,
+      "pickConfidence": 0.28,
       "tier": "watch",
       "pitchesModeled": 222,
-      "holdoutAccuracy": 0.2,
+      "holdoutAccuracy": 0.28,
       "summary": "Savant CF PoC: 222 pitches / 9 games. 3 pitcher leads · 0 catcher setup leads (≥75% detected movement separation floor).",
       "contextCoverage": {
         "runner_bucket": {
@@ -13443,6 +13443,18 @@
               "status": "ok"
             },
             {
+              "pitch_type": "FC",
+              "n": 6,
+              "discernable": false,
+              "accuracy": 0.667,
+              "feature": "glove_flare_mean",
+              "precision": 0.278,
+              "threshold": 0.014702893895785277,
+              "high_means_type": true,
+              "baseline": 0.143,
+              "status": "ok"
+            },
+            {
               "pitch_type": "SI",
               "n": 5,
               "discernable": false,
@@ -13543,6 +13555,18 @@
                 "status": "ok"
               },
               {
+                "pitch_type": "FC",
+                "n": 6,
+                "discernable": false,
+                "accuracy": 0.667,
+                "feature": "glove_flare_mean",
+                "precision": 0.278,
+                "threshold": 0.014702893895785277,
+                "high_means_type": true,
+                "baseline": 0.143,
+                "status": "ok"
+              },
+              {
                 "pitch_type": "SI",
                 "n": 5,
                 "discernable": false,
@@ -13628,6 +13652,18 @@
                 "status": "ok"
               },
               {
+                "pitch_type": "FC",
+                "n": 12,
+                "discernable": false,
+                "accuracy": 0.639,
+                "feature": "glove_flare_std",
+                "precision": 0.143,
+                "threshold": 0.02300165829624118,
+                "high_means_type": true,
+                "baseline": 0.197,
+                "status": "ok"
+              },
+              {
                 "pitch_type": "SI",
                 "n": 7,
                 "discernable": false,
@@ -13673,6 +13709,18 @@
             "coverage": "1 of 5",
             "status": "ok",
             "types": [
+              {
+                "pitch_type": "CH",
+                "n": 6,
+                "discernable": false,
+                "accuracy": 0.583,
+                "feature": "glove_flare_std",
+                "precision": 0.2,
+                "threshold": 0.021191130257238098,
+                "high_means_type": false,
+                "baseline": 0.167,
+                "status": "ok"
+              },
               {
                 "pitch_type": "FF",
                 "n": 7,
@@ -13911,9 +13959,8 @@
         },
         "1b|lhh": {
           "label": "first only, LHH up",
-          "coverage": "2 of 5",
+          "coverage": "1 of 5",
           "discernable_types": [
-            "FC",
             "CU"
           ],
           "n": 42
