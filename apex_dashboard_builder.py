@@ -227,6 +227,12 @@ PRO_MLB_PLAYER_ID_OVERRIDES: dict[str, int] = {
     "samuel tookoian": 702494,
     "sam tookoian": 702494,
     "sarkis tookoian": 702494,
+    # Athletics catcher; currently Mesa Solar Sox (Arizona Fall League).
+    "davis diaz": 696286,
+    # Sheet "Reid, Dom"; Stats API is Dominick Reid. people/search returns [].
+    "dom reid": 805255,
+    "dominick reid": 805255,
+    "dominic reid": 805255,  # common misspelling of Dominick
     # Fraizer/Frazier spellings in client sheets.
     "matthew frazier": 670208,
     "matt frazier": 670208,
@@ -244,6 +250,10 @@ PRO_MLB_PEOPLE_SEARCH_ALIASES: dict[str, str] = {
     # MLB lists "Matt Fraizer" (670208); sheet often uses "Frazier"; Texas Rangers org per client.
     "matthew frazier": "Matt Fraizer",
     "matt frazier": "Matt Fraizer",
+    # Client sheet "Reid, Dom"; API lists Dominick Reid (805255).
+    "dom reid": "Dominick Reid",
+    "dominick reid": "Dominick Reid",
+    "dominic reid": "Dominick Reid",
     # Tracker sheets often omit accents; Stats API search requires them.
     "huascar brazoban": "Huascar Brazobán",
     "adolis garcia": "Adolis García",
@@ -3806,11 +3816,13 @@ def get_team_context(team_id: int | None) -> dict[str, Any]:
         team_level = "A+"
     elif "single-a" in league_name or "carolina league" in league_name:
         team_level = "A"
+    elif "arizona fall" in league_name:
+        team_level = "AFL"
     elif "rookie" in league_name or "complex" in league_name or "dominican summer" in league_name:
         team_level = "Rk"
     else:
         # Stats API sport ids are stable per classification when league name strings vary.
-        sport_level = {11: "AAA", 12: "AA", 13: "A+", 14: "A", 15: "Rk", 16: "Rk", 17: "Rk"}
+        sport_level = {11: "AAA", 12: "AA", 13: "A+", 14: "A", 15: "Rk", 16: "Rk", 17: "WIN"}
         team_level = sport_level.get(sport_id, "")
     location = t.get("locationName") or ((t.get("venue") or {}).get("location") or {}).get("city", "")
     team_name = t.get("name", "")
@@ -3819,6 +3831,13 @@ def get_team_context(team_id: int | None) -> dict[str, Any]:
         team_slug = _slug(team_name.replace(location, "").strip() or team_name)
         schedule_url = f"https://www.mlb.com/{team_slug}/schedule"
         organization = team_name
+    elif "arizona fall" in league_name:
+        # Dated AFL scores hub (date segment changes daily).
+        schedule_url = (
+            f"https://www.mlb.com/arizona-fall-league/scores/{report_anchor_date().isoformat()}"
+        )
+        # Keep sheet major-league org (parent is Office of the Commissioner).
+        organization = ""
     else:
         # MiLB schedule page (use full Stats API club name slug — matches milb.com paths;
         # nickname-only slugs like "dust-devils" redirect but are easy to confuse with wrong clubs).
@@ -3884,6 +3903,8 @@ def build_client_payload(c: Client) -> dict[str, Any]:
     base["team_level"] = team_ctx["team_level"] or c.level
     if team_ctx.get("team_level"):
         base["level"] = team_ctx["team_level"]
+    if team_ctx.get("team_level") == "AFL":
+        base["league"] = "Arizona Fall League"
     # Sheet affiliate can lag rehab/reassignment; show and bucket stats by actual club.
     if resolved_team and _normalize_org_token(c.minor_affiliate) != _normalize_org_token(resolved_team):
         base["minor_affiliate"] = resolved_team
